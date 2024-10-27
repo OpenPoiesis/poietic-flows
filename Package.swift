@@ -29,7 +29,5 @@ let package = Package(
         .testTarget(
             name: "PoieticFlowsTests",
             dependencies: ["PoieticFlows"]),
-    ],
-    swiftLanguageVersions: [.v6]
-
+    ]
 )
