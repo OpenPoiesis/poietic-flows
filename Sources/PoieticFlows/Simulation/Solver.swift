@@ -195,8 +195,8 @@ public class Solver {
                 }
             }
             else {
-                let result = try evaluate(objectAt: index,
-                                          with: &state)
+                let result = try initialize(objectAt: index,
+                                            with: &state)
                 state[object.variableIndex] = result
             }
         }
@@ -246,14 +246,41 @@ public class Solver {
         }
     }
     
-
-    /// Evaluate an expression within the context of a simulation state.
+    /// Initialise an object.
     ///
     /// - Parameters:
-    ///     - expression: An arithmetic expression to be evaluated
+    ///     - index: Index of the object to be evaluated.
     ///     - state: simulation state within which the expression is evaluated
-    ///     - time: simulation time at which the evaluation takes place
-    ///     - timeDelta: time difference between steps of the simulation
+    ///
+    /// - Returns: an evaluated value of the expression.
+    ///
+    public func initialize(objectAt index: Int,
+                         with state: inout SimulationState) throws -> Variant {
+        let object = compiledModel.simulationObjects[index]
+        if let value = constants[object.id] {
+            return value
+        }
+        
+        switch object.computation {
+
+        case let .formula(expression):
+            return try evaluate(expression: expression,
+                                with: state)
+            
+        case let .graphicalFunction(function, index):
+            let value = state[index]
+            return try function.apply([value])
+        case let .delay(delay):
+            return try initialize(delay: delay,
+                                  with: &state)
+        }
+    }
+
+    /// Evaluate an object within the context of a simulation state.
+    ///
+    /// - Parameters:
+    ///     - index: Index of the object to be evaluated.
+    ///     - state: simulation state within which the expression is evaluated
     ///
     /// - Returns: an evaluated value of the expression.
     ///
@@ -303,32 +330,57 @@ public class Solver {
         }
     }
 
-    public func evaluate(delay: CompiledDelay,
-                         with state: inout SimulationState) throws -> Variant {
-        // FIXME: Propagate time or include time in the state
-        // FIXME: Numeric delay
-        let inputValue = try! state[delay.parameterIndex].doubleValue()
-        let queue = state[delay.valueQueueIndex]
+    public func initialize(delay: CompiledDelay,
+                           with state: inout SimulationState) throws -> Variant {
         let outputValue: Variant
-        
-        // TODO: This assumes time starts at 0.0
-        if state.time < delay.duration {
-            var items: [Double] = (try? queue.doubleArray()) ?? []
-            items.append(inputValue)
-            state[delay.valueQueueIndex] = Variant(items)
-            // TODO: Use first input value
-            outputValue = delay.initialValue!
+        if let intialValue = delay.initialValue {
+            outputValue = intialValue
         }
         else {
-            var items: [Double] = (try? queue.doubleArray()) ?? []
-            items.append(inputValue)
-            let output = items.remove(at:0)
-            state[delay.valueQueueIndex] = Variant(items)
-            outputValue = Variant(output)
+            let inputValue =
+            outputValue = state[delay.inputValueIndex]
         }
+        // FIXME: [IMPORTANT] THIS NEEDS delay.valueType + Variant refactoring (we reached its limits)
+        state[delay.queueIndex] = .array(VariantArray(type: .double))
+        print("STATE QUEUE INIT: \(state[delay.queueIndex])")
+        
         return outputValue
     }
     
+    public func evaluate(delay: CompiledDelay,
+                         with state: inout SimulationState) throws -> Variant {
+        guard case let .atom(inputValue) = state[delay.inputValueIndex] else {
+            // TODO: Runtime error
+            fatalError("Expected atom for delay input value, got array (runtime error)")
+        }
+        guard case var .array(queue) = state[delay.queueIndex] else {
+            fatalError("Expected array for delay queue, got atom (compilation is corrupted)")
+        }
+        print("STATE QUEUE AT \(queue.count): \(queue)")
+        let outputValue: VariantAtom
+        let nextValue: VariantAtom // Value to be pushed
+        
+        // TODO: Use `step` as future function parameter instead of this workaround for queue lenght
+        if queue.count + 1 < delay.steps {
+            guard case let .atom(initialValue) = state[delay.initialValueIndex] else {
+                // TODO: Runtime error
+                fatalError("Expected atom for delay initial value, got array (runtime error)")
+            }
+
+            // We do have at least one value in the array (see initialize(delay:...))
+            outputValue = initialValue
+            nextValue = initialValue
+        }
+        else {
+            outputValue = queue.remove(at:0)
+            nextValue = inputValue
+        }
+        queue.append(nextValue)
+        state[delay.queueIndex] = .array(queue)
+
+        return .atom(outputValue)
+    }
+
     /// - Important: Do not use for anything but testing or debugging.
     ///
     func computeStockDelta(_ id: ObjectID,

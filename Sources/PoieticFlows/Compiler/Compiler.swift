@@ -610,10 +610,14 @@ public class Compiler {
     }
     public func compileDelayNode(_ node: Node) throws (NodeIssuesError) -> ComputationalRepresentation{
         // TODO: What to do if the input is not numeric or not an atom?
-        let valueQueue = createStateVariable(content: .internalState(node.id),
+        let queueIndex = createStateVariable(content: .internalState(node.id),
                                              valueType: .doubles,
-                                             name: "delay_\(node.id)")
+                                             name: "delay_queue_\(node.id)")
         
+        let initialValueIndex = createStateVariable(content: .internalState(node.id),
+                                             valueType: .doubles,
+                                             name: "delay_init_\(node.id)")
+
         let hood = view.incomingParameters(node.id)
         guard let parameterNode = hood.nodes.first else {
             throw NodeIssuesError(errors: [node.id: [NodeIssue.missingRequiredParameter]])
@@ -622,16 +626,17 @@ public class Compiler {
         let parameterIndex = variableIndex(parameterNode.id)
         let variable = stateVariables[parameterIndex]
         
-        let duration = try! node.snapshot["delay_duration"]!.doubleValue()
+        let duration = try! node.snapshot["delay_duration"]!.intValue()
         let initialValue = node.snapshot["initial_value"]
         
         // TODO: Check whether the initial value and variable.valueType are the same
         let compiled = CompiledDelay(
-            valueQueueIndex: valueQueue,
-            duration: duration,
+            steps: duration,
             initialValue: initialValue,
-            parameterIndex: parameterIndex,
-            valueType: variable.valueType
+            valueType: variable.valueType,
+            initialValueIndex: initialValueIndex,
+            queueIndex: queueIndex,
+            inputValueIndex: parameterIndex
         )
         
         return .delay(compiled)

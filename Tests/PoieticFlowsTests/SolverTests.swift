@@ -521,7 +521,7 @@ final class TestSolver: XCTestCase {
         XCTAssertEqual(state[delay], 0.0)
 
         state = try solver.compute(state, at: 2.0)
-        XCTAssertEqual(state[delay], 10.0)
+        XCTAssertEqual(state[delay], 0.0)
 
         state = try solver.compute(state, at: 3.0)
         XCTAssertEqual(state[delay], 10.0)

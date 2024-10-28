@@ -49,7 +49,7 @@ public enum ComputationalRepresentation: CustomStringConvertible {
             return "graphical(\(fun.name), \(index))"
         case let .delay(delay):
             let initialValue = delay.initialValue.map { $0.description } ?? "nil"
-            return "delay(\(delay.parameterIndex), \(delay.duration), \(initialValue)"
+            return "delay(\(delay.inputValueIndex), \(delay.steps), \(initialValue)"
         }
         
     }
@@ -254,20 +254,21 @@ public struct CompiledControlBinding {
     public let variableIndex: SimulationState.Index
 }
 
+// TODO: add at least smoothing (SMTH1)
 public struct CompiledDelay {
-    // TODO: add at least smoothing (SMTH1)
-    public enum OutputType {
-        case delay
-        case smooth
-    }
-//    public let order: Int
-    
-    //    public let initialValueIndex: SimulationState.Index
-    public let valueQueueIndex: SimulationState.Index
-    public let duration: Double
+    public let steps: Int
     public let initialValue: Variant?
-    public let parameterIndex: SimulationState.Index
     public let valueType: ValueType
+
+    /// Index where the actual initial value is stored. The initial value
+    /// can be either the ``initialValue`` if provided, or the input
+    /// value during initialisation.
+    ///
+    /// - SeeAlso: ``Solver/initialize(delay:with:)``
+    /// 
+    public let initialValueIndex: SimulationState.Index
+    public let queueIndex: SimulationState.Index
+    public let inputValueIndex: SimulationState.Index
 }
 
 
