@@ -404,7 +404,7 @@ final class TestStockFlowSimulation: XCTestCase {
         try compile()
 
         let sim = StockFlowSimulation(model)
-        let context = SimulationContext(step: 1, time: 1.0, timeDelta: 0.5)
+        let context = SimulationContext(step: 1, time: 1.0, timeDelta: 1)
         var state = SimulationState(model: model)
         try sim.initialize(&state)
 

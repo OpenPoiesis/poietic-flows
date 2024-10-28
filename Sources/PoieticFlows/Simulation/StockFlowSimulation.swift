@@ -28,7 +28,6 @@ import PoieticCore
 
 /// Stock-Flow simulation specific computation and logic.
 ///
-///
 public class StockFlowSimulation: Simulation {
     /// Compiled model for which we are computing.
     ///
@@ -40,9 +39,8 @@ public class StockFlowSimulation: Simulation {
         case euler
         case rk4
     }
-
     
-    /// Solver to be used for the simulation.
+    /// Type of a solver to be used for the simulation.
     public var solver: SolverType
 
     /// Create a new Stock Flow simulation for a specific model.
@@ -56,6 +54,9 @@ public class StockFlowSimulation: Simulation {
     
     /// Initialise a simulation state.
     ///
+    /// This function computes the initial state of the computation by
+    /// evaluating all the nodes in the order of their dependency by parameter.
+    /// 
     public func initialize(_ state: inout SimulationState) throws {
         for (index, _) in model.simulationObjects.enumerated() {
             try initialize(objectAt: index, in: &state)
@@ -105,8 +106,7 @@ public class StockFlowSimulation: Simulation {
         else {
             outputValue = state[delay.inputValueIndex]
         }
-        // FIXME: [IMPORTANT] THIS NEEDS delay.valueType + Variant refactoring (we reached its limits)
-        state[delay.queueIndex] = .array(VariantArray(type: .double))
+        state[delay.queueIndex] = .array(VariantArray(type: delay.valueType))
         
         return outputValue
     }
@@ -203,8 +203,6 @@ public class StockFlowSimulation: Simulation {
         return .atom(outputValue)
     }
 
-    // TODO: [FIXME] [REFACTORING] Consider time in integration stages
-    // TODO: [REFACTORING] [SOLVER] Update stocks here, return delta as extra info/component info
     /// Comptes differences of stocks.
     ///
     /// - Returns: A state vector that contains difference values for each

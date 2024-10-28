@@ -35,7 +35,7 @@ public enum ComputationalRepresentation: CustomStringConvertible {
         case .graphicalFunction(_, _):
             return ValueType.double
         case let .delay(delay):
-            return delay.valueType
+            return .atom(delay.valueType)
         }
     }
     
@@ -114,6 +114,7 @@ public struct SimulationObject: CustomStringConvertible {
 public enum BuiltinVariable: Equatable, CustomStringConvertible {
     case time
     case timeDelta
+    case step
 //    case initialTime
 //    case endTime
     
@@ -121,6 +122,7 @@ public enum BuiltinVariable: Equatable, CustomStringConvertible {
         switch self {
         case .time: "time"
         case .timeDelta: "time_delta"
+        case .step: "simulation_step"
         }
     }
 }
@@ -258,7 +260,7 @@ public struct CompiledControlBinding {
 public struct CompiledDelay {
     public let steps: Int
     public let initialValue: Variant?
-    public let valueType: ValueType
+    public let valueType: AtomType
 
     /// Index where the actual initial value is stored. The initial value
     /// can be either the ``initialValue`` if provided, or the input

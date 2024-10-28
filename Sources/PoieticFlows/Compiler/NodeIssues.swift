@@ -74,6 +74,8 @@ public enum NodeIssue: Equatable, CustomStringConvertible, Error {
     ///
     case flowCycle
     
+    case unsupportedDelayValueType(ValueType)
+    
     /// Get the human-readable description of the issue.
     public var description: String {
         switch self {
@@ -93,6 +95,8 @@ public enum NodeIssue: Equatable, CustomStringConvertible, Error {
             return "Node is part of a computation cycle."
         case .flowCycle:
             return "Stock is part of a flow cycle."
+        case .unsupportedDelayValueType(let type):
+            return "Unsupported delay value type: \(type)"
         }
     }
     
@@ -119,6 +123,8 @@ public enum NodeIssue: Equatable, CustomStringConvertible, Error {
             return "Follow connections from and to the offending node."
         case .flowCycle:
             return "Mark one of the stocks in the cycle to have delayed inflow to break the cycle."
+        case .unsupportedDelayValueType(let type):
+            return "Delay can use only atom types, no array types"
         }
     }
 }

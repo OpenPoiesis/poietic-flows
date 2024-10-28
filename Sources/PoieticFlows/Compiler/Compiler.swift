@@ -265,6 +265,9 @@ public class Compiler {
             else if variable === Variable.TimeDeltaVariable {
                 builtin = .timeDelta
             }
+            else if variable === Variable.SimulationStepVariable {
+                builtin = .step
+            }
             else {
                 fatalError("Unknown builtin variable: \(variable)")
             }
@@ -629,11 +632,15 @@ public class Compiler {
         let duration = try! node.snapshot["delay_duration"]!.intValue()
         let initialValue = node.snapshot["initial_value"]
         
+        guard case let .atom(atomType) = variable.valueType else {
+            throw NodeIssuesError(errors: [node.id: [NodeIssue.unsupportedDelayValueType(variable.valueType)]])
+        }
+        
         // TODO: Check whether the initial value and variable.valueType are the same
         let compiled = CompiledDelay(
             steps: duration,
             initialValue: initialValue,
-            valueType: variable.valueType,
+            valueType: atomType,
             initialValueIndex: initialValueIndex,
             queueIndex: queueIndex,
             inputValueIndex: parameterIndex

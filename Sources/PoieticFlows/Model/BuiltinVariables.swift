@@ -8,8 +8,6 @@
 import PoieticCore
 
 extension Variable {
-    // MARK: Built-in variables
-    // ---------------------------------------------------------------------
     /// Built-in variable reference that represents the simulation time.
     ///
     public static let TimeVariable = Variable(
@@ -17,7 +15,6 @@ extension Variable {
         abstract: "Current simulation time"
     )
 
-    // TODO: Rename to 'dt'?
     /// Built-in variable reference that represents the time delta.
     ///
     public static let TimeDeltaVariable = Variable(
@@ -25,7 +22,14 @@ extension Variable {
         abstract: "Simulation time delta - time between discrete steps of the simulation."
     )
     
+    /// Built-in variable containing simulation step.
+    ///
+    public static let SimulationStepVariable = Variable(
+        name: "simulation_step",
+        valueType: .double,
+        abstract: "Simulation step number."
+    )
+
     // TODO: Add 'initial_time'
     // TODO: Add 'final_time'
-    // TODO: Add 'simulation_step'
 }
