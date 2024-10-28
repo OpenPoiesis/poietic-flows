@@ -109,7 +109,7 @@ public class Compiler {
         self.frame = frame
         self.view = StockFlowView(frame)
         
-        builtinVariables = Solver.Variables
+        builtinVariables = Simulator.BuiltinVariables
         builtinVariableNames = builtinVariables.map { $0.name }
         
         let items = AllBuiltinFunctions.map { ($0.name, $0) }

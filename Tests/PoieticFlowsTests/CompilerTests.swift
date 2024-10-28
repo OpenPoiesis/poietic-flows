@@ -25,7 +25,7 @@ final class TestCompiler: XCTestCase {
         
         XCTAssertEqual(model.simulationObjects.count, 0)
         XCTAssertEqual(model.stateVariables.count,
-                       Solver.Variables.count)
+                       Simulator.BuiltinVariables.count)
     }
     
     func testComputedVariables() throws {
@@ -50,7 +50,7 @@ final class TestCompiler: XCTestCase {
         
         XCTAssertEqual(names, ["a", "b", "c"])
         XCTAssertEqual(compiled.stateVariables.count,
-                       3 + Solver.Variables.count)
+                       3 + Simulator.BuiltinVariables.count)
     }
     func testBadFunctionName() throws {
         let aux = frame.createNode(ObjectType.Auxiliary,

@@ -162,6 +162,11 @@ public struct CompiledModel {
     ///
     public let stocks: [CompiledStock]
     
+    public var stockIndices: [SimulationState.Index] {
+        stocks.map { $0.variableIndex }
+    }
+    
+    
     /// Get a compiled stock by object ID.
     ///
     /// This property is used in computation.

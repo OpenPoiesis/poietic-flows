@@ -20,6 +20,7 @@ public struct SimulationState: CustomStringConvertible {
     
     public typealias Index = Int
     
+    @available(*, deprecated, message: "Use simulation context")
     public let model: CompiledModel
 
     public var values: [Variant]
@@ -74,7 +75,6 @@ public struct SimulationState: CustomStringConvertible {
         }
     }
 
-    
     public var description: String {
         var items: [String] = []
         for (variable, value) in zip(model.stateVariables, values) {
@@ -83,6 +83,14 @@ public struct SimulationState: CustomStringConvertible {
         }
         let text = items.joined(separator: ", ")
         return "[\(text)]"
+    }
+    
+    // Arithmetic operations
+    public mutating func numericAdd(_ values: NumericVector, atIndices indices: [Index]) {
+        for (index, value) in zip (indices, values) {
+            let current = self.double(at: index)
+            self.values[index] = Variant(current + value)
+        }
     }
 }
 

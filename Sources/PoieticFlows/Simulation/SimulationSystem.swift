@@ -10,14 +10,6 @@ import PoieticCore
 
 // TODO: [REVIEW] Consolidate SimulationState and SimulationContext
 
-public struct SimulationContext {
-    let time: Double
-    let timeDelta: Double
-    let step: Int
-    let state: SimulationState
-    let model: CompiledModel
-}
-
 /// Protocol for systems that support the simulation.
 ///
 /// The simulation system operates in two phases: compilation and simulation.
