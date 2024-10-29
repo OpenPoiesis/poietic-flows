@@ -168,23 +168,17 @@ public class Simulator {
             fatalError("Trying to run an uninitialised simulator")
         }
         
-        // 1. Preparation
+        // 1. Advance time and prepare
         // -------------------------------------------------------
-        currentStep += 1
-        currentTime += timeDelta
+        var result = currentState.advance()
+        currentStep = result.step
+        currentTime = result.time
         
-        var result = currentState
         setBuiltins(&result)
         
         // 2. Computation
         // -------------------------------------------------------
-        let context = SimulationContext(
-            step: currentStep,
-            time: currentTime,
-            timeDelta: timeDelta
-        )
-        
-        try simulation.update(&result, context: context)
+        try simulation.update(&result)
 
         // 3. Finalisation
         // -------------------------------------------------------

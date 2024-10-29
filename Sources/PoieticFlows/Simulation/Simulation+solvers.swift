@@ -11,9 +11,9 @@ extension StockFlowSimulation {
     /// - SeeAlso: [Euler method](https://en.wikipedia.org/wiki/Euler_method)
     ///
     @discardableResult
-    public func updateWithEuler(_ state: inout SimulationState, context: SimulationContext) throws -> NumericVector {
+    public func updateWithEuler(_ state: inout SimulationState) throws -> NumericVector {
         let stocks = model.stockIndices
-        let delta = try stockDifference(context, state: state, time: context.time)
+        let delta = try stockDifference(state: state, time: state.time)
         
         state.numericAdd(delta, atIndices: stocks)
         
@@ -26,7 +26,7 @@ extension StockFlowSimulation {
     /// - Important: Does not work well with non-negative stocks.
     ///
     @discardableResult
-    public func updateWithRK4(_ state: inout SimulationState, context: SimulationContext) throws -> NumericVector {
+    public func updateWithRK4(_ state: inout SimulationState) throws -> NumericVector {
         /*
          RK4:
          
@@ -47,33 +47,29 @@ extension StockFlowSimulation {
 
         let stocks = model.stockIndices
         
-        let time = context.time
-        let timeDelta = context.timeDelta
+        let time = state.time
+        let timeDelta = state.timeDelta
         
         let stage1 = state
-        let k1 = try stockDifference(context,
-                                     state: stage1,
+        let k1 = try stockDifference(state: stage1,
                                      time: time)
         
         var stage2 = stage1
         stage2.numericAdd(timeDelta * (k1 / 2), atIndices: stocks)
-        let k2 = try stockDifference(context,
-                                     state: stage2,
+        let k2 = try stockDifference(state: stage2,
                                      time: time)
         
         var stage3 = stage2
         stage3.numericAdd(timeDelta * (k2 / 2), atIndices: stocks)
-        let k3 = try stockDifference(context,
-                                     state: stage3,
+        let k3 = try stockDifference(state: stage3,
                                      time: time)
         
         var stage4 = stage3
         stage4.numericAdd(k3, atIndices: stocks)
-        let k4 = try stockDifference(context,
-                                     state: stage4,
+        let k4 = try stockDifference(state: stage4,
                                      time: time)
         
-        let resultDelta = (1.0/6.0) * context.timeDelta * (k1 + (2*k2) + (2*k3) + k4)
+        let resultDelta = (1.0/6.0) * state.timeDelta * (k1 + (2*k2) + (2*k3) + k4)
         
         state.numericAdd(resultDelta, atIndices: stocks)
         

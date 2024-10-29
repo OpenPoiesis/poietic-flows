@@ -8,47 +8,68 @@
 import PoieticCore
 
 
-// TODO: Consolidate SimulationState and SimulationContext?
-
 /// A simple vector-like structure to hold an unordered collection of numeric
 /// values that can be accessed by key. Simple arithmetic operations can be done
 /// with the structure, such as addition, subtraction and multiplication
 /// by a scalar value.
 ///
 public struct SimulationState: CustomStringConvertible {
-    // TODO: Add time as property, maybe step as well
-    
     public typealias Index = Int
     
-    @available(*, deprecated, message: "Use simulation context")
-    public let model: CompiledModel
-
+    public let step: Int
+    public let time: Double
+    public let timeDelta: Double
+    
+    /// Values representing the simulation state.
+    ///
+    /// The contents and order of this array corresponds to the
+    /// ``CompiledModel/stateVariables``. It contains, in order:
+    ///
+    /// - Built-in variables – see ``Simulator/BuiltinVariables``
+    /// - Variables that represent design objects, described by ``StateVariable``.
+    /// - Internal variables used by some nodes, such as delay.
+    ///
+    /// - SeeAlso: ``CompiledModel/stateVariables``, ``StateVariable``,
+    ///   ``Compiler/createStateVariable(content:valueType:name:)``
+    ///
     public var values: [Variant]
     
-    var time: Double {
-        // TODO: Make this a native property?
-        let timeValue = values[model.timeVariableIndex]
-        return try! timeValue.doubleValue()
-    }
-
     /// Create a simulation state with all variables set to zero.
     ///
-    /// The list of builtins and simulation variables will be initialised
-    /// according to the count of the respective variables in the compiled
-    /// model.
+    /// - Parameters:
+    ///     - model: Compiled model used to determine the number of variables.
+    ///     - step: Simulation step.
+    ///     - time: Simulation time.
+    ///     - timeDelta: Simulation time delta.
     ///
-    public init(model: CompiledModel) {
-        self.model = model
+    public init(model: CompiledModel, step: Int=0, time: Double=0, timeDelta: Double=1.0) {
+        self.step = step
+        self.time = time
+        self.timeDelta = timeDelta
         self.values = Array(repeating: Variant(0), count: model.stateVariables.count)
     }
     
-    public init(_ values: [Variant], model: CompiledModel) {
-        precondition(values.count == model.stateVariables.count,
-                     "Count of values (\(values.count) does not match required items count \(model.stateVariables.count)")
-        self.model = model
+    public init(values: [Variant], step: Int=0, time: Double=0, timeDelta: Double=1.0) {
+        self.step = step
+        self.time = time
+        self.timeDelta = timeDelta
         self.values = values
     }
 
+
+    /// Create a copy of a simulation state by advancing time.
+    ///
+    /// By default, the step is increased by 1, time is increased by `timeDelta`.
+    ///
+    /// Callers might override any of the values.
+    ///
+    public func advance(step: Int?=nil, time: Double?=nil, timeDelta: Double?=nil) -> SimulationState {
+        SimulationState(values: values,
+                        step: step ?? self.step + 1,
+                        time: time ?? self.time + (timeDelta ?? self.timeDelta),
+                        timeDelta: timeDelta ?? self.timeDelta)
+    }
+    
     /// Get or set a simulation variable by reference.
     ///
     @inlinable
@@ -77,8 +98,9 @@ public struct SimulationState: CustomStringConvertible {
 
     public var description: String {
         var items: [String] = []
-        for (variable, value) in zip(model.stateVariables, values) {
-            let item = "\(variable.name): \(value)"
+        // for (variable, value) in zip(model.stateVariables, values) {
+        for (index, value) in values.enumerated() {
+            let item = "\(index): \(value)"
             items.append(item)
         }
         let text = items.joined(separator: ", ")
@@ -86,6 +108,11 @@ public struct SimulationState: CustomStringConvertible {
     }
     
     // Arithmetic operations
+    /// Add numeric values to the variables at provided set of indices.
+    ///
+    /// - Precondition: The caller must assure that the values at given indices
+    ///   are convertible to double.
+    ///
     public mutating func numericAdd(_ values: NumericVector, atIndices indices: [Index]) {
         for (index, value) in zip (indices, values) {
             let current = self.double(at: index)

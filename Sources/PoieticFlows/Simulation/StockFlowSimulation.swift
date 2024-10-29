@@ -63,20 +63,17 @@ public class StockFlowSimulation: Simulation {
         }
     }
     
-    /// Initialise an object.
+    /// Initialise an object in a given state.
     ///
     /// - Parameters:
     ///     - index: Index of the object to be evaluated.
     ///     - state: simulation state within which the expression is evaluated
-    ///
-    /// - Returns: an evaluated value of the expression.
     ///
     public func initialize(objectAt index: Int, in state: inout SimulationState) throws {
         let object = model.simulationObjects[index]
         let result: Variant
        
         switch object.computation {
-
         case let .formula(expression):
             result = try evaluate(expression: expression,
                                   with: state)
@@ -86,6 +83,8 @@ public class StockFlowSimulation: Simulation {
             result = try function.apply([value])
         case let .delay(delay):
             result = try initialize(delay: delay, in: &state)
+        case let .smooth(smooth):
+            result = try initialize(smooth: smooth, in: &state)
         }
 
         state[object.variableIndex] = result
@@ -110,14 +109,20 @@ public class StockFlowSimulation: Simulation {
         
         return outputValue
     }
+    public func initialize(smooth: CompiledSmooth, in state: inout SimulationState) throws -> Variant {
+        let initialValue = state[smooth.inputValueIndex]
+        state[smooth.smoothValueIndex] = initialValue
+        
+        return initialValue
+    }
 
     // MARK: - Computation
-    public func update(_ state: inout SimulationState, context: SimulationContext) throws {
+    public func update(_ state: inout SimulationState) throws {
         switch solver {
         case .euler:
-            try updateWithEuler(&state, context: context)
+            try updateWithEuler(&state)
         case .rk4:
-            try updateWithRK4(&state, context: context)
+            try updateWithRK4(&state)
         }
         
         for (index, object) in model.simulationObjects.enumerated() {
@@ -158,8 +163,9 @@ public class StockFlowSimulation: Simulation {
 
         case let .delay(delay):
             result = try update(delay: delay, in: &state)
+        case let .smooth(smooth):
+            result = try update(smooth: smooth, in: &state)
         }
-        print("-- UPDATE: \(object.name) = \(result)")
         state[object.variableIndex] = result
     }
 
@@ -203,20 +209,43 @@ public class StockFlowSimulation: Simulation {
         return .atom(outputValue)
     }
 
+    /// Update an exponential smoothing node.
+    ///
+    /// The formula: _sₜ = α*xₜ + (1 - α) * sₜ₋₁_
+    ///
+    /// Where:
+    ///
+    /// - _x_: input value
+    /// - _s_: smooth value
+    /// - _α = Δt / w_
+    ///
+    public func update(smooth: CompiledSmooth,
+                       in state: inout SimulationState) throws -> Variant {
+        
+        let inputValue = try state[smooth.inputValueIndex].doubleValue()
+        let oldSmooth = state.double(at: smooth.smoothValueIndex)
+        
+        let alpha = state.timeDelta / smooth.windowTime
+        let newSmooth = alpha * inputValue + (1 - alpha) * oldSmooth
+        
+        state[smooth.smoothValueIndex] = Variant(newSmooth)
+
+        return Variant(newSmooth)
+    }
+
     /// Comptes differences of stocks.
     ///
     /// - Returns: A state vector that contains difference values for each
     /// stock.
     ///
-    public func stockDifference(_ context: SimulationContext,
-                                state: SimulationState,
+    public func stockDifference(state: SimulationState,
                                 time: Double) throws -> NumericVector {
         var estimate = state
         var deltaVector = NumericVector(zeroCount: stocks.count)
 
         for (index, stock) in stocks.enumerated() {
             let delta = try computeStockDelta(stock, in: &estimate)
-            let dtAdjusted = delta * context.timeDelta
+            let dtAdjusted = delta * state.timeDelta
             let newValue = estimate.double(at: stock.variableIndex) + dtAdjusted
 
             estimate[stock.variableIndex] = Variant(newValue)

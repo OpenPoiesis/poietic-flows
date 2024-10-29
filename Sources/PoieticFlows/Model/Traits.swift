@@ -9,6 +9,18 @@ import PoieticCore
 
 extension Trait {
     
+    public static let ComputedValue = Trait(
+        name: "ComputedValue",
+        attributes: [],
+        abstract: "Abstract trait for nodes that have a computed value."
+    )
+
+    public static let Auxiliary = Trait(
+        name: "Auxiliary",
+        attributes: [],
+        abstract: "Abstract trait for auxiliary nodes."
+    )
+
     /// Trait of simulation nodes that are computed using an arithmetic formula.
     ///
     /// Variables used in the formula refer to other nodes by their name. Nodes
@@ -84,10 +96,10 @@ extension Trait {
         name: "GraphicalFunction",
         attributes: [
             Attribute("interpolation_method", type: .string, default: "step",
-                      abstract: "Method of interpolation for values between the points."),
+                      abstract: "Method of interpolation for values between the points"),
             Attribute("graphical_function_points", type: .points,
                       default: Variant(Array<Point>()),
-                      abstract: "Points of the graphical function."),
+                      abstract: "Points of the graphical function"),
         ],
         abstract: "Function represented by a set of points and an interpolation method."
     )
@@ -96,12 +108,15 @@ extension Trait {
         name: "Delay",
         attributes: [
             Attribute("delay_duration", type: .double, default: Variant(1),
-                      abstract: "Delay duration in time units."),
-            Attribute("delay_output_type", type: .string, default: Variant("delay"), optional: true,
-                      abstract: "Type of delay output computation"),
-//            Attribute("delay_output_order", type: .int, default: Variant(0), optional: true,
-//                      abstract: "Order of the delay"),
-            // TODO: Implement: DELAY1, DELAY3,DELAYN, SMTH1, 3, N
+                      abstract: "Delay duration in steps (time units)"),
+        ]
+    )
+
+    public static let Smooth = Trait(
+        name: "Smooth",
+        attributes: [
+            Attribute("window_time", type: .double,
+                      abstract: "Averaging window time"),
         ]
     )
 

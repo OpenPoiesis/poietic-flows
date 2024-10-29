@@ -318,9 +318,8 @@ public class Compiler {
             else if node.snapshot.type === ObjectType.Flow {
                 objectType = .flow
             }
-            else if node.type === ObjectType.Auxiliary
-                        || node.type === ObjectType.GraphicalFunction
-                        || node.type === ObjectType.Delay {
+            else if node.type.hasTrait(Trait.Auxiliary) {
+                // TODO: Use an empty trait Auxiliary for all of the above.
                 objectType = .auxiliary
             }
             else {
@@ -510,6 +509,9 @@ public class Compiler {
         else if node.snapshot.type.hasTrait(Trait.Delay) {
             rep = try compileDelayNode(node)
         }
+        else if node.snapshot.type.hasTrait(Trait.Smooth) {
+            rep = try compileSmoothNode(node)
+        }
         else {
             // Hint: If this error happens, then either check the following:
             // - the condition in the stock-flows view method returning
@@ -648,6 +650,34 @@ public class Compiler {
         
         return .delay(compiled)
     }
+    public func compileSmoothNode(_ node: Node) throws (NodeIssuesError) -> ComputationalRepresentation{
+        let smoothValueIndex = createStateVariable(content: .internalState(node.id),
+                                             valueType: .doubles,
+                                             name: "smooth_value_\(node.id)")
+
+        let hood = view.incomingParameters(node.id)
+        guard let parameterNode = hood.nodes.first else {
+            throw NodeIssuesError(errors: [node.id: [NodeIssue.missingRequiredParameter]])
+        }
+        
+        let parameterIndex = variableIndex(parameterNode.id)
+        let variable = stateVariables[parameterIndex]
+        
+        let windowTime = try! node.snapshot["window_time"]!.doubleValue()
+        
+        guard case let .atom(atomType) = variable.valueType else {
+            throw NodeIssuesError(errors: [node.id: [NodeIssue.unsupportedDelayValueType(variable.valueType)]])
+        }
+        
+        let compiled = CompiledSmooth(
+            windowTime: windowTime,
+            smoothValueIndex: smoothValueIndex,
+            inputValueIndex: parameterIndex
+        )
+        
+        return .smooth(compiled)
+    }
+    
     /// Compile all stock nodes.
     ///
     /// The function extracts component from the stock that is necessary

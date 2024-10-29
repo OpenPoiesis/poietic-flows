@@ -9,19 +9,6 @@ import XCTest
 @testable import PoieticFlows
 @testable import PoieticCore
 
-extension SimulationState {
-    public subscript(id: ObjectID) -> Double {
-        get {
-            let index = model.variableIndex(of: id)!
-            return try! values[index].doubleValue()
-        }
-        set(value) {
-            let index = model.variableIndex(of: id)!
-            values[index] = Variant(value)
-        }
-    }
-}
-
 final class TestStockFlowSimulation: XCTestCase {
     var design: Design!
     var model: CompiledModel!
@@ -40,6 +27,10 @@ final class TestStockFlowSimulation: XCTestCase {
     func makeSimulation() throws -> StockFlowSimulation {
         try compile()
         return StockFlowSimulation(model)
+    }
+   
+    func index(_ id: ObjectID) -> SimulationState.Index {
+        model.variableIndex(of: id)!
     }
     
     func testInitializeStocks() throws {
@@ -70,11 +61,11 @@ final class TestStockFlowSimulation: XCTestCase {
         var state = SimulationState(model: model)
         try sim.initialize(&state)
         
-        XCTAssertEqual(state[a], 1)
-        XCTAssertEqual(state[b], 2)
-        XCTAssertEqual(state[c], 100)
-        XCTAssertEqual(state[s_a], 1)
-        XCTAssertEqual(state[s_b], 2)
+        XCTAssertEqual(state[index(a)], 1)
+        XCTAssertEqual(state[index(b)], 2)
+        XCTAssertEqual(state[index(c)], 100)
+        XCTAssertEqual(state[index(s_a)], 1)
+        XCTAssertEqual(state[index(s_b)], 2)
     }
     
     func testOrphanedInitialize() throws {
@@ -88,7 +79,7 @@ final class TestStockFlowSimulation: XCTestCase {
         var state = SimulationState(model: model)
         try sim.initialize(&state)
 
-        XCTAssertNotNil(state[a])
+        XCTAssertNotNil(state[index(a)])
     }
     func testEverythingInitialized() throws {
         let aux = frame.createNode(ObjectType.Auxiliary,
@@ -107,9 +98,9 @@ final class TestStockFlowSimulation: XCTestCase {
         var state = SimulationState(model: model)
         try sim.initialize(&state)
 
-        XCTAssertEqual(state[aux], 10)
-        XCTAssertEqual(state[stock], 20)
-        XCTAssertEqual(state[flow], 30)
+        XCTAssertEqual(state[index(aux)], 10)
+        XCTAssertEqual(state[index(stock)], 20)
+        XCTAssertEqual(state[index(flow)], 30)
     }
     
     func testStageWithTime() throws {
@@ -128,22 +119,20 @@ final class TestStockFlowSimulation: XCTestCase {
 
         try sim.initialize(&state)
 
-        XCTAssertEqual(state[aux], 1.0)
-        XCTAssertEqual(state[flow], 10.0)
-        let context = SimulationContext(step: 1, time: 2.0, timeDelta: 1.0)
+        XCTAssertEqual(state[index(aux)], 1.0)
+        XCTAssertEqual(state[index(flow)], 10.0)
 
-        state[model.timeVariableIndex] = 2.0
-        print("STATE1: \(state)")
-        try sim.update(&state, context: context)
-        print("STATE2: \(state)")
-        XCTAssertEqual(state[aux], 2.0)
-        XCTAssertEqual(state[flow], 20.0)
+        var state2 = state.advance(time: 2.0)
+        state2[model.timeVariableIndex] = Variant(state2.time)
+        try sim.update(&state2)
+        XCTAssertEqual(state2[index(aux)], 2.0)
+        XCTAssertEqual(state2[index(flow)], 20.0)
         
-        let context2 = SimulationContext(step: 1, time: 10.0, timeDelta: 1.0)
-        state[model.timeVariableIndex] = 10.0
-        try sim.update(&state, context: context2)
-        XCTAssertEqual(state[aux], 10.0)
-        XCTAssertEqual(state[flow], 100.0)
+        var state3 = state.advance(time: 10.0)
+        state3[model.timeVariableIndex] = Variant(state3.time)
+        try sim.update(&state3)
+        XCTAssertEqual(state3[index(aux)], 10.0)
+        XCTAssertEqual(state3[index(flow)], 100.0)
     }
     
     func testNegativeStock() throws {
@@ -162,11 +151,10 @@ final class TestStockFlowSimulation: XCTestCase {
         try compile()
         
         let sim = StockFlowSimulation(model)
-        let context = SimulationContext(step: 1, time: 1.0, timeDelta: 1.0)
         var state = SimulationState(model: model)
         try sim.initialize(&state)
 
-        let diff = try sim.stockDifference(context, state: state, time: 1.0)
+        let diff = try sim.stockDifference(state: state, time: 1.0)
         
         XCTAssertEqual(diff[model.stockIndex(stock)], -10)
     }
@@ -187,11 +175,10 @@ final class TestStockFlowSimulation: XCTestCase {
         try compile()
         
         let sim = StockFlowSimulation(model)
-        let context = SimulationContext(step: 1, time: 1.0, timeDelta: 1.0)
         var state = SimulationState(model: model)
         try sim.initialize(&state)
  
-        let diff = try sim.stockDifference(context, state: state, time: 1.0)
+        let diff = try sim.stockDifference(state: state, time: 1.0)
 
         XCTAssertEqual(diff[model.stockIndex(stock)], -5)
     }
@@ -212,11 +199,10 @@ final class TestStockFlowSimulation: XCTestCase {
         try compile()
         
         let sim = StockFlowSimulation(model)
-        let context = SimulationContext(step: 1, time: 1.0, timeDelta: 1.0)
         var state = SimulationState(model: model)
         try sim.initialize(&state)
  
-        let diff = try sim.stockDifference(context, state: state, time: 1.0)
+        let diff = try sim.stockDifference(state: state, time: 1.0)
 
         XCTAssertEqual(diff[model.stockIndex(stock)], 0)
     }
@@ -237,11 +223,10 @@ final class TestStockFlowSimulation: XCTestCase {
         try compile()
         
         let sim = StockFlowSimulation(model)
-        let context = SimulationContext(step: 1, time: 1.0, timeDelta: 1.0)
         var state = SimulationState(model: model)
         try sim.initialize(&state)
  
-        let diff = try sim.stockDifference(context, state: state, time: 1.0)
+        let diff = try sim.stockDifference(state: state, time: 1.0)
 
         XCTAssertEqual(diff[model.stockIndex(stock)], 0)
     }
@@ -285,7 +270,6 @@ final class TestStockFlowSimulation: XCTestCase {
         try compile()
         
         let sim = StockFlowSimulation(model)
-        let context = SimulationContext(step: 1, time: 1.0, timeDelta: 1.0)
         var initial = SimulationState(model: model)
         try sim.initialize(&initial)
         var state = SimulationState(model: model)
@@ -298,28 +282,28 @@ final class TestStockFlowSimulation: XCTestCase {
         
         // Compute test
         
-        XCTAssertEqual(state[happyFlow], 10)
-        XCTAssertEqual(state[sadFlow], 10)
+        XCTAssertEqual(state[index(happyFlow)], 10)
+        XCTAssertEqual(state[index(sadFlow)], 10)
         
         let sourceDiff = try sim.computeStockDelta(model.compiledStock(source), in: &state)
         // Adjusted flow to actual outflow
-        XCTAssertEqual(state[happyFlow],  5.0)
-        XCTAssertEqual(state[sadFlow],    0.0)
+        XCTAssertEqual(state[index(happyFlow)],  5.0)
+        XCTAssertEqual(state[index(sadFlow)],    0.0)
         XCTAssertEqual(sourceDiff,         -5.0)
         
         let happyDiff = try sim.computeStockDelta(model.compiledStock(happy), in: &state)
         // Remains the same as above
-        XCTAssertEqual(state[happyFlow],  5.0)
-        XCTAssertEqual(state[sadFlow],    0.0)
+        XCTAssertEqual(state[index(happyFlow)],  5.0)
+        XCTAssertEqual(state[index(sadFlow)],    0.0)
         XCTAssertEqual(happyDiff,          +5.0)
         
         let sadDiff = try sim.computeStockDelta(model.compiledStock(sad),in: &state)
         // Remains the same as above
-        XCTAssertEqual(state[happyFlow],  5.0)
-        XCTAssertEqual(state[sadFlow],    0.0)
+        XCTAssertEqual(state[index(happyFlow)],  5.0)
+        XCTAssertEqual(state[index(sadFlow)],    0.0)
         XCTAssertEqual(sadDiff,             0.0)
         
-        let diff = try sim.stockDifference(context, state: initial, time: 1.0)
+        let diff = try sim.stockDifference(state: initial, time: 1.0)
         
         XCTAssertEqual(diff[model.stockIndex(source)], -5)
         XCTAssertEqual(diff[model.stockIndex(happy)],  +5)
@@ -345,11 +329,10 @@ final class TestStockFlowSimulation: XCTestCase {
         try compile()
         
         let sim = StockFlowSimulation(model)
-        let context = SimulationContext(step: 1, time: 1.0, timeDelta: 1.0)
         var state = SimulationState(model: model)
         try sim.initialize(&state)
 
-        let diff = try sim.stockDifference(context, state: state, time: 1.0)
+        let diff = try sim.stockDifference(state: state, time: 1.0)
 
         XCTAssertEqual(diff[model.stockIndex(kettle)], -100.0)
         XCTAssertEqual(diff[model.stockIndex(cup)], 100.0)
@@ -374,11 +357,10 @@ final class TestStockFlowSimulation: XCTestCase {
         try compile()
 
         let sim = StockFlowSimulation(model)
-        let context = SimulationContext(step: 1, time: 1.0, timeDelta: 0.5)
-        var state = SimulationState(model: model)
+        var state = SimulationState(model: model, timeDelta: 0.5)
         try sim.initialize(&state)
 
-        let diff = try sim.stockDifference(context, state: state, time: 1.0)
+        let diff = try sim.stockDifference(state: state, time: 1.0)
 
         XCTAssertEqual(diff[model.stockIndex(kettle)], -50.0)
         XCTAssertEqual(diff[model.stockIndex(cup)], 50.0)
@@ -404,17 +386,16 @@ final class TestStockFlowSimulation: XCTestCase {
         try compile()
 
         let sim = StockFlowSimulation(model)
-        let context = SimulationContext(step: 1, time: 1.0, timeDelta: 1)
         var state = SimulationState(model: model)
         try sim.initialize(&state)
 
-        try sim.update(&state, context: context)
-        XCTAssertEqual(state[kettle], 900.0 )
-        XCTAssertEqual(state[cup], 100.0)
+        try sim.update(&state)
+        XCTAssertEqual(state[index(kettle)], 900.0 )
+        XCTAssertEqual(state[index(cup)], 100.0)
         
-        try sim.update(&state, context: context)
-        XCTAssertEqual(state[kettle], 800.0 )
-        XCTAssertEqual(state[cup], 200.0)
+        try sim.update(&state)
+        XCTAssertEqual(state[index(kettle)], 800.0 )
+        XCTAssertEqual(state[index(cup)], 200.0)
     }
     
     
@@ -447,9 +428,9 @@ final class TestStockFlowSimulation: XCTestCase {
         var state = SimulationState(model: model)
         try sim.initialize(&state)
 
-        XCTAssertEqual(state[g1], 0.0)
-        XCTAssertEqual(state[g2], 10.0)
-        XCTAssertEqual(state[aux], 10.0)
+        XCTAssertEqual(state[index(g1)], 0.0)
+        XCTAssertEqual(state[index(g2)], 10.0)
+        XCTAssertEqual(state[index(aux)], 10.0)
         
     }
     
@@ -466,22 +447,23 @@ final class TestStockFlowSimulation: XCTestCase {
         let sim = StockFlowSimulation(model)
         var state = SimulationState(model: model)
         try sim.initialize(&state)
-        var context = SimulationContext(step: 1, time: 1.0, timeDelta: 1.0)
 
-        let index = model.variableIndex(of: aux)!
+        XCTAssertEqual(state[index(aux)], 0.0)
         
-        XCTAssertEqual(state[index], 0.0)
-        
-        try sim.update(&state, context: context)
-        XCTAssertEqual(state[index], 0.0)
+        var state1 = state.advance()
+        state1[model.timeVariableIndex] = Variant(state1.time)
+        try sim.update(&state1)
+        XCTAssertEqual(state1[index(aux)], 0.0)
 
-        state[model.timeVariableIndex] = 2.0
-        try sim.update(&state, context: context)
-        XCTAssertEqual(state[index], 1.0)
+        var state2 = state1.advance()
+        state2[model.timeVariableIndex] = Variant(state2.time)
+        try sim.update(&state2)
+        XCTAssertEqual(state2[index(aux)], 1.0)
 
-        state[model.timeVariableIndex] = 3.0
-        try sim.update(&state, context: context)
-        XCTAssertEqual(state[index], 1.0)
+        var state3 = state2.advance()
+        state3[model.timeVariableIndex] = Variant(state3.time)
+        try sim.update(&state3)
+        XCTAssertEqual(state3[index(aux)], 1.0)
     }
 
     func testDelay() throws {
@@ -502,17 +484,16 @@ final class TestStockFlowSimulation: XCTestCase {
         let sim = StockFlowSimulation(model)
         var state = SimulationState(model: model)
         try sim.initialize(&state)
-        var context = SimulationContext(step: 1, time: 1.0, timeDelta: 1.0)
 
-        XCTAssertEqual(state[delay], 0.0)
+        XCTAssertEqual(state.double(at: index(delay)), 0.0)
 
-        try sim.update(&state, context: context)
-        XCTAssertEqual(state[delay], 0.0)
+        try sim.update(&state)
+        XCTAssertEqual(state[index(delay)], 0.0)
 
-        try sim.update(&state, context: context)
-        XCTAssertEqual(state[delay], 0.0)
+        try sim.update(&state)
+        XCTAssertEqual(state[index(delay)], 0.0)
 
-        try sim.update(&state, context: context)
-        XCTAssertEqual(state[delay], 10.0)
+        try sim.update(&state)
+        XCTAssertEqual(state[index(delay)], 10.0)
     }
 }

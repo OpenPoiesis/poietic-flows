@@ -26,11 +26,20 @@ extension Metamodel {
         ///
         traits: [
             Trait.Name,
+            Trait.Position,
+            // Abstract
+            Trait.Auxiliary,
+            Trait.ComputedValue,
+
+            // Basic Stock-Flow nodes
             Trait.Stock,
             Trait.Flow,
             Trait.Formula,
-            Trait.Position,
             Trait.GraphicalFunction,
+            Trait.Delay,
+            Trait.Smooth,
+            
+            // Others
             Trait.Chart,
             Trait.Simulation,
             Trait.BibliographicalReference,
@@ -46,6 +55,7 @@ extension Metamodel {
             ObjectType.Auxiliary,
             ObjectType.GraphicalFunction,
             ObjectType.Delay,
+            ObjectType.Smooth,
 
             // Edges
             ObjectType.Drains,
@@ -136,13 +146,13 @@ extension Metamodel {
             Constraint(
                 name: "chart_series",
                 abstract: """
-                      Chart series edge must originate in Chart and end in Value node.
+                      Chart series edge must originate in Chart and end in a computed value node.
                       """,
                 match: EdgePredicate(IsTypePredicate(ObjectType.ChartSeries)),
                 requirement: AllSatisfy(
                     EdgePredicate(
                         origin: IsTypePredicate(ObjectType.Chart),
-                        target: HasTraitPredicate(Trait.Formula)
+                        target: HasTraitPredicate(Trait.ComputedValue)
                     )
                 )
             ),

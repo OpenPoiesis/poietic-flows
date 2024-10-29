@@ -20,6 +20,7 @@ extension ObjectType {
         name: "Stock",
         structuralType: .node,
         traits: [
+            Trait.ComputedValue,
             Trait.Name,
             Trait.Formula,
             Trait.Stock,
@@ -48,6 +49,7 @@ extension ObjectType {
         name: "Flow",
         structuralType: .node,
         traits: [
+            Trait.ComputedValue,
             Trait.Name,
             Trait.Formula,
             Trait.Flow,
@@ -63,6 +65,8 @@ extension ObjectType {
         name: "Auxiliary",
         structuralType: .node,
         traits: [
+            Trait.ComputedValue,
+            Trait.Auxiliary,
             Trait.Name,
             Trait.Formula,
             Trait.Position,
@@ -79,6 +83,8 @@ extension ObjectType {
         name: "GraphicalFunction",
         structuralType: .node,
         traits: [
+            Trait.ComputedValue,
+            Trait.Auxiliary,
             Trait.Name,
             Trait.Position,
             Trait.GraphicalFunction,
@@ -88,12 +94,14 @@ extension ObjectType {
         ]
     )
 
-    /// An auxiliary node - containing a constant or a formula.
+    /// Delay node - delays the input by a given number of steps.
     ///
     public static let Delay = ObjectType(
         name: "Delay",
         structuralType: .node,
         traits: [
+            Trait.ComputedValue,
+            Trait.Auxiliary,
             Trait.Name,
             Trait.Position,
             Trait.Delay,
@@ -101,7 +109,23 @@ extension ObjectType {
             // ErrorComponent.self,
         ]
     )
-    
+
+    /// Exponential smoothing.
+    ///
+    public static let Smooth = ObjectType(
+        name: "Smooth",
+        structuralType: .node,
+        traits: [
+            Trait.ComputedValue,
+            Trait.Auxiliary,
+            Trait.Name,
+            Trait.Position,
+            Trait.Smooth,
+            // DescriptionComponent.self,
+            // ErrorComponent.self,
+        ]
+    )
+
     /// A user interface mode representing a control that modifies a value of
     /// its target node.
     ///

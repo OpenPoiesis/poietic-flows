@@ -25,8 +25,12 @@ public enum ComputationalRepresentation: CustomStringConvertible {
     ///
     case graphicalFunction(Function, SimulationState.Index)
   
-    /// First value is parameter node, the second is state variable.
+    /// Delay value input by given number of steps.
     case delay(CompiledDelay)
+    
+    /// Exponential smoothing of a numeric value over a time window.
+    ///
+    case smooth(CompiledSmooth)
     
     public var valueType: ValueType {
         switch self {
@@ -36,6 +40,8 @@ public enum ComputationalRepresentation: CustomStringConvertible {
             return ValueType.double
         case let .delay(delay):
             return .atom(delay.valueType)
+        case .smooth(_):
+            return .atom(.double)
         }
     }
     
@@ -50,6 +56,8 @@ public enum ComputationalRepresentation: CustomStringConvertible {
         case let .delay(delay):
             let initialValue = delay.initialValue.map { $0.description } ?? "nil"
             return "delay(\(delay.inputValueIndex), \(delay.steps), \(initialValue)"
+        case let .smooth(smooth):
+            return "smooth(\(smooth.windowTime))"
         }
         
     }
@@ -270,6 +278,14 @@ public struct CompiledDelay {
     /// 
     public let initialValueIndex: SimulationState.Index
     public let queueIndex: SimulationState.Index
+    public let inputValueIndex: SimulationState.Index
+}
+public struct CompiledSmooth {
+    public let windowTime: Double
+
+    /// Index where the current smoothing value is stored.
+    ///
+    public let smoothValueIndex: SimulationState.Index
     public let inputValueIndex: SimulationState.Index
 }
 

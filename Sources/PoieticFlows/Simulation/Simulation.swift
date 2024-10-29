@@ -7,26 +7,6 @@
 
 import PoieticCore
 
-public struct SimulationContext {
-    /// Step number of the simulation.
-    ///
-    /// Initial step number is 0 - zero.
-    ///
-    public var step: Int
-    
-    /// Simulation time in simulation time units.
-    ///
-    /// Typically for most of the cases the time would be
-    /// _step * timeDelta_.
-    ///
-    public var time: Double
-    
-    /// Simulation time delta in simulation time units.
-    ///
-    public var timeDelta: Double
-}
-
-
 /// Error raised during simulation.
 ///
 public enum SimulationError: Error {
@@ -48,7 +28,7 @@ public protocol Simulation {
     /// - SeeAlso: ``Simulator/initializeState(time:override:)``,
     ///   ``Simulator/setBuiltins(_:)````
     ///
-    func update(_ state: inout SimulationState, context: SimulationContext) throws
+    func update(_ state: inout SimulationState) throws
 }
 
 extension Simulation {

@@ -237,12 +237,10 @@ final class TestCompiler: XCTestCase {
         }
 
         switch object.computation {
-        case .formula(_):
-            XCTFail("Graphical function compiled as formula")
         case .graphicalFunction(let fn, _):
             XCTAssertEqual(fn.name, "__graphical_\(gf)")
-        case .delay(_):
-            XCTFail("Graphical function compiled as delay")
+        default:
+            XCTFail("Graphical function compiled as: \(object.computation)")
         }
     }
 
