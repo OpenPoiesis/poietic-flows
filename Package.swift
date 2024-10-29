@@ -4,7 +4,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "PoieticFlows",
+    name: "poietic-flows",
     platforms: [.macOS("14"), .custom("linux", versionString: "1")],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
