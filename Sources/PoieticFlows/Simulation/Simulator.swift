@@ -104,11 +104,14 @@ public class Simulator {
             self.initialTime = time ?? 0.0
             self.timeDelta = 1.0
         }
-
         currentTime = initialTime
 
         let simulation = StockFlowSimulation(compiledModel)
-        var state = SimulationState(model: compiledModel)
+        var state = SimulationState(model: compiledModel,
+                                    step: 0,
+                                    time: self.initialTime,
+                                    timeDelta: self.timeDelta)
+
         setBuiltins(&state)
 
         try simulation.initialize(&state)
