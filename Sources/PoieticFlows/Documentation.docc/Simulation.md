@@ -8,28 +8,21 @@ collection of time series.
 The simulator takes the compiled model, initialises the state and computes
 desired number of steps of the simulation.
 
-The initial state is created using ``Solver/initializeState(override:time:timeDelta:)``
+The initial state is created using ``StockFlowSimulation/initialize(_:)``
 
 1. Empty state is created with a zero value for each computed variable
 2. Formulas of simulation objects are evaluated in their order of dependency
 3. Evaluation result is stored in the state.
 
-Each step is computed using a solver's ``Solver/compute(_:at:timeDelta:)``.
+Each step is computed using ``StockFlowSimulation/update(_:)``.
 
 ## Topics
 
-### Simulator
+### Simulation and Simulator
 
+- ``StockFlowSimulation``
 - ``Simulator``
 - ``SimulationState``
-- ``SimulationSystem``
-- ``SimulationContext``
-
-### Solver
-
-- ``Solver``
-- ``EulerSolver``
-- ``RungeKutta4Solver``
 - ``NumericVector``
 
 ### Formulas

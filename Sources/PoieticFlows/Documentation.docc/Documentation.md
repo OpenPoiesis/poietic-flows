@@ -21,13 +21,13 @@ in the following diagram:
 - Core computational nodes: `Stock`, `Flow` and `Auxiliary`
 - `GraphicalFunction` node for a function that is represented
  by a graph – set of points in a 2D plane.
+- Special nodes: `Delay` and `Smooth`
 - Component for arithmetic formulas `Formula` for all core 
   computational nodes.
 - Built-in functions: `abs`, `floor`, `ceiling`, `round`, `power`, `sum`, `min`,
   `max`
 - Included [Euler](https://en.wikipedia.org/wiki/Euler_method)
-  and [RK4](https://en.wikipedia.org/wiki/Runge–Kutta_methods) solvers: 
-  ``EulerSolver`` and ``RungeKutta4Solver`` respectively.
+  and [RK4](https://en.wikipedia.org/wiki/Runge–Kutta_methods) solvers.
 
 ## Topics
 

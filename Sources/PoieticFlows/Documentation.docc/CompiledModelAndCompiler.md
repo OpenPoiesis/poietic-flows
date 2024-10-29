@@ -29,6 +29,7 @@ the compiler.
 - ``CompiledBuiltin``
 - ``CompiledControlBinding``
 - ``CompiledDelay``
+- ``CompiledSmooth``
 - ``CompiledGraphicalFunction``
 - ``CompiledStock``
 - ``ComputationalRepresentation``

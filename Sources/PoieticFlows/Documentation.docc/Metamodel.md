@@ -15,6 +15,7 @@ types that define the computation:
 | `Auxiliary` | Auxiliary computation or a constant | computation | 
 | `GraphicalFunction` | Function defined by a set of points | computation |
 | `Delay` | Delay of a value by a specific number of time units | computation |
+| `Smooth` | Exponential smoothing of input | computation |
 | `Chart` | Visual output in a form of a chart with one or multiple series | visualisation |
 | `Control` | Visual input node | experimentation |
 | `Note` | User comment | none |
@@ -125,14 +126,32 @@ let yield = frame.createNode(ObjectType.Auxiliary,
 | Attribute | Type | Description |
 | ---- | ---- | ---- |
 | `delay_duration` | double | Delay duration in time units. |
-| `delay_output_type` | string | Type of delay output computation |
 
-The only available type of delay output computation is `delay1`.
+
+### Smooth
+
+| Attribute | Type | Description |
+| ---- | ---- | ---- |
+| `window_time` | double | Averaging window time |
+
+The computation is as follows: _sₜ = α*xₜ + (1 - α) * sₜ₋₁_ Where:
+_x_ is input value, _s_: smoothing value and _α = Δt / window_time_
+
+
+### Step
+
+There is no step node, however it can be implemented using an auxiliary node
+with a formula: `"if(time < step_time, initial_value, step_value)"` where
+the `step_time` is a time when the step occurs.
+
+For example `"if(time < 20, 0, 1)"` will create a step function with initial
+value of 0 and then value of 1 from time 20 onwards.
 
 
 ### Chart
 
-Currently no attributes for charts.
+Currently there are no attributes for charts.
+
 
 ### Control
 
