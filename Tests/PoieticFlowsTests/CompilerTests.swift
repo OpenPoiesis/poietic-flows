@@ -15,7 +15,7 @@ final class TestCompiler: XCTestCase {
     
     override func setUp() {
         design = Design(metamodel: FlowsMetamodel)
-        frame = design.deriveFrame()
+        frame = design.createFrame()
     }
     
     func testNoComputedVariables() throws {

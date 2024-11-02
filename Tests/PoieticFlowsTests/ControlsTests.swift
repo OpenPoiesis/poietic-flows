@@ -17,7 +17,7 @@ final class TestControls: XCTestCase {
     
     override func setUp() {
         design = Design(metamodel: FlowsMetamodel.self)
-        frame = design.deriveFrame()
+        frame = design.createFrame()
     }
     
     func compile() throws {

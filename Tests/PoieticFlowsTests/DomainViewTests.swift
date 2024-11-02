@@ -19,7 +19,7 @@ final class TestDomainView: XCTestCase {
     
     override func setUp() {
         db = Design(metamodel: FlowsMetamodel)
-        frame = db.deriveFrame()
+        frame = db.createFrame()
         //        Metamodel = BoundStockFlowMetamodel(FlowsMetamodel)
     }
     
