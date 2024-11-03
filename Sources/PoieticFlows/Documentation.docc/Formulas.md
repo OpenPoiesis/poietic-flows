@@ -11,7 +11,7 @@ arithmetic formula. The formula is provided as a string in a node's attribute
 For example an auxiliary node with a formula `account * rate`:
 
 ```swift
-let frame: MutableFrame
+let frame: TransientFrame
 
 let interest = frame.createNode(ObjectType.Auxiliary,
                                 name: "interest",

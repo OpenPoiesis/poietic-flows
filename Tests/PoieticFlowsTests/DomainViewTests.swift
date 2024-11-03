@@ -14,7 +14,7 @@ final class TestDomainView: XCTestCase {
     // TODO: Split to Compiler and DomainView test cases
     
     var db: Design!
-    var frame: MutableFrame!
+    var frame: TransientFrame!
     var graph: MutableGraph!
     
     override func setUp() {

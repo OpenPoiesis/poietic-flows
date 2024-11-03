@@ -11,7 +11,7 @@ import XCTest
 
 final class TestCompiler: XCTestCase {
     var design: Design!
-    var frame: MutableFrame!
+    var frame: TransientFrame!
     
     override func setUp() {
         design = Design(metamodel: FlowsMetamodel)

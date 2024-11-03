@@ -12,7 +12,7 @@ import XCTest
 
 final class TestControls: XCTestCase {
     var design: Design!
-    var frame: MutableFrame!
+    var frame: TransientFrame!
     var model: CompiledModel!
     
     override func setUp() {

@@ -12,7 +12,7 @@ import XCTest
 final class TestStockFlowSimulation: XCTestCase {
     var design: Design!
     var model: CompiledModel!
-    var frame: MutableFrame!
+    var frame: TransientFrame!
     
     override func setUp() {
         design = Design(metamodel: FlowsMetamodel)
