@@ -175,5 +175,55 @@ final class TestDomainView: XCTestCase {
         XCTAssertEqual(view.flowFills(flow), sink)
         XCTAssertEqual(view.flowDrains(flow), source)
     }
-    
+   
+    func testStockAdjacency() throws {
+        // TODO: Test loops and delayed inflow
+        let a = frame.createNode(ObjectType.Stock,
+                                      name: "a",
+                                      attributes: ["formula": "0"])
+        let b = frame.createNode(ObjectType.Stock,
+                                    name: "b",
+                                    attributes: ["formula": "0"])
+        let c = frame.createNode(ObjectType.Stock,
+                                    name: "c",
+                                    attributes: ["formula": "0"])
+        let flow = frame.createNode(ObjectType.Flow,
+                                    name: "f",
+                                    attributes: ["formula": "0"])
+        let inflow = frame.createNode(ObjectType.Flow,
+                                    name: "inflow",
+                                    attributes: ["formula": "0"])
+        let outflow = frame.createNode(ObjectType.Flow,
+                                    name: "outflow",
+                                    attributes: ["formula": "0"])
+
+        frame.createEdge(ObjectType.Drains,
+                         origin: a,
+                         target: flow,
+                         components: [])
+        frame.createEdge(ObjectType.Fills,
+                         origin: flow,
+                         target: b,
+                         components: [])
+
+        frame.createEdge(ObjectType.Fills,
+                         origin: inflow,
+                         target: c,
+                         components: [])
+
+        frame.createEdge(ObjectType.Drains,
+                         origin: c,
+                         target: outflow,
+                         components: [])
+
+        let view = StockFlowView(frame)
+
+        let result = view.stockAdjacencies()
+        XCTAssertEqual(result.count, 1)
+
+        XCTAssertEqual(result[0].id, flow)
+        XCTAssertEqual(result[0].origin, a)
+        XCTAssertEqual(result[0].target, b)
+    }
+
 }

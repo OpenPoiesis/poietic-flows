@@ -8,19 +8,30 @@ import PoieticCore
 
 
 /// Error thrown by the compiler during compilation.
+///
+/// The only relevant case is ``hasIssues``, any other case means a programming error.
+///
+/// After catching the ``hasIssues`` error, the caller might get the issues from
+/// the compiler and propagate them to the user.
+///
 public enum CompilerError: Error {
-//    / Object type is not recognised by the compiler. Validation must have failed.
-//    case unrecognizedObjectType(ObjectID, ObjectType)
-    
-    /// Object has issues, they were added to the list of issues
+    /// Object has issues, they were added to the list of issues.
+    ///
+    /// This error means that the input frame has user issues. The caller should
+    /// get the issues from the compiler.
+    ///
+    /// This is the only error that is relevant. Any other error means
+    /// that something failed internally.
+    ///
     case hasIssues
+
+    /// Attribute is missing or attribute type is mismatched. This error means
+    /// that the frame is not valid according to the ``FlowsMetamodel``.
+    case attributeExpectationFailure(ObjectID, String)
 
     // Invalid Frame Error - validation on the caller side failed
     case structureTypeMismatch(ObjectID)
     case objectNotFound(ObjectID)
-    case invalidAttribute(ObjectID, String)
-    case attributeTypeMismatch(ObjectID, String, ValueType)
-    case expectedAttribute(ObjectID, String)
 }
 
 /// An object that compiles the model into an internal representation called Compiled Model.
@@ -46,6 +57,9 @@ public class Compiler {
 
     // MARK: - Compiler State
     // -----------------------------------------------------------------
+
+    private var orderedObjects: [ObjectSnapshot]
+
     /// List of simulation state variables.
     ///
     /// The list of state variables contain values of builtins, values of
@@ -70,11 +84,15 @@ public class Compiler {
 
 
     /// Issues of the object gathered during compilation.
+    ///
     public var issues: [ObjectID: [NodeIssue]]
 
     /// List of built-in functions.
     ///
     /// Used in binding of arithmetic expressions.
+    ///
+    /// - SeeAlso: ``compileFormulaObject(_:)``
+    ///
     private let functions: [String: Function]
 
     private var builtins: [CompiledBuiltin] = []
@@ -95,28 +113,23 @@ public class Compiler {
     ///
     /// Used in compilation of simulation nodes.
     ///
-    private var objectToVariable: [ObjectID: Int]
+    internal var objectVariableIndex: [ObjectID: Int]
 
-    // Extracted
-    // INPUT
-    private var orderedObjects: [ObjectSnapshot]
 
     // OUTPUT
     private var simulationObjects: [SimulationObject] = []
-    private var stocks: [ObjectSnapshot]
-    private var flows: [ObjectSnapshot]
     
     var compiledStocks: [CompiledStock] = []
 
     /// Appends an error to the list of of node issues
     ///
-    public func appendIssue(_ error: NodeIssue, for id: ObjectID) {
+    func appendIssue(_ error: NodeIssue, for id: ObjectID) {
         issues[id, default:[]].append(error)
     }
     
     /// Append a list of issues to an object.
     ///
-    public func appendIssues(_ errors: [NodeIssue], for id: ObjectID) {
+    func appendIssues(_ errors: [NodeIssue], for id: ObjectID) {
         issues[id, default:[]] += errors
     }
     
@@ -135,41 +148,25 @@ public class Compiler {
         self.frame = frame
         self.view = StockFlowView(frame)
         
+        // Notes:
+        // - It might be desired in the future to cache parsedExpressions in some cases
+
+        orderedObjects = []
         stateVariables = []
         builtinVariableNames = []
+        issues = [:]
+        parsedExpressions = [:]
+        namedReferences = [:]
+        objectVariableIndex = [:]
 
         var functions:[String:Function] = [:]
         for function in AllBuiltinFunctions {
             functions[function.name] = function
         }
         self.functions = functions
-
-        issues = [:]
-        orderedObjects = []
-        parsedExpressions = [:]
-
-        namedReferences = [:]
-
-        objectToVariable = [:]
-        stocks = []
-        flows = []
     }
 
     // - MARK: State Queries
-    
-    /// Get an index of a simulation variable that represents a node with given
-    /// ID.
-    ///
-    /// - Precondition: Object with given ID must have a corresponding
-    ///   simulation variable.
-    ///
-    public func variableIndex(_ id: ObjectID) -> SimulationState.Index {
-        guard let index = objectToVariable[id] else {
-            fatalError("Object \(id) not found in the simulation variable list")
-        }
-        return index
-    }
-
     /// Get a list of issues for given object.
     ///
     public func issues(for id: ObjectID) -> [NodeIssue] {
@@ -181,23 +178,26 @@ public class Compiler {
     ///
     /// The compilation process is as follows:
     ///
-    /// 1. Gather all node names and check for potential duplicates
-    /// 2. Compile all formulas (expressions) and bind them with concrete
+    /// 1. Collect simulation nodes and order them by computation dependency.
+    /// 2. Create a name-to-object map and check for potential name duplicates.
+    /// 3. Compile all formulas (expressions) and bind them with concrete
     ///    objects.
-    /// 3. Sort the nodes in the order of computation.
-    /// 4. Pre-filter nodes for easier usage by the solver: stocks, flows
-    ///    and auxiliaries. All filtered collections stay ordered.
-    /// 5. Create implicit flows between stocks and sort stocks in order
-    ///    of their dependency.
-    /// 6. Finalise the compiled model.
+    /// 4. Prepare built-in variables and allocate them in the simulation state.
+    /// 5. Compile individual objects based on the object type:
+    ///     - objects with `Formula` component
+    ///     - graphical functions
+    ///     - delay and smooth
+    /// 6. Compile stocks and flows.
+    /// 7. Compile non-computational objects: charts, bindings.
+    /// 8. Fetch simulation defaults.
+    /// 9. Create a compiled model.
     ///
-    /// - Throws: A ``NodeIssuesError`` when there are issues with the model
-    ///   that are caused by the user. Throws ``/PoieticCore/ConstraintViolation`` if
-    ///   the frame constraints were violated. The later error is an
-    ///   application error and means that either the provided frame is
-    ///   malformed or one of the subsystems mis-behaved.
     /// - Returns: A ``CompiledModel`` that can be used directly by the
     ///   simulator.
+    /// - Throws: A ``CompilerError`` when there are issues with the model
+    ///   that are caused by the user.
+    ///
+    /// - SeeAlso: ``Simulator/init(_:simulation:)``
     ///
     public func compile() throws (CompilerError) -> CompiledModel {
         try initialize()
@@ -243,7 +243,10 @@ public class Compiler {
         // 1. Collect nodes relevant to the simulation
         for node in view.simulationNodes {
             unordered.append(node.id)
-            homonyms[node.name!, default: []].append(node.id)
+            guard let name = node.name else {
+                throw .attributeExpectationFailure(node.id, "name")
+            }
+            homonyms[name, default: []].append(node.id)
         }
         
         // 2. Sort nodes based on computation dependency.
@@ -283,11 +286,11 @@ public class Compiler {
             throw .hasIssues
         }
         
-        orderedObjects = ordered.map { $0.snapshot }
+        self.orderedObjects = ordered.map { $0.snapshot }
     }
     
     func parseExpressions() throws (CompilerError) {
-        // TODO: This does not require to be in the Compiler
+        // TODO: This does not have to be in the Compiler
         parsedExpressions = [:]
         
         for object in orderedObjects {
@@ -357,7 +360,7 @@ public class Compiler {
     /// - Throws: ``NodeIssuesError`` with list of issues for the node.
     /// - SeeAlso: ``compileFormulaNode(_:)``, ``compileGraphicalFunctionNode(_:)``.
     ///
-    public func compile(_ object: ObjectSnapshot) throws (CompilerError) {
+    func compile(_ object: ObjectSnapshot) throws (CompilerError) {
         let rep: ComputationalRepresentation
 
         if object.type.hasTrait(Trait.Formula) {
@@ -380,12 +383,11 @@ public class Compiler {
             // - whether the object design metamodel is stock-flows metamodel
             //   and that it has necessary components
             //
-//            throw .unrecognizedObjectType(object.id, object.type)
             fatalError("Unknown simulation object type \(object.type.name), object: \(object.id)")
         }
 
         guard let name = object.name else {
-            throw .expectedAttribute(object.id, "name")
+            throw .attributeExpectationFailure(object.id, "name")
         }
 
         // Determine simulation type
@@ -393,11 +395,9 @@ public class Compiler {
         let simType: SimulationObject.SimulationObjectType
         if object.type === ObjectType.Stock {
             simType = .stock
-            stocks.append(object)
         }
         else if object.type === ObjectType.Flow {
             simType = .flow
-            flows.append(object)
         }
         else if object.type.hasTrait(Trait.Auxiliary) {
             simType = .auxiliary
@@ -409,7 +409,7 @@ public class Compiler {
         let index = createStateVariable(content: .object(object.id),
                                         valueType: rep.valueType,
                                         name: name)
-        self.objectToVariable[object.id] = index
+        self.objectVariableIndex[object.id] = index
         self.namedReferences[name] = index
 
         let sim = SimulationObject(id: object.id,
@@ -441,9 +441,9 @@ public class Compiler {
     /// - Throws: ``NodeIssueError`` if there is an issue with parameters,
     ///   function names or other variable names in the expression.
     ///
-    public func compileFormulaObject(_ object: ObjectSnapshot) throws (CompilerError) -> ComputationalRepresentation {
+    func compileFormulaObject(_ object: ObjectSnapshot) throws (CompilerError) -> ComputationalRepresentation {
         guard let unboundExpression = parsedExpressions[object.id] else {
-            throw .expectedAttribute(object.id, "formula")
+            throw .attributeExpectationFailure(object.id, "formula")
         }
         
         // List of required parameters: variables in the expression that
@@ -453,7 +453,7 @@ public class Compiler {
             !builtinVariableNames.contains($0)
         }
         
-        // TODO: [IMPORTANT] Move this outside of this method. This is not required for binding
+        // TODO: Move this outside of this method. This is not required for binding
         // Validate parameters.
         //
         let parameterIssues = validateParameters(object.id, required: required)
@@ -488,9 +488,9 @@ public class Compiler {
     ///
     /// - SeeAlso: ``CompiledGraphicalFunction``, ``Solver/evaluate(objectAt:with:)``
     ///
-    public func compileGraphicalFunctionNode(_ object: ObjectSnapshot) throws (CompilerError) -> ComputationalRepresentation{
+    func compileGraphicalFunctionNode(_ object: ObjectSnapshot) throws (CompilerError) -> ComputationalRepresentation{
         guard let points = try? object["graphical_function_points"]?.pointArray() else {
-            throw CompilerError.attributeTypeMismatch(object.id, "graphical_function_points", .points)
+            throw CompilerError.attributeExpectationFailure(object.id, "graphical_function_points")
         }
         // TODO: Interpolation method
         let function = GraphicalFunction(points: points)
@@ -504,13 +504,12 @@ public class Compiler {
         let funcName = "__graphical_\(object.id)"
         let numericFunc = function.createFunction(name: funcName)
         
-        return .graphicalFunction(numericFunc, variableIndex(parameterNode.id))
+        return .graphicalFunction(numericFunc, objectVariableIndex[parameterNode.id]!)
     }
     
     /// Compile a delay node.
     ///
-    public func compileDelayNode(_ object: ObjectSnapshot) throws (CompilerError) -> ComputationalRepresentation{
-        // TODO: What to do if the input is not numeric or not an atom?
+    func compileDelayNode(_ object: ObjectSnapshot) throws (CompilerError) -> ComputationalRepresentation{
         let queueIndex = createStateVariable(content: .internalState(object.id),
                                              valueType: .doubles,
                                              name: "delay_queue_\(object.id)")
@@ -525,14 +524,11 @@ public class Compiler {
             throw .hasIssues
         }
         
-        let parameterIndex = variableIndex(parameterNode.id)
+        let parameterIndex = objectVariableIndex[parameterNode.id]!
         let variable = stateVariables[parameterIndex]
         
-        guard let durationAttr = object["delay_duration"] else {
-            throw .expectedAttribute(object.id, "delay_duration")
-        }
-        guard let duration = try? durationAttr.intValue() else {
-            throw .attributeTypeMismatch(object.id, "delay_duration", .int)
+        guard let duration = try? object["delay_duration"]?.intValue() else {
+            throw .attributeExpectationFailure(object.id, "delay_duration")
         }
 
         let initialValue = object["initial_value"]
@@ -557,7 +553,7 @@ public class Compiler {
 
     /// Compile a value smoothing node.
     ///
-    public func compileSmoothNode(_ object: ObjectSnapshot) throws (CompilerError) -> ComputationalRepresentation{
+    func compileSmoothNode(_ object: ObjectSnapshot) throws (CompilerError) -> ComputationalRepresentation{
         let smoothValueIndex = createStateVariable(content: .internalState(object.id),
                                              valueType: .doubles,
                                              name: "smooth_value_\(object.id)")
@@ -568,17 +564,14 @@ public class Compiler {
             throw .hasIssues
         }
         
-        let parameterIndex = variableIndex(parameterNode.id)
+        let parameterIndex = objectVariableIndex[parameterNode.id]!
         let variable = stateVariables[parameterIndex]
         
-        guard let windowTimeAttr = object["window_time"] else {
-            throw .expectedAttribute(object.id, "window_time")
-        }
-        guard let windowTime = try? windowTimeAttr.doubleValue() else {
-            throw .attributeTypeMismatch(object.id, "window_time", .int)
+        guard let windowTime = try? object["window_time"]?.doubleValue() else {
+            throw .attributeExpectationFailure(object.id, "window_time")
         }
 
-        guard case let .atom(atomType) = variable.valueType else {
+        guard case .atom(_) = variable.valueType else {
             appendIssue(.unsupportedDelayValueType(variable.valueType), for: object.id)
             throw .hasIssues
         }
@@ -600,7 +593,10 @@ public class Compiler {
     ///
     /// - Returns: Extracted and derived stock node information.
     ///
-    public func compileStocksAndFlows() throws (CompilerError) {
+    func compileStocksAndFlows() throws (CompilerError) {
+        let stocks = simulationObjects.filter { $0.type == .stock }
+        let flows = simulationObjects.filter { $0.type == .flow }.compactMap { frame[$0.id] }
+        
         let unsortedStocks = stocks.map { $0.id }
         var flowPriorities: [ObjectID:Int] = [:]
         var outflows: [ObjectID: [ObjectID]] = [:]
@@ -610,7 +606,7 @@ public class Compiler {
         let sortedStocks: [ObjectSnapshot]
         // Stock adjacencies without delayed input - break the cycle at stocks
         // with delayed_input=true.
-        let adjacencies = self.stockAdjacencies().filter { !$0.targetHasDelayedInflow }
+        let adjacencies = view.stockAdjacencies().filter { !$0.targetHasDelayedInflow }
         
         do {
             let sorted = try topologicalSort(unsortedStocks, edges: adjacencies)
@@ -666,8 +662,8 @@ public class Compiler {
         var result: [CompiledStock] = []
         
         for object in sortedStocks {
-            let inflowIndices = inflows[object.id]?.map { variableIndex($0) } ?? []
-            let outflowIndices = outflows[object.id]?.map { variableIndex($0) } ?? []
+            let inflowIndices = inflows[object.id]?.map { objectVariableIndex[$0]! } ?? []
+            let outflowIndices = outflows[object.id]?.map { objectVariableIndex[$0]! } ?? []
             
             // We can `try!` and force unwrap, because here we already assume
             // the model was validated
@@ -676,7 +672,7 @@ public class Compiler {
             
             let compiled = CompiledStock(
                 id: object.id,
-                variableIndex: variableIndex(object.id),
+                variableIndex: objectVariableIndex[object.id]!,
                 allowsNegative: allowsNegative,
                 delayedInflow: delayedInflow,
                 inflows: inflowIndices,
@@ -686,48 +682,6 @@ public class Compiler {
         }
 
         self.compiledStocks = result
-    }
-
-    /// Get a list of stock-to-stock adjacency.
-    ///
-    /// Two stocks are adjacent if there is a flow that connects the two stocks.
-    /// One stock is being drained – origin of the adjacency,
-    /// another stock is being filled – target of the adjacency.
-    ///
-    /// The following diagram depicts two adjacent stocks, where the stock `a`
-    /// would be the origin and stock `b` would be the target:
-    ///
-    /// ```
-    ///              Drains           Fills
-    ///    Stock a ==========> Flow =========> Stock b
-    ///       ^                                  ^
-    ///       +----------------------------------+
-    ///                  adjacent stocks
-    ///
-    /// ```
-    ///
-    public func stockAdjacencies() -> [StockAdjacency] {
-        var adjacencies: [StockAdjacency] = []
-
-        for flow in view.flowNodes {
-            guard let fills = view.flowFills(flow.id) else {
-                continue
-            }
-            guard let drains = view.flowDrains(flow.id) else {
-                continue
-            }
-
-            // TODO: Too much going on in here. Simplify. Move some of it to where we collect unsortedStocks in the Compiler.
-            let delayedInflow = try! frame[drains]["delayed_inflow"]!.boolValue()
-            
-            let adjacency = StockAdjacency(id: flow.id,
-                                           origin: drains,
-                                           target: fills,
-                                           targetHasDelayedInflow: delayedInflow)
-
-            adjacencies.append(adjacency)
-        }
-        return adjacencies
     }
 
     /// Validates parameter of a node.
@@ -770,16 +724,13 @@ public class Compiler {
     }
 
     public func compileControlBindings() throws (CompilerError) -> [CompiledControlBinding] {
-        // 8. Value Bindings
-        // =================================================================
-        
         var bindings: [CompiledControlBinding] = []
         for object in frame.filter(type: ObjectType.ValueBinding) {
             guard let edge = Edge(object) else {
                 throw .structureTypeMismatch(object.id)
             }
             
-            guard let index = objectToVariable[edge.target] else {
+            guard let index = objectVariableIndex[edge.target] else {
                 throw .objectNotFound(edge.target)
             }
             let binding = CompiledControlBinding(control: edge.origin,
@@ -813,7 +764,7 @@ public class Compiler {
     public func createStateVariable(content: StateVariableContent,
                                     valueType: ValueType,
                                     name: String) -> SimulationState.Index {
-        // TODO: Rename to "allocate..."
+        // Note: Consider renaming this method to "allocate..."
         let variableIndex = stateVariables.count
         let variable = StateVariable(index: variableIndex,
                                      content: content,
@@ -822,7 +773,7 @@ public class Compiler {
         stateVariables.append(variable)
         
         if case let .object(id) = content {
-            objectToVariable[id] = variableIndex
+            objectVariableIndex[id] = variableIndex
         }
         
         return variableIndex

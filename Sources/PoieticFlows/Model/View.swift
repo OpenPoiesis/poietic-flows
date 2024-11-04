@@ -26,7 +26,7 @@ public enum ParameterStatus:Equatable {
 public class StockFlowView {
     /// Metamodel that the view uses to find relevant object types.
     public let metamodel: Metamodel
-
+    
     /// Graph that the view projects.
     ///
     public let frame: Frame
@@ -47,15 +47,14 @@ public class StockFlowView {
     public var simulationNodes: [Node] {
         frame.filterNodes {
             $0.type.hasTrait(Trait.Formula)
-            || $0.type.hasTrait(Trait.GraphicalFunction)
-            || $0.type.hasTrait(Trait.Delay)
+            || $0.type.hasTrait(Trait.Auxiliary)
         }
     }
-
+    
     public var flowNodes: [Node] {
         frame.filterNodes { $0.type === ObjectType.Flow }
     }
-   
+    
     /// Predicate that matches all objects that have a name through
     /// NamedComponent.
     ///
@@ -64,7 +63,7 @@ public class StockFlowView {
             return ($0, $0.name!)
         }
     }
-
+    
     /// List of all nodes that hold a simulation state and are therefore part
     /// of the state vector.
     ///
@@ -76,7 +75,7 @@ public class StockFlowView {
             $0.type.hasTrait(Trait.Formula)
         }
     }
-
+    
     
     // Parameter queries
     // ---------------------------------------------------------------------
@@ -96,10 +95,10 @@ public class StockFlowView {
                    selector: NeighborhoodSelector(
                     predicate: IsTypePredicate(ObjectType.Parameter),
                     direction: .incoming
-                )
+                   )
         )
     }
-
+    
     // Fills/drains queries
     // ---------------------------------------------------------------------
     //
@@ -109,7 +108,7 @@ public class StockFlowView {
     public var fillsEdges: [Edge] {
         frame.filterEdges { $0.type === ObjectType.Fills }
     }
-
+    
     /// Selector for an edge originating in a flow and ending in a stock denoting
     /// which stock the flow fills. There must be only one of such edges
     /// originating in a flow.
@@ -127,10 +126,10 @@ public class StockFlowView {
                    selector: NeighborhoodSelector(
                     predicate: IsTypePredicate(ObjectType.Fills),
                     direction: .outgoing
-                )
+                   )
         )
     }
-
+    
     /// Selector for edges originating in a flow and ending in a stock denoting
     /// the inflow from multiple flows into a single stock.
     ///
@@ -145,7 +144,7 @@ public class StockFlowView {
                    selector: NeighborhoodSelector(
                     predicate: IsTypePredicate(ObjectType.Fills),
                     direction: .incoming
-                )
+                   )
         )
     }
     /// Selector for an edge originating in a stock and ending in a flow denoting
@@ -166,7 +165,7 @@ public class StockFlowView {
                    selector: NeighborhoodSelector(
                     predicate: IsTypePredicate(ObjectType.Drains),
                     direction: .incoming
-                )
+                   )
         )
     }
     /// Selector for edges originating in a stock and ending in a flow denoting
@@ -185,10 +184,10 @@ public class StockFlowView {
                    selector: NeighborhoodSelector(
                     predicate: IsTypePredicate(ObjectType.Drains),
                     direction: .incoming
-                )
+                   )
         )
     }
-
+    
     /// Predicate for an edge that drains from a stocks. It originates in a
     /// stock and terminates in a flow.
     ///
@@ -213,7 +212,7 @@ public class StockFlowView {
         }
         return references
     }
-   
+    
     // TODO: Remove the `required` and compute here. Expensive, but useful for the caller.
     // TODO: The `required` should belong to the node itself.
     // TODO: Rename to formulaParameters as this makes sense for formulas only
@@ -224,7 +223,7 @@ public class StockFlowView {
         let incomingHood = incomingParameters(nodeID)
         var unseen: Set<String> = Set(required)
         var result: [String: ParameterStatus] = [:]
-
+        
         for edge in incomingHood.edges {
             let node = frame.node(edge.origin)
             let name = node.name!
@@ -240,10 +239,10 @@ public class StockFlowView {
         for name in unseen {
             result[name] = .missing
         }
-
+        
         return result
     }
-
+    
     /// Sort the nodes based on their parameter dependency.
     ///
     /// The function returns nodes that are sorted in the order of computation.
@@ -354,5 +353,46 @@ public class StockFlowView {
         precondition(stockNode.type === ObjectType.Stock)
         
         return outflows(stockID).nodes.map { $0.id }
+    }
+    
+    /// Get a list of stock-to-stock adjacency.
+    ///
+    /// Two stocks are adjacent if there is a flow that connects the two stocks.
+    /// One stock is being drained – origin of the adjacency,
+    /// another stock is being filled – target of the adjacency.
+    ///
+    /// The following diagram depicts two adjacent stocks, where the stock `a`
+    /// would be the origin and stock `b` would be the target:
+    ///
+    /// ```
+    ///              Drains           Fills
+    ///    Stock a ==========> Flow =========> Stock b
+    ///       ^                                  ^
+    ///       +----------------------------------+
+    ///                  adjacent stocks
+    ///
+    /// ```
+    ///
+    public func stockAdjacencies() -> [StockAdjacency] {
+        var adjacencies: [StockAdjacency] = []
+
+        for flow in flowNodes {
+            guard let fills = flowFills(flow.id) else {
+                continue
+            }
+            guard let drains = flowDrains(flow.id) else {
+                continue
+            }
+
+            let delayedInflow = try! frame[drains]["delayed_inflow"]!.boolValue()
+            
+            let adjacency = StockAdjacency(id: flow.id,
+                                           origin: drains,
+                                           target: fills,
+                                           targetHasDelayedInflow: delayedInflow)
+
+            adjacencies.append(adjacency)
+        }
+        return adjacencies
     }
 }
