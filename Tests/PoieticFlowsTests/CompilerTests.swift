@@ -59,16 +59,17 @@ final class TestCompiler: XCTestCase {
         
         let compiler = Compiler(frame: try design.accept(frame))
         XCTAssertThrowsError(try compiler.compile()) {
-            guard let error = $0 as? NodeIssuesError else {
+            guard $0 as? CompilerError != nil else {
                 XCTFail("Expected DomainError, got: \($0)")
                 return
             }
-            guard let first = error.issues[aux]?.first else {
+            let issues = compiler.issues(for: aux)
+            guard let first = issues.first else {
                 XCTFail("Expected an issue")
                 return
             }
             
-            XCTAssertEqual(error.issues.count, 1)
+            XCTAssertEqual(issues.count, 1)
 
             guard let issue = first as? NodeIssue else {
                 XCTFail("Did not get expected node issue error type")
@@ -109,14 +110,12 @@ final class TestCompiler: XCTestCase {
         
         let compiler = Compiler(frame: try design.accept(frame))
         XCTAssertThrowsError(try compiler.compile()) {
-            guard let error = $0 as? NodeIssuesError else {
+            guard $0 as? CompilerError != nil else {
                 XCTFail("Expected DomainError, got: \($0)")
                 return
             }
-            
-            XCTAssertNotNil(error.issues[c1])
-            XCTAssertNotNil(error.issues[c2])
-            XCTAssertEqual(error.issues.count, 2)
+            XCTAssertEqual(compiler.issues(for: c1).count, 1)
+            XCTAssertEqual(compiler.issues(for: c2).count, 1)
         }
     }
 
@@ -163,23 +162,14 @@ final class TestCompiler: XCTestCase {
 
         let compiler = Compiler(frame: try design.accept(frame))
         XCTAssertThrowsError(try compiler.compile()) {
-            guard let error = $0 as? NodeIssuesError else {
+            guard $0 as? CompilerError != nil else {
                 XCTFail("Expected DomainError, got: \($0)")
                 return
             }
+            let issues = compiler.issues(for: gf)
             
-            guard let first = error.issues[gf]?.first else {
-                XCTFail("Expected an issue")
-                return
-            }
-            
-            XCTAssertEqual(error.issues.count, 1)
-
-            guard let issue = first as? NodeIssue else {
-                XCTFail("Did not get expected node issue error type")
-                return
-            }
-            XCTAssertEqual(issue, NodeIssue.missingRequiredParameter)
+            XCTAssertEqual(issues.count, 1)
+            XCTAssertEqual(issues.first, NodeIssue.missingRequiredParameter)
             
         }
     }
@@ -255,14 +245,13 @@ final class TestCompiler: XCTestCase {
         frame.createEdge(ObjectType.Parameter, origin: b, target: a)
         let compiler = Compiler(frame: try design.accept(frame))
         XCTAssertThrowsError(try compiler.compile()) {
-            guard let error = $0 as? NodeIssuesError else {
-                XCTFail("Expected DomainError, got: \($0)")
+            guard $0 as? CompilerError != nil else {
+                XCTFail("Expected CompilerError, got: \($0)")
                 return
             }
             
-            XCTAssertEqual(error.issues.count, 2)
-            XCTAssertEqual(error.issues[a]?.first as? NodeIssue, NodeIssue.computationCycle)
-            XCTAssertEqual(error.issues[b]?.first as? NodeIssue, NodeIssue.computationCycle)
+            XCTAssertEqual(compiler.issues(for: a).first, NodeIssue.computationCycle)
+            XCTAssertEqual(compiler.issues(for: b).first, NodeIssue.computationCycle)
         }
     }
     
@@ -286,15 +275,13 @@ final class TestCompiler: XCTestCase {
 
         let compiler = Compiler(frame: try design.accept(frame))
         XCTAssertThrowsError(try compiler.compile()) {
-            guard let error = $0 as? NodeIssuesError else {
-                XCTFail("Expected DomainError, got: \($0)")
+            guard $0 as? CompilerError != nil else {
+                XCTFail("Expected CompilerError, got: \($0)")
                 return
             }
             
-            XCTAssertEqual(error.issues.count, 2)
-            print(error.issues)
-            XCTAssertEqual(error.issues[a]?.first as? NodeIssue, NodeIssue.flowCycle)
-            XCTAssertEqual(error.issues[b]?.first as? NodeIssue, NodeIssue.flowCycle)
+            XCTAssertEqual(compiler.issues(for: a).first, NodeIssue.flowCycle)
+            XCTAssertEqual(compiler.issues(for: b).first, NodeIssue.flowCycle)
         }
     }
     func testDelayedInflowBreaksTheCycle() throws {

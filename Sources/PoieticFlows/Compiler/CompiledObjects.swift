@@ -94,8 +94,10 @@ public struct SimulationObject: CustomStringConvertible {
     ///
     public let variableIndex: Int
     
+    // FIXME: This is stored in rep
     /// Type of the variable value.
     ///
+    @available(*, deprecated, message: "Stored in rep")
     public var valueType: ValueType
     
     /// Information denoting how the object is being computed.
@@ -126,7 +128,9 @@ public enum BuiltinVariable: Equatable, CustomStringConvertible {
 //    case initialTime
 //    case endTime
     
-    public var description: String {
+    public var description: String { self.name }
+
+    public var name: String {
         switch self {
         case .time: "time"
         case .timeDelta: "time_delta"
@@ -214,10 +218,7 @@ public struct CompiledStock {
 ///
 /// - SeeAlso: ``Solver/computeStockDelta(_:at:with:)``
 ///
-@available(*, deprecated,  message: "Just use priority")
 struct CompiledFlow {
-    // TODO: Remove historical remnant CompiledFlow. See Compiler.compile(stocks:,flows:) -> [CompiledStock]
-
     /// Object ID of the flow that this compiled structure represents.
     ///
     /// This is used mostly for inspection and debugging purposes.
@@ -293,8 +294,6 @@ public struct CompiledSmooth {
 /// Describes a connection between two stocks through a flow.
 ///
 public struct StockAdjacency: EdgeType {
-    // TODO: Add "delayed inflow" flag to prevent cycles
-    // TODO: Maybe just a type alias to some "LightEdge" type?
     /// OD of a flow that connects the two stocks
     public let id: ObjectID
     /// ID of a stock being drained by the flow.
