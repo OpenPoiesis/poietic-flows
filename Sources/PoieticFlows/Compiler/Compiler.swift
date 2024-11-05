@@ -303,12 +303,9 @@ public class Compiler {
             do {
                 expr = try parser.parse()
             }
-            catch let error as ExpressionSyntaxError {
+            catch { // is ExpressionSyntaxError
                 appendIssue(.expressionSyntaxError(error), for: object.id)
                 continue
-            }
-            catch {
-                fatalError("Unknown error during parsing: \(error)")
             }
             
             parsedExpressions[object.id] = expr
