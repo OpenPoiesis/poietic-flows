@@ -49,8 +49,8 @@ Note: This is part of experimental architecture.
 
 ### Errors
 
-- ``NodeIssuesError``
-- ``NodeIssue``
+- ``CompilerError``
+- ``ObjectIssue``
 - ``ParameterStatus``
 
 ### Bound Expression

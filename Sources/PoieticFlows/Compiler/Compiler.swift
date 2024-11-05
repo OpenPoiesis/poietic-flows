@@ -85,7 +85,7 @@ public class Compiler {
 
     /// Issues of the object gathered during compilation.
     ///
-    public var issues: [ObjectID: [NodeIssue]]
+    public var issues: [ObjectID: [ObjectIssue]]
 
     /// List of built-in functions.
     ///
@@ -123,13 +123,13 @@ public class Compiler {
 
     /// Appends an error to the list of of node issues
     ///
-    func appendIssue(_ error: NodeIssue, for id: ObjectID) {
+    func appendIssue(_ error: ObjectIssue, for id: ObjectID) {
         issues[id, default:[]].append(error)
     }
     
     /// Append a list of issues to an object.
     ///
-    func appendIssues(_ errors: [NodeIssue], for id: ObjectID) {
+    func appendIssues(_ errors: [ObjectIssue], for id: ObjectID) {
         issues[id, default:[]] += errors
     }
     
@@ -169,7 +169,7 @@ public class Compiler {
     // - MARK: State Queries
     /// Get a list of issues for given object.
     ///
-    public func issues(for id: ObjectID) -> [NodeIssue] {
+    public func issues(for id: ObjectID) -> [ObjectIssue] {
         return issues[id] ?? []
     }
 
@@ -262,10 +262,10 @@ public class Compiler {
                 let edge = frame.edge(edgeID)
                 nodes.insert(edge.origin)
                 nodes.insert(edge.target)
-                // TODO: Add EdgeIssue.computationCycle
+                appendIssue(.computationCycle, for: edgeID)
             }
             for node in nodes {
-                appendIssue(NodeIssue.computationCycle, for: node)
+                appendIssue(ObjectIssue.computationCycle, for: node)
             }
             throw .hasIssues
         }
@@ -275,7 +275,7 @@ public class Compiler {
         var dupes: [String] = []
         
         for (name, ids) in homonyms where ids.count > 1 {
-            let issue = NodeIssue.duplicateName(name)
+            let issue = ObjectIssue.duplicateName(name)
             dupes.append(name)
             for id in ids {
                 appendIssue(issue, for: id)
@@ -497,7 +497,7 @@ public class Compiler {
         
         let hood = view.incomingParameters(object.id)
         guard let parameterNode = hood.nodes.first else {
-            appendIssue(NodeIssue.missingRequiredParameter, for: object.id)
+            appendIssue(ObjectIssue.missingRequiredParameter, for: object.id)
             throw .hasIssues
         }
         
@@ -520,7 +520,7 @@ public class Compiler {
 
         let hood = view.incomingParameters(object.id)
         guard let parameterNode = hood.nodes.first else {
-            appendIssue(NodeIssue.missingRequiredParameter, for: object.id)
+            appendIssue(ObjectIssue.missingRequiredParameter, for: object.id)
             throw .hasIssues
         }
         
@@ -560,7 +560,7 @@ public class Compiler {
 
         let hood = view.incomingParameters(object.id)
         guard let parameterNode = hood.nodes.first else {
-            appendIssue(NodeIssue.missingRequiredParameter, for: object.id)
+            appendIssue(ObjectIssue.missingRequiredParameter, for: object.id)
             throw .hasIssues
         }
         
@@ -624,7 +624,7 @@ public class Compiler {
                 nodes.insert(adjacency.target)
             }
             for node in nodes {
-                appendIssue(NodeIssue.flowCycle, for: node)
+                appendIssue(ObjectIssue.flowCycle, for: node)
             }
             throw .hasIssues
         }
@@ -695,7 +695,7 @@ public class Compiler {
     ///   a node if the expression is not referring to that node.
     ///
     /// If any of the two requirements are not met, then a corresponding
-    /// type of ``NodeIssue`` is added to the list of issues.
+    /// type of ``ObjectIssue`` is added to the list of issues.
     ///
     /// - Parameters:
     ///     - nodeID: ID of a node to be validated for inputs
@@ -703,12 +703,12 @@ public class Compiler {
     ///       with an id `nodeID`.
     ///
     /// - Returns: List of issues that the node with ID `nodeID` caused. The
-    ///   issues can be either ``NodeIssue/unknownParameter(_:)`` or
-    ///   ``NodeIssue/unusedInput(_:)``.
+    ///   issues can be either ``ObjectIssue/unknownParameter(_:)`` or
+    ///   ``ObjectIssue/unusedInput(_:)``.
     ///
-    public func validateParameters(_ nodeID: ObjectID, required: [String]) -> [NodeIssue] {
+    public func validateParameters(_ nodeID: ObjectID, required: [String]) -> [ObjectIssue] {
         let parameters = view.parameters(nodeID, required: required)
-        var issues: [NodeIssue] = []
+        var issues: [ObjectIssue] = []
         
         for (name, status) in parameters {
             switch status {

@@ -71,11 +71,11 @@ final class TestCompiler: XCTestCase {
             
             XCTAssertEqual(issues.count, 1)
 
-            guard let issue = first as? NodeIssue else {
+            guard let issue = first as? ObjectIssue else {
                 XCTFail("Did not get expected node issue error type")
                 return
             }
-            XCTAssertEqual(issue, NodeIssue.expressionError(.unknownFunction("nonexistent")))
+            XCTAssertEqual(issue, ObjectIssue.expressionError(.unknownFunction("nonexistent")))
  
         }
     }
@@ -169,7 +169,7 @@ final class TestCompiler: XCTestCase {
             let issues = compiler.issues(for: gf)
             
             XCTAssertEqual(issues.count, 1)
-            XCTAssertEqual(issues.first, NodeIssue.missingRequiredParameter)
+            XCTAssertEqual(issues.first, ObjectIssue.missingRequiredParameter)
             
         }
     }
@@ -250,8 +250,8 @@ final class TestCompiler: XCTestCase {
                 return
             }
             
-            XCTAssertEqual(compiler.issues(for: a).first, NodeIssue.computationCycle)
-            XCTAssertEqual(compiler.issues(for: b).first, NodeIssue.computationCycle)
+            XCTAssertEqual(compiler.issues(for: a).first, ObjectIssue.computationCycle)
+            XCTAssertEqual(compiler.issues(for: b).first, ObjectIssue.computationCycle)
         }
     }
     
@@ -280,8 +280,8 @@ final class TestCompiler: XCTestCase {
                 return
             }
             
-            XCTAssertEqual(compiler.issues(for: a).first, NodeIssue.flowCycle)
-            XCTAssertEqual(compiler.issues(for: b).first, NodeIssue.flowCycle)
+            XCTAssertEqual(compiler.issues(for: a).first, ObjectIssue.flowCycle)
+            XCTAssertEqual(compiler.issues(for: b).first, ObjectIssue.flowCycle)
         }
     }
     func testDelayedInflowBreaksTheCycle() throws {
