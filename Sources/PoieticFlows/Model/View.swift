@@ -198,15 +198,15 @@ public class StockFlowView {
     
     /// A list of variable references to their corresponding objects.
     ///
-    public func objectVariableReferences(names: [String:ObjectID]) -> [String:StateVariableContent] {
-        var references: [String:StateVariableContent] = [:]
+    public func objectVariableReferences(names: [String:ObjectID]) -> [String:StateVariable.Content] {
+        var references: [String:StateVariable.Content] = [:]
         for (name, id) in names {
             references[name] = .object(id)
         }
         return references
     }
-    public func builtinReferences(names: [String:ObjectID]) -> [String:StateVariableContent] {
-        var references: [String:StateVariableContent] = [:]
+    public func builtinReferences(names: [String:ObjectID]) -> [String:StateVariable.Content] {
+        var references: [String:StateVariable.Content] = [:]
         for (name, id) in names {
             references[name] = .object(id)
         }

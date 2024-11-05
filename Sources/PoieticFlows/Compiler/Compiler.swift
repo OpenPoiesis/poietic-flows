@@ -761,7 +761,7 @@ public class Compiler {
     ///     - valueType: Type of the state variable value.
     ///     - name: Name of the state variable.
     ///
-    public func createStateVariable(content: StateVariableContent,
+    public func createStateVariable(content: StateVariable.Content,
                                     valueType: ValueType,
                                     name: String) -> SimulationState.Index {
         // Note: Consider renaming this method to "allocate..."
