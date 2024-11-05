@@ -639,8 +639,7 @@ public class Compiler {
         // Sort the outflows by priority
         for flow in flows {
             guard let priority = try? flow["priority"]?.intValue() else {
-                // FIXME: Thow compilation error
-                fatalError("Invalid frame: Unable to get priority of Flow node \(flow.id)")
+                throw .attributeExpectationFailure(flow.id, "priority")
             }
             flowPriorities[flow.id] = priority
         }

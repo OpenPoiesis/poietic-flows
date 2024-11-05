@@ -189,7 +189,6 @@ final class TestStockFlowSimulation: XCTestCase {
                                      attributes: ["formula": "5"])
         let obj = frame.node(stock)
         obj.snapshot["allows_negative"] = Variant(false)
-        // FIXME: There is a bug in the expression parser
         let flow = frame.createNode(ObjectType.Flow,
                                     name: "flow",
                                     attributes: ["formula": "0 - 10"])
@@ -213,7 +212,6 @@ final class TestStockFlowSimulation: XCTestCase {
                                      attributes: ["formula": "5"])
         let obj = frame.node(stock)
         obj.snapshot["allows_negative"] = Variant(false)
-        // FIXME: There is a bug in the expression parser
         let flow = frame.createNode(ObjectType.Flow,
                                     name: "flow",
                                     attributes: ["formula": "-10"])

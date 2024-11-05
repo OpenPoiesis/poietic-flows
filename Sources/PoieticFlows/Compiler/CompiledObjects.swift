@@ -94,10 +94,8 @@ public struct SimulationObject: CustomStringConvertible {
     ///
     public let variableIndex: Int
     
-    // FIXME: This is stored in rep
     /// Type of the variable value.
     ///
-    @available(*, deprecated, message: "Stored in rep")
     public var valueType: ValueType
     
     /// Information denoting how the object is being computed.
