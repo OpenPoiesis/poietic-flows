@@ -42,12 +42,9 @@ public struct FormulaCompilerSystem: RuntimeSystem {
             do {
                 expr = try parser.parse()
             }
-            catch let error as ExpressionSyntaxError {
+            catch {
                 context.appendIssue(error, for: snapshot.id)
                 continue
-            }
-            catch {
-                fatalError("Unknown error during parsing: \(error)")
             }
             
             context.setComponent(ParsedFormulaComponent(parsedFormula: expr),

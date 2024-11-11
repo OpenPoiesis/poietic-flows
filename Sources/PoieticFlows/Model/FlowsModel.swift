@@ -172,7 +172,6 @@ extension Metamodel {
                     )
                 )
             ),
-            
         ]
     )
 }

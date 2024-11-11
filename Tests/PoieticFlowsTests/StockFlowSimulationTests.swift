@@ -29,31 +29,24 @@ final class TestStockFlowSimulation: XCTestCase {
         return StockFlowSimulation(model)
     }
    
+    func index(_ object: any ObjectSnapshot) -> SimulationState.Index {
+        model.variableIndex(of: object.id)!
+    }
     func index(_ id: ObjectID) -> SimulationState.Index {
         model.variableIndex(of: id)!
     }
     
     func testInitializeStocks() throws {
         
-        let a = frame.createNode(ObjectType.Auxiliary,
-                                 name: "a",
-                                 attributes: ["formula": "1"])
-        let b = frame.createNode(ObjectType.Auxiliary,
-                                 name: "b",
-                                 attributes: ["formula": "a + 1"])
-        let c =  frame.createNode(ObjectType.Stock,
-                                  name: "const",
-                                  attributes: ["formula": "100"])
-        let s_a = frame.createNode(ObjectType.Stock,
-                                   name: "use_a",
-                                   attributes: ["formula": "a"])
-        let s_b = frame.createNode(ObjectType.Stock,
-                                   name: "use_b",
-                                   attributes: ["formula": "b"])
+        let a = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "1"])
+        let b = frame.createNode(ObjectType.Auxiliary, name: "b", attributes: ["formula": "a + 1"])
+        let c =  frame.createNode(ObjectType.Stock, name: "const", attributes: ["formula": "100"])
+        let s_a = frame.createNode(ObjectType.Stock, name: "use_a", attributes: ["formula": "a"])
+        let s_b = frame.createNode(ObjectType.Stock, name: "use_b", attributes: ["formula": "b"])
         
-        frame.createEdge(ObjectType.Parameter, origin: a, target: b, components: [])
-        frame.createEdge(ObjectType.Parameter, origin: a, target: s_a, components: [])
-        frame.createEdge(ObjectType.Parameter, origin: b, target: s_b, components: [])
+        frame.createEdge(ObjectType.Parameter, origin: a, target: b)
+        frame.createEdge(ObjectType.Parameter, origin: a, target: s_a)
+        frame.createEdge(ObjectType.Parameter, origin: b, target: s_b)
         
         try compile()
         
@@ -82,15 +75,9 @@ final class TestStockFlowSimulation: XCTestCase {
         XCTAssertNotNil(state[index(a)])
     }
     func testEverythingInitialized() throws {
-        let aux = frame.createNode(ObjectType.Auxiliary,
-                                   name: "a",
-                                   attributes: ["formula": "10"])
-        let stock = frame.createNode(ObjectType.Stock,
-                                     name: "b",
-                                     attributes: ["formula": "20"])
-        let flow = frame.createNode(ObjectType.Flow,
-                                    name: "c",
-                                    attributes: ["formula": "30"])
+        let aux = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "10"])
+        let stock = frame.createNode(ObjectType.Stock, name: "b", attributes: ["formula": "20"])
+        let flow = frame.createNode(ObjectType.Flow, name: "c", attributes: ["formula": "30"])
        
         try compile()
         
@@ -104,12 +91,8 @@ final class TestStockFlowSimulation: XCTestCase {
     }
     
     func testStageWithTime() throws {
-        let aux = frame.createNode(ObjectType.Auxiliary,
-                                   name: "aux",
-                                   attributes: ["formula": "time"])
-        let flow = frame.createNode(ObjectType.Flow,
-                                    name: "flow",
-                                    attributes: ["formula": "time * 10"])
+        let aux = frame.createNode(ObjectType.Auxiliary, name: "aux", attributes: ["formula": "time"])
+        let flow = frame.createNode(ObjectType.Flow, name: "flow", attributes: ["formula": "time * 10"])
         
         try compile()
 
@@ -136,15 +119,10 @@ final class TestStockFlowSimulation: XCTestCase {
     }
     
     func testNegativeStock() throws {
-        let stock = frame.createNode(ObjectType.Stock,
-                                     name: "stock",
-                                     attributes: ["formula": "5"])
-        let node = frame.node(stock)
-        node.snapshot["allows_negative"] = Variant(true)
+        let stock = frame.createNode(ObjectType.Stock, name: "stock", attributes: ["formula": "5"])
+        stock["allows_negative"] = Variant(true)
         
-        let flow = frame.createNode(ObjectType.Flow,
-                                    name: "flow",
-                                    attributes: ["formula": "10"])
+        let flow = frame.createNode(ObjectType.Flow, name: "flow", attributes: ["formula": "10"])
         
         frame.createEdge(ObjectType.Drains, origin: stock, target: flow, components: [])
         
@@ -156,19 +134,14 @@ final class TestStockFlowSimulation: XCTestCase {
 
         let diff = try sim.stockDifference(state: state, time: 1.0)
         
-        XCTAssertEqual(diff[model.stockIndex(stock)], -10)
+        XCTAssertEqual(diff[model.stockIndex(stock.id)], -10)
     }
     
     func testNonNegativeStock() throws {
-        let stock = frame.createNode(ObjectType.Stock,
-                                     name: "stock",
-                                     attributes: ["formula": "5"])
-        let node = frame.node(stock)
-        node.snapshot["allows_negative"] = Variant(false)
+        let stock = frame.createNode(ObjectType.Stock, name: "stock", attributes: ["formula": "5"])
+        stock["allows_negative"] = Variant(false)
         
-        let flow = frame.createNode(ObjectType.Flow,
-                                    name: "flow",
-                                    attributes: ["formula": "10"])
+        let flow = frame.createNode(ObjectType.Flow, name: "flow", attributes: ["formula": "10"])
         
         frame.createEdge(ObjectType.Drains, origin: stock, target: flow, components: [])
         
@@ -180,18 +153,13 @@ final class TestStockFlowSimulation: XCTestCase {
  
         let diff = try sim.stockDifference(state: state, time: 1.0)
 
-        XCTAssertEqual(diff[model.stockIndex(stock)], -5)
+        XCTAssertEqual(diff[model.stockIndex(stock.id)], -5)
     }
     // TODO: Also negative outflow
     func testNonNegativeStockNegativeInflow() throws {
-        let stock = frame.createNode(ObjectType.Stock,
-                                     name: "stock",
-                                     attributes: ["formula": "5"])
-        let obj = frame.node(stock)
-        obj.snapshot["allows_negative"] = Variant(false)
-        let flow = frame.createNode(ObjectType.Flow,
-                                    name: "flow",
-                                    attributes: ["formula": "0 - 10"])
+        let stock = frame.createNode(ObjectType.Stock, name: "stock", attributes: ["formula": "5"])
+        stock["allows_negative"] = Variant(false)
+        let flow = frame.createNode(ObjectType.Flow, name: "flow", attributes: ["formula": "0 - 10"])
         
         frame.createEdge(ObjectType.Fills, origin: flow, target: stock, components: [])
         
@@ -203,18 +171,13 @@ final class TestStockFlowSimulation: XCTestCase {
  
         let diff = try sim.stockDifference(state: state, time: 1.0)
 
-        XCTAssertEqual(diff[model.stockIndex(stock)], 0)
+        XCTAssertEqual(diff[model.stockIndex(stock.id)], 0)
     }
     
     func testStockNegativeOutflow() throws {
-        let stock = frame.createNode(ObjectType.Stock,
-                                     name: "stock",
-                                     attributes: ["formula": "5"])
-        let obj = frame.node(stock)
-        obj.snapshot["allows_negative"] = Variant(false)
-        let flow = frame.createNode(ObjectType.Flow,
-                                    name: "flow",
-                                    attributes: ["formula": "-10"])
+        let stock = frame.createNode(ObjectType.Stock, name: "stock", attributes: ["formula": "5"])
+        stock["allows_negative"] = Variant(false)
+        let flow = frame.createNode(ObjectType.Flow, name: "flow", attributes: ["formula": "-10"])
         
         frame.createEdge(ObjectType.Drains, origin: stock, target: flow, components: [])
         
@@ -226,39 +189,26 @@ final class TestStockFlowSimulation: XCTestCase {
  
         let diff = try sim.stockDifference(state: state, time: 1.0)
 
-        XCTAssertEqual(diff[model.stockIndex(stock)], 0)
+        XCTAssertEqual(diff[model.stockIndex(stock.id)], 0)
     }
     
     func testNonNegativeToTwo() throws {
         // TODO: Break this into multiple tests
-        let source = frame.createNode(ObjectType.Stock,
-                                      name: "stock",
-                                      attributes: ["formula": "5"])
-        let sourceNode = frame.node(source)
-        sourceNode.snapshot["allows_negative"] = Variant(false)
+        let source = frame.createNode(ObjectType.Stock, name: "stock", attributes: ["formula": "5"])
+        source["allows_negative"] = Variant(false)
         
-        let happy = frame.createNode(ObjectType.Stock,
-                                     name: "happy",
-                                     attributes: ["formula": "0"])
-        let sad = frame.createNode(ObjectType.Stock,
-                                   name: "sad",
-                                   attributes: ["formula": "0"])
-        let happyFlow = frame.createNode(ObjectType.Flow,
-                                         name: "happy_flow",
-                                         attributes: ["formula": "10"])
-        let happyFlowNode = frame.node(happyFlow)
-        happyFlowNode.snapshot["priority"] = Variant(1)
+        let happy = frame.createNode(ObjectType.Stock, name: "happy", attributes: ["formula": "0"])
+        let sad = frame.createNode(ObjectType.Stock, name: "sad", attributes: ["formula": "0"])
+        let happyFlow = frame.createNode(ObjectType.Flow, name: "happy_flow", attributes: ["formula": "10"])
+        happyFlow["priority"] = Variant(1)
         
         frame.createEdge(ObjectType.Drains,
                          origin: source, target: happyFlow, components: [])
         frame.createEdge(ObjectType.Fills,
                          origin: happyFlow, target: happy, components: [])
         
-        let sadFlow = frame.createNode(ObjectType.Flow,
-                                       name: "sad_flow",
-                                       attributes: ["formula": "10"])
-        let sadFlowNode = frame.node(sadFlow)
-        sadFlowNode.snapshot["priority"] = Variant(2)
+        let sadFlow = frame.createNode(ObjectType.Flow, name: "sad_flow", attributes: ["formula": "10"])
+        sadFlow["priority"] = Variant(2)
         
         frame.createEdge(ObjectType.Drains,
                          origin: source, target: sadFlow, components: [])
@@ -283,19 +233,19 @@ final class TestStockFlowSimulation: XCTestCase {
         XCTAssertEqual(state[index(happyFlow)], 10)
         XCTAssertEqual(state[index(sadFlow)], 10)
         
-        let sourceDiff = try sim.computeStockDelta(model.compiledStock(source), in: &state)
+        let sourceDiff = try sim.computeStockDelta(model.compiledStock(source.id), in: &state)
         // Adjusted flow to actual outflow
         XCTAssertEqual(state[index(happyFlow)],  5.0)
         XCTAssertEqual(state[index(sadFlow)],    0.0)
         XCTAssertEqual(sourceDiff,         -5.0)
         
-        let happyDiff = try sim.computeStockDelta(model.compiledStock(happy), in: &state)
+        let happyDiff = try sim.computeStockDelta(model.compiledStock(happy.id), in: &state)
         // Remains the same as above
         XCTAssertEqual(state[index(happyFlow)],  5.0)
         XCTAssertEqual(state[index(sadFlow)],    0.0)
         XCTAssertEqual(happyDiff,          +5.0)
         
-        let sadDiff = try sim.computeStockDelta(model.compiledStock(sad),in: &state)
+        let sadDiff = try sim.computeStockDelta(model.compiledStock(sad.id),in: &state)
         // Remains the same as above
         XCTAssertEqual(state[index(happyFlow)],  5.0)
         XCTAssertEqual(state[index(sadFlow)],    0.0)
@@ -303,21 +253,15 @@ final class TestStockFlowSimulation: XCTestCase {
         
         let diff = try sim.stockDifference(state: initial, time: 1.0)
         
-        XCTAssertEqual(diff[model.stockIndex(source)], -5)
-        XCTAssertEqual(diff[model.stockIndex(happy)],  +5)
-        XCTAssertEqual(diff[model.stockIndex(sad)],     0)
+        XCTAssertEqual(diff[model.stockIndex(source.id)], -5)
+        XCTAssertEqual(diff[model.stockIndex(happy.id)],  +5)
+        XCTAssertEqual(diff[model.stockIndex(sad.id)],     0)
     }
     
     func testDifference() throws {
-        let kettle = frame.createNode(ObjectType.Stock,
-                                      name: "kettle",
-                                      attributes: ["formula": "1000"])
-        let flow = frame.createNode(ObjectType.Flow,
-                                    name: "pour",
-                                    attributes: ["formula": "100"])
-        let cup = frame.createNode(ObjectType.Stock,
-                                   name: "cup",
-                                   attributes: ["formula": "0"])
+        let kettle = frame.createNode(ObjectType.Stock, name: "kettle", attributes: ["formula": "1000"])
+        let flow = frame.createNode(ObjectType.Flow, name: "pour", attributes: ["formula": "100"])
+        let cup = frame.createNode(ObjectType.Stock, name: "cup", attributes: ["formula": "0"])
         
         frame.createEdge(ObjectType.Drains,
                          origin: kettle, target: flow, components: [])
@@ -332,20 +276,14 @@ final class TestStockFlowSimulation: XCTestCase {
 
         let diff = try sim.stockDifference(state: state, time: 1.0)
 
-        XCTAssertEqual(diff[model.stockIndex(kettle)], -100.0)
-        XCTAssertEqual(diff[model.stockIndex(cup)], 100.0)
+        XCTAssertEqual(diff[model.stockIndex(kettle.id)], -100.0)
+        XCTAssertEqual(diff[model.stockIndex(cup.id)], 100.0)
     }
     
     func testDifferenceTimeDelta() throws {
-        let kettle = frame.createNode(ObjectType.Stock,
-                                      name: "kettle",
-                                      attributes: ["formula": "1000"])
-        let flow = frame.createNode(ObjectType.Flow,
-                                    name: "pour",
-                                    attributes: ["formula": "100"])
-        let cup = frame.createNode(ObjectType.Stock,
-                                   name: "cup",
-                                   attributes: ["formula": "0"])
+        let kettle = frame.createNode(ObjectType.Stock, name: "kettle", attributes: ["formula": "1000"])
+        let flow = frame.createNode(ObjectType.Flow, name: "pour", attributes: ["formula": "100"])
+        let cup = frame.createNode(ObjectType.Stock, name: "cup", attributes: ["formula": "0"])
         
         frame.createEdge(ObjectType.Drains,
                          origin: kettle, target: flow, components: [])
@@ -360,21 +298,15 @@ final class TestStockFlowSimulation: XCTestCase {
 
         let diff = try sim.stockDifference(state: state, time: 1.0)
 
-        XCTAssertEqual(diff[model.stockIndex(kettle)], -50.0)
-        XCTAssertEqual(diff[model.stockIndex(cup)], 50.0)
+        XCTAssertEqual(diff[model.stockIndex(kettle.id)], -50.0)
+        XCTAssertEqual(diff[model.stockIndex(cup.id)], 50.0)
     }
 
     
     func testCompute() throws {
-        let kettle = frame.createNode(ObjectType.Stock,
-                                      name: "kettle",
-                                      attributes: ["formula": "1000"])
-        let flow = frame.createNode(ObjectType.Flow,
-                                    name: "pour",
-                                    attributes: ["formula": "100"])
-        let cup = frame.createNode(ObjectType.Stock,
-                                   name: "cup",
-                                   attributes: ["formula": "0"])
+        let kettle = frame.createNode(ObjectType.Stock, name: "kettle", attributes: ["formula": "1000"])
+        let flow = frame.createNode(ObjectType.Flow, name: "pour", attributes: ["formula": "100"])
+        let cup = frame.createNode(ObjectType.Stock, name: "cup", attributes: ["formula": "0"])
         
         frame.createEdge(ObjectType.Drains,
                          origin: kettle, target: flow, components: [])
@@ -398,22 +330,12 @@ final class TestStockFlowSimulation: XCTestCase {
     
     
     func testGraphicalFunction() throws {
-        let p1 = frame.createNode(ObjectType.Auxiliary,
-                                  name:"p1",
-                                  attributes: ["formula": "0"])
-        let g1 = frame.createNode(ObjectType.GraphicalFunction,
-                                  name: "g1")
-        
-        let p2 = frame.createNode(ObjectType.Auxiliary,
-                                  name:"p2",
-                                  attributes: ["formula": "0"])
+        let p1 = frame.createNode(ObjectType.Auxiliary, name:"p1", attributes: ["formula": "0"])
+        let g1 = frame.createNode(ObjectType.GraphicalFunction, name: "g1")
+        let p2 = frame.createNode(ObjectType.Auxiliary, name:"p2", attributes: ["formula": "0"])
         let points = [Point(0.0, 10.0), Point(1.0, 10.0)]
-        let g2 = frame.createNode(ObjectType.GraphicalFunction,
-                                  name: "g2",
-                                  attributes: ["graphical_function_points": Variant(points)])
-        let aux = frame.createNode(ObjectType.Auxiliary,
-                                   name:"a",
-                                   attributes: ["formula": "g1 + g2"])
+        let g2 = frame.createNode(ObjectType.GraphicalFunction, name: "g2", attributes: ["graphical_function_points": Variant(points)])
+        let aux = frame.createNode(ObjectType.Auxiliary, name:"a", attributes: ["formula": "g1 + g2"])
         
         frame.createEdge(ObjectType.Parameter, origin: g1, target: aux)
         frame.createEdge(ObjectType.Parameter, origin: g2, target: aux)

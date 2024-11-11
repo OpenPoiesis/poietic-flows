@@ -23,17 +23,19 @@ public enum ParameterStatus:Equatable {
 /// The domain view provides higher level view of the design through higher
 /// level concepts as defined in the ``FlowsMetamodel``.
 ///
-public class StockFlowView {
+public class StockFlowView<F: Frame>{
+    public typealias ViewedFrame = F
+    // TODO: associatedtype Snapshot: ObjectSnapshot
     /// Metamodel that the view uses to find relevant object types.
     public let metamodel: Metamodel
-    
+
     /// Graph that the view projects.
     ///
-    public let frame: Frame
+    public let frame: ViewedFrame
     
     /// Create a new view on top of a graph.
     ///
-    public init(_ frame: Frame) {
+    public init(_ frame: ViewedFrame) {
         self.metamodel = frame.design.metamodel
         self.frame = frame
     }
@@ -44,45 +46,36 @@ public class StockFlowView {
     ///
     /// - SeeAlso: ``StateVariable``, ``CompiledModel``
     ///
-    public var simulationNodes: [Node] {
-        frame.filterNodes {
-            $0.type.hasTrait(Trait.Formula)
-            || $0.type.hasTrait(Trait.Auxiliary)
+    public var simulationNodes: [any ObjectSnapshot] {
+        frame.filter {
+            $0.structure.type == .node
+            && ($0.type.hasTrait(Trait.Formula)
+                || $0.type.hasTrait(Trait.Auxiliary))
         }
     }
     
-    public var flowNodes: [Node] {
-        frame.filterNodes { $0.type === ObjectType.Flow }
+    public var flowNodes: [any ObjectSnapshot] {
+        frame.filter {
+            $0.structure.type == .node
+            && $0.type === ObjectType.Flow
+        }
     }
     
     /// Predicate that matches all objects that have a name through
     /// NamedComponent.
     ///
-    public var namedObjects: [(ObjectSnapshot, String)] {
+    public var namedObjects: [(any ObjectSnapshot, String)] {
         frame.filter(trait: Trait.Name).map {
             return ($0, $0.name!)
         }
     }
-    
-    /// List of all nodes that hold a simulation state and are therefore part
-    /// of the state vector.
-    ///
-    /// - SeeAlso: ``SimulationState``
-    ///
-    public var stateNodes: [Node] {
-        // For now we have only nodes with a formula component.
-        frame.filterNodes {
-            $0.type.hasTrait(Trait.Formula)
-        }
-    }
-    
-    
+
     // Parameter queries
     // ---------------------------------------------------------------------
     //
     /// Predicate that matches all edges that represent parameter connections.
     ///
-    public var parameterEdges: [Edge] {
+    public var parameterEdges: [EdgeSnapshot] {
         frame.filterEdges { $0.type === ObjectType.Parameter }
     }
     /// A neighbourhood for incoming parameters of a node.
@@ -90,7 +83,7 @@ public class StockFlowView {
     /// Focus node is a node where we would like to see nodes that
     /// are parameters for the node of focus.
     ///
-    public func incomingParameters(_ nodeID: ObjectID) -> Neighborhood {
+    public func incomingParameters(_ nodeID: ObjectID) -> Neighborhood<ViewedFrame> {
         frame.hood(nodeID,
                    selector: NeighborhoodSelector(
                     predicate: IsTypePredicate(ObjectType.Parameter),
@@ -105,7 +98,7 @@ public class StockFlowView {
     /// Predicate for an edge that fills a stocks. It originates in a flow,
     /// and terminates in a stock.
     ///
-    public var fillsEdges: [Edge] {
+    public var fillsEdges: [EdgeSnapshot] {
         frame.filterEdges { $0.type === ObjectType.Fills }
     }
     
@@ -121,7 +114,7 @@ public class StockFlowView {
     ///      |
     ///      *Node of interest*
     ///
-    public func fills(_ nodeID: ObjectID) -> Neighborhood {
+    public func fills(_ nodeID: ObjectID) -> Neighborhood<ViewedFrame> {
         frame.hood(nodeID,
                    selector: NeighborhoodSelector(
                     predicate: IsTypePredicate(ObjectType.Fills),
@@ -139,7 +132,7 @@ public class StockFlowView {
     ///      |
     ///      Neighbourhood (many)
     ///
-    public func inflows(_ nodeID: ObjectID) -> Neighborhood {
+    public func inflows(_ nodeID: ObjectID) -> Neighborhood<ViewedFrame> {
         frame.hood(nodeID,
                    selector: NeighborhoodSelector(
                     predicate: IsTypePredicate(ObjectType.Fills),
@@ -160,7 +153,7 @@ public class StockFlowView {
     ///      Neighbourhood (only one)
     ///
     ///
-    public func drains(_ nodeID: ObjectID) -> Neighborhood {
+    public func drains(_ nodeID: ObjectID) -> Neighborhood<ViewedFrame> {
         frame.hood(nodeID,
                    selector: NeighborhoodSelector(
                     predicate: IsTypePredicate(ObjectType.Drains),
@@ -179,7 +172,7 @@ public class StockFlowView {
     ///      Node of interest
     ///
     ///
-    public func outflows(_ nodeID: ObjectID) -> Neighborhood {
+    public func outflows(_ nodeID: ObjectID) -> Neighborhood<ViewedFrame> {
         frame.hood(nodeID,
                    selector: NeighborhoodSelector(
                     predicate: IsTypePredicate(ObjectType.Drains),
@@ -191,8 +184,8 @@ public class StockFlowView {
     /// Predicate for an edge that drains from a stocks. It originates in a
     /// stock and terminates in a flow.
     ///
-    public var drainsEdges: [Edge] {
-        frame.selectEdges(IsTypePredicate(ObjectType.Drains))
+    public var drainsEdges: [EdgeSnapshot] {
+        frame.filterEdges { $0.type === ObjectType.Drains }
     }
     
     
@@ -252,14 +245,9 @@ public class StockFlowView {
     ///
     /// - Throws: ``GraphCycleError`` when cycle was detected.
     ///
-    public func sortedNodesByParameter(_ nodes: [ObjectID]) throws (GraphCycleError) -> [Node] {
+    public func sortedNodesByParameter(_ nodes: [ObjectID]) throws (GraphCycleError) -> [any ObjectSnapshot] {
         let sorted = try frame.topologicalSort(nodes, edges: parameterEdges)
-        
-        let result: [Node] = sorted.map {
-            frame.node($0)
-        }
-        
-        return result
+        return sorted.map { frame.object($0) }
     }
     
     /// Get a node that the given flow fills.

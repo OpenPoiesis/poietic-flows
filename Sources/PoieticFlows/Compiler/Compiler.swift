@@ -53,12 +53,12 @@ public class Compiler {
     public let frame: StableFrame
     
     /// Flows domain view of the frame.
-    public let view: StockFlowView
+    public let view: StockFlowView<StableFrame>
 
     // MARK: - Compiler State
     // -----------------------------------------------------------------
 
-    private var orderedObjects: [ObjectSnapshot]
+    private var orderedObjects: [StableObject]
 
     /// List of simulation state variables.
     ///
@@ -197,6 +197,10 @@ public class Compiler {
     /// - Throws: A ``CompilerError`` when there are issues with the model
     ///   that are caused by the user.
     ///
+    /// - Note: The compilation is trying to gather as many errors as possible.
+    ///   It does not fail in the first error encountered unless the error
+    ///   might prevent from other steps to be executed.
+    ///   
     /// - SeeAlso: ``Simulator/init(_:simulation:)``
     ///
     public func compile() throws (CompilerError) -> CompiledModel {
@@ -215,7 +219,8 @@ public class Compiler {
         try compileStocksAndFlows()
         let bindings = try compileControlBindings()
         let defaults = try compileDefaults()
-
+        let charts = try compileCharts()
+        
         guard let timeIndex = namedReferences["time"] else {
             fatalError("No time variable within the builtins.")
         }
@@ -226,7 +231,7 @@ public class Compiler {
             builtins: self.builtins,
             timeVariableIndex: timeIndex,
             stocks: self.compiledStocks,
-            charts: view.charts,
+            charts: charts,
             valueBindings: bindings,
             simulationDefaults: defaults
         )
@@ -251,7 +256,7 @@ public class Compiler {
         
         // 2. Sort nodes based on computation dependency.
         
-        let ordered: [Node]
+        let ordered: [any ObjectSnapshot]
         
         do {
             ordered = try view.sortedNodesByParameter(unordered)
@@ -285,8 +290,9 @@ public class Compiler {
         if hasIssues {
             throw .hasIssues
         }
-        
-        self.orderedObjects = ordered.map { $0.snapshot }
+
+        // FIXME: [WIP] Verify this
+        self.orderedObjects = ordered.map { $0 as! StableObject }
     }
     
     func parseExpressions() throws (CompilerError) {
@@ -357,7 +363,7 @@ public class Compiler {
     /// - Throws: ``NodeIssuesError`` with list of issues for the node.
     /// - SeeAlso: ``compileFormulaNode(_:)``, ``compileGraphicalFunctionNode(_:)``.
     ///
-    func compile(_ object: ObjectSnapshot) throws (CompilerError) {
+    func compile(_ object: StableObject) throws (CompilerError) {
         let rep: ComputationalRepresentation
 
         if object.type.hasTrait(Trait.Formula) {
@@ -438,7 +444,7 @@ public class Compiler {
     /// - Throws: ``NodeIssueError`` if there is an issue with parameters,
     ///   function names or other variable names in the expression.
     ///
-    func compileFormulaObject(_ object: ObjectSnapshot) throws (CompilerError) -> ComputationalRepresentation {
+    func compileFormulaObject(_ object: StableObject) throws (CompilerError) -> ComputationalRepresentation {
         guard let unboundExpression = parsedExpressions[object.id] else {
             throw .attributeExpectationFailure(object.id, "formula")
         }
@@ -485,7 +491,7 @@ public class Compiler {
     ///
     /// - SeeAlso: ``CompiledGraphicalFunction``, ``Solver/evaluate(objectAt:with:)``
     ///
-    func compileGraphicalFunctionNode(_ object: ObjectSnapshot) throws (CompilerError) -> ComputationalRepresentation{
+    func compileGraphicalFunctionNode(_ object: StableObject) throws (CompilerError) -> ComputationalRepresentation{
         guard let points = try? object["graphical_function_points"]?.pointArray() else {
             throw CompilerError.attributeExpectationFailure(object.id, "graphical_function_points")
         }
@@ -506,7 +512,7 @@ public class Compiler {
     
     /// Compile a delay node.
     ///
-    func compileDelayNode(_ object: ObjectSnapshot) throws (CompilerError) -> ComputationalRepresentation{
+    func compileDelayNode(_ object: StableObject) throws (CompilerError) -> ComputationalRepresentation{
         let queueIndex = createStateVariable(content: .internalState(object.id),
                                              valueType: .doubles,
                                              name: "delay_queue_\(object.id)")
@@ -550,7 +556,7 @@ public class Compiler {
 
     /// Compile a value smoothing node.
     ///
-    func compileSmoothNode(_ object: ObjectSnapshot) throws (CompilerError) -> ComputationalRepresentation{
+    func compileSmoothNode(_ object: StableObject) throws (CompilerError) -> ComputationalRepresentation{
         let smoothValueIndex = createStateVariable(content: .internalState(object.id),
                                              valueType: .doubles,
                                              name: "smooth_value_\(object.id)")
@@ -600,7 +606,7 @@ public class Compiler {
         var inflows: [ObjectID: [ObjectID]] = [:]
         
         // This step is needed for proper computation of non-negative stocks
-        let sortedStocks: [ObjectSnapshot]
+        let sortedStocks: [StableObject]
         // Stock adjacencies without delayed input - break the cycle at stocks
         // with delayed_input=true.
         let adjacencies = view.stockAdjacencies().filter { !$0.targetHasDelayedInflow }
@@ -719,10 +725,27 @@ public class Compiler {
         return issues
     }
 
+    func compileCharts() throws (CompilerError) -> [Chart] {
+        let nodes = frame.filter { $0.type === ObjectType.Chart }
+        
+        var charts: [PoieticFlows.Chart] = []
+        for node in nodes {
+            let hood = frame.hood(node.id,
+                                  selector: NeighborhoodSelector(
+                                    predicate: IsTypePredicate(ObjectType.ChartSeries),
+                                    direction: .outgoing))
+            let series = hood.nodes.map { $0 }
+            let chart = PoieticFlows.Chart(node: node,
+                                           series: series)
+            charts.append(chart)
+        }
+        return charts
+    }
+    
     public func compileControlBindings() throws (CompilerError) -> [CompiledControlBinding] {
         var bindings: [CompiledControlBinding] = []
         for object in frame.filter(type: ObjectType.ValueBinding) {
-            guard let edge = Edge(object) else {
+            guard let edge = EdgeSnapshot(object) else {
                 throw .structureTypeMismatch(object.id)
             }
             

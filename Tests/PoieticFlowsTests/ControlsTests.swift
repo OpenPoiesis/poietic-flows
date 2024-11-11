@@ -30,21 +30,16 @@ final class TestControls: XCTestCase {
     }
     
     func testBinding() throws {
-        let a = frame.createNode(ObjectType.Auxiliary,
-                                 name: "a",
-                                 attributes: ["formula": "10"])
-        let control = frame.createNode(ObjectType.Control,
-                                 name: "control")
-        let _ = frame.createEdge(ObjectType.ValueBinding,
-                                       origin: control,
-                                       target: a)
+        let a = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "10"])
+        let control = frame.createNode(ObjectType.Control, name: "control")
+        let _ = frame.createEdge(ObjectType.ValueBinding, origin: control, target: a)
         try compile()
        
         XCTAssertEqual(model.valueBindings.count, 1)
         
         let binding = model.valueBindings[0]
         
-        XCTAssertEqual(binding.control, control)
-        XCTAssertEqual(binding.variableIndex, model.variableIndex(of: a))
+        XCTAssertEqual(binding.control, control.id)
+        XCTAssertEqual(binding.variableIndex, model.variableIndex(of: a.id))
     }
 }

@@ -31,12 +31,7 @@ extension BoundExpression {
 public enum ExpressionError: Error, CustomStringConvertible, Equatable {
     case unknownVariable(String)
     case unknownFunction(String)
-    // TODO: Remove
-    case tooManyArguments
-    // TODO: Remove
-    case missingArguments
     case invalidNumberOfArguments(Int, Int)
-    
     // TODO: Add argument name
     case argumentTypeMismatch(Int, String)
     
@@ -46,10 +41,6 @@ public enum ExpressionError: Error, CustomStringConvertible, Equatable {
             "Unknown variable '\(name)'"
         case let .unknownFunction(name):
             "Unknown function '\(name)'"
-        case .tooManyArguments:
-            "Too many arguments"
-        case .missingArguments:
-            "Missing arguments"
         case .invalidNumberOfArguments:
             "Invalid number of arguments"
         case let .argumentTypeMismatch(number, expected):
