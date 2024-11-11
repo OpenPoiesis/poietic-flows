@@ -30,7 +30,7 @@ final class TestCompiler: XCTestCase {
         frame.createNode(ObjectType.Stock, name: "a", attributes: ["formula": "0"])
         frame.createNode(ObjectType.Stock, name: "b", attributes: ["formula": "0"])
         frame.createNode(ObjectType.Stock, name: "c", attributes: ["formula": "0"])
-        frame.createNode(ObjectType.Note, name: "note", components: [])
+        frame.createNode(ObjectType.Note, name: "note")
         
         let compiler = Compiler(frame: try design.accept(frame))
         let compiled = try compiler.compile()
@@ -40,13 +40,40 @@ final class TestCompiler: XCTestCase {
         XCTAssertEqual(compiled.stateVariables.count, 3 + Simulator.BuiltinVariables.count)
     }
     
+    func testSortedNodes() throws {
+        // a -> b -> c
+        
+        let c = frame.createNode(ObjectType.Auxiliary, name: "c", attributes: ["formula": "b"])
+        let b = frame.createNode(ObjectType.Auxiliary, name: "b", attributes: ["formula": "a"])
+        let a = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "0"])
+        
+        
+        frame.createEdge(ObjectType.Parameter, origin: a, target: b)
+        frame.createEdge(ObjectType.Parameter, origin: b, target: c)
+        
+        let compiler = Compiler(frame: try design.accept(frame))
+        let compiled = try compiler.compile()
+
+        let sorted = compiled.simulationObjects
+        
+        if sorted.isEmpty {
+            XCTFail("Sorted expression nodes must not be empty")
+            return
+        }
+        
+        XCTAssertEqual(sorted.count, 3)
+        XCTAssertEqual(sorted[0].id, a.id)
+        XCTAssertEqual(sorted[1].id, b.id)
+        XCTAssertEqual(sorted[2].id, c.id)
+    }
+
     func testBadFunctionName() throws {
         let aux = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "nonexistent(10)"])
         
         let compiler = Compiler(frame: try design.accept(frame))
         XCTAssertThrowsError(try compiler.compile()) {
             guard $0 as? CompilerError != nil else {
-                XCTFail("Expected DomainError, got: \($0)")
+                XCTFail("Expected compiler error, got: \($0)")
                 return
             }
             let issues = compiler.issues(for: aux.id)
@@ -93,8 +120,8 @@ final class TestCompiler: XCTestCase {
         let flow = frame.createNode(ObjectType.Flow, name: "f", attributes: ["formula": "1"])
         let sink = frame.createNode(ObjectType.Stock, name: "sink", attributes: ["formula": "0"])
 
-        frame.createEdge(ObjectType.Drains, origin: source, target: flow, components: [])
-        frame.createEdge(ObjectType.Fills, origin: flow, target: sink, components: [])
+        frame.createEdge(ObjectType.Drains, origin: source, target: flow)
+        frame.createEdge(ObjectType.Fills, origin: flow, target: sink)
         
         let compiler = Compiler(frame: try design.accept(frame))
         let compiled = try compiler.compile()

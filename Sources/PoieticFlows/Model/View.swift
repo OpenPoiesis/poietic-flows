@@ -236,19 +236,6 @@ public class StockFlowView<F: Frame>{
         return result
     }
     
-    /// Sort the nodes based on their parameter dependency.
-    ///
-    /// The function returns nodes that are sorted in the order of computation.
-    /// If the parameter connections are valid and there are no cycles, then
-    /// the nodes in the returned list can be safely computed in the order as
-    /// returned.
-    ///
-    /// - Throws: ``GraphCycleError`` when cycle was detected.
-    ///
-    public func sortedNodesByParameter(_ nodes: [ObjectID]) throws (GraphCycleError) -> [any ObjectSnapshot] {
-        let sorted = try frame.topologicalSort(nodes, edges: parameterEdges)
-        return sorted.map { frame.object($0) }
-    }
     
     /// Get a node that the given flow fills.
     ///

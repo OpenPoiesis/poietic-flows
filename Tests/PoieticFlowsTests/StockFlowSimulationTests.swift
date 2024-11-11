@@ -63,9 +63,7 @@ final class TestStockFlowSimulation: XCTestCase {
     
     func testOrphanedInitialize() throws {
         
-        let a = frame.createNode(ObjectType.Auxiliary,
-                                 name: "a",
-                                 attributes: ["formula": "1"])
+        let a = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "1"])
         try compile()
         
         let sim = StockFlowSimulation(model)
@@ -124,7 +122,7 @@ final class TestStockFlowSimulation: XCTestCase {
         
         let flow = frame.createNode(ObjectType.Flow, name: "flow", attributes: ["formula": "10"])
         
-        frame.createEdge(ObjectType.Drains, origin: stock, target: flow, components: [])
+        frame.createEdge(ObjectType.Drains, origin: stock, target: flow)
         
         try compile()
         
@@ -143,7 +141,7 @@ final class TestStockFlowSimulation: XCTestCase {
         
         let flow = frame.createNode(ObjectType.Flow, name: "flow", attributes: ["formula": "10"])
         
-        frame.createEdge(ObjectType.Drains, origin: stock, target: flow, components: [])
+        frame.createEdge(ObjectType.Drains, origin: stock, target: flow)
         
         try compile()
         
@@ -161,7 +159,7 @@ final class TestStockFlowSimulation: XCTestCase {
         stock["allows_negative"] = Variant(false)
         let flow = frame.createNode(ObjectType.Flow, name: "flow", attributes: ["formula": "0 - 10"])
         
-        frame.createEdge(ObjectType.Fills, origin: flow, target: stock, components: [])
+        frame.createEdge(ObjectType.Fills, origin: flow, target: stock)
         
         try compile()
         
@@ -179,7 +177,7 @@ final class TestStockFlowSimulation: XCTestCase {
         stock["allows_negative"] = Variant(false)
         let flow = frame.createNode(ObjectType.Flow, name: "flow", attributes: ["formula": "-10"])
         
-        frame.createEdge(ObjectType.Drains, origin: stock, target: flow, components: [])
+        frame.createEdge(ObjectType.Drains, origin: stock, target: flow)
         
         try compile()
         
@@ -202,18 +200,14 @@ final class TestStockFlowSimulation: XCTestCase {
         let happyFlow = frame.createNode(ObjectType.Flow, name: "happy_flow", attributes: ["formula": "10"])
         happyFlow["priority"] = Variant(1)
         
-        frame.createEdge(ObjectType.Drains,
-                         origin: source, target: happyFlow, components: [])
-        frame.createEdge(ObjectType.Fills,
-                         origin: happyFlow, target: happy, components: [])
+        frame.createEdge(ObjectType.Drains, origin: source, target: happyFlow)
+        frame.createEdge(ObjectType.Fills, origin: happyFlow, target: happy)
         
         let sadFlow = frame.createNode(ObjectType.Flow, name: "sad_flow", attributes: ["formula": "10"])
         sadFlow["priority"] = Variant(2)
         
-        frame.createEdge(ObjectType.Drains,
-                         origin: source, target: sadFlow, components: [])
-        frame.createEdge(ObjectType.Fills,
-                         origin: sadFlow, target: sad, components: [])
+        frame.createEdge(ObjectType.Drains, origin: source, target: sadFlow)
+        frame.createEdge(ObjectType.Fills, origin: sadFlow, target: sad)
         
         try compile()
         
@@ -263,10 +257,8 @@ final class TestStockFlowSimulation: XCTestCase {
         let flow = frame.createNode(ObjectType.Flow, name: "pour", attributes: ["formula": "100"])
         let cup = frame.createNode(ObjectType.Stock, name: "cup", attributes: ["formula": "0"])
         
-        frame.createEdge(ObjectType.Drains,
-                         origin: kettle, target: flow, components: [])
-        frame.createEdge(ObjectType.Fills,
-                         origin: flow, target: cup, components: [])
+        frame.createEdge(ObjectType.Drains, origin: kettle, target: flow)
+        frame.createEdge(ObjectType.Fills, origin: flow, target: cup)
 
         try compile()
         
@@ -285,10 +277,8 @@ final class TestStockFlowSimulation: XCTestCase {
         let flow = frame.createNode(ObjectType.Flow, name: "pour", attributes: ["formula": "100"])
         let cup = frame.createNode(ObjectType.Stock, name: "cup", attributes: ["formula": "0"])
         
-        frame.createEdge(ObjectType.Drains,
-                         origin: kettle, target: flow, components: [])
-        frame.createEdge(ObjectType.Fills,
-                         origin: flow, target: cup, components: [])
+        frame.createEdge(ObjectType.Drains, origin: kettle, target: flow)
+        frame.createEdge(ObjectType.Fills, origin: flow, target: cup)
 
         try compile()
 
@@ -308,10 +298,8 @@ final class TestStockFlowSimulation: XCTestCase {
         let flow = frame.createNode(ObjectType.Flow, name: "pour", attributes: ["formula": "100"])
         let cup = frame.createNode(ObjectType.Stock, name: "cup", attributes: ["formula": "0"])
         
-        frame.createEdge(ObjectType.Drains,
-                         origin: kettle, target: flow, components: [])
-        frame.createEdge(ObjectType.Fills,
-                         origin: flow, target: cup, components: [])
+        frame.createEdge(ObjectType.Drains, origin: kettle, target: flow)
+        frame.createEdge(ObjectType.Fills, origin: flow, target: cup)
         
         try compile()
 

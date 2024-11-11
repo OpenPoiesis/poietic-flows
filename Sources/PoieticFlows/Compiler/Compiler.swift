@@ -222,7 +222,7 @@ public class Compiler {
         let charts = try compileCharts()
         
         guard let timeIndex = namedReferences["time"] else {
-            fatalError("No time variable within the builtins.")
+            fatalError("No time variable within the builtins")
         }
 
         return CompiledModel(
@@ -256,10 +256,10 @@ public class Compiler {
         
         // 2. Sort nodes based on computation dependency.
         
-        let ordered: [any ObjectSnapshot]
+        let ordered: [StableObject]
         
         do {
-            ordered = try view.sortedNodesByParameter(unordered)
+            ordered = try sortedNodesByParameter(unordered)
         }
         catch {
             var nodes: Set<ObjectID> = Set()
@@ -291,10 +291,23 @@ public class Compiler {
             throw .hasIssues
         }
 
-        // FIXME: [WIP] Verify this
-        self.orderedObjects = ordered.map { $0 as! StableObject }
+        self.orderedObjects = ordered
     }
-    
+
+    /// Sort the nodes based on their parameter dependency.
+    ///
+    /// The function returns nodes that are sorted in the order of computation.
+    /// If the parameter connections are valid and there are no cycles, then
+    /// the nodes in the returned list can be safely computed in the order as
+    /// returned.
+    ///
+    /// - Throws: ``GraphCycleError`` when cycle was detected.
+    ///
+    public func sortedNodesByParameter(_ nodes: [ObjectID]) throws (GraphCycleError) -> [StableObject] {
+        let sorted = try frame.topologicalSort(nodes, edges: view.parameterEdges)
+        return sorted.map { frame.object($0) }
+    }
+
     func parseExpressions() throws (CompilerError) {
         // TODO: This does not have to be in the Compiler
         parsedExpressions = [:]

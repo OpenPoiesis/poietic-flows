@@ -45,30 +45,6 @@ final class TestDomainView: XCTestCase {
 #endif
     }
     
-    func testSortedNodes() throws {
-        // a -> b -> c
-        
-        let c = frame.createNode(ObjectType.Auxiliary, name: "c", attributes: ["formula": "b"])
-        let b = frame.createNode(ObjectType.Auxiliary, name: "b", attributes: ["formula": "a"])
-        let a = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "0"])
-        
-        
-        frame.createEdge(ObjectType.Parameter, origin: a, target: b, components: [])
-        frame.createEdge(ObjectType.Parameter, origin: b, target: c, components: [])
-        
-        let view = StockFlowView(frame)
-        let sortedNodes = try view.sortedNodesByParameter([b.id, c.id, a.id])
-        
-        if sortedNodes.isEmpty {
-            XCTFail("Sorted expression nodes must not be empty")
-            return
-        }
-        
-        XCTAssertEqual(sortedNodes.count, 3)
-        XCTAssertEqual(sortedNodes[0].id, a.id)
-        XCTAssertEqual(sortedNodes[1].id, b.id)
-        XCTAssertEqual(sortedNodes[2].id, c.id)
-    }
     
     func testInvalidInput2() throws {
         let broken = frame.createNode(ObjectType.Stock, name: "broken", attributes: ["formula": "price"])
@@ -84,8 +60,8 @@ final class TestDomainView: XCTestCase {
         let unused = frame.createNode(ObjectType.Auxiliary, name: "unused", attributes: ["formula": "0"])
         let tested = frame.createNode(ObjectType.Auxiliary, name: "tested", attributes: ["formula": "used"])
         
-        let usedEdge = frame.createEdge(ObjectType.Parameter, origin: used, target: tested, components: [])
-        let unusedEdge = frame.createEdge(ObjectType.Parameter, origin: unused, target: tested, components: [])
+        let usedEdge = frame.createEdge(ObjectType.Parameter, origin: used, target: tested)
+        let unusedEdge = frame.createEdge(ObjectType.Parameter, origin: unused, target: tested)
         
         let view = StockFlowView(frame)
         
@@ -101,7 +77,7 @@ final class TestDomainView: XCTestCase {
         let known = frame.createNode(ObjectType.Auxiliary, name: "known", attributes: ["formula": "0"])
         let tested = frame.createNode(ObjectType.Auxiliary, name: "tested", attributes: ["formula": "known + unknown"])
         
-        let knownEdge = frame.createEdge(ObjectType.Parameter, origin: known, target: tested, components: [])
+        let knownEdge = frame.createEdge(ObjectType.Parameter, origin: known, target: tested)
         
         let view = StockFlowView(frame)
         
@@ -116,8 +92,8 @@ final class TestDomainView: XCTestCase {
         let source = frame.createNode(ObjectType.Stock, name: "source", attributes: ["formula": "0"])
         let sink = frame.createNode(ObjectType.Stock, name: "sink", attributes: ["formula": "0"])
         
-        frame.createEdge(ObjectType.Drains, origin: source, target: flow, components: [])
-        frame.createEdge(ObjectType.Fills, origin: flow, target: sink, components: [])
+        frame.createEdge(ObjectType.Drains, origin: source, target: flow)
+        frame.createEdge(ObjectType.Fills, origin: flow, target: sink)
         
         let view = StockFlowView(frame)
         
@@ -134,10 +110,10 @@ final class TestDomainView: XCTestCase {
         let inflow = frame.createNode(ObjectType.Flow, name: "inflow", attributes: ["formula": "0"])
         let outflow = frame.createNode(ObjectType.Flow, name: "outflow", attributes: ["formula": "0"])
 
-        frame.createEdge(ObjectType.Drains, origin: a, target: flow, components: [])
-        frame.createEdge(ObjectType.Fills, origin: flow, target: b, components: [])
-        frame.createEdge(ObjectType.Fills, origin: inflow, target: c, components: [])
-        frame.createEdge(ObjectType.Drains, origin: c, target: outflow, components: [])
+        frame.createEdge(ObjectType.Drains, origin: a, target: flow)
+        frame.createEdge(ObjectType.Fills, origin: flow, target: b)
+        frame.createEdge(ObjectType.Fills, origin: inflow, target: c)
+        frame.createEdge(ObjectType.Drains, origin: c, target: outflow)
 
         let view = StockFlowView(frame)
 
