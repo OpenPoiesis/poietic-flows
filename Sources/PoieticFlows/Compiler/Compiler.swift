@@ -242,12 +242,11 @@ public class Compiler {
     func initialize() throws (CompilerError) {
         issues = [:]
         
-        var unordered: [ObjectID] = []
+        let unorderedSimulationNodes = view.simulationNodes
         var homonyms: [String: [ObjectID]] = [:]
         
         // 1. Collect nodes relevant to the simulation
-        for node in view.simulationNodes {
-            unordered.append(node.id)
+        for node in unorderedSimulationNodes {
             guard let name = node.name else {
                 throw .attributeExpectationFailure(node.id, "name")
             }
@@ -255,19 +254,17 @@ public class Compiler {
         }
         
         // 2. Sort nodes based on computation dependency.
+        let parameterDependency = Graph(nodes: unorderedSimulationNodes,
+                                        edges: view.parameterEdges)
         
-        let ordered: [StableObject]
-        
-        do {
-            ordered = try sortedNodesByParameter(unordered)
-        }
-        catch {
+        guard let ordered = parameterDependency.topologicalSort() else {
+            let cycleEdges = parameterDependency.cycles()
             var nodes: Set<ObjectID> = Set()
-            for edgeID in error.edges {
-                let edge = frame.edge(edgeID)
+
+            for edge in cycleEdges {
                 nodes.insert(edge.origin)
                 nodes.insert(edge.target)
-                appendIssue(.computationCycle, for: edgeID)
+                appendIssue(.computationCycle, for: edge.id)
             }
             for node in nodes {
                 appendIssue(ObjectIssue.computationCycle, for: node)
@@ -291,22 +288,9 @@ public class Compiler {
             throw .hasIssues
         }
 
-        self.orderedObjects = ordered
+        self.orderedObjects = ordered.map { frame.object($0) }
     }
 
-    /// Sort the nodes based on their parameter dependency.
-    ///
-    /// The function returns nodes that are sorted in the order of computation.
-    /// If the parameter connections are valid and there are no cycles, then
-    /// the nodes in the returned list can be safely computed in the order as
-    /// returned.
-    ///
-    /// - Throws: ``GraphCycleError`` when cycle was detected.
-    ///
-    public func sortedNodesByParameter(_ nodes: [ObjectID]) throws (GraphCycleError) -> [StableObject] {
-        let sorted = try frame.topologicalSort(nodes, edges: view.parameterEdges)
-        return sorted.map { frame.object($0) }
-    }
 
     func parseExpressions() throws (CompilerError) {
         // TODO: This does not have to be in the Compiler
@@ -613,38 +597,33 @@ public class Compiler {
         let stocks = simulationObjects.filter { $0.type == .stock }
         let flows = simulationObjects.filter { $0.type == .flow }.compactMap { frame[$0.id] }
         
-        let unsortedStocks = stocks.map { $0.id }
         var flowPriorities: [ObjectID:Int] = [:]
         var outflows: [ObjectID: [ObjectID]] = [:]
         var inflows: [ObjectID: [ObjectID]] = [:]
         
         // This step is needed for proper computation of non-negative stocks
-        let sortedStocks: [StableObject]
         // Stock adjacencies without delayed input - break the cycle at stocks
         // with delayed_input=true.
         let adjacencies = view.stockAdjacencies().filter { !$0.targetHasDelayedInflow }
+        let adjacencySubgraph = Graph(nodes: stocks, edges: adjacencies)
         
-        do {
-            let sorted = try topologicalSort(unsortedStocks, edges: adjacencies)
-            sortedStocks = sorted.map { frame.object($0) }
-        }
-        catch {  // GraphCycleError
+        guard let sorted = adjacencySubgraph.topologicalSort() else {
+            let cycleEdges = adjacencySubgraph.cycles()
             var nodes: Set<ObjectID> = Set()
-            for adjacency in adjacencies {
-                // NOTE: The adjacency.id is ID of a flow connecting two stocks,
-                //       not an ID of a graph edge (as structural type)
-                guard error.edges.contains(adjacency.id) else {
-                    continue
-                }
-                nodes.insert(adjacency.origin)
-                nodes.insert(adjacency.target)
+
+            for edge in cycleEdges {
+                nodes.insert(edge.origin)
+                nodes.insert(edge.target)
+                appendIssue(.flowCycle, for: edge.id)
             }
             for node in nodes {
                 appendIssue(ObjectIssue.flowCycle, for: node)
             }
             throw .hasIssues
         }
-        
+
+        let sortedStocks = sorted.map { frame.object($0) }
+
         for edge in view.drainsEdges {
             let (stock, flow) = (edge.origin, edge.target)
             outflows[stock,default:[]].append(flow)
@@ -743,10 +722,10 @@ public class Compiler {
         
         var charts: [PoieticFlows.Chart] = []
         for node in nodes {
-            let hood = frame.hood(node.id,
-                                  selector: NeighborhoodSelector(
-                                    predicate: IsTypePredicate(ObjectType.ChartSeries),
-                                    direction: .outgoing))
+            let hood = frame.hood(node.id, direction: .outgoing) {
+                $0.type === ObjectType.ChartSeries
+            }
+                                  
             let series = hood.nodes.map { $0 }
             let chart = PoieticFlows.Chart(node: node,
                                            series: series)

@@ -46,7 +46,7 @@ public class StockFlowView<F: Frame>{
     ///
     /// - SeeAlso: ``StateVariable``, ``CompiledModel``
     ///
-    public var simulationNodes: [any ObjectSnapshot] {
+    public var simulationNodes: [ViewedFrame.Snapshot] {
         frame.filter {
             $0.structure.type == .node
             && ($0.type.hasTrait(Trait.Formula)
@@ -54,22 +54,13 @@ public class StockFlowView<F: Frame>{
         }
     }
     
-    public var flowNodes: [any ObjectSnapshot] {
+    public var flowNodes: [ViewedFrame.Snapshot] {
         frame.filter {
             $0.structure.type == .node
             && $0.type === ObjectType.Flow
         }
     }
     
-    /// Predicate that matches all objects that have a name through
-    /// NamedComponent.
-    ///
-    public var namedObjects: [(any ObjectSnapshot, String)] {
-        frame.filter(trait: Trait.Name).map {
-            return ($0, $0.name!)
-        }
-    }
-
     // Parameter queries
     // ---------------------------------------------------------------------
     //
@@ -84,18 +75,15 @@ public class StockFlowView<F: Frame>{
     /// are parameters for the node of focus.
     ///
     public func incomingParameters(_ nodeID: ObjectID) -> Neighborhood<ViewedFrame> {
-        frame.hood(nodeID,
-                   selector: NeighborhoodSelector(
-                    predicate: IsTypePredicate(ObjectType.Parameter),
-                    direction: .incoming
-                   )
-        )
+        frame.hood(nodeID, direction: .incoming) {
+            $0.type === ObjectType.Parameter
+        }
     }
     
     // Fills/drains queries
     // ---------------------------------------------------------------------
     //
-    /// Predicate for an edge that fills a stocks. It originates in a flow,
+    /// List of all edges that fill a stocks. It originates in a flow,
     /// and terminates in a stock.
     ///
     public var fillsEdges: [EdgeSnapshot] {
@@ -115,12 +103,9 @@ public class StockFlowView<F: Frame>{
     ///      *Node of interest*
     ///
     public func fills(_ nodeID: ObjectID) -> Neighborhood<ViewedFrame> {
-        frame.hood(nodeID,
-                   selector: NeighborhoodSelector(
-                    predicate: IsTypePredicate(ObjectType.Fills),
-                    direction: .outgoing
-                   )
-        )
+        frame.hood(nodeID, direction: .outgoing) {
+            $0.type === ObjectType.Fills
+        }
     }
     
     /// Selector for edges originating in a flow and ending in a stock denoting
@@ -133,12 +118,9 @@ public class StockFlowView<F: Frame>{
     ///      Neighbourhood (many)
     ///
     public func inflows(_ nodeID: ObjectID) -> Neighborhood<ViewedFrame> {
-        frame.hood(nodeID,
-                   selector: NeighborhoodSelector(
-                    predicate: IsTypePredicate(ObjectType.Fills),
-                    direction: .incoming
-                   )
-        )
+        frame.hood(nodeID, direction: .incoming) {
+            $0.type === ObjectType.Fills
+        }
     }
     /// Selector for an edge originating in a stock and ending in a flow denoting
     /// which stock the flow drains. There must be only one of such edges
@@ -154,12 +136,9 @@ public class StockFlowView<F: Frame>{
     ///
     ///
     public func drains(_ nodeID: ObjectID) -> Neighborhood<ViewedFrame> {
-        frame.hood(nodeID,
-                   selector: NeighborhoodSelector(
-                    predicate: IsTypePredicate(ObjectType.Drains),
-                    direction: .incoming
-                   )
-        )
+        frame.hood(nodeID, direction: .incoming) {
+            $0.type === ObjectType.Drains
+        }
     }
     /// Selector for edges originating in a stock and ending in a flow denoting
     /// the outflow from the stock to multiple flows.
@@ -173,15 +152,12 @@ public class StockFlowView<F: Frame>{
     ///
     ///
     public func outflows(_ nodeID: ObjectID) -> Neighborhood<ViewedFrame> {
-        frame.hood(nodeID,
-                   selector: NeighborhoodSelector(
-                    predicate: IsTypePredicate(ObjectType.Drains),
-                    direction: .incoming
-                   )
-        )
+        frame.hood(nodeID, direction: .outgoing) {
+            $0.type === ObjectType.Drains
+        }
     }
     
-    /// Predicate for an edge that drains from a stocks. It originates in a
+    /// List of all edges that drain from a stocks. It originates in a
     /// stock and terminates in a flow.
     ///
     public var drainsEdges: [EdgeSnapshot] {
@@ -198,6 +174,7 @@ public class StockFlowView<F: Frame>{
         }
         return references
     }
+    
     public func builtinReferences(names: [String:ObjectID]) -> [String:StateVariable.Content] {
         var references: [String:StateVariable.Content] = [:]
         for (name, id) in names {

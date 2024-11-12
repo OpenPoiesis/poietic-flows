@@ -120,10 +120,8 @@ extension Metamodel {
                       """,
                 match: IsTypePredicate(ObjectType.GraphicalFunction),
                 requirement: UniqueNeighbourRequirement(
-                    NeighborhoodSelector(
-                        predicate: IsTypePredicate(ObjectType.Parameter),
-                        direction: .incoming
-                    ),
+                    IsTypePredicate(ObjectType.Parameter),
+                    direction: .incoming,
                     required: false
                 )
             ),

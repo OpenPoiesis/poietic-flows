@@ -74,7 +74,7 @@ public enum ComputationalRepresentation: CustomStringConvertible {
 /// - SeeAlso: ``ComputationalRepresentation``,
 ///   ``Solver/evaluate(objectAt:with:)``
 ///
-public struct SimulationObject: CustomStringConvertible {
+public struct SimulationObject: CustomStringConvertible, Identifiable {
     /// ID of the object, usually a node, that is being represented.
     ///
     public let id: ObjectID
@@ -291,7 +291,7 @@ public struct CompiledSmooth {
 
 /// Describes a connection between two stocks through a flow.
 ///
-public struct StockAdjacency: EdgeType {
+public struct StockAdjacency: EdgeProtocol {
     /// OD of a flow that connects the two stocks
     public let id: ObjectID
     /// ID of a stock being drained by the flow.
