@@ -24,7 +24,6 @@ the compiler.
 ### Compiled Model Components
 
 - ``BuiltinVariable``
-- ``ChartSeries``
 - ``Chart``
 - ``CompiledBuiltin``
 - ``CompiledControlBinding``
@@ -35,9 +34,7 @@ the compiler.
 - ``ComputationalRepresentation``
 - ``SimulationDefaults``
 - ``SimulationObject``
-- ``SimulationVariableType``
 - ``StateVariable``
-- ``StateVariableContent``
 - ``StockAdjacency``
 
 ### Systems
@@ -59,4 +56,3 @@ Note: This is part of experimental architecture.
 - ``BoundVariable``
 - ``ExpressionError``
 - ``bindExpression(_:variables:names:functions:)``
-- ``ParsedFormula``

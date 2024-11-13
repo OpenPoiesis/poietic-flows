@@ -25,7 +25,6 @@ public enum ParameterStatus:Equatable {
 ///
 public class StockFlowView<F: Frame>{
     public typealias ViewedFrame = F
-    // TODO: associatedtype Snapshot: ObjectSnapshot
     /// Metamodel that the view uses to find relevant object types.
     public let metamodel: Metamodel
 
@@ -190,11 +189,10 @@ public class StockFlowView<F: Frame>{
     ///
     public func parameters(_ nodeID: ObjectID,
                            required: [String]) -> [String:ParameterStatus] {
-        let incomingHood = incomingParameters(nodeID)
         var unseen: Set<String> = Set(required)
         var result: [String: ParameterStatus] = [:]
         
-        for edge in incomingHood.edges {
+        for edge in incomingParameters(nodeID).edges {
             let node = frame.node(edge.origin)
             let name = node.name!
             if unseen.contains(name) {

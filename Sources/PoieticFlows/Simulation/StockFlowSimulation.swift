@@ -117,6 +117,10 @@ public class StockFlowSimulation: Simulation {
     }
 
     // MARK: - Computation
+    /// Update the simulation state.
+    ///
+    /// This is the main method that performs the concrete computation using a concrete solver.
+    ///
     public func update(_ state: inout SimulationState) throws {
         switch solver {
         case .euler:
@@ -146,9 +150,9 @@ public class StockFlowSimulation: Simulation {
     ///     - state: simulation state within which the expression is evaluated
     ///
     /// - Throws: ``SimulationError``
+    /// - SeeAlso: ``CompiledModel/stateVariables``
     ///
-    public func update(objectAt index: Int,
-                       in state: inout SimulationState) throws {
+    public func update(objectAt index: Int, in state: inout SimulationState) throws {
         let object = model.simulationObjects[index]
         let result: Variant
         
@@ -175,8 +179,7 @@ public class StockFlowSimulation: Simulation {
     ///
     /// - SeeAlso: ``CompiledDelay``
     ///
-    public func update(delay: CompiledDelay,
-                       in state: inout SimulationState) throws -> Variant {
+    public func update(delay: CompiledDelay, in state: inout SimulationState) throws -> Variant {
         guard case let .atom(inputValue) = state[delay.inputValueIndex] else {
             // TODO: Runtime error
             fatalError("Expected atom for delay input value, got array (runtime error)")
@@ -219,8 +222,7 @@ public class StockFlowSimulation: Simulation {
     /// - _s_: smooth value
     /// - _α = Δt / w_
     ///
-    public func update(smooth: CompiledSmooth,
-                       in state: inout SimulationState) throws -> Variant {
+    public func update(smooth: CompiledSmooth, in state: inout SimulationState) throws -> Variant {
         
         let inputValue = try state[smooth.inputValueIndex].doubleValue()
         let oldSmooth = state.double(at: smooth.smoothValueIndex)
@@ -238,8 +240,7 @@ public class StockFlowSimulation: Simulation {
     /// - Returns: A state vector that contains difference values for each
     /// stock.
     ///
-    public func stockDifference(state: SimulationState,
-                                time: Double) throws -> NumericVector {
+    public func stockDifference(state: SimulationState, time: Double) throws -> NumericVector {
         var estimate = state
         var deltaVector = NumericVector(zeroCount: stocks.count)
 
@@ -262,7 +263,6 @@ public class StockFlowSimulation: Simulation {
     ///
     /// - Parameters:
     ///     - stock: Stock for which the difference is being computed
-    ///     - time: Simulation time at which we are computing
     ///     - state: Simulation state vector
     ///
     /// The flows in the state vector will be updated based on constraints.
@@ -277,8 +277,7 @@ public class StockFlowSimulation: Simulation {
     /// - Precondition: The simulation state vector must have all variables
     ///   that are required to compute the stock difference.
     ///
-    public func computeStockDelta(_ stock: CompiledStock,
-                                  in state: inout SimulationState) throws -> Double {
+    public func computeStockDelta(_ stock: CompiledStock, in state: inout SimulationState) throws -> Double {
         var totalInflow: Double = 0.0
         var totalOutflow: Double = 0.0
         

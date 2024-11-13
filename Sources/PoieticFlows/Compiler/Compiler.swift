@@ -768,7 +768,7 @@ public class Compiler {
     /// - Parameters:
     ///     - content: Content of the state variable – either an object or a
     ///       builtin.
-    ///       See ``StateVariableContent`` for more information.
+    ///       See ``StateVariable/Content`` for more information.
     ///     - valueType: Type of the state variable value.
     ///     - name: Name of the state variable.
     ///

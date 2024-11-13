@@ -7,10 +7,10 @@
 
 import PoieticCore
 
-/// An issue detected by the ``NodeIssuesError`` or the ``Compiler``.
+/// An issue detected by the compiler.
 ///
-/// The issues are usually grouped in a ``NodeIssuesError``, so that as
-/// many issues are presented to the user as possible.
+///
+/// - SeeAlso: ``Compiler/issues``, ``Compiler/issues(for:)``, ``Compiler/hasIssues``, ``Compiler/compile()``
 ///
 public enum ObjectIssue: Equatable, CustomStringConvertible, Error {
     /// An error caused by a syntax error in the formula (arithmetic expression).

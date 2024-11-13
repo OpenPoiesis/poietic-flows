@@ -25,7 +25,7 @@ import Darwin
 ///
 /// - `__neg__` is `-` unary minus
 ///
-/// - SeeAlso: ``bindExpression(_:variables:functions:)``
+/// - SeeAlso: ``bindExpression(_:variables:names:functions:)``
 ///
 nonisolated(unsafe) public let BuiltinUnaryOperators: [Function] = [
     .NumericUnary("__neg__") { -$0 }
@@ -41,7 +41,7 @@ nonisolated(unsafe) public let BuiltinUnaryOperators: [Function] = [
 /// - `__div__` is `/` division
 /// - `__mod__` is `%` remainder
 ///
-/// - SeeAlso: ``bindExpression(_:variables:functions:)``
+/// - SeeAlso: ``bindExpression(_:variables:names:functions:)``
 ///
 nonisolated(unsafe) public let BuiltinBinaryOperators: [Function] = [
     .NumericBinary("__add__") { $0 + $1 },

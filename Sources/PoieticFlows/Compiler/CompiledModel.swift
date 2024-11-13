@@ -10,7 +10,7 @@ import PoieticCore
 /// Defaults fro simulation taken from an object with a trait
 /// ``PoieticCore/Trait/Simulation``.
 ///
-/// - SeeAlso: ``Simulator/init(model:solverType:)``
+/// - SeeAlso: ``Simulator/init(_:simulation:)``
 ///
 public struct SimulationDefaults {
     public let initialTime: Double
@@ -58,8 +58,7 @@ public struct SimulationDefaults {
 ///  "explain plan" in SQL. It contains some information how the simulation
 ///   will be carried out.
 ///
-/// - SeeAlso: ``Compiler/compile()``, ``Solver/init(_:)``,
-///   ``Simulator/init(model:solverType:)``
+/// - SeeAlso: ``Compiler/compile()``, ``StockFlowSimulation``,
 ///
 public struct CompiledModel {
     // TODO: Alternative names: SimulationModel, ComputationalModel, InternalRepresentation, SimulableRepresentation, SRep, ResolvedModel, ExecutableModel
@@ -95,7 +94,12 @@ public struct CompiledModel {
     /// The internal state is typically not user-presentable and is a state
     /// associated with stateful functions or other computation objects.
     ///
-    /// - SeeAlso: ``Compiler/stateVariables``
+    /// A state of a variable is computed in the simulator with
+    /// ``StockFlowSimulation/update(_:)``.
+    ///
+    /// - SeeAlso: ``StockFlowSimulation/initialize(_:)``,
+    ///     ``StockFlowSimulation/update(objectAt:in:)``,
+    ///      ``Compiler/stateVariables``
     ///
     public let stateVariables: [StateVariable]
     
@@ -126,7 +130,6 @@ public struct CompiledModel {
     /// - SeeAlso:  ``stateVariables``, ``simulationObject(_:)``
     ///
     public func variableIndex(of id: ObjectID) -> SimulationState.Index? {
-        // TODO: Do we need a pre-computed map here or are we fine with O(n)?
         // Since this is just for debug purposes, O(n) should be fine, no need
         // for added complexity of the code.
         guard let first = simulationObjects.first(where: {$0.id == id}) else {
@@ -140,6 +143,8 @@ public struct CompiledModel {
     ///
     /// This function is not used during computation, it is provided for
     /// consumers of the simulation state or simulation result.
+    ///
+    /// The objects are computed with ``StockFlowSimulation/update(objectAt:in:)``.
     ///
     /// - Complexity: O(n)
     /// - SeeAlso: ``simulationObjects``, ``variableIndex(of:)``
@@ -158,10 +163,13 @@ public struct CompiledModel {
     ///
     /// See ``CompiledStock`` for more information.
     ///
-    /// - SeeAlso: ``Solver/stockDifference(state:at:timeDelta:)``,
+    /// - SeeAlso: ``StockFlowSimulation/computeStockDelta(_:in:)``,
+    /// ``StockFlowSimulation/stockDifference(state:time:)``
     ///
     public let stocks: [CompiledStock]
     
+    /// Indices of variables representing stocks.
+    ///
     public var stockIndices: [SimulationState.Index] {
         stocks.map { $0.variableIndex }
     }
@@ -171,7 +179,8 @@ public struct CompiledModel {
     ///
     /// This property is used in computation.
     ///
-    /// - SeeAlso: ``Solver/computeStockDelta(_:at:with:)``
+    /// - SeeAlso: ``StockFlowSimulation/computeStockDelta(_:in:)``,
+    /// ``StockFlowSimulation/stockDifference(state:time:)``
     ///
     /// - Complexity: O(n)
     ///

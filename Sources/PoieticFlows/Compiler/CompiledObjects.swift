@@ -72,7 +72,7 @@ public enum ComputationalRepresentation: CustomStringConvertible {
 /// represents the object's state and what is the type of the stored value.
 ///
 /// - SeeAlso: ``ComputationalRepresentation``,
-///   ``Solver/evaluate(objectAt:with:)``
+///   ``StockFlowSimulation/evaluate(expression:with:)``
 ///
 public struct SimulationObject: CustomStringConvertible, Identifiable {
     /// ID of the object, usually a node, that is being represented.
@@ -116,8 +116,7 @@ public struct SimulationObject: CustomStringConvertible, Identifiable {
 /// The enum is used during computation to set value of a builtin variable.
 ///
 /// - SeeAlso: ``CompiledBuiltin``,
-/// ``Solver/updateBuiltins(_:time:timeDelta:),
-/// ``Solver/initializeState(override:time:timeDelta:)
+/// ``StockFlowSimulation/initialize(_:)``,
 ///
 public enum BuiltinVariable: Equatable, CustomStringConvertible {
     case time
@@ -142,8 +141,7 @@ public enum BuiltinVariable: Equatable, CustomStringConvertible {
 /// variable.
 ///
 /// - SeeAlso: ``CompiledModel/stateVariables``,
-/// ``Solver/updateBuiltins(_:time:timeDelta:),
-/// ``Solver/initializeState(override:time:timeDelta:)
+/// ``StockFlowSimulation/initialize(_:)``
 ///
 public struct CompiledBuiltin {
     /// Builtin being represented by a variable.
@@ -161,7 +159,7 @@ public struct CompiledBuiltin {
 ///
 /// This structure is used during computation.
 ///
-/// - SeeAlso: ``Solver/computeStockDelta(_:at:with:)``
+/// - SeeAlso: ``StockFlowSimulation/computeStockDelta(_:in:)``
 ///
 public struct CompiledStock {
     /// Object ID of the stock that this compiled structure represents.
@@ -198,14 +196,14 @@ public struct CompiledStock {
     /// List indices of simulation variables representing flows
     /// which fill the stock.
     ///
-    /// - SeeAlso: ``Solver/computeStockDelta(_:at:with:)``
+    /// - SeeAlso: ``StockFlowSimulation/computeStockDelta(A
     ///
     public let inflows: [SimulationState.Index]
 
     /// List indices of simulation variables representing flows
     /// which drain the stock.
     ///
-    /// - SeeAlso: ``Solver/computeStockDelta(_:at:with:)``
+    /// - SeeAlso: ``StockFlowSimulation/computeStockDelta(A
     ///
     public let outflows: [SimulationState.Index]
 }
@@ -214,7 +212,7 @@ public struct CompiledStock {
 ///
 /// This structure is used during computation.
 ///
-/// - SeeAlso: ``Solver/computeStockDelta(_:at:with:)``
+/// - SeeAlso: ``StockFlowSimulation/computeStockDelta(A
 ///
 struct CompiledFlow {
     /// Object ID of the flow that this compiled structure represents.
@@ -231,8 +229,6 @@ struct CompiledFlow {
 
 /// A structure representing a concrete instance of a graphical function
 /// in the context of a graph.
-///
-/// - SeeAlso: ``Compiler/compileGraphicalFunctionNode(_:)``, ``Solver/evaluate(objectAt:with:)``
 ///
 public struct CompiledGraphicalFunction {
     /// ID of a node where the function is defined
@@ -264,33 +260,55 @@ public struct CompiledControlBinding {
 }
 
 // TODO: add at least smoothing (SMTH1)
+/// Compiled delay node.
+///
+/// - SeeAlso: ``StockFlowSimulation/initialize(delay:in:)``
+///
 public struct CompiledDelay {
+    /// Number of steps to delay the input value by.
     public let steps: Int
+    
+    /// Initial value of the delay node output.
+    ///
+    /// The initial value is used before the simulation reaches the required number of steps.
+    /// If the initial value is not provided, then the initial value of the input is used.
     public let initialValue: Variant?
+
+    /// Value type of the input and output.
     public let valueType: AtomType
 
     /// Index where the actual initial value is stored. The initial value
     /// can be either the ``initialValue`` if provided, or the input
     /// value during initialisation.
     ///
-    /// - SeeAlso: ``Solver/initialize(delay:with:)``
-    /// 
+    /// - SeeAlso: ``StockFlowSimulation/initialize(delay:in:)``
+    ///
     public let initialValueIndex: SimulationState.Index
     public let queueIndex: SimulationState.Index
     public let inputValueIndex: SimulationState.Index
 }
+
+/// Compiled smooth node.
+///
+/// - SeeAlso: ``StockFlowSimulation/initialize(smooth:in:)``
+///
 public struct CompiledSmooth {
+    /// Time window over which the smooth is computed.
     public let windowTime: Double
 
     /// Index where the current smoothing value is stored.
     ///
     public let smoothValueIndex: SimulationState.Index
+    
+    /// Index of the value where the smooth node input is stored.
     public let inputValueIndex: SimulationState.Index
 }
 
 
 /// Describes a connection between two stocks through a flow.
 ///
+/// - SeeAlso: ``StockFlowSimulation/stockDifference(state:time:)``
+/// 
 public struct StockAdjacency: EdgeProtocol {
     /// OD of a flow that connects the two stocks
     public let id: ObjectID

@@ -29,7 +29,9 @@ public struct SimulationState: CustomStringConvertible {
     /// - Variables that represent design objects, described by ``StateVariable``.
     /// - Internal variables used by some nodes, such as delay.
     ///
-    /// - SeeAlso: ``CompiledModel/stateVariables``, ``StateVariable``,
+    /// - SeeAlso: ``StockFlowSimulation/update(_:)``,
+    ///   ``CompiledModel/stateVariables``,
+    ///   ``StateVariable``,
     ///   ``Compiler/createStateVariable(content:valueType:name:)``
     ///
     public var values: [Variant]
