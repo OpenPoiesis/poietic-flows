@@ -1,4 +1,10 @@
 {
+  "abstract" : [
+    {
+      "text" : "Create a chart object.",
+      "type" : "text"
+    }
+  ],
   "hierarchy" : {
     "paths" : [
       [
@@ -14,7 +20,7 @@
   },
   "kind" : "symbol",
   "metadata" : {
-    "externalID" : "s:12PoieticFlows5ChartV4node6seriesAC0A4Core14ObjectSnapshotC_SayAHGtcfc",
+    "externalID" : "s:12PoieticFlows5ChartV4node6seriesAC0A4Core12StableObjectC_SayAHGtcfc",
     "fragments" : [
       {
         "kind" : "identifier",
@@ -34,8 +40,8 @@
       },
       {
         "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:11PoieticCore14ObjectSnapshotC",
-        "text" : "ObjectSnapshot"
+        "preciseIdentifier" : "s:11PoieticCore12StableObjectC",
+        "text" : "StableObject"
       },
       {
         "kind" : "text",
@@ -51,8 +57,8 @@
       },
       {
         "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:11PoieticCore14ObjectSnapshotC",
-        "text" : "ObjectSnapshot"
+        "preciseIdentifier" : "s:11PoieticCore12StableObjectC",
+        "text" : "StableObject"
       },
       {
         "kind" : "text",
@@ -98,8 +104,8 @@
             },
             {
               "kind" : "typeIdentifier",
-              "preciseIdentifier" : "s:11PoieticCore14ObjectSnapshotC",
-              "text" : "ObjectSnapshot"
+              "preciseIdentifier" : "s:11PoieticCore12StableObjectC",
+              "text" : "StableObject"
             },
             {
               "kind" : "text",
@@ -115,8 +121,8 @@
             },
             {
               "kind" : "typeIdentifier",
-              "preciseIdentifier" : "s:11PoieticCore14ObjectSnapshotC",
-              "text" : "ObjectSnapshot"
+              "preciseIdentifier" : "s:11PoieticCore12StableObjectC",
+              "text" : "StableObject"
             },
             {
               "kind" : "text",
@@ -213,7 +219,10 @@
 },
 "doc://PoieticFlows/documentation/PoieticFlows/Chart/init(node:series:)": {
   "abstract" : [
-
+    {
+      "text" : "Create a chart object.",
+      "type" : "text"
+    }
   ],
   "fragments" : [
     {
@@ -234,8 +243,8 @@
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:11PoieticCore14ObjectSnapshotC",
-      "text" : "ObjectSnapshot"
+      "preciseIdentifier" : "s:11PoieticCore12StableObjectC",
+      "text" : "StableObject"
     },
     {
       "kind" : "text",
@@ -251,8 +260,8 @@
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:11PoieticCore14ObjectSnapshotC",
-      "text" : "ObjectSnapshot"
+      "preciseIdentifier" : "s:11PoieticCore12StableObjectC",
+      "text" : "StableObject"
     },
     {
       "kind" : "text",

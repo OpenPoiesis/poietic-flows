@@ -20,7 +20,7 @@
   },
   "kind" : "symbol",
   "metadata" : {
-    "externalID" : "s:12PoieticFlows8CompilerC18validateParameters_8requiredSayAA9NodeIssueOGs6UInt64V_SaySSGtF",
+    "externalID" : "s:12PoieticFlows8CompilerC18validateParameters_8requiredSayAA11ObjectIssueOGs6UInt64V_SaySSGtF",
     "fragments" : [
       {
         "kind" : "keyword",
@@ -66,8 +66,8 @@
       },
       {
         "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:12PoieticFlows9NodeIssueO",
-        "text" : "NodeIssue"
+        "preciseIdentifier" : "s:12PoieticFlows11ObjectIssueO",
+        "text" : "ObjectIssue"
       },
       {
         "kind" : "text",
@@ -154,10 +154,10 @@
               "text" : "]) -> ["
             },
             {
-              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NodeIssue",
+              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ObjectIssue",
               "kind" : "typeIdentifier",
-              "preciseIdentifier" : "s:12PoieticFlows9NodeIssueO",
-              "text" : "NodeIssue"
+              "preciseIdentifier" : "s:12PoieticFlows11ObjectIssueO",
+              "text" : "ObjectIssue"
             },
             {
               "kind" : "text",
@@ -248,7 +248,7 @@
               "type" : "text"
             },
             {
-              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NodeIssue\/unknownParameter(_:)",
+              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ObjectIssue\/unknownParameter(_:)",
               "isActive" : true,
               "type" : "reference"
             },
@@ -261,7 +261,7 @@
               "type" : "text"
             },
             {
-              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NodeIssue\/unusedInput(_:)",
+              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ObjectIssue\/unusedInput(_:)",
               "isActive" : true,
               "type" : "reference"
             },
@@ -401,7 +401,7 @@
               "type" : "text"
             },
             {
-              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NodeIssue",
+              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ObjectIssue",
               "isActive" : true,
               "type" : "reference"
             },
@@ -573,8 +573,8 @@
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:12PoieticFlows9NodeIssueO",
-      "text" : "NodeIssue"
+      "preciseIdentifier" : "s:12PoieticFlows11ObjectIssueO",
+      "text" : "ObjectIssue"
     },
     {
       "kind" : "text",
@@ -588,28 +588,10 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/compiler\/validateparameters(_:required:)"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/NodeIssue": {
+"doc://PoieticFlows/documentation/PoieticFlows/ObjectIssue": {
   "abstract" : [
     {
-      "text" : "An issue detected by the ",
-      "type" : "text"
-    },
-    {
-      "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NodeIssuesError",
-      "isActive" : true,
-      "type" : "reference"
-    },
-    {
-      "text" : " or the ",
-      "type" : "text"
-    },
-    {
-      "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Compiler",
-      "isActive" : true,
-      "type" : "reference"
-    },
-    {
-      "text" : ".",
+      "text" : "An issue detected by the compiler.",
       "type" : "text"
     }
   ],
@@ -624,23 +606,23 @@
     },
     {
       "kind" : "identifier",
-      "text" : "NodeIssue"
+      "text" : "ObjectIssue"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NodeIssue",
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ObjectIssue",
   "kind" : "symbol",
   "navigatorTitle" : [
     {
       "kind" : "identifier",
-      "text" : "NodeIssue"
+      "text" : "ObjectIssue"
     }
   ],
   "role" : "symbol",
-  "title" : "NodeIssue",
+  "title" : "ObjectIssue",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/nodeissue"
+  "url" : "\/documentation\/poieticflows\/objectissue"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/NodeIssue/unknownParameter(_:)": {
+"doc://PoieticFlows/documentation/PoieticFlows/ObjectIssue/unknownParameter(_:)": {
   "abstract" : [
     {
       "text" : "Parameter in a formula is not connected from a node.",
@@ -674,14 +656,14 @@
       "text" : ")"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NodeIssue\/unknownParameter(_:)",
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ObjectIssue\/unknownParameter(_:)",
   "kind" : "symbol",
   "role" : "symbol",
-  "title" : "NodeIssue.unknownParameter(_:)",
+  "title" : "ObjectIssue.unknownParameter(_:)",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/nodeissue\/unknownparameter(_:)"
+  "url" : "\/documentation\/poieticflows\/objectissue\/unknownparameter(_:)"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/NodeIssue/unusedInput(_:)": {
+"doc://PoieticFlows/documentation/PoieticFlows/ObjectIssue/unusedInput(_:)": {
   "abstract" : [
     {
       "text" : "Parameter connected to a node is not used in the formula.",
@@ -715,46 +697,12 @@
       "text" : ")"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NodeIssue\/unusedInput(_:)",
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ObjectIssue\/unusedInput(_:)",
   "kind" : "symbol",
   "role" : "symbol",
-  "title" : "NodeIssue.unusedInput(_:)",
+  "title" : "ObjectIssue.unusedInput(_:)",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/nodeissue\/unusedinput(_:)"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/NodeIssuesError": {
-  "abstract" : [
-    {
-      "text" : "An aggregate error of multiple issues grouped by a node.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "struct"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "NodeIssuesError"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NodeIssuesError",
-  "kind" : "symbol",
-  "navigatorTitle" : [
-    {
-      "kind" : "identifier",
-      "text" : "NodeIssuesError"
-    }
-  ],
-  "role" : "symbol",
-  "title" : "NodeIssuesError",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/nodeissueserror"
+  "url" : "\/documentation\/poieticflows\/objectissue\/unusedinput(_:)"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/PoieticCore/ObjectType/Parameter": {
   "abstract" : [

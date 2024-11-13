@@ -36,7 +36,7 @@
   },
   "kind" : "symbol",
   "metadata" : {
-    "externalID" : "s:12PoieticFlows13StockFlowViewC6drainsy0A4Core12NeighborhoodCs6UInt64VF",
+    "externalID" : "s:12PoieticFlows13StockFlowViewC6drainsy0A4Core12NeighborhoodCyxGs6UInt64VF",
     "fragments" : [
       {
         "kind" : "keyword",
@@ -67,6 +67,35 @@
         "kind" : "typeIdentifier",
         "preciseIdentifier" : "s:11PoieticCore12NeighborhoodC",
         "text" : "Neighborhood"
+      },
+      {
+        "kind" : "text",
+        "text" : "<"
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:12PoieticFlows13StockFlowViewC",
+        "text" : "StockFlowView"
+      },
+      {
+        "kind" : "text",
+        "text" : "<"
+      },
+      {
+        "kind" : "typeIdentifier",
+        "text" : "F"
+      },
+      {
+        "kind" : "text",
+        "text" : ">."
+      },
+      {
+        "kind" : "typeIdentifier",
+        "text" : "ViewedFrame"
+      },
+      {
+        "kind" : "text",
+        "text" : ">"
       }
     ],
     "modules" : [
@@ -135,6 +164,36 @@
               "kind" : "typeIdentifier",
               "preciseIdentifier" : "s:11PoieticCore12NeighborhoodC",
               "text" : "Neighborhood"
+            },
+            {
+              "kind" : "text",
+              "text" : "<"
+            },
+            {
+              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowView",
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:12PoieticFlows13StockFlowViewC",
+              "text" : "StockFlowView"
+            },
+            {
+              "kind" : "text",
+              "text" : "<"
+            },
+            {
+              "kind" : "typeIdentifier",
+              "text" : "F"
+            },
+            {
+              "kind" : "text",
+              "text" : ">."
+            },
+            {
+              "kind" : "typeIdentifier",
+              "text" : "ViewedFrame"
+            },
+            {
+              "kind" : "text",
+              "text" : ">"
             }
           ]
         }
@@ -331,6 +390,35 @@
       "kind" : "typeIdentifier",
       "preciseIdentifier" : "s:11PoieticCore12NeighborhoodC",
       "text" : "Neighborhood"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows13StockFlowViewC",
+      "text" : "StockFlowView"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "F"
+    },
+    {
+      "kind" : "text",
+      "text" : ">."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "ViewedFrame"
+    },
+    {
+      "kind" : "text",
+      "text" : ">"
     }
   ],
   "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowView\/drains(_:)",

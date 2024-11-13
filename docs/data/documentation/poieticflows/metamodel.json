@@ -271,6 +271,41 @@
                 {
                   "inlineContent" : [
                     {
+                      "code" : "Smooth",
+                      "type" : "codeVoice"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ],
+              [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "Exponential smoothing of input",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ],
+              [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "computation",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "inlineContent" : [
+                    {
                       "code" : "Chart",
                       "type" : "codeVoice"
                     }
@@ -881,7 +916,7 @@
                   "type" : "text"
                 },
                 {
-                  "identifier" : "https:\/\/github.com\/OpenPoiesis\/PoieticExamples",
+                  "identifier" : "https:\/\/github.com\/OpenPoiesis\/poietic-examples",
                   "isActive" : true,
                   "type" : "reference"
                 }
@@ -1483,24 +1518,25 @@
                   "type" : "paragraph"
                 }
               ]
-            ],
+            ]
+          ],
+          "type" : "table"
+        },
+        {
+          "anchor" : "Smooth",
+          "level" : 3,
+          "text" : "Smooth",
+          "type" : "heading"
+        },
+        {
+          "header" : "row",
+          "rows" : [
             [
               [
                 {
                   "inlineContent" : [
                     {
-                      "code" : "delay_output_type",
-                      "type" : "codeVoice"
-                    }
-                  ],
-                  "type" : "paragraph"
-                }
-              ],
-              [
-                {
-                  "inlineContent" : [
-                    {
-                      "text" : "string",
+                      "text" : "Attribute",
                       "type" : "text"
                     }
                   ],
@@ -1511,7 +1547,53 @@
                 {
                   "inlineContent" : [
                     {
-                      "text" : "Type of delay output computation",
+                      "text" : "Type",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ],
+              [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "Description",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            ],
+            [
+              [
+                {
+                  "inlineContent" : [
+                    {
+                      "code" : "window_time",
+                      "type" : "codeVoice"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ],
+              [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "double",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ],
+              [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "Averaging window time",
                       "type" : "text"
                     }
                   ],
@@ -1525,15 +1607,131 @@
         {
           "inlineContent" : [
             {
-              "text" : "The only available type of delay output computation is ",
+              "text" : "The computation is as follows: ",
               "type" : "text"
             },
             {
-              "code" : "delay1",
+              "inlineContent" : [
+                {
+                  "text" : "sₜ = α*xₜ + (1 - α) * sₜ₋₁",
+                  "type" : "text"
+                }
+              ],
+              "type" : "emphasis"
+            },
+            {
+              "text" : " Where:",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "inlineContent" : [
+                {
+                  "text" : "x",
+                  "type" : "text"
+                }
+              ],
+              "type" : "emphasis"
+            },
+            {
+              "text" : " is input value, ",
+              "type" : "text"
+            },
+            {
+              "inlineContent" : [
+                {
+                  "text" : "s",
+                  "type" : "text"
+                }
+              ],
+              "type" : "emphasis"
+            },
+            {
+              "text" : ": smoothing value and ",
+              "type" : "text"
+            },
+            {
+              "inlineContent" : [
+                {
+                  "text" : "α = Δt \/ window_time",
+                  "type" : "text"
+                }
+              ],
+              "type" : "emphasis"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "anchor" : "Step",
+          "level" : 3,
+          "text" : "Step",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "There is no step node, however it can be implemented using an auxiliary node",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "with a formula: ",
+              "type" : "text"
+            },
+            {
+              "code" : "\"if(time < step_time, initial_value, step_value)\"",
               "type" : "codeVoice"
             },
             {
-              "text" : ".",
+              "text" : " where",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "the ",
+              "type" : "text"
+            },
+            {
+              "code" : "step_time",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " is a time when the step occurs.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "For example ",
+              "type" : "text"
+            },
+            {
+              "code" : "\"if(time < 20, 0, 1)\"",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " will create a step function with initial",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "value of 0 and then value of 1 from time 20 onwards.",
               "type" : "text"
             }
           ],
@@ -1548,7 +1746,7 @@
         {
           "inlineContent" : [
             {
-              "text" : "Currently no attributes for charts.",
+              "text" : "Currently there are no attributes for charts.",
               "type" : "text"
             }
           ],
@@ -2179,8 +2377,8 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/simulation"
 },
-"https://github.com/OpenPoiesis/PoieticExamples": {
-  "identifier" : "https:\/\/github.com\/OpenPoiesis\/PoieticExamples",
+"https://github.com/OpenPoiesis/poietic-examples": {
+  "identifier" : "https:\/\/github.com\/OpenPoiesis\/poietic-examples",
   "title" : "Repository of model examples",
   "titleInlineContent" : [
     {
@@ -2189,7 +2387,7 @@
     }
   ],
   "type" : "link",
-  "url" : "https:\/\/github.com\/OpenPoiesis\/PoieticExamples"
+  "url" : "https:\/\/github.com\/OpenPoiesis\/poietic-examples"
 }
 }
 }

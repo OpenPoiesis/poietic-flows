@@ -1,7 +1,7 @@
 {
   "abstract" : [
     {
-      "text" : "First value is parameter node, the second is state variable.",
+      "text" : "Delay value input by given number of steps.",
       "type" : "text"
     }
   ],
@@ -152,7 +152,10 @@
 },
 "doc://PoieticFlows/documentation/PoieticFlows/CompiledDelay": {
   "abstract" : [
-
+    {
+      "text" : "Compiled delay node.",
+      "type" : "text"
+    }
   ],
   "fragments" : [
     {
@@ -248,7 +251,7 @@
 "doc://PoieticFlows/documentation/PoieticFlows/ComputationalRepresentation/delay(_:)": {
   "abstract" : [
     {
-      "text" : "First value is parameter node, the second is state variable.",
+      "text" : "Delay value input by given number of steps.",
       "type" : "text"
     }
   ],

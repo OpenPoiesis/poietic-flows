@@ -20,7 +20,7 @@
   },
   "kind" : "symbol",
   "metadata" : {
-    "externalID" : "s:12PoieticFlows8CompilerC19createStateVariable7content9valueType4nameSiAA0eF7ContentO_0A4Core05ValueI0OSStF",
+    "externalID" : "s:12PoieticFlows8CompilerC19createStateVariable7content9valueType4nameSiAA0eF0V7ContentO_0A4Core05ValueI0OSStF",
     "fragments" : [
       {
         "kind" : "keyword",
@@ -48,8 +48,17 @@
       },
       {
         "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:12PoieticFlows20StateVariableContentO",
-        "text" : "StateVariableContent"
+        "preciseIdentifier" : "s:12PoieticFlows13StateVariableV",
+        "text" : "StateVariable"
+      },
+      {
+        "kind" : "text",
+        "text" : "."
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:12PoieticFlows13StateVariableV7ContentO",
+        "text" : "Content"
       },
       {
         "kind" : "text",
@@ -150,10 +159,20 @@
               "text" : ": "
             },
             {
-              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StateVariableContent",
+              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StateVariable",
               "kind" : "typeIdentifier",
-              "preciseIdentifier" : "s:12PoieticFlows20StateVariableContentO",
-              "text" : "StateVariableContent"
+              "preciseIdentifier" : "s:12PoieticFlows13StateVariableV",
+              "text" : "StateVariable"
+            },
+            {
+              "kind" : "text",
+              "text" : "."
+            },
+            {
+              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StateVariable\/Content-swift.enum",
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:12PoieticFlows13StateVariableV7ContentO",
+              "text" : "Content"
             },
             {
               "kind" : "text",
@@ -242,7 +261,7 @@
                   "type" : "text"
                 },
                 {
-                  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StateVariableContent",
+                  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StateVariable\/Content-swift.enum",
                   "isActive" : true,
                   "type" : "reference"
                 },
@@ -426,8 +445,17 @@
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:12PoieticFlows20StateVariableContentO",
-      "text" : "StateVariableContent"
+      "preciseIdentifier" : "s:12PoieticFlows13StateVariableV",
+      "text" : "StateVariable"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows13StateVariableV7ContentO",
+      "text" : "Content"
     },
     {
       "kind" : "text",
@@ -578,7 +606,41 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/simulationstate\/index"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/StateVariableContent": {
+"doc://PoieticFlows/documentation/PoieticFlows/StateVariable": {
+  "abstract" : [
+    {
+      "text" : "Structure representing a reference to a simulation variable.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "StateVariable"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StateVariable",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "StateVariable"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "StateVariable",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/statevariable"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StateVariable/Content-swift.enum": {
   "abstract" : [
     {
       "text" : "Reference to a variable.",
@@ -596,21 +658,21 @@
     },
     {
       "kind" : "identifier",
-      "text" : "StateVariableContent"
+      "text" : "Content"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StateVariableContent",
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StateVariable\/Content-swift.enum",
   "kind" : "symbol",
   "navigatorTitle" : [
     {
       "kind" : "identifier",
-      "text" : "StateVariableContent"
+      "text" : "Content"
     }
   ],
   "role" : "symbol",
-  "title" : "StateVariableContent",
+  "title" : "StateVariable.Content",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/statevariablecontent"
+  "url" : "\/documentation\/poieticflows\/statevariable\/content-swift.enum"
 }
 }
 }

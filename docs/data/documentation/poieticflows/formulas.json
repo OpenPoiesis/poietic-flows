@@ -84,7 +84,7 @@
         },
         {
           "code" : [
-            "let frame: MutableFrame",
+            "let frame: TransientFrame",
             "",
             "let interest = frame.createNode(ObjectType.Auxiliary,",
             "                                name: \"interest\",",

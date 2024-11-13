@@ -72,6 +72,39 @@
             {
               "kind" : "identifier",
               "text" : "StockFlowView"
+            },
+            {
+              "kind" : "text",
+              "text" : "<"
+            },
+            {
+              "kind" : "genericParameter",
+              "text" : "F"
+            },
+            {
+              "kind" : "text",
+              "text" : "> "
+            },
+            {
+              "kind" : "keyword",
+              "text" : "where"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "text" : "F"
+            },
+            {
+              "kind" : "text",
+              "text" : " : "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:11PoieticCore5FrameP",
+              "text" : "Frame"
             }
           ]
         }
@@ -148,16 +181,13 @@
       "anchor" : "Instance-Properties",
       "generated" : true,
       "identifiers" : [
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowView\/charts",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowView\/drainsEdges",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowView\/fillsEdges",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowView\/flowNodes",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowView\/frame",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowView\/metamodel",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowView\/namedObjects",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowView\/parameterEdges",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowView\/simulationNodes",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowView\/stateNodes"
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowView\/simulationNodes"
       ],
       "title" : "Instance Properties"
     },
@@ -175,11 +205,19 @@
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowView\/objectVariableReferences(names:)",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowView\/outflows(_:)",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowView\/parameters(_:required:)",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowView\/sortedNodesByParameter(_:)",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowView\/stockAdjacencies()",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowView\/stockInflows(_:)",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowView\/stockOutflows(_:)"
       ],
       "title" : "Instance Methods"
+    },
+    {
+      "anchor" : "Type-Aliases",
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowView\/ViewedFrame"
+      ],
+      "title" : "Type Aliases"
     }
   ],
   "variants" : [
@@ -389,6 +427,37 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/stockflowview"
 },
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowView/ViewedFrame": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "typealias"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "ViewedFrame"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowView\/ViewedFrame",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "ViewedFrame"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "StockFlowView.ViewedFrame",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stockflowview\/viewedframe"
+},
 "doc://PoieticFlows/documentation/PoieticFlows/StockFlowView/builtinReferences(names:)": {
   "abstract" : [
 
@@ -447,8 +516,17 @@
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:12PoieticFlows20StateVariableContentO",
-      "text" : "StateVariableContent"
+      "preciseIdentifier" : "s:12PoieticFlows13StateVariableV",
+      "text" : "StateVariable"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows13StateVariableV7ContentO",
+      "text" : "Content"
     },
     {
       "kind" : "text",
@@ -461,44 +539,6 @@
   "title" : "builtinReferences(names:)",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/stockflowview\/builtinreferences(names:)"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/StockFlowView/charts": {
-  "abstract" : [
-
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "var"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "charts"
-    },
-    {
-      "kind" : "text",
-      "text" : ": ["
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:12PoieticFlows5ChartV",
-      "text" : "Chart"
-    },
-    {
-      "kind" : "text",
-      "text" : "]"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowView\/charts",
-  "kind" : "symbol",
-  "role" : "symbol",
-  "title" : "charts",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/stockflowview\/charts"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/StockFlowView/drains(_:)": {
   "abstract" : [
@@ -553,6 +593,35 @@
       "kind" : "typeIdentifier",
       "preciseIdentifier" : "s:11PoieticCore12NeighborhoodC",
       "text" : "Neighborhood"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows13StockFlowViewC",
+      "text" : "StockFlowView"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "F"
+    },
+    {
+      "kind" : "text",
+      "text" : ">."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "ViewedFrame"
+    },
+    {
+      "kind" : "text",
+      "text" : ">"
     }
   ],
   "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowView\/drains(_:)",
@@ -565,7 +634,7 @@
 "doc://PoieticFlows/documentation/PoieticFlows/StockFlowView/drainsEdges": {
   "abstract" : [
     {
-      "text" : "Predicate for an edge that drains from a stocks. It originates in a",
+      "text" : "List of all edges that drain from a stocks. It originates in a",
       "type" : "text"
     },
     {
@@ -596,8 +665,8 @@
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:11PoieticCore4EdgeV",
-      "text" : "Edge"
+      "preciseIdentifier" : "s:11PoieticCore12EdgeSnapshotV",
+      "text" : "EdgeSnapshot"
     },
     {
       "kind" : "text",
@@ -664,6 +733,35 @@
       "kind" : "typeIdentifier",
       "preciseIdentifier" : "s:11PoieticCore12NeighborhoodC",
       "text" : "Neighborhood"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows13StockFlowViewC",
+      "text" : "StockFlowView"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "F"
+    },
+    {
+      "kind" : "text",
+      "text" : ">."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "ViewedFrame"
+    },
+    {
+      "kind" : "text",
+      "text" : ">"
     }
   ],
   "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowView\/fills(_:)",
@@ -676,7 +774,7 @@
 "doc://PoieticFlows/documentation/PoieticFlows/StockFlowView/fillsEdges": {
   "abstract" : [
     {
-      "text" : "Predicate for an edge that fills a stocks. It originates in a flow,",
+      "text" : "List of all edges that fill a stocks. It originates in a flow,",
       "type" : "text"
     },
     {
@@ -707,8 +805,8 @@
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:11PoieticCore4EdgeV",
-      "text" : "Edge"
+      "preciseIdentifier" : "s:11PoieticCore12EdgeSnapshotV",
+      "text" : "EdgeSnapshot"
     },
     {
       "kind" : "text",
@@ -845,7 +943,15 @@
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:11PoieticCore4NodeV",
+      "text" : "F"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore13GraphProtocolP4NodeQa",
       "text" : "Node"
     },
     {
@@ -882,12 +988,28 @@
     },
     {
       "kind" : "text",
-      "text" : ": any "
+      "text" : ": "
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:11PoieticCore5FrameP",
-      "text" : "Frame"
+      "preciseIdentifier" : "s:12PoieticFlows13StockFlowViewC",
+      "text" : "StockFlowView"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "F"
+    },
+    {
+      "kind" : "text",
+      "text" : ">."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "ViewedFrame"
     }
   ],
   "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowView\/frame",
@@ -934,6 +1056,35 @@
       "kind" : "typeIdentifier",
       "preciseIdentifier" : "s:11PoieticCore12NeighborhoodC",
       "text" : "Neighborhood"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows13StockFlowViewC",
+      "text" : "StockFlowView"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "F"
+    },
+    {
+      "kind" : "text",
+      "text" : ">."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "ViewedFrame"
+    },
+    {
+      "kind" : "text",
+      "text" : ">"
     }
   ],
   "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowView\/incomingParameters(_:)",
@@ -988,6 +1139,35 @@
       "kind" : "typeIdentifier",
       "preciseIdentifier" : "s:11PoieticCore12NeighborhoodC",
       "text" : "Neighborhood"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows13StockFlowViewC",
+      "text" : "StockFlowView"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "F"
+    },
+    {
+      "kind" : "text",
+      "text" : ">."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "ViewedFrame"
+    },
+    {
+      "kind" : "text",
+      "text" : ">"
     }
   ],
   "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowView\/inflows(_:)",
@@ -1011,12 +1191,28 @@
     },
     {
       "kind" : "text",
-      "text" : "(any "
+      "text" : "("
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:11PoieticCore5FrameP",
-      "text" : "Frame"
+      "preciseIdentifier" : "s:12PoieticFlows13StockFlowViewC",
+      "text" : "StockFlowView"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "F"
+    },
+    {
+      "kind" : "text",
+      "text" : ">."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "ViewedFrame"
     },
     {
       "kind" : "text",
@@ -1066,64 +1262,6 @@
   "title" : "metamodel",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/stockflowview\/metamodel"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/StockFlowView/namedObjects": {
-  "abstract" : [
-    {
-      "text" : "Predicate that matches all objects that have a name through",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "NamedComponent.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "var"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "namedObjects"
-    },
-    {
-      "kind" : "text",
-      "text" : ": [("
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:11PoieticCore14ObjectSnapshotC",
-      "text" : "ObjectSnapshot"
-    },
-    {
-      "kind" : "text",
-      "text" : ", "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:SS",
-      "text" : "String"
-    },
-    {
-      "kind" : "text",
-      "text" : ")]"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowView\/namedObjects",
-  "kind" : "symbol",
-  "role" : "symbol",
-  "title" : "namedObjects",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/stockflowview\/namedobjects"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/StockFlowView/objectVariableReferences(names:)": {
   "abstract" : [
@@ -1186,8 +1324,17 @@
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:12PoieticFlows20StateVariableContentO",
-      "text" : "StateVariableContent"
+      "preciseIdentifier" : "s:12PoieticFlows13StateVariableV",
+      "text" : "StateVariable"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows13StateVariableV7ContentO",
+      "text" : "Content"
     },
     {
       "kind" : "text",
@@ -1246,6 +1393,35 @@
       "kind" : "typeIdentifier",
       "preciseIdentifier" : "s:11PoieticCore12NeighborhoodC",
       "text" : "Neighborhood"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows13StockFlowViewC",
+      "text" : "StockFlowView"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "F"
+    },
+    {
+      "kind" : "text",
+      "text" : ">."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "ViewedFrame"
+    },
+    {
+      "kind" : "text",
+      "text" : ">"
     }
   ],
   "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowView\/outflows(_:)",
@@ -1281,8 +1457,8 @@
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:11PoieticCore4EdgeV",
-      "text" : "Edge"
+      "preciseIdentifier" : "s:11PoieticCore12EdgeSnapshotV",
+      "text" : "EdgeSnapshot"
     },
     {
       "kind" : "text",
@@ -1414,7 +1590,15 @@
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:11PoieticCore4NodeV",
+      "text" : "F"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore13GraphProtocolP4NodeQa",
       "text" : "Node"
     },
     {
@@ -1429,10 +1613,10 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/stockflowview\/simulationnodes"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/StockFlowView/sortedNodesByParameter(_:)": {
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowView/stockAdjacencies()": {
   "abstract" : [
     {
-      "text" : "Sort the nodes based on their parameter dependency.",
+      "text" : "Get a list of stock-to-stock adjacency.",
       "type" : "text"
     }
   ],
@@ -1447,103 +1631,28 @@
     },
     {
       "kind" : "identifier",
-      "text" : "sortedNodesByParameter"
+      "text" : "stockAdjacencies"
     },
     {
       "kind" : "text",
-      "text" : "(["
+      "text" : "() -> ["
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:11PoieticCore8ObjectIDa",
-      "text" : "ObjectID"
-    },
-    {
-      "kind" : "text",
-      "text" : "]) "
-    },
-    {
-      "kind" : "keyword",
-      "text" : "throws"
-    },
-    {
-      "kind" : "text",
-      "text" : "("
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:11PoieticCore15GraphCycleErrorV",
-      "text" : "GraphCycleError"
-    },
-    {
-      "kind" : "text",
-      "text" : ") -> ["
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:11PoieticCore4NodeV",
-      "text" : "Node"
+      "preciseIdentifier" : "s:12PoieticFlows14StockAdjacencyV",
+      "text" : "StockAdjacency"
     },
     {
       "kind" : "text",
       "text" : "]"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowView\/sortedNodesByParameter(_:)",
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowView\/stockAdjacencies()",
   "kind" : "symbol",
   "role" : "symbol",
-  "title" : "sortedNodesByParameter(_:)",
+  "title" : "stockAdjacencies()",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/stockflowview\/sortednodesbyparameter(_:)"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/StockFlowView/stateNodes": {
-  "abstract" : [
-    {
-      "text" : "List of all nodes that hold a simulation state and are therefore part",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "of the state vector.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "var"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "stateNodes"
-    },
-    {
-      "kind" : "text",
-      "text" : ": ["
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:11PoieticCore4NodeV",
-      "text" : "Node"
-    },
-    {
-      "kind" : "text",
-      "text" : "]"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowView\/stateNodes",
-  "kind" : "symbol",
-  "role" : "symbol",
-  "title" : "stateNodes",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/stockflowview\/statenodes"
+  "url" : "\/documentation\/poieticflows\/stockflowview\/stockadjacencies()"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/StockFlowView/stockInflows(_:)": {
   "abstract" : [

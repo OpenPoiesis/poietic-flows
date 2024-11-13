@@ -1,4 +1,10 @@
 {
+  "abstract" : [
+    {
+      "text" : "Chart-type node.",
+      "type" : "text"
+    }
+  ],
   "hierarchy" : {
     "paths" : [
       [
@@ -14,7 +20,7 @@
   },
   "kind" : "symbol",
   "metadata" : {
-    "externalID" : "s:12PoieticFlows5ChartV4node0A4Core14ObjectSnapshotCvp",
+    "externalID" : "s:12PoieticFlows5ChartV4node0A4Core12StableObjectCvp",
     "fragments" : [
       {
         "kind" : "keyword",
@@ -34,8 +40,8 @@
       },
       {
         "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:11PoieticCore14ObjectSnapshotC",
-        "text" : "ObjectSnapshot"
+        "preciseIdentifier" : "s:11PoieticCore12StableObjectC",
+        "text" : "StableObject"
       }
     ],
     "modules" : [
@@ -77,13 +83,49 @@
             },
             {
               "kind" : "typeIdentifier",
-              "preciseIdentifier" : "s:11PoieticCore14ObjectSnapshotC",
-              "text" : "ObjectSnapshot"
+              "preciseIdentifier" : "s:11PoieticCore12StableObjectC",
+              "text" : "StableObject"
             }
           ]
         }
       ],
       "kind" : "declarations"
+    },
+    {
+      "content" : [
+        {
+          "anchor" : "discussion",
+          "level" : 2,
+          "text" : "Discussion",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Series are connected from the node through a ",
+              "type" : "text"
+            },
+            {
+              "code" : "Series",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " edge, where the chart is the",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "edge origin and the series node is the edge target.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        }
+      ],
+      "kind" : "content"
     }
   ],
   "schemaVersion" : {
@@ -171,7 +213,10 @@
 },
 "doc://PoieticFlows/documentation/PoieticFlows/Chart/node": {
   "abstract" : [
-
+    {
+      "text" : "Chart-type node.",
+      "type" : "text"
+    }
   ],
   "fragments" : [
     {
@@ -192,8 +237,8 @@
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:11PoieticCore14ObjectSnapshotC",
-      "text" : "ObjectSnapshot"
+      "preciseIdentifier" : "s:11PoieticCore12StableObjectC",
+      "text" : "StableObject"
     }
   ],
   "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Chart\/node",

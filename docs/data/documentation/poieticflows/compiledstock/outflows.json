@@ -140,13 +140,8 @@
             {
               "inlineContent" : [
                 {
-                  "text" : "",
+                  "text" : "``StockFlowSimulation\/computeStockDelta(A",
                   "type" : "text"
-                },
-                {
-                  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Solver\/computeStockDelta(_:at:with:)",
-                  "isActive" : true,
-                  "type" : "reference"
                 }
               ],
               "type" : "paragraph"
@@ -411,102 +406,6 @@
   "title" : "SimulationState.Index",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/simulationstate\/index"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/Solver/computeStockDelta(_:at:with:)": {
-  "abstract" : [
-    {
-      "text" : "Compute a difference of a stock.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "func"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "computeStockDelta"
-    },
-    {
-      "kind" : "text",
-      "text" : "("
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:12PoieticFlows13CompiledStockV",
-      "text" : "CompiledStock"
-    },
-    {
-      "kind" : "text",
-      "text" : ", "
-    },
-    {
-      "kind" : "externalParam",
-      "text" : "at"
-    },
-    {
-      "kind" : "text",
-      "text" : ": "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:Sd",
-      "text" : "Double"
-    },
-    {
-      "kind" : "text",
-      "text" : ", "
-    },
-    {
-      "kind" : "externalParam",
-      "text" : "with"
-    },
-    {
-      "kind" : "text",
-      "text" : ": "
-    },
-    {
-      "kind" : "keyword",
-      "text" : "inout"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV",
-      "text" : "SimulationState"
-    },
-    {
-      "kind" : "text",
-      "text" : ") "
-    },
-    {
-      "kind" : "keyword",
-      "text" : "throws"
-    },
-    {
-      "kind" : "text",
-      "text" : " -> "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:Sd",
-      "text" : "Double"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Solver\/computeStockDelta(_:at:with:)",
-  "kind" : "symbol",
-  "role" : "symbol",
-  "title" : "computeStockDelta(_:at:with:)",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/solver\/computestockdelta(_:at:with:)"
 }
 }
 }

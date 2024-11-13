@@ -1,7 +1,7 @@
 {
   "abstract" : [
     {
-      "text" : "An auxiliary node - containing a constant or a formula.",
+      "text" : "Delay node - delays the input by a given number of steps.",
       "type" : "text"
     }
   ],
@@ -207,7 +207,7 @@
 "doc://PoieticFlows/documentation/PoieticFlows/PoieticCore/ObjectType/Delay": {
   "abstract" : [
     {
-      "text" : "An auxiliary node - containing a constant or a formula.",
+      "text" : "Delay node - delays the input by a given number of steps.",
       "type" : "text"
     }
   ],

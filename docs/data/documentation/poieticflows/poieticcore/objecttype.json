@@ -105,6 +105,7 @@
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/ObjectType\/Parameter",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/ObjectType\/Scenario",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/ObjectType\/Simulation",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/ObjectType\/Smooth",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/ObjectType\/Stock",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/ObjectType\/ValueBinding"
       ],
@@ -394,7 +395,7 @@
 "doc://PoieticFlows/documentation/PoieticFlows/PoieticCore/ObjectType/Delay": {
   "abstract" : [
     {
-      "text" : "An auxiliary node - containing a constant or a formula.",
+      "text" : "Delay node - delays the input by a given number of steps.",
       "type" : "text"
     }
   ],
@@ -789,6 +790,51 @@
   "title" : "Simulation",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/poieticcore\/objecttype\/simulation"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/PoieticCore/ObjectType/Smooth": {
+  "abstract" : [
+    {
+      "text" : "Exponential smoothing.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Smooth"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore10ObjectTypeC",
+      "text" : "ObjectType"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/ObjectType\/Smooth",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "Smooth",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/poieticcore\/objecttype\/smooth"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/PoieticCore/ObjectType/Stock": {
   "abstract" : [

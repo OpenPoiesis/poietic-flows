@@ -96,14 +96,14 @@
   ],
   "seeAlsoSections" : [
     {
-      "anchor" : "Solver",
+      "anchor" : "Simulation-and-Simulator",
       "generated" : true,
       "identifiers" : [
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Solver",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/EulerSolver",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/RungeKutta4Solver"
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulator",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationState"
       ],
-      "title" : "Solver"
+      "title" : "Simulation and Simulator"
     }
   ],
   "topicSections" : [
@@ -238,40 +238,6 @@
   "title" : "PoieticFlows",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/EulerSolver": {
-  "abstract" : [
-    {
-      "text" : "Solver that integrates using the Euler method.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "class"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "EulerSolver"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/EulerSolver",
-  "kind" : "symbol",
-  "navigatorTitle" : [
-    {
-      "kind" : "identifier",
-      "text" : "EulerSolver"
-    }
-  ],
-  "role" : "symbol",
-  "title" : "EulerSolver",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/eulersolver"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/NumericVector": {
   "abstract" : [
@@ -1238,40 +1204,6 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/numericvector\/values"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/RungeKutta4Solver": {
-  "abstract" : [
-    {
-      "text" : "Solver that integrates using the Runge Kutta 4 method.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "class"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "RungeKutta4Solver"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/RungeKutta4Solver",
-  "kind" : "symbol",
-  "navigatorTitle" : [
-    {
-      "kind" : "identifier",
-      "text" : "RungeKutta4Solver"
-    }
-  ],
-  "role" : "symbol",
-  "title" : "RungeKutta4Solver",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/rungekutta4solver"
-},
 "doc://PoieticFlows/documentation/PoieticFlows/Simulation": {
   "abstract" : [
     {
@@ -1294,10 +1226,68 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/simulation"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/Solver": {
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationState": {
   "abstract" : [
     {
-      "text" : "An abstract class for equations solvers.",
+      "text" : "A simple vector-like structure to hold an unordered collection of numeric",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "values that can be accessed by key. Simple arithmetic operations can be done",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "with the structure, such as addition, subtraction and multiplication",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "by a scalar value.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SimulationState"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationState",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SimulationState"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SimulationState",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationstate"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/Simulator": {
+  "abstract" : [
+    {
+      "text" : "Object for controlling a simulation session.",
       "type" : "text"
     }
   ],
@@ -1312,21 +1302,55 @@
     },
     {
       "kind" : "identifier",
-      "text" : "Solver"
+      "text" : "Simulator"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Solver",
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulator",
   "kind" : "symbol",
   "navigatorTitle" : [
     {
       "kind" : "identifier",
-      "text" : "Solver"
+      "text" : "Simulator"
     }
   ],
   "role" : "symbol",
-  "title" : "Solver",
+  "title" : "Simulator",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/solver"
+  "url" : "\/documentation\/poieticflows\/simulator"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation": {
+  "abstract" : [
+    {
+      "text" : "Stock-Flow simulation specific computation and logic.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "StockFlowSimulation"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "StockFlowSimulation"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "StockFlowSimulation",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stockflowsimulation"
 }
 }
 }

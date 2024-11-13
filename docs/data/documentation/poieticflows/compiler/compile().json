@@ -1,7 +1,7 @@
 {
   "abstract" : [
     {
-      "text" : "Compiles the model and returns the compiled version of the model.",
+      "text" : "Compiles the design and returns compiled model that can be simulated.",
       "type" : "text"
     }
   ],
@@ -20,7 +20,7 @@
   },
   "kind" : "symbol",
   "metadata" : {
-    "externalID" : "s:12PoieticFlows8CompilerC7compileAA13CompiledModelVyAA15NodeIssuesErrorVYKF",
+    "externalID" : "s:12PoieticFlows8CompilerC7compileAA13CompiledModelVyAA0C5ErrorOYKF",
     "fragments" : [
       {
         "kind" : "keyword",
@@ -48,8 +48,8 @@
       },
       {
         "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:12PoieticFlows15NodeIssuesErrorV",
-        "text" : "NodeIssuesError"
+        "preciseIdentifier" : "s:12PoieticFlows13CompilerErrorO",
+        "text" : "CompilerError"
       },
       {
         "kind" : "text",
@@ -107,10 +107,10 @@
               "text" : "("
             },
             {
-              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NodeIssuesError",
+              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompilerError",
               "kind" : "typeIdentifier",
-              "preciseIdentifier" : "s:12PoieticFlows15NodeIssuesErrorV",
-              "text" : "NodeIssuesError"
+              "preciseIdentifier" : "s:12PoieticFlows13CompilerErrorO",
+              "text" : "CompilerError"
             },
             {
               "kind" : "text",
@@ -188,7 +188,20 @@
                 {
                   "inlineContent" : [
                     {
-                      "text" : "Gather all node names and check for potential duplicates",
+                      "text" : "Collect simulation nodes and order them by computation dependency.",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "Create a name-to-object map and check for potential name duplicates.",
                       "type" : "text"
                     }
                   ],
@@ -222,7 +235,7 @@
                 {
                   "inlineContent" : [
                     {
-                      "text" : "Sort the nodes in the order of computation.",
+                      "text" : "Prepare built-in variables and allocate them in the simulation state.",
                       "type" : "text"
                     }
                   ],
@@ -235,15 +248,72 @@
                 {
                   "inlineContent" : [
                     {
-                      "text" : "Pre-filter nodes for easier usage by the solver: stocks, flows",
+                      "text" : "Compile individual objects based on the object type:",
                       "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                },
+                {
+                  "items" : [
+                    {
+                      "content" : [
+                        {
+                          "inlineContent" : [
+                            {
+                              "text" : "objects with ",
+                              "type" : "text"
+                            },
+                            {
+                              "code" : "Formula",
+                              "type" : "codeVoice"
+                            },
+                            {
+                              "text" : " component",
+                              "type" : "text"
+                            }
+                          ],
+                          "type" : "paragraph"
+                        }
+                      ]
                     },
                     {
-                      "text" : " ",
-                      "type" : "text"
+                      "content" : [
+                        {
+                          "inlineContent" : [
+                            {
+                              "text" : "graphical functions",
+                              "type" : "text"
+                            }
+                          ],
+                          "type" : "paragraph"
+                        }
+                      ]
                     },
                     {
-                      "text" : "and auxiliaries. All filtered collections stay ordered.",
+                      "content" : [
+                        {
+                          "inlineContent" : [
+                            {
+                              "text" : "delay and smooth",
+                              "type" : "text"
+                            }
+                          ],
+                          "type" : "paragraph"
+                        }
+                      ]
+                    }
+                  ],
+                  "type" : "unorderedList"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "Compile stocks and flows.",
                       "type" : "text"
                     }
                   ],
@@ -256,15 +326,7 @@
                 {
                   "inlineContent" : [
                     {
-                      "text" : "Create implicit flows between stocks and sort stocks in order",
-                      "type" : "text"
-                    },
-                    {
-                      "text" : " ",
-                      "type" : "text"
-                    },
-                    {
-                      "text" : "of their dependency.",
+                      "text" : "Compile non-computational objects: charts, bindings.",
                       "type" : "text"
                     }
                   ],
@@ -277,7 +339,20 @@
                 {
                   "inlineContent" : [
                     {
-                      "text" : "Finalise the compiled model.",
+                      "text" : "Fetch simulation defaults.",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "Create a compiled model.",
                       "type" : "text"
                     }
                   ],
@@ -297,7 +372,7 @@
                   "type" : "text"
                 },
                 {
-                  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NodeIssuesError",
+                  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompilerError",
                   "isActive" : true,
                   "type" : "reference"
                 },
@@ -310,39 +385,7 @@
                   "type" : "text"
                 },
                 {
-                  "text" : "that are caused by the user. Throws ",
-                  "type" : "text"
-                },
-                {
-                  "code" : "\/PoieticCore\/ConstraintViolation",
-                  "type" : "codeVoice"
-                },
-                {
-                  "text" : " if",
-                  "type" : "text"
-                },
-                {
-                  "text" : " ",
-                  "type" : "text"
-                },
-                {
-                  "text" : "the frame constraints were violated. The later error is an",
-                  "type" : "text"
-                },
-                {
-                  "text" : " ",
-                  "type" : "text"
-                },
-                {
-                  "text" : "application error and means that either the provided frame is",
-                  "type" : "text"
-                },
-                {
-                  "text" : " ",
-                  "type" : "text"
-                },
-                {
-                  "text" : "malformed or one of the subsystems mis-behaved.",
+                  "text" : "that are caused by the user.",
                   "type" : "text"
                 }
               ],
@@ -350,6 +393,59 @@
             }
           ],
           "name" : "Throws",
+          "style" : "note",
+          "type" : "aside"
+        },
+        {
+          "content" : [
+            {
+              "inlineContent" : [
+                {
+                  "text" : "The compilation is trying to gather as many errors as possible.",
+                  "type" : "text"
+                },
+                {
+                  "text" : " ",
+                  "type" : "text"
+                },
+                {
+                  "text" : "It does not fail in the first error encountered unless the error",
+                  "type" : "text"
+                },
+                {
+                  "text" : " ",
+                  "type" : "text"
+                },
+                {
+                  "text" : "might prevent from other steps to be executed.",
+                  "type" : "text"
+                }
+              ],
+              "type" : "paragraph"
+            }
+          ],
+          "name" : "Note",
+          "style" : "note",
+          "type" : "aside"
+        },
+        {
+          "content" : [
+            {
+              "inlineContent" : [
+                {
+                  "text" : "",
+                  "type" : "text"
+                },
+                {
+                  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulator\/init(_:simulation:)",
+                  "isActive" : true,
+                  "type" : "reference"
+                }
+              ],
+              "type" : "paragraph"
+            }
+          ],
+          "name" : "See Also",
           "style" : "note",
           "type" : "aside"
         }
@@ -507,7 +603,7 @@
 "doc://PoieticFlows/documentation/PoieticFlows/Compiler/compile()": {
   "abstract" : [
     {
-      "text" : "Compiles the model and returns the compiled version of the model.",
+      "text" : "Compiles the design and returns compiled model that can be simulated.",
       "type" : "text"
     }
   ],
@@ -538,8 +634,8 @@
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:12PoieticFlows15NodeIssuesErrorV",
-      "text" : "NodeIssuesError"
+      "preciseIdentifier" : "s:12PoieticFlows13CompilerErrorO",
+      "text" : "CompilerError"
     },
     {
       "kind" : "text",
@@ -558,17 +654,17 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/compiler\/compile()"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/NodeIssuesError": {
+"doc://PoieticFlows/documentation/PoieticFlows/CompilerError": {
   "abstract" : [
     {
-      "text" : "An aggregate error of multiple issues grouped by a node.",
+      "text" : "Error thrown by the compiler during compilation.",
       "type" : "text"
     }
   ],
   "fragments" : [
     {
       "kind" : "keyword",
-      "text" : "struct"
+      "text" : "enum"
     },
     {
       "kind" : "text",
@@ -576,21 +672,71 @@
     },
     {
       "kind" : "identifier",
-      "text" : "NodeIssuesError"
+      "text" : "CompilerError"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NodeIssuesError",
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompilerError",
   "kind" : "symbol",
   "navigatorTitle" : [
     {
       "kind" : "identifier",
-      "text" : "NodeIssuesError"
+      "text" : "CompilerError"
     }
   ],
   "role" : "symbol",
-  "title" : "NodeIssuesError",
+  "title" : "CompilerError",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/nodeissueserror"
+  "url" : "\/documentation\/poieticflows\/compilererror"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/Simulator/init(_:simulation:)": {
+  "abstract" : [
+    {
+      "text" : "Creates and initialises a simulator.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "identifier",
+      "text" : "init"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows13CompiledModelV",
+      "text" : "CompiledModel"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "simulation"
+    },
+    {
+      "kind" : "text",
+      "text" : ": (any "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows10SimulationP",
+      "text" : "Simulation"
+    },
+    {
+      "kind" : "text",
+      "text" : ")?)"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulator\/init(_:simulation:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "init(_:simulation:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulator\/init(_:simulation:)"
 }
 }
 }

@@ -77,12 +77,44 @@
         }
       ],
       "kind" : "declarations"
+    },
+    {
+      "content" : [
+        {
+          "anchor" : "overview",
+          "level" : 2,
+          "text" : "Overview",
+          "type" : "heading"
+        },
+        {
+          "content" : [
+            {
+              "inlineContent" : [
+                {
+                  "text" : "",
+                  "type" : "text"
+                },
+                {
+                  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/stockDifference(state:time:)",
+                  "isActive" : true,
+                  "type" : "reference"
+                }
+              ],
+              "type" : "paragraph"
+            }
+          ],
+          "name" : "See Also",
+          "style" : "note",
+          "type" : "aside"
+        }
+      ],
+      "kind" : "content"
     }
   ],
   "relationshipsSections" : [
     {
       "identifiers" : [
-        "doc:\/\/PoieticFlows\/11PoieticCore8EdgeTypeP",
+        "doc:\/\/PoieticFlows\/11PoieticCore12EdgeProtocolP",
         "doc:\/\/PoieticFlows\/s12IdentifiableP"
       ],
       "kind" : "relationships",
@@ -104,19 +136,17 @@
       "generated" : true,
       "identifiers" : [
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BuiltinVariable",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ChartSeries",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Chart",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledBuiltin",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledControlBinding",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledDelay",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledSmooth",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledGraphicalFunction",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledStock",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ComputationalRepresentation",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationDefaults",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationObject",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationVariableType",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StateVariable",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StateVariableContent"
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StateVariable"
       ],
       "title" : "Compiled Model Components"
     }
@@ -148,9 +178,9 @@
   ]
 , 
 "references": {
-"doc://PoieticFlows/11PoieticCore8EdgeTypeP": {
-  "identifier" : "doc:\/\/PoieticFlows\/11PoieticCore8EdgeTypeP",
-  "title" : "PoieticCore.EdgeType",
+"doc://PoieticFlows/11PoieticCore12EdgeProtocolP": {
+  "identifier" : "doc:\/\/PoieticFlows\/11PoieticCore12EdgeProtocolP",
+  "title" : "PoieticCore.EdgeProtocol",
   "type" : "unresolvable"
 },
 "doc://PoieticFlows/documentation/PoieticFlows": {
@@ -248,37 +278,6 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/chart"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/ChartSeries": {
-  "abstract" : [
-
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "struct"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "ChartSeries"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ChartSeries",
-  "kind" : "symbol",
-  "navigatorTitle" : [
-    {
-      "kind" : "identifier",
-      "text" : "ChartSeries"
-    }
-  ],
-  "role" : "symbol",
-  "title" : "ChartSeries",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/chartseries"
-},
 "doc://PoieticFlows/documentation/PoieticFlows/CompiledBuiltin": {
   "abstract" : [
     {
@@ -357,7 +356,10 @@
 },
 "doc://PoieticFlows/documentation/PoieticFlows/CompiledDelay": {
   "abstract" : [
-
+    {
+      "text" : "Compiled delay node.",
+      "type" : "text"
+    }
   ],
   "fragments" : [
     {
@@ -449,6 +451,40 @@
   "title" : "Compiled Model and Compiler",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/compiledmodelandcompiler"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/CompiledSmooth": {
+  "abstract" : [
+    {
+      "text" : "Compiled smooth node.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "CompiledSmooth"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledSmooth",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "CompiledSmooth"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "CompiledSmooth",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/compiledsmooth"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/CompiledStock": {
   "abstract" : [
@@ -652,40 +688,6 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/simulationobject"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/SimulationVariableType": {
-  "abstract" : [
-    {
-      "text" : "Type of the simulation variable.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "enum"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "SimulationVariableType"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationVariableType",
-  "kind" : "symbol",
-  "navigatorTitle" : [
-    {
-      "kind" : "identifier",
-      "text" : "SimulationVariableType"
-    }
-  ],
-  "role" : "symbol",
-  "title" : "SimulationVariableType",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/simulationvariabletype"
-},
 "doc://PoieticFlows/documentation/PoieticFlows/StateVariable": {
   "abstract" : [
     {
@@ -719,40 +721,6 @@
   "title" : "StateVariable",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/statevariable"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/StateVariableContent": {
-  "abstract" : [
-    {
-      "text" : "Reference to a variable.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "enum"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "StateVariableContent"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StateVariableContent",
-  "kind" : "symbol",
-  "navigatorTitle" : [
-    {
-      "kind" : "identifier",
-      "text" : "StateVariableContent"
-    }
-  ],
-  "role" : "symbol",
-  "title" : "StateVariableContent",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/statevariablecontent"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/StockAdjacency": {
   "abstract" : [
@@ -935,6 +903,85 @@
   "title" : "targetHasDelayedInflow",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/stockadjacency\/targethasdelayedinflow"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/stockDifference(state:time:)": {
+  "abstract" : [
+    {
+      "text" : "Comptes differences of stocks.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "stockDifference"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "state"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV",
+      "text" : "SimulationState"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "time"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sd",
+      "text" : "Double"
+    },
+    {
+      "kind" : "text",
+      "text" : ") "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "throws"
+    },
+    {
+      "kind" : "text",
+      "text" : " -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows13NumericVectorV",
+      "text" : "NumericVector"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/stockDifference(state:time:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "stockDifference(state:time:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stockflowsimulation\/stockdifference(state:time:)"
 },
 "doc://PoieticFlows/s12IdentifiableP": {
   "identifier" : "doc:\/\/PoieticFlows\/s12IdentifiableP",

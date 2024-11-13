@@ -73,6 +73,16 @@
       "kind" : "declarations"
     }
   ],
+  "relationshipsSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/s23CustomStringConvertibleP"
+      ],
+      "kind" : "relationships",
+      "title" : "Conforms To",
+      "type" : "conformsTo"
+    }
+  ],
   "schemaVersion" : {
     "major" : 0,
     "minor" : 3,
@@ -91,6 +101,16 @@
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/bindExpression(_:variables:names:functions:)"
       ],
       "title" : "Bound Expression"
+    }
+  ],
+  "topicSections" : [
+    {
+      "anchor" : "Instance-Properties",
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundVariable\/description"
+      ],
+      "title" : "Instance Properties"
     }
   ],
   "variants" : [
@@ -195,6 +215,40 @@
   "title" : "BoundVariable",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/boundvariable"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/BoundVariable/description": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "description"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundVariable\/description",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "description",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/boundvariable\/description"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/CompiledModelAndCompiler": {
   "abstract" : [
@@ -389,6 +443,11 @@
   "title" : "bindExpression(_:variables:names:functions:)",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/bindexpression(_:variables:names:functions:)"
+},
+"doc://PoieticFlows/s23CustomStringConvertibleP": {
+  "identifier" : "doc:\/\/PoieticFlows\/s23CustomStringConvertibleP",
+  "title" : "Swift.CustomStringConvertible",
+  "type" : "unresolvable"
 }
 }
 }

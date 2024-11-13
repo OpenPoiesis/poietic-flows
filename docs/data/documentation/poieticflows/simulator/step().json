@@ -98,18 +98,66 @@
           "type" : "heading"
         },
         {
+          "inlineContent" : [
+            {
+              "text" : "First, step number is increased by one, current time is increased by time",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "delta, all built-in variables are set to their current values.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Then simulation updates the state and result is appended to the collection",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "of simulation outputs.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Current state is set to the most recently computed state.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
           "content" : [
             {
               "inlineContent" : [
                 {
-                  "text" : "Frame and model must exist.",
+                  "text" : "",
                   "type" : "text"
+                },
+                {
+                  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
+                  "isActive" : true,
+                  "type" : "reference"
                 }
               ],
               "type" : "paragraph"
             }
           ],
-          "name" : "Precondition",
+          "name" : "See Also",
           "style" : "note",
           "type" : "aside"
         }

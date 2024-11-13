@@ -14,7 +14,7 @@
   },
   "kind" : "symbol",
   "metadata" : {
-    "externalID" : "s:12PoieticFlows13StockFlowViewC9flowNodesSay0A4Core4NodeVGvp",
+    "externalID" : "s:12PoieticFlows13StockFlowViewC9flowNodesSay4NodeQzGvp",
     "fragments" : [
       {
         "kind" : "keyword",
@@ -34,7 +34,15 @@
       },
       {
         "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:11PoieticCore4NodeV",
+        "text" : "F"
+      },
+      {
+        "kind" : "text",
+        "text" : "."
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:11PoieticCore13GraphProtocolP4NodeQa",
         "text" : "Node"
       },
       {
@@ -81,7 +89,15 @@
             },
             {
               "kind" : "typeIdentifier",
-              "preciseIdentifier" : "s:11PoieticCore4NodeV",
+              "text" : "F"
+            },
+            {
+              "kind" : "text",
+              "text" : "."
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:11PoieticCore13GraphProtocolP4NodeQa",
               "text" : "Node"
             },
             {
@@ -230,7 +246,15 @@
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:11PoieticCore4NodeV",
+      "text" : "F"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore13GraphProtocolP4NodeQa",
       "text" : "Node"
     },
     {

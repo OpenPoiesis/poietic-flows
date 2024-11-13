@@ -221,6 +221,31 @@
                 {
                   "inlineContent" : [
                     {
+                      "text" : "Special nodes: ",
+                      "type" : "text"
+                    },
+                    {
+                      "code" : "Delay",
+                      "type" : "codeVoice"
+                    },
+                    {
+                      "text" : " and ",
+                      "type" : "text"
+                    },
+                    {
+                      "code" : "Smooth",
+                      "type" : "codeVoice"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
                       "text" : "Component for arithmetic formulas ",
                       "type" : "text"
                     },
@@ -349,29 +374,7 @@
                       "type" : "reference"
                     },
                     {
-                      "text" : " solvers:",
-                      "type" : "text"
-                    },
-                    {
-                      "text" : " ",
-                      "type" : "text"
-                    },
-                    {
-                      "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/EulerSolver",
-                      "isActive" : true,
-                      "type" : "reference"
-                    },
-                    {
-                      "text" : " and ",
-                      "type" : "text"
-                    },
-                    {
-                      "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/RungeKutta4Solver",
-                      "isActive" : true,
-                      "type" : "reference"
-                    },
-                    {
-                      "text" : " respectively.",
+                      "text" : " solvers.",
                       "type" : "text"
                     }
                   ],
@@ -404,6 +407,14 @@
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/FlowsMetamodel"
       ]
+    },
+    {
+      "anchor" : "Enumerations",
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationError"
+      ],
+      "title" : "Enumerations"
     },
     {
       "anchor" : "Extended-Modules",
@@ -476,40 +487,6 @@
   "title" : "Compiled Model and Compiler",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/compiledmodelandcompiler"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/EulerSolver": {
-  "abstract" : [
-    {
-      "text" : "Solver that integrates using the Euler method.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "class"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "EulerSolver"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/EulerSolver",
-  "kind" : "symbol",
-  "navigatorTitle" : [
-    {
-      "kind" : "identifier",
-      "text" : "EulerSolver"
-    }
-  ],
-  "role" : "symbol",
-  "title" : "EulerSolver",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/eulersolver"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/FlowsMetamodel": {
   "abstract" : [
@@ -584,40 +561,6 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/poieticcore"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/RungeKutta4Solver": {
-  "abstract" : [
-    {
-      "text" : "Solver that integrates using the Runge Kutta 4 method.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "class"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "RungeKutta4Solver"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/RungeKutta4Solver",
-  "kind" : "symbol",
-  "navigatorTitle" : [
-    {
-      "kind" : "identifier",
-      "text" : "RungeKutta4Solver"
-    }
-  ],
-  "role" : "symbol",
-  "title" : "RungeKutta4Solver",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/rungekutta4solver"
-},
 "doc://PoieticFlows/documentation/PoieticFlows/Simulation": {
   "abstract" : [
     {
@@ -639,6 +582,40 @@
   "title" : "Simulation and Computation",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/simulation"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationError": {
+  "abstract" : [
+    {
+      "text" : "Error raised during simulation.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "enum"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SimulationError"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationError",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SimulationError"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SimulationError",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationerror"
 },
 "flows-overview": {
   "alt" : "Flows Components Overview",

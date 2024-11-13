@@ -161,13 +161,22 @@
                   "type" : "text"
                 },
                 {
-                  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Solver\/stockDifference(state:at:timeDelta:)",
+                  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/computeStockDelta(_:in:)",
                   "isActive" : true,
                   "type" : "reference"
                 },
                 {
                   "text" : ",",
                   "type" : "text"
+                },
+                {
+                  "text" : " ",
+                  "type" : "text"
+                },
+                {
+                  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/stockDifference(state:time:)",
+                  "isActive" : true,
+                  "type" : "reference"
                 }
               ],
               "type" : "paragraph"
@@ -369,7 +378,86 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/compiledstock"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/Solver/stockDifference(state:at:timeDelta:)": {
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/computeStockDelta(_:in:)": {
+  "abstract" : [
+    {
+      "text" : "Compute a difference of a stock.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "computeStockDelta"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows13CompiledStockV",
+      "text" : "CompiledStock"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "in"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "inout"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV",
+      "text" : "SimulationState"
+    },
+    {
+      "kind" : "text",
+      "text" : ") "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "throws"
+    },
+    {
+      "kind" : "text",
+      "text" : " -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sd",
+      "text" : "Double"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/computeStockDelta(_:in:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "computeStockDelta(_:in:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stockflowsimulation\/computestockdelta(_:in:)"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/stockDifference(state:time:)": {
   "abstract" : [
     {
       "text" : "Comptes differences of stocks.",
@@ -412,24 +500,7 @@
     },
     {
       "kind" : "externalParam",
-      "text" : "at"
-    },
-    {
-      "kind" : "text",
-      "text" : ": "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:Sd",
-      "text" : "Double"
-    },
-    {
-      "kind" : "text",
-      "text" : ", "
-    },
-    {
-      "kind" : "externalParam",
-      "text" : "timeDelta"
+      "text" : "time"
     },
     {
       "kind" : "text",
@@ -458,12 +529,12 @@
       "text" : "NumericVector"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Solver\/stockDifference(state:at:timeDelta:)",
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/stockDifference(state:time:)",
   "kind" : "symbol",
   "role" : "symbol",
-  "title" : "stockDifference(state:at:timeDelta:)",
+  "title" : "stockDifference(state:time:)",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/solver\/stockdifference(state:at:timedelta:)"
+  "url" : "\/documentation\/poieticflows\/stockflowsimulation\/stockdifference(state:time:)"
 }
 }
 }

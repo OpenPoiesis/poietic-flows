@@ -466,22 +466,13 @@
                   "type" : "text"
                 },
                 {
-                  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Solver\/init(_:)",
+                  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation",
                   "isActive" : true,
                   "type" : "reference"
                 },
                 {
                   "text" : ",",
                   "type" : "text"
-                },
-                {
-                  "text" : " ",
-                  "type" : "text"
-                },
-                {
-                  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulator\/init(model:solverType:)",
-                  "isActive" : true,
-                  "type" : "reference"
                 }
               ],
               "type" : "paragraph"
@@ -525,6 +516,7 @@
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledModel\/simulationDefaults",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledModel\/simulationObjects",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledModel\/stateVariables",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledModel\/stockIndices",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledModel\/stocks",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledModel\/timeVariableIndex",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledModel\/valueBindings"
@@ -977,6 +969,56 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/compiledmodel\/stockindex(_:)"
 },
+"doc://PoieticFlows/documentation/PoieticFlows/CompiledModel/stockIndices": {
+  "abstract" : [
+    {
+      "text" : "Indices of variables representing stocks.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "stockIndices"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV",
+      "text" : "SimulationState"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV5Indexa",
+      "text" : "Index"
+    },
+    {
+      "kind" : "text",
+      "text" : "]"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledModel\/stockIndices",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "stockIndices",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/compiledmodel\/stockindices"
+},
 "doc://PoieticFlows/documentation/PoieticFlows/CompiledModel/stocks": {
   "abstract" : [
     {
@@ -1302,7 +1344,7 @@
 "doc://PoieticFlows/documentation/PoieticFlows/Compiler/compile()": {
   "abstract" : [
     {
-      "text" : "Compiles the model and returns the compiled version of the model.",
+      "text" : "Compiles the design and returns compiled model that can be simulated.",
       "type" : "text"
     }
   ],
@@ -1333,8 +1375,8 @@
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:12PoieticFlows15NodeIssuesErrorV",
-      "text" : "NodeIssuesError"
+      "preciseIdentifier" : "s:12PoieticFlows13CompilerErrorO",
+      "text" : "CompilerError"
     },
     {
       "kind" : "text",
@@ -1352,97 +1394,6 @@
   "title" : "compile()",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/compiler\/compile()"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/Simulator/init(model:solverType:)": {
-  "abstract" : [
-    {
-      "text" : "Creates and initialises a simulator.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "identifier",
-      "text" : "init"
-    },
-    {
-      "kind" : "text",
-      "text" : "("
-    },
-    {
-      "kind" : "externalParam",
-      "text" : "model"
-    },
-    {
-      "kind" : "text",
-      "text" : ": "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:12PoieticFlows13CompiledModelV",
-      "text" : "CompiledModel"
-    },
-    {
-      "kind" : "text",
-      "text" : ", "
-    },
-    {
-      "kind" : "externalParam",
-      "text" : "solverType"
-    },
-    {
-      "kind" : "text",
-      "text" : ": "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:12PoieticFlows6SolverC",
-      "text" : "Solver"
-    },
-    {
-      "kind" : "text",
-      "text" : ".Type)"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulator\/init(model:solverType:)",
-  "kind" : "symbol",
-  "role" : "symbol",
-  "title" : "init(model:solverType:)",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/simulator\/init(model:solvertype:)"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/Solver/init(_:)": {
-  "abstract" : [
-    {
-      "text" : "Create a solver.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "identifier",
-      "text" : "init"
-    },
-    {
-      "kind" : "text",
-      "text" : "("
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:12PoieticFlows13CompiledModelV",
-      "text" : "CompiledModel"
-    },
-    {
-      "kind" : "text",
-      "text" : ")"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Solver\/init(_:)",
-  "kind" : "symbol",
-  "role" : "symbol",
-  "title" : "init(_:)",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/solver\/init(_:)"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/StateVariable/name": {
   "abstract" : [
@@ -1477,6 +1428,40 @@
   "title" : "name",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/statevariable\/name"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation": {
+  "abstract" : [
+    {
+      "text" : "Stock-Flow simulation specific computation and logic.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "StockFlowSimulation"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "StockFlowSimulation"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "StockFlowSimulation",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stockflowsimulation"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/StockFlowView": {
   "abstract" : [

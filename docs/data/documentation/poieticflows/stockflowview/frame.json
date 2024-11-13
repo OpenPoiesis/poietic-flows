@@ -20,7 +20,7 @@
   },
   "kind" : "symbol",
   "metadata" : {
-    "externalID" : "s:12PoieticFlows13StockFlowViewC5frame0A4Core5Frame_pvp",
+    "externalID" : "s:12PoieticFlows13StockFlowViewC5framexvp",
     "fragments" : [
       {
         "kind" : "keyword",
@@ -36,12 +36,28 @@
       },
       {
         "kind" : "text",
-        "text" : ": any "
+        "text" : ": "
       },
       {
         "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:11PoieticCore5FrameP",
-        "text" : "Frame"
+        "preciseIdentifier" : "s:12PoieticFlows13StockFlowViewC",
+        "text" : "StockFlowView"
+      },
+      {
+        "kind" : "text",
+        "text" : "<"
+      },
+      {
+        "kind" : "typeIdentifier",
+        "text" : "F"
+      },
+      {
+        "kind" : "text",
+        "text" : ">."
+      },
+      {
+        "kind" : "typeIdentifier",
+        "text" : "ViewedFrame"
       }
     ],
     "modules" : [
@@ -79,12 +95,29 @@
             },
             {
               "kind" : "text",
-              "text" : ": any "
+              "text" : ": "
+            },
+            {
+              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowView",
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:12PoieticFlows13StockFlowViewC",
+              "text" : "StockFlowView"
+            },
+            {
+              "kind" : "text",
+              "text" : "<"
             },
             {
               "kind" : "typeIdentifier",
-              "preciseIdentifier" : "s:11PoieticCore5FrameP",
-              "text" : "Frame"
+              "text" : "F"
+            },
+            {
+              "kind" : "text",
+              "text" : ">."
+            },
+            {
+              "kind" : "typeIdentifier",
+              "text" : "ViewedFrame"
             }
           ]
         }
@@ -219,12 +252,28 @@
     },
     {
       "kind" : "text",
-      "text" : ": any "
+      "text" : ": "
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:11PoieticCore5FrameP",
-      "text" : "Frame"
+      "preciseIdentifier" : "s:12PoieticFlows13StockFlowViewC",
+      "text" : "StockFlowView"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "F"
+    },
+    {
+      "kind" : "text",
+      "text" : ">."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "ViewedFrame"
     }
   ],
   "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowView\/frame",

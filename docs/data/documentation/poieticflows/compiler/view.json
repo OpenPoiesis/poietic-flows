@@ -20,7 +20,7 @@
   },
   "kind" : "symbol",
   "metadata" : {
-    "externalID" : "s:12PoieticFlows8CompilerC4viewAA13StockFlowViewCvp",
+    "externalID" : "s:12PoieticFlows8CompilerC4viewAA13StockFlowViewCy0A4Core11StableFrameCGvp",
     "fragments" : [
       {
         "kind" : "keyword",
@@ -42,6 +42,19 @@
         "kind" : "typeIdentifier",
         "preciseIdentifier" : "s:12PoieticFlows13StockFlowViewC",
         "text" : "StockFlowView"
+      },
+      {
+        "kind" : "text",
+        "text" : "<"
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:11PoieticCore11StableFrameC",
+        "text" : "StableFrame"
+      },
+      {
+        "kind" : "text",
+        "text" : ">"
       }
     ],
     "modules" : [
@@ -86,6 +99,19 @@
               "kind" : "typeIdentifier",
               "preciseIdentifier" : "s:12PoieticFlows13StockFlowViewC",
               "text" : "StockFlowView"
+            },
+            {
+              "kind" : "text",
+              "text" : "<"
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:11PoieticCore11StableFrameC",
+              "text" : "StableFrame"
+            },
+            {
+              "kind" : "text",
+              "text" : ">"
             }
           ]
         }
@@ -226,6 +252,19 @@
       "kind" : "typeIdentifier",
       "preciseIdentifier" : "s:12PoieticFlows13StockFlowViewC",
       "text" : "StockFlowView"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore11StableFrameC",
+      "text" : "StableFrame"
+    },
+    {
+      "kind" : "text",
+      "text" : ">"
     }
   ],
   "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Compiler\/view",

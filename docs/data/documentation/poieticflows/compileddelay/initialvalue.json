@@ -1,4 +1,10 @@
 {
+  "abstract" : [
+    {
+      "text" : "Initial value of the delay node output.",
+      "type" : "text"
+    }
+  ],
   "hierarchy" : {
     "paths" : [
       [
@@ -92,6 +98,34 @@
         }
       ],
       "kind" : "declarations"
+    },
+    {
+      "content" : [
+        {
+          "anchor" : "discussion",
+          "level" : 2,
+          "text" : "Discussion",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "The initial value is used before the simulation reaches the required number of steps.",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "If the initial value is not provided, then the initial value of the input is used.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        }
+      ],
+      "kind" : "content"
     }
   ],
   "schemaVersion" : {
@@ -145,7 +179,10 @@
 },
 "doc://PoieticFlows/documentation/PoieticFlows/CompiledDelay": {
   "abstract" : [
-
+    {
+      "text" : "Compiled delay node.",
+      "type" : "text"
+    }
   ],
   "fragments" : [
     {
@@ -176,7 +213,10 @@
 },
 "doc://PoieticFlows/documentation/PoieticFlows/CompiledDelay/initialValue": {
   "abstract" : [
-
+    {
+      "text" : "Initial value of the delay node output.",
+      "type" : "text"
+    }
   ],
   "fragments" : [
     {

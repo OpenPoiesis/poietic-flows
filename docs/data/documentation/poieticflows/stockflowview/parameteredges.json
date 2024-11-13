@@ -20,7 +20,7 @@
   },
   "kind" : "symbol",
   "metadata" : {
-    "externalID" : "s:12PoieticFlows13StockFlowViewC14parameterEdgesSay0A4Core4EdgeVGvp",
+    "externalID" : "s:12PoieticFlows13StockFlowViewC14parameterEdgesSay0A4Core12EdgeSnapshotVGvp",
     "fragments" : [
       {
         "kind" : "keyword",
@@ -40,8 +40,8 @@
       },
       {
         "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:11PoieticCore4EdgeV",
-        "text" : "Edge"
+        "preciseIdentifier" : "s:11PoieticCore12EdgeSnapshotV",
+        "text" : "EdgeSnapshot"
       },
       {
         "kind" : "text",
@@ -87,8 +87,8 @@
             },
             {
               "kind" : "typeIdentifier",
-              "preciseIdentifier" : "s:11PoieticCore4EdgeV",
-              "text" : "Edge"
+              "preciseIdentifier" : "s:11PoieticCore12EdgeSnapshotV",
+              "text" : "EdgeSnapshot"
             },
             {
               "kind" : "text",
@@ -239,8 +239,8 @@
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:11PoieticCore4EdgeV",
-      "text" : "Edge"
+      "preciseIdentifier" : "s:11PoieticCore12EdgeSnapshotV",
+      "text" : "EdgeSnapshot"
     },
     {
       "kind" : "text",

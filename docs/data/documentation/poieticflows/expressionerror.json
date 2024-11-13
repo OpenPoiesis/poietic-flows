@@ -117,8 +117,6 @@
       "identifiers" : [
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ExpressionError\/argumentTypeMismatch(_:_:)",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ExpressionError\/invalidNumberOfArguments(_:_:)",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ExpressionError\/missingArguments",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ExpressionError\/tooManyArguments",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ExpressionError\/unknownFunction(_:)",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ExpressionError\/unknownVariable(_:)"
       ],
@@ -452,56 +450,6 @@
   "title" : "ExpressionError.invalidNumberOfArguments(_:_:)",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/expressionerror\/invalidnumberofarguments(_:_:)"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/ExpressionError/missingArguments": {
-  "abstract" : [
-
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "case"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "missingArguments"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ExpressionError\/missingArguments",
-  "kind" : "symbol",
-  "role" : "symbol",
-  "title" : "ExpressionError.missingArguments",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/expressionerror\/missingarguments"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/ExpressionError/tooManyArguments": {
-  "abstract" : [
-
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "case"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "tooManyArguments"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ExpressionError\/tooManyArguments",
-  "kind" : "symbol",
-  "role" : "symbol",
-  "title" : "ExpressionError.tooManyArguments",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/expressionerror\/toomanyarguments"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/ExpressionError/unknownFunction(_:)": {
   "abstract" : [

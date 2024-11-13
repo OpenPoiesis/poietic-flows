@@ -1,7 +1,7 @@
 {
   "abstract" : [
     {
-      "text" : "Predicate for an edge that drains from a stocks. It originates in a",
+      "text" : "List of all edges that drain from a stocks. It originates in a",
       "type" : "text"
     },
     {
@@ -28,7 +28,7 @@
   },
   "kind" : "symbol",
   "metadata" : {
-    "externalID" : "s:12PoieticFlows13StockFlowViewC11drainsEdgesSay0A4Core4EdgeVGvp",
+    "externalID" : "s:12PoieticFlows13StockFlowViewC11drainsEdgesSay0A4Core12EdgeSnapshotVGvp",
     "fragments" : [
       {
         "kind" : "keyword",
@@ -48,8 +48,8 @@
       },
       {
         "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:11PoieticCore4EdgeV",
-        "text" : "Edge"
+        "preciseIdentifier" : "s:11PoieticCore12EdgeSnapshotV",
+        "text" : "EdgeSnapshot"
       },
       {
         "kind" : "text",
@@ -95,8 +95,8 @@
             },
             {
               "kind" : "typeIdentifier",
-              "preciseIdentifier" : "s:11PoieticCore4EdgeV",
-              "text" : "Edge"
+              "preciseIdentifier" : "s:11PoieticCore12EdgeSnapshotV",
+              "text" : "EdgeSnapshot"
             },
             {
               "kind" : "text",
@@ -224,7 +224,7 @@
 "doc://PoieticFlows/documentation/PoieticFlows/StockFlowView/drainsEdges": {
   "abstract" : [
     {
-      "text" : "Predicate for an edge that drains from a stocks. It originates in a",
+      "text" : "List of all edges that drain from a stocks. It originates in a",
       "type" : "text"
     },
     {
@@ -255,8 +255,8 @@
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:11PoieticCore4EdgeV",
-      "text" : "Edge"
+      "preciseIdentifier" : "s:11PoieticCore12EdgeSnapshotV",
+      "text" : "EdgeSnapshot"
     },
     {
       "kind" : "text",
