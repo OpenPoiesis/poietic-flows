@@ -182,9 +182,6 @@ public class Simulator {
     /// - SeeAlso: ``CompiledModel/timeVariableIndex``
     ///
     public var timePoints: [Double] {
-        // TODO: We need a cleaner way how to get this.
-        return output.map {
-            try! $0[compiledModel.timeVariableIndex].doubleValue()
-        }
+        return output.map { $0.time }
     }
 }
