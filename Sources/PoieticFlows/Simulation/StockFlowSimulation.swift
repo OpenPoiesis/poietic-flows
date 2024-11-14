@@ -52,18 +52,55 @@ public class StockFlowSimulation: Simulation {
     
     // MARK: - Initialization
     
-    /// Initialise a simulation state.
+    /// Create and initialise a simulation state.
     ///
-    /// This function computes the initial state of the computation by
+    /// - Parameters:
+    ///     - step: The initial step number of the simulation.
+    ///     - time: Initial time.
+    ///     - timeDelta: Time delta between simulation steps.
+    ///
+    /// This function creates and computes the initial state of the computation by
     /// evaluating all the nodes in the order of their dependency by parameter.
-    /// 
-    public func initialize(_ state: inout SimulationState) throws {
-        // TODO: Return new state, do not update a state.
+    ///
+    /// - Returns: Newly initialised simulation state.
+    ///
+    public func initialize(step: Int=0, time: Double=0, timeDelta: Double=1.0)  throws -> SimulationState {
+        // TODO: [WIP] Move SiulationState.init() code in here, free it from the model
+        var state = SimulationState(model: model,
+                                    step: 0,
+                                    time: time,
+                                    timeDelta: timeDelta)
+        // TODO: [WIP] move code here
+        updateBuiltins(&state)
+
         for (index, _) in model.simulationObjects.enumerated() {
             try initialize(objectAt: index, in: &state)
         }
+
+        return state
     }
     
+    /// Set values of built-in variables such as time or time delta.
+    ///
+    /// - SeeAlso: ``CompiledModel/builtins``
+    ///
+    public func updateBuiltins(_ state: inout SimulationState) {
+        for variable in model.builtins {
+            let value: Variant
+
+            switch variable.builtin {
+            case .time:
+                value = Variant(state.time)
+            case .timeDelta:
+                value = Variant(state.timeDelta)
+            case .step:
+                value = Variant(state.step)
+            }
+            state[variable.variableIndex] = value
+        }
+    }
+
+
     /// Initialise an object in a given state.
     ///
     /// - Parameters:
@@ -110,6 +147,7 @@ public class StockFlowSimulation: Simulation {
         
         return outputValue
     }
+    
     public func initialize(smooth: CompiledSmooth, in state: inout SimulationState) throws -> Variant {
         let initialValue = state[smooth.inputValueIndex]
         state[smooth.smoothValueIndex] = initialValue
@@ -123,6 +161,8 @@ public class StockFlowSimulation: Simulation {
     /// This is the main method that performs the concrete computation using a concrete solver.
     ///
     public func update(_ state: inout SimulationState) throws {
+        updateBuiltins(&state)
+
         switch solver {
         case .euler:
             try updateWithEuler(&state)

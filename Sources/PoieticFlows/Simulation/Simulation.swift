@@ -26,7 +26,7 @@ public protocol Simulation {
     /// Function that updates a simulation state.
     ///
     /// - SeeAlso: ``Simulator/initializeState(time:override:)``,
-    ///   ``Simulator/setBuiltins(_:)````
+    ///   ``Simulator/updateBuiltins(_:)````
     ///
     func update(_ state: inout SimulationState) throws
 }

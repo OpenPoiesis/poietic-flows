@@ -51,8 +51,7 @@ import Testing
         try compile()
         
         let sim = StockFlowSimulation(model)
-        var state = SimulationState(model: model)
-        try sim.initialize(&state)
+        let state = try sim.initialize()
         
         #expect(state[index(a)] == 1)
         #expect(state[index(b)] == 2)
@@ -67,8 +66,7 @@ import Testing
         try compile()
         
         let sim = StockFlowSimulation(model)
-        var state = SimulationState(model: model)
-        try sim.initialize(&state)
+        let state = try sim.initialize()
 
         #expect(state[index(a)] != nil)
     }
@@ -81,8 +79,7 @@ import Testing
         try compile()
         
         let sim = StockFlowSimulation(model)
-        var state = SimulationState(model: model)
-        try sim.initialize(&state)
+        let state = try sim.initialize()
 
         #expect(state[index(aux)] == 10)
         #expect(state[index(stock)] == 20)
@@ -96,10 +93,7 @@ import Testing
         try compile()
 
         let sim = StockFlowSimulation(model)
-        var state = SimulationState(model: model)
-        state[model.timeVariableIndex] = 1.0
-
-        try sim.initialize(&state)
+        let state = try sim.initialize(time: 1.0)
 
         #expect(state[index(aux)] == 1.0)
         #expect(state[index(flow)] == 10.0)
@@ -127,8 +121,7 @@ import Testing
         try compile()
         
         let sim = StockFlowSimulation(model)
-        var state = SimulationState(model: model)
-        try sim.initialize(&state)
+        let state = try sim.initialize()
 
         let diff = try sim.stockDifference(state: state, time: 1.0)
         
@@ -145,9 +138,8 @@ import Testing
         try compile()
         
         let sim = StockFlowSimulation(model)
-        var state = SimulationState(model: model)
-        try sim.initialize(&state)
- 
+        let state = try sim.initialize()
+
         let diff = try sim.stockDifference(state: state, time: 1.0)
 
         #expect(diff[model.stockIndex(stock.id)] == -5)
@@ -163,9 +155,8 @@ import Testing
         try compile()
         
         let sim = StockFlowSimulation(model)
-        var state = SimulationState(model: model)
-        try sim.initialize(&state)
- 
+        let state = try sim.initialize()
+
         let diff = try sim.stockDifference(state: state, time: 1.0)
 
         #expect(diff[model.stockIndex(stock.id)] == 0)
@@ -181,9 +172,8 @@ import Testing
         try compile()
         
         let sim = StockFlowSimulation(model)
-        var state = SimulationState(model: model)
-        try sim.initialize(&state)
- 
+        let state = try sim.initialize()
+
         let diff = try sim.stockDifference(state: state, time: 1.0)
 
         #expect(diff[model.stockIndex(stock.id)] == 0)
@@ -211,10 +201,8 @@ import Testing
         try compile()
         
         let sim = StockFlowSimulation(model)
-        var initial = SimulationState(model: model)
-        try sim.initialize(&initial)
-        var state = SimulationState(model: model)
-        try sim.initialize(&state)
+        let initial = try sim.initialize()
+        var state = try sim.initialize()
 
         // We require that the stocks will be computed in the following order:
         // 1. source
@@ -262,8 +250,7 @@ import Testing
         try compile()
         
         let sim = StockFlowSimulation(model)
-        var state = SimulationState(model: model)
-        try sim.initialize(&state)
+        let state = try sim.initialize()
 
         let diff = try sim.stockDifference(state: state, time: 1.0)
 
@@ -282,8 +269,7 @@ import Testing
         try compile()
 
         let sim = StockFlowSimulation(model)
-        var state = SimulationState(model: model, timeDelta: 0.5)
-        try sim.initialize(&state)
+        let state = try sim.initialize(timeDelta: 0.5)
 
         let diff = try sim.stockDifference(state: state, time: 1.0)
 
@@ -303,8 +289,7 @@ import Testing
         try compile()
 
         let sim = StockFlowSimulation(model)
-        var state = SimulationState(model: model)
-        try sim.initialize(&state)
+        var state = try sim.initialize()
 
         try sim.update(&state)
         #expect(state[index(kettle)] == 900.0 )
@@ -332,8 +317,7 @@ import Testing
         try compile()
 
         let sim = StockFlowSimulation(model)
-        var state = SimulationState(model: model)
-        try sim.initialize(&state)
+        let state = try sim.initialize()
 
         #expect(state[index(g1)] == 0.0)
         #expect(state[index(g2)] == 10.0)
@@ -351,8 +335,7 @@ import Testing
         try compile()
 
         let sim = StockFlowSimulation(model)
-        var state = SimulationState(model: model)
-        try sim.initialize(&state)
+        let state = try sim.initialize()
 
         #expect(state[index(aux)] == 0.0)
         
@@ -388,8 +371,7 @@ import Testing
         try compile()
 
         let sim = StockFlowSimulation(model)
-        var state = SimulationState(model: model)
-        try sim.initialize(&state)
+        var state = try sim.initialize()
 
         #expect(state.double(at: index(delay)) == 0.0)
 

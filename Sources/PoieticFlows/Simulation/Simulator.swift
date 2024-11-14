@@ -107,14 +107,10 @@ public class Simulator {
         currentTime = initialTime
 
         let simulation = StockFlowSimulation(compiledModel)
-        var state = SimulationState(model: compiledModel,
-                                    step: 0,
-                                    time: self.initialTime,
-                                    timeDelta: self.timeDelta)
+        var state = try simulation.initialize(step: 0,
+                                              time: self.initialTime,
+                                              timeDelta: self.timeDelta)
 
-        setBuiltins(&state)
-
-        try simulation.initialize(&state)
         
         for (id, value) in override {
             guard let index = compiledModel.variableIndex(of: id) else {
@@ -131,26 +127,6 @@ public class Simulator {
         return state
     }
 
-
-    /// Set values of built-in variables such as time or time delta.
-    ///
-    /// - SeeAlso: ``CompiledModel/builtins``
-    ///
-    public func setBuiltins(_ state: inout SimulationState) {
-        for variable in compiledModel.builtins {
-            let value: Variant
-
-            switch variable.builtin {
-            case .time:
-                value = Variant(currentTime)
-            case .timeDelta:
-                value = Variant(timeDelta)
-            case .step:
-                value = Variant(currentStep)
-            }
-            state[variable.variableIndex] = value
-        }
-    }
 
     // MARK: - Step
     
@@ -176,8 +152,6 @@ public class Simulator {
         var result = currentState.advance()
         currentStep = result.step
         currentTime = result.time
-        
-        setBuiltins(&result)
         
         // 2. Computation
         // -------------------------------------------------------
