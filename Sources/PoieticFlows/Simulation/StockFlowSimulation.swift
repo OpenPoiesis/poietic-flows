@@ -58,23 +58,33 @@ public class StockFlowSimulation: Simulation {
     ///     - step: The initial step number of the simulation.
     ///     - time: Initial time.
     ///     - timeDelta: Time delta between simulation steps.
+    ///     - override: Dictionary of values to override during initialisation.
     ///
     /// This function creates and computes the initial state of the computation by
     /// evaluating all the nodes in the order of their dependency by parameter.
     ///
+    /// When the ``override`` parameter is specified, then values for objects with given
+    /// ID will be used from the dictionary instead of being computed.
+    ///
     /// - Returns: Newly initialised simulation state.
     ///
-    public func initialize(step: Int=0, time: Double=0, timeDelta: Double=1.0)  throws -> SimulationState {
+    public func initialize(step: Int=0, time: Double=0, timeDelta: Double=1.0, override: [ObjectID:Variant]=[:])  throws -> SimulationState {
         // TODO: [WIP] Move SiulationState.init() code in here, free it from the model
         var state = SimulationState(model: model,
                                     step: 0,
                                     time: time,
                                     timeDelta: timeDelta)
+
         // TODO: [WIP] move code here
         updateBuiltins(&state)
 
-        for (index, _) in model.simulationObjects.enumerated() {
-            try initialize(objectAt: index, in: &state)
+        for (index, obj) in model.simulationObjects.enumerated() {
+            if let value = override[obj.id] {
+                state[obj.variableIndex] = value
+            }
+            else {
+                try initialize(objectAt: index, in: &state)
+            }
         }
 
         return state

@@ -22,6 +22,20 @@ public enum SimulationError: Error {
 /// - SeeAlso: ``Simulator``
 ///
 public protocol Simulation {
+    /// Create and initialise a simulation state.
+    ///
+    /// - Parameters:
+    ///     - step: The initial step number of the simulation.
+    ///     - time: Initial time.
+    ///     - timeDelta: Time delta between simulation steps.
+    ///
+    /// This function creates and computes the initial state of the computation by
+    /// evaluating all the nodes in the order of their dependency by parameter.
+    ///
+    /// - Returns: Newly initialised simulation state.
+    ///
+    func initialize(step: Int, time: Double, timeDelta: Double, override: [ObjectID:Variant])  throws -> SimulationState
+
     // TODO: Throws SimulationError (RuntimeError)
     /// Function that updates a simulation state.
     ///
@@ -29,6 +43,7 @@ public protocol Simulation {
     ///   ``Simulator/updateBuiltins(_:)````
     ///
     func update(_ state: inout SimulationState) throws
+
 }
 
 extension Simulation {

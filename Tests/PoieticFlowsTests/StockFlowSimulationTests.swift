@@ -85,7 +85,27 @@ import Testing
         #expect(state[index(stock)] == 20)
         #expect(state[index(flow)] == 30)
     }
-    
+
+    @Test mutating func initializeOverride() throws {
+        let a = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "10"])
+        let b = frame.createNode(ObjectType.Auxiliary, name: "b", attributes: ["formula": "20"])
+        let c = frame.createNode(ObjectType.Auxiliary, name: "c", attributes: ["formula": "a - 1"])
+        frame.createEdge(ObjectType.Parameter, origin: a.id, target: c.id)
+        
+        try compile()
+        
+        let sim = StockFlowSimulation(model)
+
+        let overrides: [ObjectID:Variant] = [
+            a.id: Variant(999),
+        ]
+        let state = try sim.initialize(override: overrides)
+
+        #expect(state[index(a)] == 999)
+        #expect(state[index(b)] == 20)
+        #expect(state[index(c)] == 998)
+    }
+
     @Test mutating func stageWithTime() throws {
         let aux = frame.createNode(ObjectType.Auxiliary, name: "aux", attributes: ["formula": "time"])
         let flow = frame.createNode(ObjectType.Flow, name: "flow", attributes: ["formula": "time * 10"])

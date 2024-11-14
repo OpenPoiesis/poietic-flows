@@ -106,19 +106,15 @@ public class Simulator {
         }
         currentTime = initialTime
 
-        let simulation = StockFlowSimulation(compiledModel)
-        var state = try simulation.initialize(step: 0,
-                                              time: self.initialTime,
-                                              timeDelta: self.timeDelta)
-
-        
+        var overrideVariants: [ObjectID:Variant] = [:]
         for (id, value) in override {
-            guard let index = compiledModel.variableIndex(of: id) else {
-                // TODO: Should we complain?
-                continue
-            }
-            state[index] = Variant(value)
+            overrideVariants[id] = Variant(value)
         }
+
+        let state = try simulation.initialize(step: 0,
+                                              time: self.initialTime,
+                                              timeDelta: self.timeDelta,
+                                              override: overrideVariants)
         
         output.removeAll()
         output.append(state)
