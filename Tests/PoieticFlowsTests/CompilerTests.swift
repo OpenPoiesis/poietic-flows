@@ -1,32 +1,32 @@
 //
-//  File.swift
-//  
+//  CompilerTests.swift
+//
 //
 //  Created by Stefan Urbanek on 09/06/2023.
 //
 
-import XCTest
+import Testing
 @testable import PoieticFlows
 @testable import PoieticCore
 
-final class TestCompiler: XCTestCase {
-    var design: Design!
-    var frame: TransientFrame!
+@Suite struct CompilerTest {
+    let design: Design
+    let frame: TransientFrame
     
-    override func setUp() {
-        design = Design(metamodel: FlowsMetamodel)
-        frame = design.createFrame()
+    init() throws {
+        self.design = Design(metamodel: FlowsMetamodel)
+        self.frame = design.createFrame()
     }
     
-    func testNoComputedVariables() throws {
+    @Test func noComputedVariables() throws {
         let compiler = Compiler(frame: try design.accept(frame))
         let model = try compiler.compile()
         
-        XCTAssertEqual(model.simulationObjects.count, 0)
-        XCTAssertEqual(model.stateVariables.count, Simulator.BuiltinVariables.count)
+        #expect(model.simulationObjects.count == 0)
+        #expect(model.stateVariables.count == Simulator.BuiltinVariables.count)
     }
     
-    func testComputedVariables() throws {
+    @Test func computedVariables() throws {
         frame.createNode(ObjectType.Stock, name: "a", attributes: ["formula": "0"])
         frame.createNode(ObjectType.Stock, name: "b", attributes: ["formula": "0"])
         frame.createNode(ObjectType.Stock, name: "c", attributes: ["formula": "0"])
@@ -36,17 +36,15 @@ final class TestCompiler: XCTestCase {
         let compiled = try compiler.compile()
         let names = compiled.simulationObjects.map { $0.name } .sorted()
         
-        XCTAssertEqual(names, ["a", "b", "c"])
-        XCTAssertEqual(compiled.stateVariables.count, 3 + Simulator.BuiltinVariables.count)
+        #expect(names == ["a", "b", "c"])
+        #expect(compiled.stateVariables.count == 3 + Simulator.BuiltinVariables.count)
     }
     
-    func testSortedNodes() throws {
+    @Test func sortedNodes() throws {
         // a -> b -> c
-        
         let c = frame.createNode(ObjectType.Auxiliary, name: "c", attributes: ["formula": "b"])
         let b = frame.createNode(ObjectType.Auxiliary, name: "b", attributes: ["formula": "a"])
         let a = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "0"])
-        
         
         frame.createEdge(ObjectType.Parameter, origin: a, target: b)
         frame.createEdge(ObjectType.Parameter, origin: b, target: c)
@@ -56,48 +54,41 @@ final class TestCompiler: XCTestCase {
 
         let sorted = compiled.simulationObjects
         
-        if sorted.isEmpty {
-            XCTFail("Sorted expression nodes must not be empty")
-            return
-        }
-        
-        XCTAssertEqual(sorted.count, 3)
-        XCTAssertEqual(sorted[0].id, a.id)
-        XCTAssertEqual(sorted[1].id, b.id)
-        XCTAssertEqual(sorted[2].id, c.id)
+        #expect(sorted.count == 3)
+        #expect(sorted[0].id == a.id)
+        #expect(sorted[1].id == b.id)
+        #expect(sorted[2].id == c.id)
     }
 
-    func testBadFunctionName() throws {
+    @Test func badFunctionName() throws {
         let aux = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "nonexistent(10)"])
         
         let compiler = Compiler(frame: try design.accept(frame))
-        XCTAssertThrowsError(try compiler.compile()) {
+        #expect {
+            try compiler.compile()
+        } throws: {
             guard $0 as? CompilerError != nil else {
-                XCTFail("Expected compiler error, got: \($0)")
-                return
+                Issue.record("Unexpected error: \($0)")
+                return false
             }
             let issues = compiler.issues(for: aux.id)
-            guard let first = issues.first else {
-                XCTFail("Expected an issue")
-                return
-            }
             
-            XCTAssertEqual(issues.count, 1)
-            XCTAssertEqual(first, .expressionError(.unknownFunction("nonexistent")))
+            return issues.count == 1
+                    && issues.first == .expressionError(.unknownFunction("nonexistent"))
         }
     }
 
-    func testSingleComputedVariable() throws {
+    @Test func singleComputedVariable() throws {
         let _ = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "if(time < 2, 0, 1)"])
         
         let compiler = Compiler(frame: try design.accept(frame))
         let compiled = try compiler.compile()
         let names = compiled.simulationObjects.map { $0.name }.sorted()
         
-        XCTAssertEqual(names, ["a"])
+        #expect(names == ["a"])
     }
 
-    func testValidateDuplicateName() throws {
+    @Test func duplicateNames() throws {
         let c1 = frame.createNode(ObjectType.Stock, name: "things", attributes: ["formula": "0"])
         let c2 = frame.createNode(ObjectType.Stock, name: "things", attributes: ["formula": "0"])
         frame.createNode(ObjectType.Stock, name: "a", attributes: ["formula": "0"])
@@ -105,17 +96,19 @@ final class TestCompiler: XCTestCase {
 
         
         let compiler = Compiler(frame: try design.accept(frame))
-        XCTAssertThrowsError(try compiler.compile()) {
+        #expect {
+            try compiler.compile()
+        } throws: {
             guard $0 as? CompilerError != nil else {
-                XCTFail("Expected DomainError, got: \($0)")
-                return
+                Issue.record("Unexpected error: \($0)")
+                return false
             }
-            XCTAssertEqual(compiler.issues(for: c1.id).count, 1)
-            XCTAssertEqual(compiler.issues(for: c2.id).count, 1)
+            return compiler.issues(for: c1.id).count == 1
+                    && compiler.issues(for: c2.id).count == 1
         }
     }
     
-    func testInflowOutflow() throws {
+    @Test func inflowOutflow() throws {
         let source = frame.createNode(ObjectType.Stock, name: "source", attributes: ["formula": "0"])
         let flow = frame.createNode(ObjectType.Flow, name: "f", attributes: ["formula": "1"])
         let sink = frame.createNode(ObjectType.Stock, name: "sink", attributes: ["formula": "0"])
@@ -126,35 +119,33 @@ final class TestCompiler: XCTestCase {
         let compiler = Compiler(frame: try design.accept(frame))
         let compiled = try compiler.compile()
         
-        XCTAssertEqual(compiled.stocks.count, 2)
-        XCTAssertEqual(compiled.stocks[0].id, source.id)
-        XCTAssertEqual(compiled.stocks[0].inflows, [])
-        XCTAssertEqual(compiled.stocks[0].outflows, [compiled.variableIndex(of: flow.id)])
+        #expect(compiled.stocks.count == 2)
+        #expect(compiled.stocks[0].id == source.id)
+        #expect(compiled.stocks[0].inflows == [])
+        #expect(compiled.stocks[0].outflows == [compiled.variableIndex(of: flow.id)])
 
-        XCTAssertEqual(compiled.stocks[1].id, sink.id)
-        XCTAssertEqual(compiled.stocks[1].inflows, [compiled.variableIndex(of: flow.id)])
-        XCTAssertEqual(compiled.stocks[1].outflows, [])
+        #expect(compiled.stocks[1].id == sink.id)
+        #expect(compiled.stocks[1].inflows == [compiled.variableIndex(of: flow.id)])
+        #expect(compiled.stocks[1].outflows == [])
     }
     
-    func testDisconnectedGraphicalFunction() throws {
+    @Test func disconnectedGraphicalFunction() throws {
         let gf = frame.createNode(ObjectType.GraphicalFunction,
                                   name: "g")
 
         let compiler = Compiler(frame: try design.accept(frame))
-        XCTAssertThrowsError(try compiler.compile()) {
-            guard $0 as? CompilerError != nil else {
-                XCTFail("Expected DomainError, got: \($0)")
-                return
-            }
+        #expect {
+            try compiler.compile()
+        } throws: {
             let issues = compiler.issues(for: gf.id)
             
-            XCTAssertEqual(issues.count, 1)
-            XCTAssertEqual(issues.first, ObjectIssue.missingRequiredParameter)
-            
+            return $0 is CompilerError
+                    && issues.count == 1
+                    && issues.first == ObjectIssue.missingRequiredParameter
         }
     }
 
-    func testGraphicalFunctionNameReferences() throws {
+    @Test func graphicalFunctionNameReferences() throws {
         let param = frame.createNode(ObjectType.Auxiliary, name: "p", attributes: ["formula": "1"])
         let gf = frame.createNode(ObjectType.GraphicalFunction, name: "g")
         let aux = frame.createNode(ObjectType.Auxiliary, name:"a", attributes: ["formula": "g"])
@@ -166,19 +157,19 @@ final class TestCompiler: XCTestCase {
         let compiled = try compiler.compile()
 
         let funcs = compiled.graphicalFunctions
-        XCTAssertEqual(funcs.count, 1)
+        #expect(funcs.count == 1)
 
         let boundFn = funcs.first!
-        XCTAssertEqual(boundFn.id, gf.id)
-        XCTAssertEqual(boundFn.parameterIndex, compiled.variableIndex(of:param.id))
+        #expect(boundFn.id == gf.id)
+        #expect(boundFn.parameterIndex == compiled.variableIndex(of:param.id))
 
-        XCTAssertTrue(compiled.simulationObjects.contains { $0.name == "g" })
+        #expect(compiled.simulationObjects.contains { $0.name == "g" })
         
         let issues = compiler.validateParameters(aux.id, required: ["g"])
-        XCTAssertTrue(issues.isEmpty)
+        #expect(issues.isEmpty)
     }
 
-    func testGraphicalFunctionComputation() throws {
+    @Test func graphicalFunctionComputation() throws {
         let p = frame.createNode(ObjectType.Auxiliary, name:"p", attributes: ["formula": "0"])
         let gf = frame.createNode(ObjectType.GraphicalFunction, name: "g")
         let aux = frame.createNode(ObjectType.Auxiliary, name:"a", attributes: ["formula": "g"])
@@ -188,37 +179,33 @@ final class TestCompiler: XCTestCase {
 
         let compiler = Compiler(frame: try design.accept(frame))
         let compiled = try compiler.compile()
-        guard let object = compiled.simulationObject(gf.id) else {
-            XCTFail("No compiled variable for the graphical function")
-            return
-        }
+        let object = try #require(compiled.simulationObject(gf.id),
+                                  "No compiled variable for the graphical function")
 
         switch object.computation {
         case .graphicalFunction(let fn, _):
-            XCTAssertEqual(fn.name, "__graphical_\(gf.id)")
+            #expect(fn.name == "__graphical_\(gf.id)")
         default:
-            XCTFail("Graphical function compiled as: \(object.computation)")
+            Issue.record("Graphical function compiled as: \(object.computation)")
         }
     }
 
-    func testGraphCycleError() throws {
+    @Test func graphCycleError() throws {
         let a = frame.createNode(ObjectType.Auxiliary, name:"a", attributes: ["formula": "b"])
         let b = frame.createNode(ObjectType.Auxiliary, name:"b", attributes: ["formula": "a"])
         frame.createEdge(ObjectType.Parameter, origin: a, target: b)
         frame.createEdge(ObjectType.Parameter, origin: b, target: a)
         let compiler = Compiler(frame: try design.accept(frame))
-        XCTAssertThrowsError(try compiler.compile()) {
-            guard $0 as? CompilerError != nil else {
-                XCTFail("Expected CompilerError, got: \($0)")
-                return
-            }
-            
-            XCTAssertEqual(compiler.issues(for: a.id).first, ObjectIssue.computationCycle)
-            XCTAssertEqual(compiler.issues(for: b.id).first, ObjectIssue.computationCycle)
+        #expect {
+            try compiler.compile()
+        } throws: {
+            return $0 is CompilerError
+                    && compiler.issues(for: a.id).first == ObjectIssue.computationCycle
+                    && compiler.issues(for: b.id).first == ObjectIssue.computationCycle
         }
     }
     
-    func testStockCycleError() throws {
+    @Test func stockCycleError() throws {
         let a = frame.createNode(ObjectType.Stock, name:"a", attributes: ["formula": "0"])
         let b = frame.createNode(ObjectType.Stock, name:"b", attributes: ["formula": "0"])
         let fab = frame.createNode(ObjectType.Flow, name: "fab", attributes: ["formula": "0"])
@@ -229,18 +216,16 @@ final class TestCompiler: XCTestCase {
         frame.createEdge(ObjectType.Fills, origin: fba, target: a)
 
         let compiler = Compiler(frame: try design.accept(frame))
-        XCTAssertThrowsError(try compiler.compile()) {
-            guard $0 as? CompilerError != nil else {
-                XCTFail("Expected CompilerError, got: \($0)")
-                return
-            }
-            
-            XCTAssertEqual(compiler.issues(for: a.id).first, ObjectIssue.flowCycle)
-            XCTAssertEqual(compiler.issues(for: b.id).first, ObjectIssue.flowCycle)
+        #expect {
+            try compiler.compile()
+        } throws: {
+            return $0 is CompilerError
+                    && compiler.issues(for: a.id).first == ObjectIssue.flowCycle
+                    && compiler.issues(for: b.id).first == ObjectIssue.flowCycle
         }
     }
     
-    func testDelayedInflowBreaksTheCycle() throws {
+    @Test func delayedInflowBreaksTheCycle() throws {
         let a = frame.createNode(ObjectType.Stock, name:"a",
                                  attributes: [ "formula": "0", "delayed_inflow": Variant(true) ])
         let b = frame.createNode(ObjectType.Stock, name:"b", attributes: ["formula": "0"])
@@ -253,6 +238,7 @@ final class TestCompiler: XCTestCase {
         frame.createEdge(ObjectType.Fills, origin: fba, target: a)
 
         let compiler = Compiler(frame: try design.accept(frame))
-        XCTAssertNoThrow(try compiler.compile())
+        // Test no throw
+        let _ = try compiler.compile()
     }
 }

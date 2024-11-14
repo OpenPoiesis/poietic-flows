@@ -58,6 +58,7 @@ public class StockFlowSimulation: Simulation {
     /// evaluating all the nodes in the order of their dependency by parameter.
     /// 
     public func initialize(_ state: inout SimulationState) throws {
+        // TODO: Return new state, do not update a state.
         for (index, _) in model.simulationObjects.enumerated() {
             try initialize(objectAt: index, in: &state)
         }
