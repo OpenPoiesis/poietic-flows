@@ -737,7 +737,7 @@ public class Compiler {
     public func compileControlBindings() throws (CompilerError) -> [CompiledControlBinding] {
         var bindings: [CompiledControlBinding] = []
         for object in frame.filter(type: ObjectType.ValueBinding) {
-            guard let edge = EdgeSnapshot(object) else {
+            guard let edge = EdgeObject(object) else {
                 throw .structureTypeMismatch(object.id)
             }
             
