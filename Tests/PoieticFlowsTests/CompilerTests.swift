@@ -9,6 +9,23 @@ import Testing
 @testable import PoieticFlows
 @testable import PoieticCore
 
+extension TransientFrame {
+    @discardableResult
+    public func createEdge(_ type: ObjectType,
+                           origin: MutableObject,
+                           target: MutableObject,
+                           attributes: [String:Variant] = [:]) -> MutableObject {
+        precondition(type.structuralType == .edge, "Structural type mismatch")
+        precondition(contains(origin.id), "Missing edge origin")
+        precondition(contains(target.id), "Missing edge target")
+
+        let snapshot = create(type, structure: .edge(origin.id, target.id), attributes: attributes)
+        
+        return snapshot
+    }
+
+}
+
 @Suite struct CompilerTest {
     let design: Design
     let frame: TransientFrame

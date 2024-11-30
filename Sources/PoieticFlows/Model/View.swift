@@ -45,7 +45,7 @@ public class StockFlowView<F: Frame>{
     ///
     /// - SeeAlso: ``StateVariable``, ``CompiledModel``
     ///
-    public var simulationNodes: [StableObject] {
+    public var simulationNodes: [DesignObject] {
         frame.filter {
             $0.structure.type == .node
             && ($0.type.hasTrait(Trait.Formula)
@@ -53,7 +53,7 @@ public class StockFlowView<F: Frame>{
         }
     }
     
-    public var flowNodes: [StableObject] {
+    public var flowNodes: [DesignObject] {
         frame.filter {
             $0.structure.type == .node
             && $0.type === ObjectType.Flow
@@ -65,7 +65,7 @@ public class StockFlowView<F: Frame>{
     //
     /// Predicate that matches all edges that represent parameter connections.
     ///
-    public var parameterEdges: [EdgeObject<StableObject>] {
+    public var parameterEdges: [EdgeObject<DesignObject>] {
         frame.filterEdges { $0.type === ObjectType.Parameter }
     }
     /// A neighbourhood for incoming parameters of a node.
@@ -85,7 +85,7 @@ public class StockFlowView<F: Frame>{
     /// List of all edges that fill a stocks. It originates in a flow,
     /// and terminates in a stock.
     ///
-    public var fillsEdges: [EdgeObject<StableObject>] {
+    public var fillsEdges: [EdgeObject<DesignObject>] {
         frame.filterEdges { $0.type === ObjectType.Fills }
     }
     
@@ -159,7 +159,7 @@ public class StockFlowView<F: Frame>{
     /// List of all edges that drain from a stocks. It originates in a
     /// stock and terminates in a flow.
     ///
-    public var drainsEdges: [EdgeObject<StableObject>] {
+    public var drainsEdges: [EdgeObject<DesignObject>] {
         frame.filterEdges { $0.type === ObjectType.Drains }
     }
     

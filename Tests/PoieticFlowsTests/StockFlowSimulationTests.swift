@@ -29,7 +29,7 @@ import Testing
         return StockFlowSimulation(model)
     }
    
-    func index(_ object: any ObjectSnapshot) -> SimulationState.Index {
+    func index(_ object: MutableObject) -> SimulationState.Index {
         model.variableIndex(of: object.id)!
     }
 

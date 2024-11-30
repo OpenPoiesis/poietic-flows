@@ -58,7 +58,7 @@ public class Compiler {
     // MARK: - Compiler State
     // -----------------------------------------------------------------
 
-    private var orderedObjects: [StableObject]
+    private var orderedObjects: [DesignObject]
 
     /// List of simulation state variables.
     ///
@@ -360,7 +360,7 @@ public class Compiler {
     /// - Throws: ``NodeIssuesError`` with list of issues for the node.
     /// - SeeAlso: ``compileFormulaNode(_:)``, ``compileGraphicalFunctionNode(_:)``.
     ///
-    func compile(_ object: StableObject) throws (CompilerError) {
+    func compile(_ object: DesignObject) throws (CompilerError) {
         let rep: ComputationalRepresentation
 
         if object.type.hasTrait(Trait.Formula) {
@@ -441,7 +441,7 @@ public class Compiler {
     /// - Throws: ``NodeIssueError`` if there is an issue with parameters,
     ///   function names or other variable names in the expression.
     ///
-    func compileFormulaObject(_ object: StableObject) throws (CompilerError) -> ComputationalRepresentation {
+    func compileFormulaObject(_ object: DesignObject) throws (CompilerError) -> ComputationalRepresentation {
         guard let unboundExpression = parsedExpressions[object.id] else {
             throw .attributeExpectationFailure(object.id, "formula")
         }
@@ -488,7 +488,7 @@ public class Compiler {
     ///
     /// - SeeAlso: ``CompiledGraphicalFunction``, ``Solver/evaluate(objectAt:with:)``
     ///
-    func compileGraphicalFunctionNode(_ object: StableObject) throws (CompilerError) -> ComputationalRepresentation{
+    func compileGraphicalFunctionNode(_ object: DesignObject) throws (CompilerError) -> ComputationalRepresentation{
         guard let points = try? object["graphical_function_points"]?.pointArray() else {
             throw CompilerError.attributeExpectationFailure(object.id, "graphical_function_points")
         }
@@ -509,7 +509,7 @@ public class Compiler {
     
     /// Compile a delay node.
     ///
-    func compileDelayNode(_ object: StableObject) throws (CompilerError) -> ComputationalRepresentation{
+    func compileDelayNode(_ object: DesignObject) throws (CompilerError) -> ComputationalRepresentation{
         let queueIndex = createStateVariable(content: .internalState(object.id),
                                              valueType: .doubles,
                                              name: "delay_queue_\(object.id)")
@@ -553,7 +553,7 @@ public class Compiler {
 
     /// Compile a value smoothing node.
     ///
-    func compileSmoothNode(_ object: StableObject) throws (CompilerError) -> ComputationalRepresentation{
+    func compileSmoothNode(_ object: DesignObject) throws (CompilerError) -> ComputationalRepresentation{
         let smoothValueIndex = createStateVariable(content: .internalState(object.id),
                                              valueType: .doubles,
                                              name: "smooth_value_\(object.id)")
