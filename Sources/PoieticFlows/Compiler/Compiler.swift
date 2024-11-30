@@ -50,10 +50,10 @@ public class Compiler {
     ///
     /// The frame must be valid according to the ``FlowsMetamodel``.
     ///
-    public let frame: StableFrame
+    public let frame: DesignFrame
     
     /// Flows domain view of the frame.
-    public let view: StockFlowView<StableFrame>
+    public let view: StockFlowView<DesignFrame>
 
     // MARK: - Compiler State
     // -----------------------------------------------------------------
@@ -144,7 +144,7 @@ public class Compiler {
     ///
     /// The frame must be validated using the ``FlowsMetamodel``.
     ///
-    public init(frame: StableFrame) {
+    public init(frame: DesignFrame) {
         self.frame = frame
         self.view = StockFlowView(frame)
         
