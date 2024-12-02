@@ -1,93 +1,69 @@
 //
-//  File.swift
-//  
+//  TestDomainView.swift
+//
 //
 //  Created by Stefan Urbanek on 07/06/2023.
 //
 
-import XCTest
+import Testing
 @testable import PoieticFlows
 @testable import PoieticCore
 
 
-final class TestDomainView: XCTestCase {
+@Suite struct TestDomainView {
     // TODO: Split to Compiler and DomainView test cases
     
-    var db: Design!
-    var frame: TransientFrame!
+    let db: Design
+    let frame: TransientFrame
     
-    override func setUp() {
+    init() throws {
         db = Design(metamodel: FlowsMetamodel)
         frame = db.createFrame()
     }
-    
-    
-    func testCompileExpressions() throws {
-        throw XCTSkip("Conflicts with input validation, this test requires attention.")
-#if false
-        let names: [String:ObjectID] = [
-            "a": 1,
-            "b": 2,
-        ]
         
-        let l = frame.createNode(FlowsObjectType.Stock,
-                                 traits: [FormulaComponent(name: "l",
-                                                           expression: "sqrt(a*a + b*b)")])
+    @Test func testInvalidInput2() throws {
+        let broken = frame.createNode(.Stock, name: "broken", attributes: ["formula": "price"])
         let view = StockFlowView(frame)
         
-        let exprs = try view.boundExpressions(names: names)
-        
-        let varRefs = Set(exprs[l]!.allVariables)
-        
-        XCTAssertTrue(varRefs.contains(.object(1)))
-        XCTAssertTrue(varRefs.contains(.object(2)))
-        XCTAssertEqual(varRefs.count, 2)
-#endif
+        let resolved = view.resolveParameters(broken.id, required:["price"])
+        #expect(resolved.missing.count == 1)
+        #expect(resolved.unused.count == 0)
+        #expect(resolved.missing == ["price"])
     }
     
-    
-    func testInvalidInput2() throws {
-        let broken = frame.createNode(ObjectType.Stock, name: "broken", attributes: ["formula": "price"])
-        let view = StockFlowView(frame)
+    @Test func testUnusedInputs() throws {
+        let used = frame.createNode(.Auxiliary, name: "used", attributes: ["formula": "0"])
+        let unused = frame.createNode(.Auxiliary, name: "unused", attributes: ["formula": "0"])
+        let tested = frame.createNode(.Auxiliary, name: "tested", attributes: ["formula": "used"])
         
-        let parameters = view.parameters(broken.id, required:["price"])
-        XCTAssertEqual(parameters.count, 1)
-        XCTAssertEqual(parameters["price"], ParameterStatus.missing)
-    }
-    
-    func testUnusedInputs() throws {
-        let used = frame.createNode(ObjectType.Auxiliary, name: "used", attributes: ["formula": "0"])
-        let unused = frame.createNode(ObjectType.Auxiliary, name: "unused", attributes: ["formula": "0"])
-        let tested = frame.createNode(ObjectType.Auxiliary, name: "tested", attributes: ["formula": "used"])
-        
-        let usedEdge = frame.createEdge(ObjectType.Parameter, origin: used, target: tested)
-        let unusedEdge = frame.createEdge(ObjectType.Parameter, origin: unused, target: tested)
+        let _ = frame.createEdge(.Parameter, origin: used, target: tested)
+        let unusedEdge = frame.createEdge(.Parameter, origin: unused, target: tested)
         
         let view = StockFlowView(frame)
         
         // TODO: Get the required list from the compiler
-        let parameters = view.parameters(tested.id, required:["used"])
+        let resolved = view.resolveParameters(tested.id, required:["used"])
         
-        XCTAssertEqual(parameters.count, 2)
-        XCTAssertEqual(parameters["unused"], ParameterStatus.unused(node: unused.id, edge: unusedEdge.id))
-        XCTAssertEqual(parameters["used"], ParameterStatus.used(node: used.id, edge: usedEdge.id))
+        #expect(resolved.missing.count == 0)
+        #expect(resolved.unused.count == 1)
+        #expect(resolved.unused.first?.snapshot.id == unusedEdge.id)
     }
     
-    func testUnknownParameters() throws {
+    @Test func testUnknownParameters() throws {
         let known = frame.createNode(ObjectType.Auxiliary, name: "known", attributes: ["formula": "0"])
         let tested = frame.createNode(ObjectType.Auxiliary, name: "tested", attributes: ["formula": "known + unknown"])
-        
-        let knownEdge = frame.createEdge(ObjectType.Parameter, origin: known, target: tested)
+        let _ = frame.createEdge(ObjectType.Parameter, origin: known, target: tested)
         
         let view = StockFlowView(frame)
         
-        let parameters = view.parameters(tested.id, required:["known", "unknown"])
-        XCTAssertEqual(parameters.count, 2)
-        XCTAssertEqual(parameters["known"], ParameterStatus.used(node: known.id, edge: knownEdge.id))
-        XCTAssertEqual(parameters["unknown"], ParameterStatus.missing)
+        let resolved = view.resolveParameters(tested.id, required:["known", "unknown"])
+        #expect(resolved.missing.count == 1)
+        #expect(resolved.unused.count == 0)
+
+        #expect(resolved.missing == ["unknown"])
     }
     
-    func testFlowFillsAndDrains() throws {
+    @Test func testFlowFillsAndDrains() throws {
         let flow = frame.createNode(ObjectType.Flow, name: "f", attributes: ["formula": "1"])
         let source = frame.createNode(ObjectType.Stock, name: "source", attributes: ["formula": "0"])
         let sink = frame.createNode(ObjectType.Stock, name: "sink", attributes: ["formula": "0"])
@@ -97,11 +73,11 @@ final class TestDomainView: XCTestCase {
         
         let view = StockFlowView(frame)
         
-        XCTAssertEqual(view.flowFills(flow.id), sink.id)
-        XCTAssertEqual(view.flowDrains(flow.id), source.id)
+        #expect(view.fills(flow.id) == sink.id)
+        #expect(view.drains(flow.id) == source.id)
     }
    
-    func testStockAdjacency() throws {
+    @Test func testStockAdjacency() throws {
         // TODO: Test loops and delayed inflow
         let a = frame.createNode(ObjectType.Stock, name: "a", attributes: ["formula": "0"])
         let b = frame.createNode(ObjectType.Stock, name: "b", attributes: ["formula": "0"])
@@ -118,10 +94,10 @@ final class TestDomainView: XCTestCase {
         let view = StockFlowView(frame)
 
         let result = view.stockAdjacencies()
-        XCTAssertEqual(result.count, 1)
+        #expect(result.count == 1)
 
-        XCTAssertEqual(result[0].id, flow.id)
-        XCTAssertEqual(result[0].origin, a.id)
-        XCTAssertEqual(result[0].target, b.id)
+        #expect(result[0].id == flow.id)
+        #expect(result[0].origin == a.id)
+        #expect(result[0].target == b.id)
     }
 }

@@ -23,8 +23,12 @@ public enum ParameterStatus:Equatable {
 /// The domain view provides higher level view of the design through higher
 /// level concepts as defined in the ``FlowsMetamodel``.
 ///
+/// The view assumes that the frame conforms to the metamodel and satisfies all of the
+/// metamodel constraints.
+///
 public class StockFlowView<F: Frame>{
     public typealias ViewedFrame = F
+    
     /// Metamodel that the view uses to find relevant object types.
     public let metamodel: Metamodel
 
@@ -101,10 +105,10 @@ public class StockFlowView<F: Frame>{
     ///      |
     ///      *Node of interest*
     ///
-    public func fills(_ nodeID: ObjectID) -> Neighborhood<ViewedFrame> {
-        frame.hood(nodeID, direction: .outgoing) {
+    public func fills(_ flowID: ObjectID) -> ObjectID? {
+        frame.outgoing(flowID).first {
             $0.type === ObjectType.Fills
-        }
+        }?.target
     }
     
     /// Selector for edges originating in a flow and ending in a stock denoting
@@ -121,9 +125,7 @@ public class StockFlowView<F: Frame>{
             $0.type === ObjectType.Fills
         }
     }
-    /// Selector for an edge originating in a stock and ending in a flow denoting
-    /// which stock the flow drains. There must be only one of such edges
-    /// ending in a flow.
+    /// Returns an ID of a node that the flow drains.
     ///
     /// Neighbourhood of stocks around the flow.
     ///
@@ -133,11 +135,10 @@ public class StockFlowView<F: Frame>{
     ///      |
     ///      Neighbourhood (only one)
     ///
-    ///
-    public func drains(_ nodeID: ObjectID) -> Neighborhood<ViewedFrame> {
-        frame.hood(nodeID, direction: .incoming) {
+    public func drains(_ flowID: ObjectID) -> ObjectID? {
+        frame.incoming(flowID).first {
             $0.type === ObjectType.Drains
-        }
+        }?.origin
     }
     /// Selector for edges originating in a stock and ending in a flow denoting
     /// the outflow from the stock to multiple flows.
@@ -182,84 +183,39 @@ public class StockFlowView<F: Frame>{
         return references
     }
     
-    // TODO: Remove the `required` and compute here. Expensive, but useful for the caller.
-    // TODO: The `required` should belong to the node itself.
-    // TODO: Rename to formulaParameters as this makes sense for formulas only
-    /// Function to get a map between parameter names and their status.
+    /// Information about node parameters.
     ///
-    public func parameters(_ nodeID: ObjectID,
-                           required: [String]) -> [String:ParameterStatus] {
-        var unseen: Set<String> = Set(required)
-        var result: [String: ParameterStatus] = [:]
+    /// The status is provided by the function ``resolveParameters(_:required:)``.
+    ///
+    public struct ResolvedParameters {
+        public let missing: [String]
+        public let unused: [EdgeObject<DesignObject>]
+    }
+
+    /// Resolve missing and unused parameter connections.
+    ///
+    /// The Stock and Flow model requires that parameters are connected to the nodes where they are
+    /// used. This is a user-oriented requirement.
+    ///
+    public func resolveParameters(_ nodeID: ObjectID, required: [String]) ->  ResolvedParameters {
+        var missing: Set<String> = Set(required)
+        var unused: [EdgeObject<DesignObject>] = []
         
         for edge in incomingParameters(nodeID).edges {
-            let node = frame.node(edge.origin)
-            let name = node.name!
-            if unseen.contains(name) {
-                result[name] = .used(node: node.id, edge: edge.id)
-                unseen.remove(name)
+            let parameterNode = frame.node(edge.origin)
+            guard let parameterName = parameterNode.name else {
+                preconditionFailure("Named node expected")
+            }
+            
+            if missing.contains(parameterName) {
+                missing.remove(parameterName)
             }
             else {
-                result[name] = .unused(node: node.id, edge: edge.id)
+                unused.append(edge)
             }
         }
         
-        for name in unseen {
-            result[name] = .missing
-        }
-        
-        return result
-    }
-    
-    
-    /// Get a node that the given flow fills.
-    ///
-    /// The flow fills a node, usually a stock, if there is an edge
-    /// from the flow node to the node being filled.
-    ///
-    /// - Returns: ID of the node being filled, or `nil` if there is no
-    ///   fill edge outgoing from the flow.
-    /// - Precondition: The object with the ID `flowID` must be a flow
-    /// (``/PoieticCore/ObjectType/Flow``)
-    ///
-    /// - SeeAlso: ``flowDrains(_:)``,
-    ///
-    public func flowFills(_ flowID: ObjectID) -> ObjectID? {
-        let flowNode = frame.node(flowID)
-        // TODO: Do we need to check it here? We assume model is valid.
-        precondition(flowNode.type === ObjectType.Flow)
-        
-        if let node = fills(flowID).nodes.first {
-            return node.id
-        }
-        else {
-            return nil
-        }
-    }
-    
-    /// Get a node that the given flow drains.
-    ///
-    /// The flow drains a node, usually a stock, if there is an edge
-    /// from the drained node to the flow node.
-    ///
-    /// - Returns: ID of the node being drained, or `nil` if there is no
-    ///   drain edge incoming to the flow.
-    /// - Precondition: The object with the ID `flowID` must be a flow
-    /// (``/PoieticCore/ObjectType/Flow``)
-    ///
-    /// - SeeAlso: ``flowDrains(_:)``,
-    ///
-    public func flowDrains(_ flowID: ObjectID) -> ObjectID? {
-        let flowNode = frame.node(flowID)
-        // TODO: Do we need to check it here? We assume model is valid.
-        precondition(flowNode.type === ObjectType.Flow)
-        
-        if let node = drains(flowID).nodes.first {
-            return node.id
-        }
-        else {
-            return nil
-        }
+        return ResolvedParameters(missing: Array(missing), unused: unused)
     }
     
     /// Return a list of flows that fill a stock.
@@ -327,10 +283,10 @@ public class StockFlowView<F: Frame>{
         var adjacencies: [StockAdjacency] = []
 
         for flow in flowNodes {
-            guard let fills = flowFills(flow.id) else {
+            guard let fills = fills(flow.id) else {
                 continue
             }
-            guard let drains = flowDrains(flow.id) else {
+            guard let drains = drains(flow.id) else {
                 continue
             }
 

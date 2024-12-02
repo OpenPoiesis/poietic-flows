@@ -701,17 +701,17 @@ public class Compiler {
     ///   ``ObjectIssue/unusedInput(_:)``.
     ///
     public func validateParameters(_ nodeID: ObjectID, required: [String]) -> [ObjectIssue] {
-        let parameters = view.parameters(nodeID, required: required)
+        let parameters = view.resolveParameters(nodeID, required: required)
         var issues: [ObjectIssue] = []
         
-        for (name, status) in parameters {
-            switch status {
-            case .used: continue
-            case .unused:
-                issues.append(.unusedInput(name))
-            case .missing:
-                issues.append(.unknownParameter(name))
+        for name in parameters.missing {
+            issues.append(.unusedInput(name))
+        }
+        for edge in parameters.unused {
+            guard let name = frame.object(edge.origin).name else {
+                fatalError("Expected named object")
             }
+            issues.append(.unknownParameter(name))
         }
         
         return issues
