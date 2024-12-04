@@ -112,7 +112,7 @@ public struct CompiledModel {
     /// - SeeAlso: ``stateVariables``, ``CompiledBuiltin``, ``/PoieticCore/Variable``,
     ///   ``FlowsMetamodel``
     ///
-    public let builtins: [CompiledBuiltin]
+    public let builtins: CompiledBuiltinState
     
     /// Index of _time_ variable within the state variables.
     ///

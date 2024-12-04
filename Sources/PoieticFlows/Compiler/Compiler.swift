@@ -95,7 +95,6 @@ public class Compiler {
     ///
     private let functions: [String: Function]
 
-    private var builtins: [CompiledBuiltin] = []
     /// List of built-in variable names, fetched from the metamodel.
     ///
     /// Used in binding of arithmetic expressions.
@@ -104,7 +103,7 @@ public class Compiler {
     /// Mapping between a variable name and a bound variable reference.
     ///
     /// Used in binding of arithmetic expressions.
-    private var namedReferences: [String:SimulationState.Index]
+    private var nameIndex: [String:SimulationState.Index]
     
     private var parsedExpressions: [ObjectID:UnboundExpression]
 
@@ -156,7 +155,7 @@ public class Compiler {
         builtinVariableNames = []
         issues = [:]
         parsedExpressions = [:]
-        namedReferences = [:]
+        nameIndex = [:]
         objectVariableIndex = [:]
 
         var functions:[String:Function] = [:]
@@ -205,7 +204,7 @@ public class Compiler {
     ///
     public func compile() throws (CompilerError) -> CompiledModel {
         try initialize()
-        try prepareBuiltins()
+        let builtins = try prepareBuiltins()
         try parseExpressions()
         
         for object in self.orderedObjects {
@@ -221,14 +220,14 @@ public class Compiler {
         let defaults = try compileDefaults()
         let charts = try compileCharts()
         
-        guard let timeIndex = namedReferences["time"] else {
+        guard let timeIndex = nameIndex["time"] else {
             fatalError("No time variable within the builtins")
         }
 
         return CompiledModel(
             simulationObjects: self.simulationObjects,
             stateVariables: self.stateVariables,
-            builtins: self.builtins,
+            builtins: builtins,
             timeVariableIndex: timeIndex,
             stocks: self.compiledStocks,
             charts: charts,
@@ -291,7 +290,6 @@ public class Compiler {
         self.orderedObjects = ordered.map { frame.object($0) }
     }
 
-
     func parseExpressions() throws (CompilerError) {
         // TODO: This does not have to be in the Compiler
         parsedExpressions = [:]
@@ -315,34 +313,30 @@ public class Compiler {
         }
     }
 
-    func prepareBuiltins() throws (CompilerError) {
-        var builtins: [CompiledBuiltin] = []
+    /// Prepare built-in variables.
+    ///
+    /// For each builtin from the ``BuiltinVariable`` a state variable is allocated. Newly allocated
+    /// indices are included in the ``nameIndex``.
+    ///
+    /// All variable names are extracted to be used in the ``compileFormulaObject()``.
+    ///
+    /// - SeeAlso: ``StockFlowSimulation/updateBuiltins(_:)``
+    /// 
+    func prepareBuiltins() throws (CompilerError) -> CompiledBuiltinState {
+        let builtins = CompiledBuiltinState(
+            time: createStateVariable(builtin: .time),
+            timeDelta: createStateVariable(builtin: .timeDelta),
+            step: createStateVariable(builtin: .step)
+        )
 
-        for variable in Simulator.BuiltinVariables {
-            let builtin: BuiltinVariable
-            if variable === Variable.TimeVariable {
-                builtin = .time
-            }
-            else if variable === Variable.TimeDeltaVariable {
-                builtin = .timeDelta
-            }
-            else if variable === Variable.SimulationStepVariable {
-                builtin = .step
-            }
-            else {
-                fatalError("Unknown builtin variable: \(variable)")
-            }
-            
-            let index = createStateVariable(content: .builtin(builtin),
-                                            valueType: variable.valueType,
-                                            name: variable.name)
-            
-            self.namedReferences[variable.name] = index
-            builtins.append(CompiledBuiltin(builtin: builtin,
-                                            variableIndex: index))
-        }
-        self.builtins = builtins
-        self.builtinVariableNames = builtins.map { $0.builtin.name }
+        self.nameIndex[BuiltinVariable.time.name] = builtins.time
+        self.nameIndex[BuiltinVariable.timeDelta.name] = builtins.timeDelta
+        self.nameIndex[BuiltinVariable.step.name] = builtins.step
+
+        // Extract builtin variable names to be used in compileFormulaObject()
+        self.builtinVariableNames = BuiltinVariable.allCases.map { $0.name }
+
+        return builtins
     }
 
     /// Compile a simulation node.
@@ -410,7 +404,7 @@ public class Compiler {
                                         valueType: rep.valueType,
                                         name: name)
         self.objectVariableIndex[object.id] = index
-        self.namedReferences[name] = index
+        self.nameIndex[name] = index
 
         let sim = SimulationObject(id: object.id,
                                    type: simType,
@@ -465,7 +459,7 @@ public class Compiler {
         do {
             boundExpression = try bindExpression(unboundExpression,
                                                  variables: stateVariables,
-                                                 names: namedReferences,
+                                                 names: nameIndex,
                                                  functions: functions)
         }
         catch /* ExpressionError */ {
@@ -788,5 +782,13 @@ public class Compiler {
         }
         
         return variableIndex
+    }
+    
+    /// Convenience method that creates a state variable for a built-in.
+    ///
+    func createStateVariable(builtin: BuiltinVariable) -> SimulationState.Index {
+        return createStateVariable(content: .builtin(builtin),
+                                   valueType: builtin.valueType,
+                                   name: builtin.name)
     }
 }

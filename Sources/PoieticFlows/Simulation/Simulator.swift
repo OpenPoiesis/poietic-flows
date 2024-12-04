@@ -12,12 +12,6 @@ import PoieticCore
 /// Object for controlling a simulation session.
 ///
 public class Simulator {
-    public static let BuiltinVariables: [Variable] = [
-        Variable.SimulationStepVariable,
-        Variable.TimeVariable,
-        Variable.TimeDeltaVariable,
-    ]
-
     // Simulation parameters
 
     /// Initial time of the simulation.

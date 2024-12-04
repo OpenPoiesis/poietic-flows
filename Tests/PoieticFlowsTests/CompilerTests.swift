@@ -40,7 +40,7 @@ extension TransientFrame {
         let model = try compiler.compile()
         
         #expect(model.simulationObjects.count == 0)
-        #expect(model.stateVariables.count == Simulator.BuiltinVariables.count)
+        #expect(model.stateVariables.count == BuiltinVariable.allCases.count)
     }
     
     @Test func computedVariables() throws {
@@ -54,7 +54,7 @@ extension TransientFrame {
         let names = compiled.simulationObjects.map { $0.name } .sorted()
         
         #expect(names == ["a", "b", "c"])
-        #expect(compiled.stateVariables.count == 3 + Simulator.BuiltinVariables.count)
+        #expect(compiled.stateVariables.count == 3 + BuiltinVariable.allCases.count)
     }
     
     @Test func sortedNodes() throws {

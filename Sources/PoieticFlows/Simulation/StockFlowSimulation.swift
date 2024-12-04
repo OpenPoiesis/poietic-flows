@@ -51,7 +51,6 @@ public class StockFlowSimulation: Simulation {
     }
     
     // MARK: - Initialization
-    
     /// Create and initialise a simulation state.
     ///
     /// - Parameters:
@@ -70,12 +69,8 @@ public class StockFlowSimulation: Simulation {
     ///
     public func initialize(step: Int=0, time: Double=0, timeDelta: Double=1.0, override: [ObjectID:Variant]=[:])  throws -> SimulationState {
         // TODO: [WIP] Move SiulationState.init() code in here, free it from the model
-        var state = SimulationState(model: model,
-                                    step: 0,
-                                    time: time,
-                                    timeDelta: timeDelta)
+        var state = SimulationState(model: model, step: 0, time: time, timeDelta: timeDelta)
 
-        // TODO: [WIP] move code here
         updateBuiltins(&state)
 
         for (index, obj) in model.simulationObjects.enumerated() {
@@ -95,21 +90,11 @@ public class StockFlowSimulation: Simulation {
     /// - SeeAlso: ``CompiledModel/builtins``
     ///
     public func updateBuiltins(_ state: inout SimulationState) {
-        for variable in model.builtins {
-            let value: Variant
-
-            switch variable.builtin {
-            case .time:
-                value = Variant(state.time)
-            case .timeDelta:
-                value = Variant(state.timeDelta)
-            case .step:
-                value = Variant(state.step)
-            }
-            state[variable.variableIndex] = value
-        }
+        // NOTE: See also: Compiler.prepareBuiltins() and BuiltinVariable
+        state[model.builtins.time] = Variant(state.time)
+        state[model.builtins.timeDelta] = Variant(state.timeDelta)
+        state[model.builtins.step] = Variant(state.step)
     }
-
 
     /// Initialise an object in a given state.
     ///
@@ -123,8 +108,7 @@ public class StockFlowSimulation: Simulation {
        
         switch object.computation {
         case let .formula(expression):
-            result = try evaluate(expression: expression,
-                                  with: state)
+            result = try evaluate(expression: expression, with: state)
             
         case let .graphicalFunction(function, index):
             let value = state[index]
@@ -189,7 +173,6 @@ public class StockFlowSimulation: Simulation {
             try update(objectAt: index, in: &state)
         }
     }
-    
     
     /// Computes and updates a new state of an object.
     ///
@@ -398,5 +381,4 @@ public class StockFlowSimulation: Simulation {
         let delta = totalInflow - totalOutflow
         return delta
     }
-
 }

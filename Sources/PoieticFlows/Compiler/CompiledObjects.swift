@@ -111,48 +111,15 @@ public struct SimulationObject: CustomStringConvertible, Identifiable {
     }
 }
 
-/// Builtin variable kind.
+/// Indices of built-in variables.
 ///
-/// The enum is used during computation to set value of a builtin variable.
+/// - SeeAlso: ``BuiltinVariable``
 ///
-/// - SeeAlso: ``CompiledBuiltin``,
-/// ``StockFlowSimulation/initialize(_:)``,
-///
-public enum BuiltinVariable: Equatable, CustomStringConvertible {
-    case time
-    case timeDelta
-    case step
-//    case initialTime
-//    case endTime
-    
-    public var description: String { self.name }
-
-    public var name: String {
-        switch self {
-        case .time: "time"
-        case .timeDelta: "time_delta"
-        case .step: "simulation_step"
-        }
-    }
-}
-
-
-/// Structure representing builtin and reference to its simulation state
-/// variable.
-///
-/// - SeeAlso: ``CompiledModel/stateVariables``,
-/// ``StockFlowSimulation/initialize(_:)``
-///
-public struct CompiledBuiltin {
-    /// Builtin being represented by a variable.
-    ///
-    let builtin: BuiltinVariable
-
-    /// Index into the simulation state variable list.
-    ///
-    /// - SeeAlso: ``CompiledModel/stateVariables``
-    ///
-    let variableIndex: Int
+public struct CompiledBuiltinState {
+    // NOTE: Synchronise with ``StockFlowSimulation/updateBuiltins``
+    let time: SimulationState.Index
+    let timeDelta: SimulationState.Index
+    let step: SimulationState.Index
 }
 
 /// Compiled representation of a stock.
