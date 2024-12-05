@@ -1,6 +1,6 @@
 //
-//  CompiledModel.swift
-//  
+//  SimulationPlan.swift
+//
 //
 //  Created by Stefan Urbanek on 05/06/2022.
 //
@@ -18,27 +18,17 @@ public struct SimulationDefaults {
     public let simulationSteps: Int
 }
 
-/// Core structure used by the simulator and the solver to perform the
-/// computation.
+/// Core structure describing the simulation.
 ///
-/// Compiled model is an internal representation of the model design for
-/// computation. The structure is guaranteed to provide computational
-/// information with integrity, such as order of computation or value types.
+/// Simulation plan describes how the simulation is computed, how does the simulation state look
+/// like, what is the order in which the objects are being computed.
 ///
-/// If the model design violates constraints or contains user errors, the
-/// compiler refuses to create the compiled model.
-///
-/// The main content of the compiled model is a list of computed objects
-/// ``simulationObjects`` and a list of simulation state variables
-/// ``stateVariables``. The computation of computed objects can be carried out
-/// in the order provided without causing broken computational dependencies.
-///
-/// Additional information about specific object types is provided in stored
-/// properties such as ``stocks``, or ``charts``.
+/// The main content of the simulation plan is a list of computed objects in order of computational
+/// dependency ``simulationObjects`` and a list of simulation state variables ``stateVariables``.
 ///
 /// ## Uses by Applications
 ///
-/// Applications running simulations can use the compiled model to fetch various
+/// Applications running simulations can use the simulation plan to fetch various
 /// information that is to be presented to the user or that can be expected
 /// from the user as an input or as a configuration. For example:
 ///
@@ -54,28 +44,21 @@ public struct SimulationDefaults {
 ///   time variable is stored.
 /// - ``simulationDefaults`` for simulation run configuration.
 ///
-/// - Note: The compiled model can also be used in a similar way as
-///  "explain plan" in SQL. It contains some information how the simulation
-///   will be carried out.
+/// - Note: The simulation plan is loosely analogous to a SQL execution plan.
 ///
 /// - SeeAlso: ``Compiler/compile()``, ``StockFlowSimulation``,
 ///
-public struct CompiledModel {
-    // TODO: Alternative names: SimulationModel, ComputationalModel, InternalRepresentation, SimulableRepresentation, SRep, ResolvedModel, ExecutableModel
-    
-    /// List of variables that are computed, ordered by computational dependency.
+public struct SimulationPlan {
+    /// List of objects that are considered in the computation computed, ordered by computational
+    /// dependency.
     ///
-    /// The variables are ordered so that variables that do not require other
-    /// variables to be computed, such as constants are at the beginning.
-    /// The variables that depend on others by using them as a parameter
-    /// follow the variables they depend on.
+    /// The computational dependency means, that the objects are ordered so that objects that do
+    /// not require other objects to be computed, such as constants are at the beginning. The
+    /// objects that depend on others by using them as a parameter follow the variables they depend
+    /// on.
     ///
-    /// Computing variables in this order assures that we have all the
-    /// parameters computed when needed them.
-    ///
-    /// - Note: It is guaranteed that the variables are ordered. If a cycle was
-    ///         present in the model, the compiled model would not have been
-    ///         created.
+    /// Computing objects in this order assures that we have all the parameters computed when
+    /// they are needed.
     ///
     /// - SeeAlso: ``variableIndex(of:)``
     ///
@@ -259,11 +242,11 @@ public struct CompiledModel {
     /// This function is not used during computation. It is provided for
     /// potential inspection, testing and debugging.
     ///
-    /// - Precondition: The compiled model must contain a stock with given ID.
+    /// - Precondition: The plan must contain a stock with given ID.
     ///
     public func stockIndex(_ id: ObjectID) -> NumericVector.Index {
         guard let index = stocks.firstIndex(where: { $0.id == id }) else {
-            fatalError("The compiled model does not contain stock with ID \(id)")
+            preconditionFailure("The plan does not contain stock with ID \(id)")
         }
         return index
     }

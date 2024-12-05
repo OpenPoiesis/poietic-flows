@@ -12,7 +12,7 @@ extension StockFlowSimulation {
     ///
     @discardableResult
     public func updateWithEuler(_ state: inout SimulationState) throws -> NumericVector {
-        let stocks = model.stockIndices
+        let stocks = plan.stockIndices
         let delta = try stockDifference(state: state, time: state.time)
         
         state.numericAdd(delta, atIndices: stocks)
@@ -45,7 +45,7 @@ extension StockFlowSimulation {
         // https://arxiv.org/abs/2005.06268
         // Paper: "Positivity-Preserving Adaptive Runge-Kutta Methods"
 
-        let stocks = model.stockIndices
+        let stocks = plan.stockIndices
         
         let time = state.time
         let timeDelta = state.timeDelta

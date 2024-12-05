@@ -29,11 +29,11 @@ import PoieticCore
 /// Stock-Flow simulation specific computation and logic.
 ///
 public class StockFlowSimulation: Simulation {
-    /// Compiled model for which we are computing.
+    /// Simulation plan according which the computation is performed.
     ///
-    public let model: CompiledModel
+    public let plan: SimulationPlan
     
-    var stocks: [CompiledStock] { model.stocks }
+    var stocks: [CompiledStock] { plan.stocks }
     
     public enum SolverType: String, RawRepresentable, CaseIterable {
         case euler
@@ -45,8 +45,8 @@ public class StockFlowSimulation: Simulation {
 
     /// Create a new Stock Flow simulation for a specific model.
     ///
-    public init(_ model: CompiledModel, solver: SolverType = .euler) {
-        self.model = model
+    public init(_ plan: SimulationPlan, solver: SolverType = .euler) {
+        self.plan = plan
         self.solver = solver
     }
     
@@ -69,11 +69,11 @@ public class StockFlowSimulation: Simulation {
     ///
     public func initialize(step: Int=0, time: Double=0, timeDelta: Double=1.0, override: [ObjectID:Variant]=[:])  throws -> SimulationState {
         // TODO: [WIP] Move SiulationState.init() code in here, free it from the model
-        var state = SimulationState(model: model, step: 0, time: time, timeDelta: timeDelta)
+        var state = SimulationState(plan: plan, step: 0, time: time, timeDelta: timeDelta)
 
         updateBuiltins(&state)
 
-        for (index, obj) in model.simulationObjects.enumerated() {
+        for (index, obj) in plan.simulationObjects.enumerated() {
             if let value = override[obj.id] {
                 state[obj.variableIndex] = value
             }
@@ -87,13 +87,13 @@ public class StockFlowSimulation: Simulation {
     
     /// Set values of built-in variables such as time or time delta.
     ///
-    /// - SeeAlso: ``CompiledModel/builtins``
+    /// - SeeAlso: ``SimulationPlan/builtins``
     ///
     public func updateBuiltins(_ state: inout SimulationState) {
         // NOTE: See also: Compiler.prepareBuiltins() and BuiltinVariable
-        state[model.builtins.time] = Variant(state.time)
-        state[model.builtins.timeDelta] = Variant(state.timeDelta)
-        state[model.builtins.step] = Variant(state.step)
+        state[plan.builtins.time] = Variant(state.time)
+        state[plan.builtins.timeDelta] = Variant(state.timeDelta)
+        state[plan.builtins.step] = Variant(state.step)
     }
 
     /// Initialise an object in a given state.
@@ -103,7 +103,7 @@ public class StockFlowSimulation: Simulation {
     ///     - state: simulation state within which the expression is evaluated
     ///
     public func initialize(objectAt index: Int, in state: inout SimulationState) throws {
-        let object = model.simulationObjects[index]
+        let object = plan.simulationObjects[index]
         let result: Variant
        
         switch object.computation {
@@ -164,7 +164,7 @@ public class StockFlowSimulation: Simulation {
             try updateWithRK4(&state)
         }
         
-        for (index, object) in model.simulationObjects.enumerated() {
+        for (index, object) in plan.simulationObjects.enumerated() {
             // Skip the stocks
             if object.type == .stock {
                 continue
@@ -184,10 +184,10 @@ public class StockFlowSimulation: Simulation {
     ///     - state: simulation state within which the expression is evaluated
     ///
     /// - Throws: ``SimulationError``
-    /// - SeeAlso: ``CompiledModel/stateVariables``
+    /// - SeeAlso: ``SimulationPlan/stateVariables``
     ///
     public func update(objectAt index: Int, in state: inout SimulationState) throws {
-        let object = model.simulationObjects[index]
+        let object = plan.simulationObjects[index]
         let result: Variant
         
         switch object.computation {

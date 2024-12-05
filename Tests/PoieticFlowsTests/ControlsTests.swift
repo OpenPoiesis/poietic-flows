@@ -13,7 +13,7 @@ import XCTest
 final class TestControls: XCTestCase {
     var design: Design!
     var frame: TransientFrame!
-    var model: CompiledModel!
+    var model: SimulationPlan!
     
     override func setUp() {
         design = Design(metamodel: FlowsMetamodel.self)

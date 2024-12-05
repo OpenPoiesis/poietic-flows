@@ -39,16 +39,16 @@ public struct SimulationState: CustomStringConvertible {
     /// Create a simulation state with all variables set to zero.
     ///
     /// - Parameters:
-    ///     - model: Compiled model used to determine the number of variables.
+    ///     - plan: Simulation plan used to determine the number of variables.
     ///     - step: Simulation step.
     ///     - time: Simulation time.
     ///     - timeDelta: Simulation time delta.
     ///
-    public init(model: CompiledModel, step: Int=0, time: Double=0, timeDelta: Double=1.0) {
+    public init(plan: SimulationPlan, step: Int=0, time: Double=0, timeDelta: Double=1.0) {
         self.step = step
         self.time = time
         self.timeDelta = timeDelta
-        self.values = Array(repeating: Variant(0), count: model.stateVariables.count)
+        self.values = Array(repeating: Variant(0), count: plan.stateVariables.count)
     }
     
     public init(values: [Variant], step: Int=0, time: Double=0, timeDelta: Double=1.0) {

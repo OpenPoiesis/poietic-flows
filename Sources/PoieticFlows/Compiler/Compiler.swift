@@ -43,7 +43,7 @@ public enum CompilerError: Error {
 /// The purpose of the compiler is to validate the design and
 /// translate it into an internal representation.
 ///
-/// - SeeAlso: ``compile()``, ``CompiledModel``
+/// - SeeAlso: ``compile()``, ``SimulationPlan``
 ///
 public class Compiler {
     /// The frame containing the design to be compiled.
@@ -77,7 +77,7 @@ public class Compiler {
     /// and sets other associated mappings depending on the variable content
     /// type.
     ///
-    /// - SeeAlso: ``CompiledModel/stateVariables``,
+    /// - SeeAlso: ``SimulationPlan/stateVariables``,
     ///   ``createStateVariable(content:valueType:name:)``
     ///
     public private(set) var stateVariables: [StateVariable]
@@ -191,7 +191,7 @@ public class Compiler {
     /// 8. Fetch simulation defaults.
     /// 9. Create a compiled model.
     ///
-    /// - Returns: A ``CompiledModel`` that can be used directly by the
+    /// - Returns: A ``StockFlowModel`` that can be used directly by the
     ///   simulator.
     /// - Throws: A ``CompilerError`` when there are issues with the model
     ///   that are caused by the user.
@@ -202,7 +202,7 @@ public class Compiler {
     ///   
     /// - SeeAlso: ``Simulator/init(_:simulation:)``
     ///
-    public func compile() throws (CompilerError) -> CompiledModel {
+    public func compile() throws (CompilerError) -> SimulationPlan {
         try initialize()
         let builtins = try prepareBuiltins()
         try parseExpressions()
@@ -224,7 +224,7 @@ public class Compiler {
             fatalError("No time variable within the builtins")
         }
 
-        return CompiledModel(
+        return SimulationPlan(
             simulationObjects: self.simulationObjects,
             stateVariables: self.stateVariables,
             builtins: builtins,

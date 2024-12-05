@@ -12,7 +12,7 @@ import Testing
 @Suite struct TestStockFlowSimulation {
     let design: Design
     let frame: TransientFrame
-    var model: CompiledModel!
+    var plan: SimulationPlan!
 
     init() throws {
         self.design = Design(metamodel: FlowsMetamodel)
@@ -21,20 +21,20 @@ import Testing
     
     mutating func compile() throws {
         let compiler = Compiler(frame: try design.accept(frame))
-        self.model = try compiler.compile()
+        self.plan = try compiler.compile()
     }
     
     mutating func makeSimulation() throws -> StockFlowSimulation {
         try compile()
-        return StockFlowSimulation(model)
+        return StockFlowSimulation(plan)
     }
    
     func index(_ object: MutableObject) -> SimulationState.Index {
-        model.variableIndex(of: object.id)!
+        plan.variableIndex(of: object.id)!
     }
 
     func index(_ id: ObjectID) -> SimulationState.Index {
-        model.variableIndex(of: id)!
+        plan.variableIndex(of: id)!
     }
     
     @Test mutating func initializeStocks() throws {
@@ -50,7 +50,7 @@ import Testing
         
         try compile()
         
-        let sim = StockFlowSimulation(model)
+        let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
         
         #expect(state[index(a)] == 1)
@@ -65,7 +65,7 @@ import Testing
         let a = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "1"])
         try compile()
         
-        let sim = StockFlowSimulation(model)
+        let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
 
         #expect(state[index(a)] != nil)
@@ -78,7 +78,7 @@ import Testing
        
         try compile()
         
-        let sim = StockFlowSimulation(model)
+        let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
 
         #expect(state[index(aux)] == 10)
@@ -94,7 +94,7 @@ import Testing
         
         try compile()
         
-        let sim = StockFlowSimulation(model)
+        let sim = StockFlowSimulation(plan)
 
         let overrides: [ObjectID:Variant] = [
             a.id: Variant(999),
@@ -112,20 +112,20 @@ import Testing
         
         try compile()
 
-        let sim = StockFlowSimulation(model)
+        let sim = StockFlowSimulation(plan)
         let state = try sim.initialize(time: 1.0)
 
         #expect(state[index(aux)] == 1.0)
         #expect(state[index(flow)] == 10.0)
 
         var state2 = state.advance(time: 2.0)
-        state2[model.timeVariableIndex] = Variant(state2.time)
+        state2[plan.timeVariableIndex] = Variant(state2.time)
         try sim.update(&state2)
         #expect(state2[index(aux)] == 2.0)
         #expect(state2[index(flow)] == 20.0)
         
         var state3 = state.advance(time: 10.0)
-        state3[model.timeVariableIndex] = Variant(state3.time)
+        state3[plan.timeVariableIndex] = Variant(state3.time)
         try sim.update(&state3)
         #expect(state3[index(aux)] == 10.0)
         #expect(state3[index(flow)] == 100.0)
@@ -140,12 +140,12 @@ import Testing
         
         try compile()
         
-        let sim = StockFlowSimulation(model)
+        let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
 
         let diff = try sim.stockDifference(state: state, time: 1.0)
         
-        #expect(diff[model.stockIndex(stock.id)] == -10)
+        #expect(diff[plan.stockIndex(stock.id)] == -10)
     }
     
     @Test mutating func nonNegativeStock() throws {
@@ -157,12 +157,12 @@ import Testing
         
         try compile()
         
-        let sim = StockFlowSimulation(model)
+        let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
 
         let diff = try sim.stockDifference(state: state, time: 1.0)
 
-        #expect(diff[model.stockIndex(stock.id)] == -5)
+        #expect(diff[plan.stockIndex(stock.id)] == -5)
     }
     // TODO: Also negative outflow
     @Test mutating func nonNegativeStockNegativeInflow() throws {
@@ -174,12 +174,12 @@ import Testing
         
         try compile()
         
-        let sim = StockFlowSimulation(model)
+        let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
 
         let diff = try sim.stockDifference(state: state, time: 1.0)
 
-        #expect(diff[model.stockIndex(stock.id)] == 0)
+        #expect(diff[plan.stockIndex(stock.id)] == 0)
     }
     
     @Test mutating func stockNegativeOutflow() throws {
@@ -191,12 +191,12 @@ import Testing
         
         try compile()
         
-        let sim = StockFlowSimulation(model)
+        let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
 
         let diff = try sim.stockDifference(state: state, time: 1.0)
 
-        #expect(diff[model.stockIndex(stock.id)] == 0)
+        #expect(diff[plan.stockIndex(stock.id)] == 0)
     }
     
     @Test mutating func nonNegativeToTwo() throws {
@@ -220,7 +220,7 @@ import Testing
         
         try compile()
         
-        let sim = StockFlowSimulation(model)
+        let sim = StockFlowSimulation(plan)
         let initial = try sim.initialize()
         var state = try sim.initialize()
 
@@ -234,19 +234,19 @@ import Testing
         #expect(state[index(happyFlow)] == 10)
         #expect(state[index(sadFlow)] == 10)
         
-        let sourceDiff = try sim.computeStockDelta(model.compiledStock(source.id), in: &state)
+        let sourceDiff = try sim.computeStockDelta(plan.compiledStock(source.id), in: &state)
         // Adjusted flow to actual outflow
         #expect(state[index(happyFlow)] == 5.0)
         #expect(state[index(sadFlow)] == 0.0)
         #expect(sourceDiff == -5.0)
         
-        let happyDiff = try sim.computeStockDelta(model.compiledStock(happy.id), in: &state)
+        let happyDiff = try sim.computeStockDelta(plan.compiledStock(happy.id), in: &state)
         // Remains the same as above
         #expect(state[index(happyFlow)] == 5.0)
         #expect(state[index(sadFlow)] == 0.0)
         #expect(happyDiff == +5.0)
         
-        let sadDiff = try sim.computeStockDelta(model.compiledStock(sad.id), in: &state)
+        let sadDiff = try sim.computeStockDelta(plan.compiledStock(sad.id), in: &state)
         // Remains the same as above
         #expect(state[index(happyFlow)] == 5.0)
         #expect(state[index(sadFlow)] == 0.0)
@@ -254,9 +254,9 @@ import Testing
         
         let diff = try sim.stockDifference(state: initial, time: 1.0)
         
-        #expect(diff[model.stockIndex(source.id)] == -5)
-        #expect(diff[model.stockIndex(happy.id)] == +5)
-        #expect(diff[model.stockIndex(sad.id)] == 0)
+        #expect(diff[plan.stockIndex(source.id)] == -5)
+        #expect(diff[plan.stockIndex(happy.id)] == +5)
+        #expect(diff[plan.stockIndex(sad.id)] == 0)
     }
     
     @Test mutating func difference() throws {
@@ -269,13 +269,13 @@ import Testing
 
         try compile()
         
-        let sim = StockFlowSimulation(model)
+        let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
 
         let diff = try sim.stockDifference(state: state, time: 1.0)
 
-        #expect(diff[model.stockIndex(kettle.id)] == -100.0)
-        #expect(diff[model.stockIndex(cup.id)] == 100.0)
+        #expect(diff[plan.stockIndex(kettle.id)] == -100.0)
+        #expect(diff[plan.stockIndex(cup.id)] == 100.0)
     }
     
     @Test mutating func differenceTimeDelta() throws {
@@ -288,13 +288,13 @@ import Testing
 
         try compile()
 
-        let sim = StockFlowSimulation(model)
+        let sim = StockFlowSimulation(plan)
         let state = try sim.initialize(timeDelta: 0.5)
 
         let diff = try sim.stockDifference(state: state, time: 1.0)
 
-        #expect(diff[model.stockIndex(kettle.id)] == -50.0)
-        #expect(diff[model.stockIndex(cup.id)] == 50.0)
+        #expect(diff[plan.stockIndex(kettle.id)] == -50.0)
+        #expect(diff[plan.stockIndex(cup.id)] == 50.0)
     }
 
     
@@ -308,7 +308,7 @@ import Testing
         
         try compile()
 
-        let sim = StockFlowSimulation(model)
+        let sim = StockFlowSimulation(plan)
         var state = try sim.initialize()
 
         try sim.update(&state)
@@ -336,7 +336,7 @@ import Testing
         
         try compile()
 
-        let sim = StockFlowSimulation(model)
+        let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
 
         #expect(state[index(g1)] == 0.0)
@@ -354,23 +354,23 @@ import Testing
 
         try compile()
 
-        let sim = StockFlowSimulation(model)
+        let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
 
         #expect(state[index(aux)] == 0.0)
         
         var state1 = state.advance()
-        state1[model.timeVariableIndex] = Variant(state1.time)
+        state1[plan.timeVariableIndex] = Variant(state1.time)
         try sim.update(&state1)
         #expect(state1[index(aux)] == 0.0)
 
         var state2 = state1.advance()
-        state2[model.timeVariableIndex] = Variant(state2.time)
+        state2[plan.timeVariableIndex] = Variant(state2.time)
         try sim.update(&state2)
         #expect(state2[index(aux)] == 1.0)
 
         var state3 = state2.advance()
-        state3[model.timeVariableIndex] = Variant(state3.time)
+        state3[plan.timeVariableIndex] = Variant(state3.time)
         try sim.update(&state3)
         #expect(state3[index(aux)] == 1.0)
     }
@@ -390,7 +390,7 @@ import Testing
         
         try compile()
 
-        let sim = StockFlowSimulation(model)
+        let sim = StockFlowSimulation(plan)
         var state = try sim.initialize()
 
         #expect(state.double(at: index(delay)) == 0.0)

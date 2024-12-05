@@ -18,7 +18,7 @@ final class TestSimulator: XCTestCase {
         frame = design.createFrame()
     }
     
-    func compile() throws -> CompiledModel {
+    func compile() throws -> SimulationPlan {
         let compiler = Compiler(frame: try design.accept(frame))
         return try compiler.compile()
     }

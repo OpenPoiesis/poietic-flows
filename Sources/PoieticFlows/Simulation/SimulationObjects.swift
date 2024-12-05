@@ -1,13 +1,11 @@
 //
-//  File 2.swift
-//  
+//  SimulationObjects.swift
+//
 //
 //  Created by Stefan Urbanek on 15/03/2024.
 //
 
 import PoieticCore
-
-// TODO: Move CompiledXXX types into CompiledModel as CompiledModel.XXX
 
 /// Representation of a node in the simulation denoting how the node will
 /// be computed.
@@ -90,7 +88,7 @@ public struct SimulationObject: CustomStringConvertible, Identifiable {
     /// Index of the variable representing the object's state in the
     /// simulation state.
     ///
-    /// - SeeAlso: ``CompiledModel/stateVariables``
+    /// - SeeAlso: ``SimulationPlan/stateVariables``
     ///
     public let variableIndex: Int
     
@@ -139,7 +137,7 @@ public struct CompiledStock {
     ///
     /// This is the main information used during the computation.
     ///
-    /// - SeeAlso: ``CompiledModel/stateVariables``
+    /// - SeeAlso: ``SimulationPlan/stateVariables``
     ///
     public let variableIndex: SimulationState.Index
     
@@ -226,7 +224,6 @@ public struct CompiledControlBinding {
     public let variableIndex: SimulationState.Index
 }
 
-// TODO: add at least smoothing (SMTH1)
 /// Compiled delay node.
 ///
 /// - SeeAlso: ``StockFlowSimulation/initialize(delay:in:)``

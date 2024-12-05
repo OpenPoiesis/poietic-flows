@@ -27,7 +27,7 @@ public class Simulator {
     public var currentTime: Double = 0
     // TODO: Make currentState non-optional
     public var currentState: SimulationState!
-    public var compiledModel: CompiledModel
+    public var compiledModel: SimulationPlan
     
     // TODO: Make this an object, so we can derive more info
     /// Collected data
@@ -45,14 +45,14 @@ public class Simulator {
     ///   - solverType: Type of the solver to be used.
     ///
     /// The simulator is initialised by creating a new solver and initialising
-    /// simulation values from the ``CompiledModel/simulationDefaults`` such as
+    /// simulation values from the ``SimulationPlan/simulationDefaults`` such as
     /// initial time or time delta (_dt_). If the defaults are not provided then
     /// the following values are used:
     ///
     /// - `initialTime = 0.0`
     /// - `timeDelta = 1.0`
     ///
-    public init(_ model: CompiledModel, simulation: Simulation? = nil) {
+    public init(_ model: SimulationPlan, simulation: Simulation? = nil) {
         self.compiledModel = model
         self.currentState = nil
         self.simulation = simulation ?? StockFlowSimulation(model)
@@ -173,7 +173,7 @@ public class Simulator {
     
     /// Get series of time points.
     ///
-    /// - SeeAlso: ``CompiledModel/timeVariableIndex``
+    /// - SeeAlso: ``SimulationPlan/timeVariableIndex``
     ///
     public var timePoints: [Double] {
         return output.map { $0.time }
