@@ -15,83 +15,127 @@ import Darwin
 
 // Mark: Builtins
 
-/// List of built-in numeric unary operators.
-///
-/// The operators:
-///
-/// - `__neg__` is `-` unary minus
-///
-/// - SeeAlso: ``bindExpression(_:variables:names:functions:)``
-///
-nonisolated(unsafe) public let BuiltinUnaryOperators: [Function] = [
-    .NumericUnary("__neg__") { -$0 }
-]
-
-/// List of built-in numeric binary operators.
-///
-/// The operators:
-///
-/// - `__add__` is `+` addition
-/// - `__sub__` is `-` subtraction
-/// - `__mul__` is `*` multiplication
-/// - `__div__` is `/` division
-/// - `__mod__` is `%` remainder
-///
-/// - SeeAlso: ``bindExpression(_:variables:names:functions:)``
-///
-nonisolated(unsafe) public let BuiltinBinaryOperators: [Function] = [
-    .NumericBinary("__add__") { $0 + $1 },
-    .NumericBinary("__sub__") { $0 - $1 },
-    .NumericBinary("__mul__") { $0 * $1 },
-    .NumericBinary("__div__") { $0 / $1 },
-    .NumericBinary("__mod__") { $0.truncatingRemainder(dividingBy: $1) },
-]
-
-/// List of built-in numeric function.
-///
-/// The functions:
-///
-/// - `abs(number)` absolute value
-/// - `floor(number)` rounded down, floor value
-/// - `ceiling(number)` rounded up, ceiling value
-/// - `round(number)` rounded value
-/// - `sum(number, ...)` sum of multiple values
-/// - `min(number, ...)` min out of of multiple values
-/// - `max(number, ...)` max out of of multiple values
-///
-nonisolated(unsafe) public let BuiltinFunctions: [Function] = [
-    .NumericUnary("abs") {
-        $0.magnitude
-    },
-    .NumericUnary("floor") {
-        $0.rounded(.down)
-    },
-    .NumericUnary("ceiling") {
-        $0.rounded(.up)
-    },
-    .NumericUnary("round") {
-        $0.rounded()
-    },
-
-    .NumericBinary("power", leftName: "value", rightName: "exponent") {
-        pow($0, $1)
-    },
-
-    // Variadic
+extension Function {
+    /// Numeric negation function.
+    ///
+    /// Used for the unary `-` minus operator.
+    ///
+    nonisolated(unsafe)
+    public static let NumericNegation = Function(numericUnary: "__neg__") { -$0 }
+    nonisolated(unsafe)
+    public static let NumericUnaryOperators = [
+        NumericNegation
+    ]
     
-    .NumericVariadic("sum") { args in
-        args.reduce(0, { x, y in x + y })
-    },
-    .NumericVariadic("min") { args in
-        args.min()!
-    },
-    .NumericVariadic("max") { args in
-        args.max()!
-    },
-]
+    // Binary
+    nonisolated(unsafe)
+    public static let NumericAdd = Function(numericBinary: "__add__") { $0 + $1 }
+    nonisolated(unsafe)
+    public static let NumericSubtract = Function(numericBinary: "__sub__") { $0 - $1 }
+    nonisolated(unsafe)
+    public static let NumericMultiply = Function(numericBinary: "__mul__") { $0 * $1 }
+    nonisolated(unsafe)
+    public static let NumericDivide = Function(numericBinary: "__div__") { $0 / $1 }
+    nonisolated(unsafe)
+    public static let NumericModulo = Function(numericBinary: "__mod__") {
+        $0.truncatingRemainder(dividingBy: $1)
+    }
+    
+    nonisolated(unsafe) static let NumericBinaryOperators = [
+        NumericAdd,
+        NumericSubtract,
+        NumericMultiply,
+        NumericDivide,
+        NumericModulo
+    ]
 
-/// List of all built-in functions and operators.
-nonisolated(unsafe) let AllBuiltinFunctions: [Function] = BuiltinUnaryOperators
-                                    + BuiltinBinaryOperators
-                                    + BuiltinFunctions
-                                    + PoieticCore.BuiltinFunctions
+    /// Function for computing absolute (numeric) value.
+    ///
+    /// Expression: `abs(number)`
+    ///
+    nonisolated(unsafe)
+    public static let Abs = Function(numericUnary: "abs") {
+        $0.magnitude
+    }
+    /// Function for computing rounded down, floor value.
+    ///
+    /// Expression: `floor(number)`
+    ///
+    nonisolated(unsafe)
+    public static let Floor = Function(numericUnary: "floor") {
+        $0.rounded(.down)
+    }
+    /// Function for computing rounded up, ceiling value.
+    ///
+    /// Expression: `ceiling(number)`
+    ///
+    nonisolated(unsafe)
+    public static let Ceiling = Function(numericUnary: "ceiling") {
+        $0.rounded(.up)
+    }
+    /// Function for computing rounded numeric value.
+    ///
+    /// Expression: `round(number)`
+    ///
+    nonisolated(unsafe)
+    public static let Round = Function(numericUnary: "round") {
+        $0.rounded()
+    }
+
+    /// Function for computing power.
+    ///
+    /// Expression: `power(value, exponent)`
+    ///
+    nonisolated(unsafe)
+    public static let Power = Function(
+        numericBinary: "power",
+        leftName: "value",
+        rightName: "exponent")
+    {
+        pow($0, $1)
+    }
+
+    /// Function for computing a sum of one or more values.
+    ///
+    /// Expression: `sum(number, ...)`
+    nonisolated(unsafe)
+    public static let Sum = Function(numericVariadic: "sum") {
+        $0.reduce(0, { x, y in x + y })
+    }
+
+    /// Function for finding a minimum of one or more values.
+    ///
+    /// Use: `min(number, ...)` min out of of multiple values
+    nonisolated(unsafe)
+    public static let Min = Function(numericVariadic: "min") {
+        $0.min()!
+    }
+
+    /// Function for finding a maximum of one or more values.
+    ///
+    /// Use: `max(number, ...)` max out of of multiple values
+    nonisolated(unsafe)
+    public static let Max = Function(numericVariadic: "max") {
+        $0.max()!
+    }
+    
+    nonisolated(unsafe)
+    public static let BasicNumericFunctions = [
+        Abs,
+        Floor,
+        Ceiling,
+        Round,
+        Power,
+        Sum,
+        Min,
+        Max,
+    ]
+    
+    nonisolated(unsafe)
+    public static let AllBuiltinFunctions =
+        NumericUnaryOperators
+        + NumericBinaryOperators
+        + BasicNumericFunctions
+        + ComparisonOperators
+        + BooleanFunctions
+}

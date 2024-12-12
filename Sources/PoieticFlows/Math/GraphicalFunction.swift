@@ -28,6 +28,7 @@ import PoieticCore
 /// value for given input value is computed using the function's interpolation
 /// method.
 ///
+
 public class GraphicalFunction {
     public enum InterpolationMethod: String, CaseIterable {
         case step = "step"
@@ -89,19 +90,6 @@ public class GraphicalFunction {
         return point.y
     }
     
-    /// Creates an unary function used in computation that wraps
-    /// this graphical function.
-    ///
-    /// Current implementation just wraps the ``stepFunction(x:)``.
-    ///
-    @available(*, deprecated, message: "Use BoundGraphicalFunction")
-    public func createFunction(name: String) -> Function {
-        let function = Function.NumericUnary(name,
-                                             argumentName: "x",
-                                             body: self.stepFunction)
-        
-        return function
-    }
     /// Get a point that is nearest in the x-axis to the value specified.
     ///
     /// If the graphical function has no points specified then it returns

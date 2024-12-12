@@ -141,7 +141,7 @@ public class Compiler {
         objectVariableIndex = [:]
 
         var functions:[String:Function] = [:]
-        for function in AllBuiltinFunctions {
+        for function in Function.AllBuiltinFunctions {
             functions[function.name] = function
         }
         self.functions = functions
