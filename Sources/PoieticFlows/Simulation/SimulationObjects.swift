@@ -21,20 +21,20 @@ public enum ComputationalRepresentation: CustomStringConvertible {
     /// second value of the tuple is an index of a state variable representing
     /// the function's parameter node.
     ///
-    case graphicalFunction(Function, SimulationState.Index)
+    case graphicalFunction(BoundGraphicalFunction)
   
     /// Delay value input by given number of steps.
-    case delay(CompiledDelay)
+    case delay(BoundDelay)
     
     /// Exponential smoothing of a numeric value over a time window.
     ///
-    case smooth(CompiledSmooth)
+    case smooth(BoundSmooth)
     
     public var valueType: ValueType {
         switch self {
         case let .formula(formula):
             return formula.valueType
-        case .graphicalFunction(_, _):
+        case .graphicalFunction(_):
             return ValueType.double
         case let .delay(delay):
             return .atom(delay.valueType)
@@ -49,13 +49,13 @@ public enum ComputationalRepresentation: CustomStringConvertible {
         switch self {
         case let .formula(formula):
             return "\(formula)"
-        case let .graphicalFunction(fun, index):
-            return "graphical(\(fun.name), \(index))"
+        case let .graphicalFunction(fun):
+            return "graphical(param:\(fun.parameterIndex))"
         case let .delay(delay):
             let initialValue = delay.initialValue.map { $0.description } ?? "nil"
-            return "delay(\(delay.inputValueIndex), \(delay.steps), \(initialValue)"
+            return "delay(input:\(delay.inputValueIndex),steps:\(delay.steps),init:\(initialValue)"
         case let .smooth(smooth):
-            return "smooth(\(smooth.windowTime))"
+            return "smooth(window:\(smooth.windowTime))"
         }
         
     }
@@ -120,13 +120,13 @@ public struct CompiledBuiltinState {
     let step: SimulationState.Index
 }
 
-/// Compiled representation of a stock.
+/// Stock bound to a simulation plan and a simulation state.
 ///
 /// This structure is used during computation.
 ///
 /// - SeeAlso: ``StockFlowSimulation/computeStockDelta(_:in:)``
 ///
-public struct CompiledStock {
+public struct BoundStock {
     /// Object ID of the stock that this compiled structure represents.
     ///
     /// This is used mostly for inspection and debugging purposes.
@@ -173,38 +173,12 @@ public struct CompiledStock {
     public let outflows: [SimulationState.Index]
 }
 
-/// Compiled representation of a flow.
-///
-/// This structure is used during computation.
-///
-/// - SeeAlso: ``StockFlowSimulation/computeStockDelta(A
-///
-struct CompiledFlow {
-    /// Object ID of the flow that this compiled structure represents.
-    ///
-    /// This is used mostly for inspection and debugging purposes.
-    ///
-    let id: ObjectID
-
-    /// Component representing the flow as it was at the time of compilation.
-    ///
-    let priority: Int
-}
-
-
 /// A structure representing a concrete instance of a graphical function
 /// in the context of a graph.
 ///
-public struct CompiledGraphicalFunction {
-    /// ID of a node where the function is defined
-    public let id: ObjectID
-    
-    /// Index to the list of simulation state variables.
-    ///
-    public let variableIndex: SimulationState.Index
-    
+public struct BoundGraphicalFunction {
     /// The function object itself
-    public let function: Function
+    public let function: GraphicalFunction
     
     /// ID of a node that is a parameter for the function.
     public let parameterIndex: SimulationState.Index
@@ -228,7 +202,7 @@ public struct CompiledControlBinding {
 ///
 /// - SeeAlso: ``StockFlowSimulation/initialize(delay:in:)``
 ///
-public struct CompiledDelay {
+public struct BoundDelay {
     /// Number of steps to delay the input value by.
     public let steps: Int
     
@@ -256,7 +230,7 @@ public struct CompiledDelay {
 ///
 /// - SeeAlso: ``StockFlowSimulation/initialize(smooth:in:)``
 ///
-public struct CompiledSmooth {
+public struct BoundSmooth {
     /// Time window over which the smooth is computed.
     public let windowTime: Double
 

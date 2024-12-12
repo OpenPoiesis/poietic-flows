@@ -177,7 +177,6 @@ extension TransientFrame {
         #expect(funcs.count == 1)
 
         let boundFn = funcs.first!
-        #expect(boundFn.id == gf.id)
         #expect(boundFn.parameterIndex == compiled.variableIndex(of:param.id))
 
         #expect(compiled.simulationObjects.contains { $0.name == "g" })
@@ -187,8 +186,11 @@ extension TransientFrame {
     }
 
     @Test func graphicalFunctionComputation() throws {
+        let points = [Point(x:0, y:0), Point(x: 10, y:10)]
         let p = frame.createNode(ObjectType.Auxiliary, name:"p", attributes: ["formula": "0"])
-        let gf = frame.createNode(ObjectType.GraphicalFunction, name: "g")
+        let gf = frame.createNode(ObjectType.GraphicalFunction,
+                                  name: "g",
+                                  attributes: ["graphical_function_points": Variant(points)])
         let aux = frame.createNode(ObjectType.Auxiliary, name:"a", attributes: ["formula": "g"])
 
         frame.createEdge(ObjectType.Parameter, origin: p, target: gf)
@@ -200,8 +202,8 @@ extension TransientFrame {
                                   "No compiled variable for the graphical function")
 
         switch object.computation {
-        case .graphicalFunction(let fn, _):
-            #expect(fn.name == "__graphical_\(gf.id)")
+        case .graphicalFunction(let fn):
+            #expect(fn.function.points == points)
         default:
             Issue.record("Graphical function compiled as: \(object.computation)")
         }

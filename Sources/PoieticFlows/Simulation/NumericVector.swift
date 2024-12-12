@@ -100,7 +100,6 @@ public struct NumericVector: RandomAccessCollection {
     }
 }
 
-// TODO: Make proper additive arithmetic once we get rid of the map
 extension NumericVector {
     @inlinable
     public static func - (lhs: NumericVector, rhs: NumericVector) -> NumericVector {
@@ -111,8 +110,4 @@ extension NumericVector {
     public static func + (lhs: NumericVector, rhs: NumericVector) -> NumericVector {
         return lhs.adding(rhs)
     }
-    
-//    public static var zero: StateVector {
-//        return KeyedNumericVector<Key>()
-//    }
 }

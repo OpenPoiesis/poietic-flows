@@ -94,6 +94,7 @@ public class GraphicalFunction {
     ///
     /// Current implementation just wraps the ``stepFunction(x:)``.
     ///
+    @available(*, deprecated, message: "Use BoundGraphicalFunction")
     public func createFunction(name: String) -> Function {
         let function = Function.NumericUnary(name,
                                              argumentName: "x",

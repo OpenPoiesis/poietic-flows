@@ -64,7 +64,6 @@ public struct SimulationPlan {
     ///
     public let simulationObjects: [SimulationObject]
 
-
     /// List of simulation state variables.
     ///
     /// The list of state variables contain values of builtins, values of
@@ -86,7 +85,6 @@ public struct SimulationPlan {
     ///
     public let stateVariables: [StateVariable]
     
-
     /// List of compiled builtin variables.
     ///
     /// The compiled builtin variable references a state variable that holds
@@ -103,40 +101,6 @@ public struct SimulationPlan {
     ///
     public let timeVariableIndex: SimulationState.Index
     
-    
-    /// Get index into a list of computed variables for an object with given ID.
-    ///
-    /// This function is just for inspection and debugging purposes, it is not
-    /// used during computation.
-    ///
-    /// - Complexity: O(n)
-    /// - SeeAlso:  ``stateVariables``, ``simulationObject(_:)``
-    ///
-    public func variableIndex(of id: ObjectID) -> SimulationState.Index? {
-        // Since this is just for debug purposes, O(n) should be fine, no need
-        // for added complexity of the code.
-        guard let first = simulationObjects.first(where: {$0.id == id}) else {
-            return nil
-        }
-        return first.variableIndex
-    }
-   
-    
-    /// Get a simulation variable for an object with given ID, if exists.
-    ///
-    /// This function is not used during computation, it is provided for
-    /// consumers of the simulation state or simulation result.
-    ///
-    /// The objects are computed with ``StockFlowSimulation/update(objectAt:in:)``.
-    ///
-    /// - Complexity: O(n)
-    /// - SeeAlso: ``simulationObjects``, ``variableIndex(of:)``
-    ///
-    public func simulationObject(_ id: ObjectID) -> SimulationObject? {
-        return simulationObjects.first { $0.id == id }
-        
-    }
-
     /// Stocks ordered by the computation (parameter) dependency.
     ///
     /// This list contains all stocks used in the simulation and adds
@@ -144,33 +108,12 @@ public struct SimulationPlan {
     ///
     /// This property is used in computation.
     ///
-    /// See ``CompiledStock`` for more information.
+    /// See ``SimulatedStock`` for more information.
     ///
     /// - SeeAlso: ``StockFlowSimulation/computeStockDelta(_:in:)``,
     /// ``StockFlowSimulation/stockDifference(state:time:)``
     ///
-    public let stocks: [CompiledStock]
-    
-    /// Indices of variables representing stocks.
-    ///
-    public var stockIndices: [SimulationState.Index] {
-        stocks.map { $0.variableIndex }
-    }
-    
-    
-    /// Get a compiled stock by object ID.
-    ///
-    /// This property is used in computation.
-    ///
-    /// - SeeAlso: ``StockFlowSimulation/computeStockDelta(_:in:)``,
-    /// ``StockFlowSimulation/stockDifference(state:time:)``
-    ///
-    /// - Complexity: O(n)
-    ///
-    func compiledStock(_ id: ObjectID) -> CompiledStock {
-        // TODO: What to do with this method?
-        return stocks.first { $0.id == id }!
-    }
+    public let stocks: [BoundStock]
     
     /// List of charts.
     ///
@@ -190,20 +133,69 @@ public struct SimulationPlan {
     ///
     public var simulationDefaults: SimulationDefaults?
     
+    /// Get index into a list of computed variables for an object with given ID.
+    ///
+    /// This function is just for inspection and debugging purposes, it is not
+    /// used during computation.
+    ///
+    /// - Complexity: O(n)
+    /// - SeeAlso:  ``stateVariables``, ``simulationObject(_:)``
+    ///
+    public func variableIndex(of id: ObjectID) -> SimulationState.Index? {
+        // Since this is just for debug purposes, O(n) should be fine, no need
+        // for added complexity of the code.
+        guard let first = simulationObjects.first(where: {$0.id == id}) else {
+            return nil
+        }
+        return first.variableIndex
+    }
+   
+    /// Get a simulation variable for an object with given ID, if exists.
+    ///
+    /// This function is not used during computation, it is provided for
+    /// consumers of the simulation state or simulation result.
+    ///
+    /// The objects are computed with ``StockFlowSimulation/update(objectAt:in:)``.
+    ///
+    /// - Complexity: O(n)
+    /// - SeeAlso: ``simulationObjects``, ``variableIndex(of:)``
+    ///
+    public func simulationObject(_ id: ObjectID) -> SimulationObject? {
+        return simulationObjects.first { $0.id == id }
+        
+    }
+
+    /// Indices of variables representing stocks.
+    ///
+    public var stockIndices: [SimulationState.Index] {
+        stocks.map { $0.variableIndex }
+    }
+    
+    /// Get a compiled stock by object ID.
+    ///
+    /// This property is used in computation.
+    ///
+    /// - SeeAlso: ``StockFlowSimulation/computeStockDelta(_:in:)``,
+    /// ``StockFlowSimulation/stockDifference(state:time:)``
+    ///
+    /// - Complexity: O(n)
+    ///
+    func compiledStock(_ id: ObjectID) -> BoundStock {
+        // TODO: What to do with this method?
+        return stocks.first { $0.id == id }!
+    }
+
     /// Selection of simulation variables that represent graphical functions.
     ///
     /// This property is not used during computation, it is provided for
     /// consumers of the simulation state or simulation result.
     ///
-    public var graphicalFunctions: [CompiledGraphicalFunction] {
+    public var graphicalFunctions: [BoundGraphicalFunction] {
         // FIXME: Remove this, used only for tests
         // FIXME: Materialise this in the simulation object or somewhere
-        let vars: [CompiledGraphicalFunction] = simulationObjects.compactMap {
-            if case let .graphicalFunction(fun, param) = $0.computation {
-                return CompiledGraphicalFunction(id: $0.id,
-                                                 variableIndex: $0.variableIndex,
-                                                 function: fun,
-                                                 parameterIndex: param)
+        let vars: [BoundGraphicalFunction] = simulationObjects.compactMap {
+            if case let .graphicalFunction(fun) = $0.computation {
+                return fun
             }
             else {
                 return nil
@@ -211,7 +203,6 @@ public struct SimulationPlan {
         }
         return vars
     }
-    
     
     /// Get a compiled variable by its name.
     ///

@@ -33,8 +33,6 @@ public class StockFlowSimulation: Simulation {
     ///
     public let plan: SimulationPlan
     
-    var stocks: [CompiledStock] { plan.stocks }
-    
     public enum SolverType: String, RawRepresentable, CaseIterable {
         case euler
         case rk4
@@ -67,7 +65,7 @@ public class StockFlowSimulation: Simulation {
     ///
     /// - Returns: Newly initialised simulation state.
     ///
-    public func initialize(step: Int=0, time: Double=0, timeDelta: Double=1.0, override: [ObjectID:Variant]=[:])  throws -> SimulationState {
+    public func initialize(step: Int=0, time: Double=0, timeDelta: Double=1.0, override: [ObjectID:Variant]=[:])  throws (SimulationError) -> SimulationState {
         // TODO: [WIP] Move SiulationState.init() code in here, free it from the model
         var state = SimulationState(plan: plan, step: 0, time: time, timeDelta: timeDelta)
 
@@ -102,34 +100,40 @@ public class StockFlowSimulation: Simulation {
     ///     - index: Index of the object to be evaluated.
     ///     - state: simulation state within which the expression is evaluated
     ///
-    public func initialize(objectAt index: Int, in state: inout SimulationState) throws {
+    public func initialize(objectAt index: Int, in state: inout SimulationState) throws (SimulationError) {
         let object = plan.simulationObjects[index]
         let result: Variant
        
-        switch object.computation {
-        case let .formula(expression):
-            result = try evaluate(expression: expression, with: state)
-            
-        case let .graphicalFunction(function, index):
-            let value = state[index]
-            result = try function.apply([value])
-        case let .delay(delay):
-            result = try initialize(delay: delay, in: &state)
-        case let .smooth(smooth):
-            result = try initialize(smooth: smooth, in: &state)
+        do {
+            switch object.computation {
+            case let .formula(expression):
+                result = try evaluate(expression: expression, with: state)
+                
+            case let .graphicalFunction(function):
+                result = try evaluate(graphicalFunction: function, with: state)
+            case let .delay(delay):
+                result = initialize(delay: delay, in: &state)
+            case let .smooth(smooth):
+                result = initialize(smooth: smooth, in: &state)
+            }
         }
-
+        catch /* EvaluationError */ {
+            throw SimulationError(objectID: object.id, error: error)
+        }
         state[object.variableIndex] = result
     }
 
-    /// Initialise a delay object.
+    /// Initialise a simulated delay.
+    ///
+    /// The function prepares internal state variable holding a delay queue and returns
+    /// an initial value of the delay node.
     ///
     /// - Parameters:
-    ///     - delay: Delay to be initialised
-    ///     - state: State in which the delay is initialised.
-    /// - Returns: Value of the delay.
+    ///     - delay: Delay object to be initialised
+    ///     - state: Simulation state in which the delay is initialised.
+    /// - Returns: Value of the delay node.
     ///
-    public func initialize(delay: CompiledDelay, in state: inout SimulationState) throws -> Variant {
+    public func initialize(delay: BoundDelay, in state: inout SimulationState) -> Variant {
         let outputValue: Variant
         if let intialValue = delay.initialValue {
             outputValue = intialValue
@@ -142,7 +146,17 @@ public class StockFlowSimulation: Simulation {
         return outputValue
     }
     
-    public func initialize(smooth: CompiledSmooth, in state: inout SimulationState) throws -> Variant {
+    /// Initialise a simulated delay.
+    ///
+    /// The function prepares internal variable holding the smooth state and returns an
+    /// initial value of the smooth node.
+    ///
+    /// - Parameters:
+    ///     - smooth: Smooth object to be initialised
+    ///     - state: Simulation state in which the smooth is initialised.
+    /// - Returns: Value of the smooth node.
+    ///
+    public func initialize(smooth: BoundSmooth, in state: inout SimulationState) -> Variant {
         let initialValue = state[smooth.inputValueIndex]
         state[smooth.smoothValueIndex] = initialValue
         
@@ -150,11 +164,12 @@ public class StockFlowSimulation: Simulation {
     }
 
     // MARK: - Computation
+    
     /// Update the simulation state.
     ///
     /// This is the main method that performs the concrete computation using a concrete solver.
     ///
-    public func update(_ state: inout SimulationState) throws {
+    public func update(_ state: inout SimulationState) throws (SimulationError) {
         updateBuiltins(&state)
 
         switch solver {
@@ -186,39 +201,46 @@ public class StockFlowSimulation: Simulation {
     /// - Throws: ``SimulationError``
     /// - SeeAlso: ``SimulationPlan/stateVariables``
     ///
-    public func update(objectAt index: Int, in state: inout SimulationState) throws {
+    public func update(objectAt index: Int, in state: inout SimulationState) throws (SimulationError) {
         let object = plan.simulationObjects[index]
         let result: Variant
-        
-        switch object.computation {
 
-        case let .formula(expression):
-            result = try evaluate(expression: expression, with: state)
-
-        case let .graphicalFunction(function, index):
-            let value = state[index]
-            result = try function.apply([value])
-
-        case let .delay(delay):
-            result = try update(delay: delay, in: &state)
-        case let .smooth(smooth):
-            result = try update(smooth: smooth, in: &state)
+        do {
+            switch object.computation {
+                
+            case let .formula(expression):
+                result = try evaluate(expression: expression, with: state)
+                
+            case let .graphicalFunction(function):
+                result = try evaluate(graphicalFunction: function, with: state)
+                
+            case let .delay(delay):
+                result = try update(delay: delay, in: &state)
+                
+            case let .smooth(smooth):
+                result = try update(smooth: smooth, in: &state)
+            }
         }
+        catch /* EvaluationError */ {
+            throw SimulationError(objectID: object.id, error: error)
+        }
+        
         state[object.variableIndex] = result
     }
 
     /// Computes and updates a delay value within a simulation state.
     ///
-    /// Delay-related internal state will be updated as well.
+    /// The internal state – the queue holding the delay values is updated.
     ///
-    /// - SeeAlso: ``CompiledDelay``
+    /// - SeeAlso: ``BoundDelay``
     ///
-    public func update(delay: CompiledDelay, in state: inout SimulationState) throws -> Variant {
+    public func update(delay: BoundDelay, in state: inout SimulationState) throws (EvaluationError) -> Variant {
         guard case let .atom(inputValue) = state[delay.inputValueIndex] else {
             // TODO: Runtime error
             fatalError("Expected atom for delay input value, got array (runtime error)")
         }
         guard case var .array(queue) = state[delay.queueIndex] else {
+            // FIXME: Use array states
             fatalError("Expected array for delay queue, got atom (compilation is corrupted)")
         }
 
@@ -240,7 +262,13 @@ public class StockFlowSimulation: Simulation {
             outputValue = queue.remove(at:0)
             nextValue = inputValue
         }
-        try queue.append(nextValue)
+        do {
+            try queue.append(nextValue)
+        }
+        catch {
+            throw .valueError(error)
+        }
+
         state[delay.queueIndex] = .array(queue)
 
         return .atom(outputValue)
@@ -256,7 +284,7 @@ public class StockFlowSimulation: Simulation {
     /// - _s_: smooth value
     /// - _α = Δt / w_
     ///
-    public func update(smooth: CompiledSmooth, in state: inout SimulationState) throws -> Variant {
+    public func update(smooth: BoundSmooth, in state: inout SimulationState) throws (ValueError) -> Variant {
         
         let inputValue = try state[smooth.inputValueIndex].doubleValue()
         let oldSmooth = state.double(at: smooth.smoothValueIndex)
@@ -269,17 +297,36 @@ public class StockFlowSimulation: Simulation {
         return Variant(newSmooth)
     }
 
+    /// Evaluate graphical function
+    ///
+    /// - Throws: ``SimulationError/functionError(_:_:)`` if the parameter is no convertible to
+    /// a numeric type.
+    ///
+    public func evaluate(graphicalFunction function: BoundGraphicalFunction, with state: SimulationState) throws (EvaluationError) -> Variant {
+        let parameter: Double
+        do {
+            parameter = try state[function.parameterIndex].doubleValue()
+        }
+        catch {
+            throw .valueError(error)
+        }
+        
+        // TODO: Differentiate function type
+        let result = function.function.stepFunction(x: parameter)
+        return Variant(result)
+    }
+
     /// Comptes differences of stocks.
     ///
     /// - Returns: A state vector that contains difference values for each
     /// stock.
     ///
-    public func stockDifference(state: SimulationState, time: Double) throws -> NumericVector {
+    public func stockDifference(state: SimulationState, time: Double) -> NumericVector {
         var estimate = state
-        var deltaVector = NumericVector(zeroCount: stocks.count)
+        var deltaVector = NumericVector(zeroCount: plan.stocks.count)
 
-        for (index, stock) in stocks.enumerated() {
-            let delta = try computeStockDelta(stock, in: &estimate)
+        for (index, stock) in plan.stocks.enumerated() {
+            let delta = computeStockDelta(stock, in: &estimate)
             let dtAdjusted = delta * state.timeDelta
             let newValue = estimate.double(at: stock.variableIndex) + dtAdjusted
 
@@ -311,7 +358,7 @@ public class StockFlowSimulation: Simulation {
     /// - Precondition: The simulation state vector must have all variables
     ///   that are required to compute the stock difference.
     ///
-    public func computeStockDelta(_ stock: CompiledStock, in state: inout SimulationState) throws -> Double {
+    public func computeStockDelta(_ stock: BoundStock, in state: inout SimulationState) -> Double {
         var totalInflow: Double = 0.0
         var totalOutflow: Double = 0.0
         

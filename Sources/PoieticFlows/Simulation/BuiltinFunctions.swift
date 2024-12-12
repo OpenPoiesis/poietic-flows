@@ -5,10 +5,6 @@
 //  Created by Stefan Urbanek on 12/07/2022.
 //
 
-#if swift(<6)
-#error("Not running swift 6!!!")
-#endif
-
 import PoieticCore
 
 #if os(Linux)
@@ -77,7 +73,7 @@ nonisolated(unsafe) public let BuiltinFunctions: [Function] = [
         $0.rounded()
     },
 
-    .NumericBinary("power", leftArgument: "value", rightArgument: "exponent") {
+    .NumericBinary("power", leftName: "value", rightName: "exponent") {
         pow($0, $1)
     },
 

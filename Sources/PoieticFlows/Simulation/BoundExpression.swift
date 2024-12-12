@@ -13,8 +13,7 @@ public struct BoundVariable: CustomStringConvertible {
     
     public var description: String { "BoundVariable(\(index),\(valueType))" }
 }
-public typealias BoundExpression = ArithmeticExpression<BoundVariable,
-                                                        Function>
+public typealias BoundExpression = ArithmeticExpression<BoundVariable, Function>
 
 extension BoundExpression {
     public var valueType: ValueType {

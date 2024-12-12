@@ -58,7 +58,19 @@ public class Compiler {
     // MARK: - Compiler State
     // -----------------------------------------------------------------
 
-    private var orderedObjects: [DesignObject]
+    /// Issues of the object gathered during compilation.
+    ///
+    public var issues: [ObjectID: [ObjectIssue]]
+
+    /// List of objects in an order of computational dependency.
+    ///
+    public private(set) var orderedObjects: [DesignObject]
+
+    /// List of simulation objects that will be included in the simulation plan.
+    ///
+    /// - SeeAlso: ``SimulationPlan/simulationObjects``
+    ///
+    public private(set) var simulationObjects: [SimulationObject] = []
 
     /// List of simulation state variables.
     ///
@@ -82,10 +94,24 @@ public class Compiler {
     ///
     public private(set) var stateVariables: [StateVariable]
 
-
-    /// Issues of the object gathered during compilation.
+    /// Mapping between object ID and index of its corresponding simulation
+    /// variable.
     ///
-    public var issues: [ObjectID: [ObjectIssue]]
+    /// Used in compilation of simulation nodes.
+    ///
+    internal var objectVariableIndex: [ObjectID: Int]
+
+    /// Mapping between a variable name and a bound variable reference.
+    ///
+    /// Used in binding of arithmetic expressions.
+    private var nameIndex: [String:SimulationState.Index]
+
+    private var parsedExpressions: [ObjectID:UnboundExpression]
+
+    /// List of built-in variable names, fetched from the metamodel.
+    ///
+    /// Used in binding of arithmetic expressions.
+    private var builtinVariableNames: [String]
 
     /// List of built-in functions.
     ///
@@ -94,50 +120,6 @@ public class Compiler {
     /// - SeeAlso: ``compileFormulaObject(_:)``
     ///
     private let functions: [String: Function]
-
-    /// List of built-in variable names, fetched from the metamodel.
-    ///
-    /// Used in binding of arithmetic expressions.
-    private var builtinVariableNames: [String]
-
-    /// Mapping between a variable name and a bound variable reference.
-    ///
-    /// Used in binding of arithmetic expressions.
-    private var nameIndex: [String:SimulationState.Index]
-    
-    private var parsedExpressions: [ObjectID:UnboundExpression]
-
-    /// Mapping between object ID and index of its corresponding simulation
-    /// variable.
-    ///
-    /// Used in compilation of simulation nodes.
-    ///
-    internal var objectVariableIndex: [ObjectID: Int]
-
-
-    // OUTPUT
-    private var simulationObjects: [SimulationObject] = []
-    
-    var compiledStocks: [CompiledStock] = []
-
-    /// Appends an error to the list of of node issues
-    ///
-    func appendIssue(_ error: ObjectIssue, for id: ObjectID) {
-        issues[id, default:[]].append(error)
-    }
-    
-    /// Append a list of issues to an object.
-    ///
-    func appendIssues(_ errors: [ObjectIssue], for id: ObjectID) {
-        issues[id, default:[]] += errors
-    }
-    
-    /// Flag whether the compiler has encountered any issues.
-    ///
-    public var hasIssues: Bool {
-        return issues.values.contains { !$0.isEmpty }
-    }
-
 
     /// Create a new compiler for a given frame.
     ///
@@ -170,6 +152,24 @@ public class Compiler {
     ///
     public func issues(for id: ObjectID) -> [ObjectIssue] {
         return issues[id] ?? []
+    }
+
+    /// Appends an error to the list of of node issues
+    ///
+    func appendIssue(_ error: ObjectIssue, for id: ObjectID) {
+        issues[id, default:[]].append(error)
+    }
+    
+    /// Append a list of issues to an object.
+    ///
+    func appendIssues(_ errors: [ObjectIssue], for id: ObjectID) {
+        issues[id, default:[]] += errors
+    }
+    
+    /// Flag whether the compiler has encountered any issues.
+    ///
+    public var hasIssues: Bool {
+        return issues.values.contains { !$0.isEmpty }
     }
 
     // - MARK: Compilation
@@ -215,7 +215,7 @@ public class Compiler {
             throw .hasIssues
         }
 
-        try compileStocksAndFlows()
+        let stocks = try compileStocksAndFlows()
         let bindings = try compileControlBindings()
         let defaults = try compileDefaults()
         let charts = try compileCharts()
@@ -229,7 +229,7 @@ public class Compiler {
             stateVariables: self.stateVariables,
             builtins: builtins,
             timeVariableIndex: timeIndex,
-            stocks: self.compiledStocks,
+            stocks: stocks,
             charts: charts,
             valueBindings: bindings,
             simulationDefaults: defaults
@@ -495,10 +495,9 @@ public class Compiler {
             throw .hasIssues
         }
         
-        let funcName = "__graphical_\(object.id)"
-        let numericFunc = function.createFunction(name: funcName)
-        
-        return .graphicalFunction(numericFunc, objectVariableIndex[parameterNode.id]!)
+        let boundFunc = BoundGraphicalFunction(function: function,
+                                               parameterIndex: objectVariableIndex[parameterNode.id]!)
+        return .graphicalFunction(boundFunc)
     }
     
     /// Compile a delay node.
@@ -533,7 +532,7 @@ public class Compiler {
         }
         
         // TODO: Check whether the initial value and variable.valueType are the same
-        let compiled = CompiledDelay(
+        let compiled = BoundDelay(
             steps: duration,
             initialValue: initialValue,
             valueType: atomType,
@@ -570,7 +569,7 @@ public class Compiler {
             throw .hasIssues
         }
         
-        let compiled = CompiledSmooth(
+        let compiled = BoundSmooth(
             windowTime: windowTime,
             smoothValueIndex: smoothValueIndex,
             inputValueIndex: parameterIndex
@@ -587,7 +586,7 @@ public class Compiler {
     ///
     /// - Returns: Extracted and derived stock node information.
     ///
-    func compileStocksAndFlows() throws (CompilerError) {
+    func compileStocksAndFlows() throws (CompilerError) -> [BoundStock] {
         let stocks = simulationObjects.filter { $0.type == .stock }
         let flows = simulationObjects.filter { $0.type == .flow }.compactMap { frame[$0.id] }
         
@@ -647,7 +646,7 @@ public class Compiler {
             }
         }
         
-        var result: [CompiledStock] = []
+        var result: [BoundStock] = []
         
         for object in sortedStocks {
             let inflowIndices = inflows[object.id]?.map { objectVariableIndex[$0]! } ?? []
@@ -658,7 +657,7 @@ public class Compiler {
             let allowsNegative = try! object["allows_negative"]!.boolValue()
             let delayedInflow = try! object["delayed_inflow"]!.boolValue()
             
-            let compiled = CompiledStock(
+            let compiled = BoundStock(
                 id: object.id,
                 variableIndex: objectVariableIndex[object.id]!,
                 allowsNegative: allowsNegative,
@@ -669,7 +668,7 @@ public class Compiler {
             result.append(compiled)
         }
 
-        self.compiledStocks = result
+        return result
     }
 
     /// Validates parameter of a node.
