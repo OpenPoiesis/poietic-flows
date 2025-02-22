@@ -61,7 +61,7 @@ extension Trait {
         ]
     )
     
-    /// Trait of nodes representing a flow.
+    /// Trait of nodes representing a flow rate valve.
     ///
     /// Flow is a node that can be connected to two stocks by a flow edge.
     /// One stock is an inflow - stock from which the node drains,
@@ -71,8 +71,8 @@ extension Trait {
     ///         flows. Flow with negative value, which is in fact an outflow,
     ///         will be ignored.
     ///
-    public static let Flow = Trait(
-        name: "Flow",
+    public static let FlowRate = Trait(
+        name: "FlowRate",
         attributes: [
             /// Priority specifies an order in which the flow will be considered
             /// when draining a non-negative stocks. The lower the number, the higher

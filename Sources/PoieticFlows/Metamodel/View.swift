@@ -29,9 +29,6 @@ public enum ParameterStatus:Equatable {
 public class StockFlowView<F: Frame>{
     public typealias ViewedFrame = F
     
-    /// Metamodel that the view uses to find relevant object types.
-    public let metamodel: Metamodel
-
     /// Graph that the view projects.
     ///
     public let frame: ViewedFrame
@@ -39,7 +36,6 @@ public class StockFlowView<F: Frame>{
     /// Create a new view on top of a graph.
     ///
     public init(_ frame: ViewedFrame) {
-        self.metamodel = frame.design.metamodel
         self.frame = frame
     }
     
@@ -57,40 +53,27 @@ public class StockFlowView<F: Frame>{
         }
     }
     
-    public var flowNodes: [DesignObject] {
-        frame.filter {
-            $0.structure.type == .node
-            && $0.type === ObjectType.Flow
-        }
-    }
-    
     // Parameter queries
     // ---------------------------------------------------------------------
     //
-    /// Predicate that matches all edges that represent parameter connections.
-    ///
-    public var parameterEdges: [EdgeObject<DesignObject>] {
-        frame.filterEdges { $0.type === ObjectType.Parameter }
+    public func incomingParameterEdges(_ nodeID: ObjectID) -> [EdgeSnapshot<DesignObject>] {
+        return frame.incoming(nodeID).filter { $0.object.type === ObjectType.Parameter }
+
     }
-    /// A neighbourhood for incoming parameters of a node.
+    /// Nodes representing parameters of a given node.
     ///
-    /// Focus node is a node where we would like to see nodes that
-    /// are parameters for the node of focus.
-    ///
-    public func incomingParameters(_ nodeID: ObjectID) -> Neighborhood<ViewedFrame> {
-        frame.hood(nodeID, direction: .incoming) {
-            $0.type === ObjectType.Parameter
-        }
+    public func incomingParameterNodes(_ nodeID: ObjectID) -> [DesignObject] {
+        return incomingParameterEdges(nodeID).map { frame[$0.origin] }
     }
-    
+
     // Fills/drains queries
     // ---------------------------------------------------------------------
     //
     /// List of all edges that fill a stocks. It originates in a flow,
     /// and terminates in a stock.
     ///
-    public var fillsEdges: [EdgeObject<DesignObject>] {
-        frame.filterEdges { $0.type === ObjectType.Fills }
+    public var flowEdges: [EdgeSnapshot<DesignObject>] {
+        frame.filterEdges { $0.object.type === ObjectType.Flow }
     }
     
     /// Selector for an edge originating in a flow and ending in a stock denoting
@@ -99,37 +82,23 @@ public class StockFlowView<F: Frame>{
     ///
     /// Neighbourhood of stocks around the flow.
     ///
-    ///     Flow --(Fills)--> Stock
-    ///      ^                  ^
-    ///      |                  +--- Neighbourhood (only one)
+    ///     FlowRate --(Flow)--> Stock
+    ///      ^                     ^
+    ///      |                     +--- Neighbourhood (only one)
     ///      |
     ///      *Node of interest*
     ///
     public func fills(_ flowID: ObjectID) -> ObjectID? {
         frame.outgoing(flowID).first {
-            $0.type === ObjectType.Fills
+            $0.object.type === ObjectType.Flow
         }?.target
     }
     
-    /// Selector for edges originating in a flow and ending in a stock denoting
-    /// the inflow from multiple flows into a single stock.
-    ///
-    ///     Flow --(Fills)--> Stock
-    ///      ^                  ^
-    ///      |                  +--- *Node of interest*
-    ///      |
-    ///      Neighbourhood (many)
-    ///
-    public func inflows(_ nodeID: ObjectID) -> Neighborhood<ViewedFrame> {
-        frame.hood(nodeID, direction: .incoming) {
-            $0.type === ObjectType.Fills
-        }
-    }
     /// Returns an ID of a node that the flow drains.
     ///
     /// Neighbourhood of stocks around the flow.
     ///
-    ///     Stock --(Drains)--> Flow
+    ///     Stock --(Drains)--> Flow Rate
     ///      ^                    ^
     ///      |                    +--- Node of interest
     ///      |
@@ -137,59 +106,25 @@ public class StockFlowView<F: Frame>{
     ///
     public func drains(_ flowID: ObjectID) -> ObjectID? {
         frame.incoming(flowID).first {
-            $0.type === ObjectType.Drains
+            $0.object.type === ObjectType.Flow
         }?.origin
     }
-    /// Selector for edges originating in a stock and ending in a flow denoting
-    /// the outflow from the stock to multiple flows.
-    ///
-    ///
-    ///     Stock --(Drains)--> Flow
-    ///      ^                    ^
-    ///      |                    +--- Neighbourhood (many)
-    ///      |
-    ///      Node of interest
-    ///
-    ///
-    public func outflows(_ nodeID: ObjectID) -> Neighborhood<ViewedFrame> {
-        frame.hood(nodeID, direction: .outgoing) {
-            $0.type === ObjectType.Drains
-        }
-    }
-    
+
     /// List of all edges that drain from a stocks. It originates in a
     /// stock and terminates in a flow.
     ///
-    public var drainsEdges: [EdgeObject<DesignObject>] {
-        frame.filterEdges { $0.type === ObjectType.Drains }
+    public var drainsEdges: [EdgeSnapshot<DesignObject>] {
+        frame.filterEdges { $0.object.type === ObjectType.Flow }
     }
-    
-    
-    /// A list of variable references to their corresponding objects.
-    ///
-    public func objectVariableReferences(names: [String:ObjectID]) -> [String:StateVariable.Content] {
-        var references: [String:StateVariable.Content] = [:]
-        for (name, id) in names {
-            references[name] = .object(id)
-        }
-        return references
-    }
-    
-    public func builtinReferences(names: [String:ObjectID]) -> [String:StateVariable.Content] {
-        var references: [String:StateVariable.Content] = [:]
-        for (name, id) in names {
-            references[name] = .object(id)
-        }
-        return references
-    }
-    
+            
     /// Information about node parameters.
     ///
     /// The status is provided by the function ``resolveParameters(_:required:)``.
     ///
     public struct ResolvedParameters {
         public let missing: [String]
-        public let unused: [EdgeObject<DesignObject>]
+        // TODO: Change to [ObjectID] for edges
+        public let unused: [EdgeSnapshot<DesignObject>]
     }
 
     /// Resolve missing and unused parameter connections.
@@ -199,12 +134,12 @@ public class StockFlowView<F: Frame>{
     ///
     public func resolveParameters(_ nodeID: ObjectID, required: [String]) ->  ResolvedParameters {
         var missing: Set<String> = Set(required)
-        var unused: [EdgeObject<DesignObject>] = []
+        var unused: [EdgeSnapshot<DesignObject>] = []
         
-        for edge in incomingParameters(nodeID).edges {
-            let parameterNode = frame.node(edge.origin)
-            guard let parameterName = parameterNode.name else {
-                preconditionFailure("Named node expected")
+        for edge in incomingParameterEdges(nodeID) {
+            let parameter = edge.originObject
+            guard let parameterName = parameter.name else {
+                preconditionFailure("Named node expected for parameter")
             }
             
             if missing.contains(parameterName) {
@@ -217,50 +152,7 @@ public class StockFlowView<F: Frame>{
         
         return ResolvedParameters(missing: Array(missing), unused: unused)
     }
-    
-    /// Return a list of flows that fill a stock.
-    ///
-    /// Flow fills a stock if there is an edge of type ``/PoieticCore/ObjectType/Fills``
-    /// that originates in the flow and ends in the stock.
-    ///
-    /// - Parameters:
-    ///     - stockID: an ID of a node that must be a stock
-    ///
-    /// - Returns: List of object IDs of flow nodes that fill the
-    ///   stock.
-    ///
-    /// - Precondition: `stockID` must be an ID of a node that is a stock.
-    ///
-    public func stockInflows(_ stockID: ObjectID) -> [ObjectID] {
-        let stockNode = frame.node(stockID)
-        // TODO: Do we need to check it here? We assume model is valid.
-        precondition(stockNode.type === ObjectType.Stock)
-        
-        return inflows(stockID).nodes.map { $0.id }
-    }
-    
-    /// Return a list of flows that drain a stock.
-    ///
-    /// A stock outflows are all flow nodes where there is an edge of type
-    /// ``/PoieticCore/ObjectType/Drains`` that originates in the stock and ends in
-    /// the flow.
-    ///
-    /// - Parameters:
-    ///     - stockID: an ID of a node that must be a stock
-    ///
-    /// - Returns: List of object IDs of flow nodes that drain the
-    ///   stock.
-    ///
-    /// - Precondition: `stockID` must be an ID of a node that is a stock.
-    ///
-    public func stockOutflows(_ stockID: ObjectID) -> [ObjectID] {
-        let stockNode = frame.node(stockID)
-        // TODO: Do we need to check it here? We assume model is valid.
-        precondition(stockNode.type === ObjectType.Stock)
-        
-        return outflows(stockID).nodes.map { $0.id }
-    }
-    
+
     /// Get a list of stock-to-stock adjacency.
     ///
     /// Two stocks are adjacent if there is a flow that connects the two stocks.
@@ -282,6 +174,11 @@ public class StockFlowView<F: Frame>{
     public func stockAdjacencies() -> [StockAdjacency] {
         var adjacencies: [StockAdjacency] = []
 
+        let flowNodes: [DesignObject] = frame.filter {
+                $0.structure.type == .node
+                && $0.type === ObjectType.FlowRate
+            }
+
         for flow in flowNodes {
             guard let fills = fills(flow.id) else {
                 continue
@@ -299,6 +196,7 @@ public class StockFlowView<F: Frame>{
 
             adjacencies.append(adjacency)
         }
+        
         return adjacencies
     }
 }

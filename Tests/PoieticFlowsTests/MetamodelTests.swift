@@ -5,14 +5,24 @@
 //  Created by Stefan Urbanek on 09/07/2023.
 //
 
-import XCTest
+import Testing
 @testable import PoieticFlows
 @testable import PoieticCore
 
 
-final class TestFlowsMetamodel: XCTestCase {
-    func testUniqueNames() throws {
-        
+@Suite struct FlowsMetamodelTest {
+    let design: Design
+    let frame: TransientFrame
+    let checker: ConstraintChecker
+
+    init() throws {
+        self.design = Design(metamodel: FlowsMetamodel)
+        self.frame = design.createFrame()
+        self.checker = ConstraintChecker(design.metamodel)
+    }
+    
+
+    @Test func testUniqueNames() throws {
         for type in FlowsMetamodel.types {
             var attributes: [String:[String]] = [:]
 
@@ -21,14 +31,37 @@ final class TestFlowsMetamodel: XCTestCase {
                     attributes[attribute.name, default: []].append(trait.name)
                 }
             }
-            for (attr, components) in attributes {
-                if components.count > 1 {
-                    let compList = components.joined(separator: ", ")
-                    XCTFail("Metamodel object type \(type.name) has duplicate attribute '\(attr)', in: \(compList)")
-                }
+            for (attr, traits) in attributes {
+                #expect(traits.count <= 1)
             }
         }
-
-        
+    }
+    
+    @Test func constraintStockFlowRate() throws {
+        let a = frame.createNode(.Stock, name: "a", attributes: ["formula": "0"])
+        let flow = frame.createNode(.FlowRate, name: "f", attributes: ["formula": "0"])
+        let b = frame.createNode(.Stock, name: "b", attributes: ["formula": "0"])
+        frame.createEdge(.Flow, origin: a, target: flow)
+        frame.createEdge(.Flow, origin: flow, target: b)
+        try checker.check(frame)
+    }
+    @Test func constraintStockFlowRateFlowFlow() throws {
+        let a = frame.createNode(.Stock, name: "a", attributes: ["formula": "0"])
+        let flow = frame.createNode(.FlowRate, name: "f", attributes: ["formula": "0"])
+        let b = frame.createNode(.Stock, name: "b", attributes: ["formula": "0"])
+        let e1 = frame.createEdge(.Flow, origin: a, target: b)
+        let e2 = frame.createEdge(.Flow, origin: flow, target: flow)
+        // frame.createEdge(.Flow, origin: flow, target: b)
+        #expect {
+            try checker.check(frame)
+        } throws: {
+            guard let error = $0 as? FrameConstraintError else {
+                Issue.record("Unexpected error: \($0)")
+                return false
+            }
+            return error.objectErrors.count == 2
+            && error.objectErrors[e1.id] != nil
+            && error.objectErrors[e2.id] != nil
+        }
     }
 }

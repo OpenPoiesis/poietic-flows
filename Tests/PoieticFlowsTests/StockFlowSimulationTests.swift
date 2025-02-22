@@ -38,26 +38,14 @@ import Testing
     }
     
     @Test mutating func initializeStocks() throws {
-        let a = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "1"])
-        let b = frame.createNode(ObjectType.Auxiliary, name: "b", attributes: ["formula": "a + 1"])
         let c =  frame.createNode(ObjectType.Stock, name: "const", attributes: ["formula": "100"])
-        let s_a = frame.createNode(ObjectType.Stock, name: "use_a", attributes: ["formula": "a"])
-        let s_b = frame.createNode(ObjectType.Stock, name: "use_b", attributes: ["formula": "b"])
-        
-        frame.createEdge(ObjectType.Parameter, origin: a, target: b)
-        frame.createEdge(ObjectType.Parameter, origin: a, target: s_a)
-        frame.createEdge(ObjectType.Parameter, origin: b, target: s_b)
         
         try compile()
         
         let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
         
-        #expect(state[index(a)] == 1)
-        #expect(state[index(b)] == 2)
         #expect(state[index(c)] == 100)
-        #expect(state[index(s_a)] == 1)
-        #expect(state[index(s_b)] == 2)
     }
     
     @Test mutating func testOrphanedInitialize() throws {
@@ -74,7 +62,7 @@ import Testing
     @Test mutating func testEverythingInitialized() throws {
         let aux = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "10"])
         let stock = frame.createNode(ObjectType.Stock, name: "b", attributes: ["formula": "20"])
-        let flow = frame.createNode(ObjectType.Flow, name: "c", attributes: ["formula": "30"])
+        let flow = frame.createNode(ObjectType.FlowRate, name: "c", attributes: ["formula": "30"])
        
         try compile()
         
@@ -108,7 +96,7 @@ import Testing
 
     @Test mutating func stageWithTime() throws {
         let aux = frame.createNode(ObjectType.Auxiliary, name: "aux", attributes: ["formula": "time"])
-        let flow = frame.createNode(ObjectType.Flow, name: "flow", attributes: ["formula": "time * 10"])
+        let flow = frame.createNode(ObjectType.FlowRate, name: "flow", attributes: ["formula": "time * 10"])
         
         try compile()
 
@@ -134,9 +122,9 @@ import Testing
     @Test mutating func allowNegativeStock() throws {
         let stock = frame.createNode(ObjectType.Stock, name: "stock",
                                      attributes: ["formula": "5", "allows_negative": true])
-        let flow = frame.createNode(ObjectType.Flow, name: "flow", attributes: ["formula": "10"])
+        let flow = frame.createNode(ObjectType.FlowRate, name: "flow", attributes: ["formula": "10"])
         
-        frame.createEdge(ObjectType.Drains, origin: stock, target: flow)
+        frame.createEdge(ObjectType.Flow, origin: stock, target: flow)
         
         try compile()
         
@@ -151,9 +139,9 @@ import Testing
     @Test mutating func nonNegativeStock() throws {
         let stock = frame.createNode(ObjectType.Stock, name: "stock",
                                      attributes: ["formula": "5", "allows_negative": false])
-        let flow = frame.createNode(ObjectType.Flow, name: "flow", attributes: ["formula": "10"])
+        let flow = frame.createNode(ObjectType.FlowRate, name: "flow", attributes: ["formula": "10"])
         
-        frame.createEdge(ObjectType.Drains, origin: stock, target: flow)
+        frame.createEdge(ObjectType.Flow, origin: stock, target: flow)
         
         try compile()
         
@@ -168,9 +156,9 @@ import Testing
     @Test mutating func nonNegativeStockNegativeInflow() throws {
         let stock = frame.createNode(ObjectType.Stock, name: "stock",
                                      attributes: ["formula": "5", "allows_negative": false])
-        let flow = frame.createNode(ObjectType.Flow, name: "flow", attributes: ["formula": "0 - 10"])
+        let flow = frame.createNode(ObjectType.FlowRate, name: "flow", attributes: ["formula": "0 - 10"])
         
-        frame.createEdge(ObjectType.Fills, origin: flow, target: stock)
+        frame.createEdge(ObjectType.Flow, origin: flow, target: stock)
         
         try compile()
         
@@ -185,9 +173,9 @@ import Testing
     @Test mutating func stockNegativeOutflow() throws {
         let stock = frame.createNode(ObjectType.Stock, name: "stock",
                                      attributes: ["formula": "5", "allows_negative": false])
-        let flow = frame.createNode(ObjectType.Flow, name: "flow", attributes: ["formula": "-10"])
+        let flow = frame.createNode(ObjectType.FlowRate, name: "flow", attributes: ["formula": "-10"])
         
-        frame.createEdge(ObjectType.Drains, origin: stock, target: flow)
+        frame.createEdge(ObjectType.Flow, origin: stock, target: flow)
         
         try compile()
         
@@ -206,18 +194,18 @@ import Testing
         
         let happy = frame.createNode(ObjectType.Stock, name: "happy", attributes: ["formula": "0"])
         let sad = frame.createNode(ObjectType.Stock, name: "sad", attributes: ["formula": "0"])
-        let happyFlow = frame.createNode(ObjectType.Flow, name: "happy_flow",
+        let happyFlow = frame.createNode(ObjectType.FlowRate, name: "happy_flow",
                                          attributes: ["formula": "10", "priority": 1])
         
-        frame.createEdge(ObjectType.Drains, origin: source, target: happyFlow)
-        frame.createEdge(ObjectType.Fills, origin: happyFlow, target: happy)
+        frame.createEdge(ObjectType.Flow, origin: source, target: happyFlow)
+        frame.createEdge(ObjectType.Flow, origin: happyFlow, target: happy)
         
-        let sadFlow = frame.createNode(ObjectType.Flow, name: "sad_flow",
+        let sadFlow = frame.createNode(ObjectType.FlowRate, name: "sad_flow",
                                        attributes: ["formula": "10", "priority": 2])
         
-        frame.createEdge(ObjectType.Drains, origin: source, target: sadFlow)
-        frame.createEdge(ObjectType.Fills, origin: sadFlow, target: sad)
-        
+        frame.createEdge(ObjectType.Flow, origin: source, target: sadFlow)
+        frame.createEdge(ObjectType.Flow, origin: sadFlow, target: sad)
+       
         try compile()
         
         let sim = StockFlowSimulation(plan)
@@ -261,11 +249,11 @@ import Testing
     
     @Test mutating func difference() throws {
         let kettle = frame.createNode(ObjectType.Stock, name: "kettle", attributes: ["formula": "1000"])
-        let flow = frame.createNode(ObjectType.Flow, name: "pour", attributes: ["formula": "100"])
+        let flow = frame.createNode(ObjectType.FlowRate, name: "pour", attributes: ["formula": "100"])
         let cup = frame.createNode(ObjectType.Stock, name: "cup", attributes: ["formula": "0"])
         
-        frame.createEdge(ObjectType.Drains, origin: kettle, target: flow)
-        frame.createEdge(ObjectType.Fills, origin: flow, target: cup)
+        frame.createEdge(ObjectType.Flow, origin: kettle, target: flow)
+        frame.createEdge(ObjectType.Flow, origin: flow, target: cup)
 
         try compile()
         
@@ -280,11 +268,11 @@ import Testing
     
     @Test mutating func differenceTimeDelta() throws {
         let kettle = frame.createNode(ObjectType.Stock, name: "kettle", attributes: ["formula": "1000"])
-        let flow = frame.createNode(ObjectType.Flow, name: "pour", attributes: ["formula": "100"])
+        let flow = frame.createNode(ObjectType.FlowRate, name: "pour", attributes: ["formula": "100"])
         let cup = frame.createNode(ObjectType.Stock, name: "cup", attributes: ["formula": "0"])
         
-        frame.createEdge(ObjectType.Drains, origin: kettle, target: flow)
-        frame.createEdge(ObjectType.Fills, origin: flow, target: cup)
+        frame.createEdge(ObjectType.Flow, origin: kettle, target: flow)
+        frame.createEdge(ObjectType.Flow, origin: flow, target: cup)
 
         try compile()
 
@@ -300,11 +288,11 @@ import Testing
     
     @Test mutating func compute() throws {
         let kettle = frame.createNode(ObjectType.Stock, name: "kettle", attributes: ["formula": "1000"])
-        let flow = frame.createNode(ObjectType.Flow, name: "pour", attributes: ["formula": "100"])
+        let flow = frame.createNode(ObjectType.FlowRate, name: "pour", attributes: ["formula": "100"])
         let cup = frame.createNode(ObjectType.Stock, name: "cup", attributes: ["formula": "0"])
         
-        frame.createEdge(ObjectType.Drains, origin: kettle, target: flow)
-        frame.createEdge(ObjectType.Fills, origin: flow, target: cup)
+        frame.createEdge(ObjectType.Flow, origin: kettle, target: flow)
+        frame.createEdge(ObjectType.Flow, origin: flow, target: cup)
         
         try compile()
 

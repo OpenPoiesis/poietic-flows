@@ -46,7 +46,7 @@ import Testing
         
         #expect(resolved.missing.count == 0)
         #expect(resolved.unused.count == 1)
-        #expect(resolved.unused.first?.snapshot.id == unusedEdge.id)
+        #expect(resolved.unused.first?.object.id == unusedEdge.id)
     }
     
     @Test func testUnknownParameters() throws {
@@ -64,12 +64,12 @@ import Testing
     }
     
     @Test func testFlowFillsAndDrains() throws {
-        let flow = frame.createNode(ObjectType.Flow, name: "f", attributes: ["formula": "1"])
+        let flow = frame.createNode(ObjectType.FlowRate, name: "f", attributes: ["formula": "1"])
         let source = frame.createNode(ObjectType.Stock, name: "source", attributes: ["formula": "0"])
         let sink = frame.createNode(ObjectType.Stock, name: "sink", attributes: ["formula": "0"])
         
-        frame.createEdge(ObjectType.Drains, origin: source, target: flow)
-        frame.createEdge(ObjectType.Fills, origin: flow, target: sink)
+        frame.createEdge(ObjectType.Flow, origin: source, target: flow)
+        frame.createEdge(ObjectType.Flow, origin: flow, target: sink)
         
         let view = StockFlowView(frame)
         
@@ -82,14 +82,14 @@ import Testing
         let a = frame.createNode(ObjectType.Stock, name: "a", attributes: ["formula": "0"])
         let b = frame.createNode(ObjectType.Stock, name: "b", attributes: ["formula": "0"])
         let c = frame.createNode(ObjectType.Stock, name: "c", attributes: ["formula": "0"])
-        let flow = frame.createNode(ObjectType.Flow, name: "f", attributes: ["formula": "0"])
-        let inflow = frame.createNode(ObjectType.Flow, name: "inflow", attributes: ["formula": "0"])
-        let outflow = frame.createNode(ObjectType.Flow, name: "outflow", attributes: ["formula": "0"])
+        let flow = frame.createNode(ObjectType.FlowRate, name: "f", attributes: ["formula": "0"])
+        let inflow = frame.createNode(ObjectType.FlowRate, name: "inflow", attributes: ["formula": "0"])
+        let outflow = frame.createNode(ObjectType.FlowRate, name: "outflow", attributes: ["formula": "0"])
 
-        frame.createEdge(ObjectType.Drains, origin: a, target: flow)
-        frame.createEdge(ObjectType.Fills, origin: flow, target: b)
-        frame.createEdge(ObjectType.Fills, origin: inflow, target: c)
-        frame.createEdge(ObjectType.Drains, origin: c, target: outflow)
+        frame.createEdge(ObjectType.Flow, origin: a, target: flow)
+        frame.createEdge(ObjectType.Flow, origin: flow, target: b)
+        frame.createEdge(ObjectType.Flow, origin: inflow, target: c)
+        frame.createEdge(ObjectType.Flow, origin: c, target: outflow)
 
         let view = StockFlowView(frame)
 

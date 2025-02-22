@@ -28,9 +28,9 @@ extension ObjectType {
         ]
     )
     
-    /// A flow node - one of the two core nodes.
+    /// A flow rate node.
     ///
-    /// Flow node represents a rate at which a stock is drained or a stock
+    /// Flow rate node represents a rate at which a stock is drained or a stock
     /// is filed.
     ///
     /// Flow can be connected to only one stock that the flow fills and from
@@ -45,14 +45,14 @@ extension ObjectType {
     /// - SeeAlso: ``ObjectType/Stock``, ``ObjectType/Fills``,
     /// ``ObjectType/Drains``.
     ///
-    public static let Flow = ObjectType(
-        name: "Flow",
+    public static let FlowRate = ObjectType(
+        name: "FlowRate",
         structuralType: .node,
         traits: [
             Trait.ComputedValue,
             Trait.Name,
             Trait.Formula,
-            Trait.Flow,
+            Trait.FlowRate,
             Trait.Position,
             // DescriptionComponent.self,
             // ErrorComponent.self,
@@ -168,34 +168,30 @@ extension ObjectType {
             Trait.Note,
         ]
     )
-    
-    /// Edge from a stock to a flow. Denotes "what the flow drains".
-    ///
-    /// - SeeAlso: ``/PoieticCore/ObjectType/Flow``, ``/PoieticCore/ObjectType/Fills``
-    ///
-    public static let Drains = ObjectType(
-        name: "Drains",
+
+    public static let Comment = ObjectType(
+        name: "Comment",
         structuralType: .edge,
         traits: [
-            // None for now
-        ],
-        abstract: "Edge from a stock node to a flow node, representing what the flow drains."
+        ]
     )
     
-    /// Edge from a flow to a stock. Denotes "what the flow fills".
+    /// An edge between stock node and a flow rate node.
     ///
-    /// - SeeAlso: ``/PoieticCore/ObjectType/Flow``, ``/PoieticCore/ObjectType/Drains``
+    /// Origin stock of the edge is drained, target stock is being filled. One end
+    /// of the edge must be a stock and another edge must be a flow.
     ///
-    public static let Fills = ObjectType(
-        name: "Fills",
+    /// - SeeAlso: ``/PoieticCore/ObjectType/FlowRate``
+    ///
+    public static let Flow = ObjectType(
+        name: "Flow",
         structuralType: .edge,
         traits: [
             // None for now
         ],
-        abstract: "Edge from a flow node to a stock node, representing what the flow fills."
+        abstract: "Edge between a stock node and a flow rate node"
+    )
         
-    )
-    
     /// An edge between a node that serves as a parameter in another node.
     ///
     /// For example, if a flow has a formula `rate * 10` then the node

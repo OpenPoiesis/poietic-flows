@@ -253,8 +253,11 @@ public class Compiler {
         }
         
         // 2. Sort nodes based on computation dependency.
+        let parameterEdges:[EdgeSnapshot<DesignObject>] = frame.filterEdges {
+            $0.object.type === ObjectType.Parameter
+        }
         let parameterDependency = Graph(nodes: unorderedSimulationNodes,
-                                        edges: view.parameterEdges)
+                                        edges: parameterEdges)
         
         guard let ordered = parameterDependency.topologicalSort() else {
             let cycleEdges = parameterDependency.cycles()
@@ -390,7 +393,7 @@ public class Compiler {
         if object.type === ObjectType.Stock {
             simType = .stock
         }
-        else if object.type === ObjectType.Flow {
+        else if object.type === ObjectType.FlowRate {
             simType = .flow
         }
         else if object.type.hasTrait(Trait.Auxiliary) {
@@ -489,8 +492,8 @@ public class Compiler {
         // TODO: Interpolation method
         let function = GraphicalFunction(points: points)
         
-        let hood = view.incomingParameters(object.id)
-        guard let parameterNode = hood.nodes.first else {
+        let parameters = view.incomingParameterNodes(object.id)
+        guard let parameterNode = parameters.first else {
             appendIssue(ObjectIssue.missingRequiredParameter, for: object.id)
             throw .hasIssues
         }
@@ -511,8 +514,8 @@ public class Compiler {
                                              valueType: .doubles,
                                              name: "delay_init_\(object.id)")
 
-        let hood = view.incomingParameters(object.id)
-        guard let parameterNode = hood.nodes.first else {
+        let parameters = view.incomingParameterNodes(object.id)
+        guard let parameterNode = parameters.first else {
             appendIssue(ObjectIssue.missingRequiredParameter, for: object.id)
             throw .hasIssues
         }
@@ -551,8 +554,8 @@ public class Compiler {
                                              valueType: .doubles,
                                              name: "smooth_value_\(object.id)")
 
-        let hood = view.incomingParameters(object.id)
-        guard let parameterNode = hood.nodes.first else {
+        let parameters = view.incomingParameterNodes(object.id)
+        guard let parameterNode = parameters.first else {
             appendIssue(ObjectIssue.missingRequiredParameter, for: object.id)
             throw .hasIssues
         }
@@ -617,14 +620,16 @@ public class Compiler {
 
         let sortedStocks = sorted.map { frame.object($0) }
 
-        for edge in view.drainsEdges {
-            let (stock, flow) = (edge.origin, edge.target)
-            outflows[stock,default:[]].append(flow)
-        }
-        
-        for edge in view.fillsEdges {
-            let (flow, stock) = (edge.origin, edge.target)
-            inflows[stock, default: []].append(flow)
+        for edge in view.flowEdges {
+            if edge.originObject.type === ObjectType.Stock && edge.targetObject.type === ObjectType.FlowRate {
+                outflows[edge.origin, default: []].append(edge.target)
+            }
+            else if edge.originObject.type === ObjectType.FlowRate && edge.targetObject.type === ObjectType.Stock {
+                inflows[edge.target, default: []].append(edge.origin)
+            }
+            else {
+                fatalError("Compiler error: Flow edge endpoints constraint violated")
+            }
         }
         
         // Sort the outflows by priority
@@ -716,7 +721,7 @@ public class Compiler {
         var charts: [PoieticFlows.Chart] = []
         for node in nodes {
             let hood = frame.hood(node.id, direction: .outgoing) {
-                $0.type === ObjectType.ChartSeries
+                $0.object.type === ObjectType.ChartSeries
             }
                                   
             let series = hood.nodes.map { $0 }
@@ -730,7 +735,7 @@ public class Compiler {
     public func compileControlBindings() throws (CompilerError) -> [CompiledControlBinding] {
         var bindings: [CompiledControlBinding] = []
         for object in frame.filter(type: ObjectType.ValueBinding) {
-            guard let edge = EdgeObject(object) else {
+            guard let edge = EdgeSnapshot(object, in: frame) else {
                 throw .structureTypeMismatch(object.id)
             }
             

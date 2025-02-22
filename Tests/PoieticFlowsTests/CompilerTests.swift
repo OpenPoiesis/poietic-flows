@@ -127,11 +127,11 @@ extension TransientFrame {
     
     @Test func inflowOutflow() throws {
         let source = frame.createNode(ObjectType.Stock, name: "source", attributes: ["formula": "0"])
-        let flow = frame.createNode(ObjectType.Flow, name: "f", attributes: ["formula": "1"])
+        let flow = frame.createNode(ObjectType.FlowRate, name: "f", attributes: ["formula": "1"])
         let sink = frame.createNode(ObjectType.Stock, name: "sink", attributes: ["formula": "0"])
 
-        frame.createEdge(ObjectType.Drains, origin: source, target: flow)
-        frame.createEdge(ObjectType.Fills, origin: flow, target: sink)
+        frame.createEdge(ObjectType.Flow, origin: source, target: flow)
+        frame.createEdge(ObjectType.Flow, origin: flow, target: sink)
         
         let compiler = Compiler(frame: try design.accept(frame))
         let compiled = try compiler.compile()
@@ -227,12 +227,12 @@ extension TransientFrame {
     @Test func stockCycleError() throws {
         let a = frame.createNode(ObjectType.Stock, name:"a", attributes: ["formula": "0"])
         let b = frame.createNode(ObjectType.Stock, name:"b", attributes: ["formula": "0"])
-        let fab = frame.createNode(ObjectType.Flow, name: "fab", attributes: ["formula": "0"])
-        let fba = frame.createNode(ObjectType.Flow, name: "fba", attributes: ["formula": "0"])
-        frame.createEdge(ObjectType.Drains, origin: a, target: fab)
-        frame.createEdge(ObjectType.Fills, origin: fab, target: b)
-        frame.createEdge(ObjectType.Drains, origin: b, target: fba)
-        frame.createEdge(ObjectType.Fills, origin: fba, target: a)
+        let fab = frame.createNode(ObjectType.FlowRate, name: "fab", attributes: ["formula": "0"])
+        let fba = frame.createNode(ObjectType.FlowRate, name: "fba", attributes: ["formula": "0"])
+        frame.createEdge(ObjectType.Flow, origin: a, target: fab)
+        frame.createEdge(ObjectType.Flow, origin: fab, target: b)
+        frame.createEdge(ObjectType.Flow, origin: b, target: fba)
+        frame.createEdge(ObjectType.Flow, origin: fba, target: a)
 
         let compiler = Compiler(frame: try design.accept(frame))
         #expect {
@@ -248,13 +248,13 @@ extension TransientFrame {
         let a = frame.createNode(ObjectType.Stock, name:"a",
                                  attributes: [ "formula": "0", "delayed_inflow": Variant(true) ])
         let b = frame.createNode(ObjectType.Stock, name:"b", attributes: ["formula": "0"])
-        let fab = frame.createNode(ObjectType.Flow, name: "fab", attributes: ["formula": "0"])
-        let fba = frame.createNode(ObjectType.Flow, name: "fba", attributes: ["formula": "0"])
+        let fab = frame.createNode(ObjectType.FlowRate, name: "fab", attributes: ["formula": "0"])
+        let fba = frame.createNode(ObjectType.FlowRate, name: "fba", attributes: ["formula": "0"])
         
-        frame.createEdge(ObjectType.Drains, origin: a, target: fab)
-        frame.createEdge(ObjectType.Fills, origin: fab, target: b)
-        frame.createEdge(ObjectType.Drains, origin: b, target: fba)
-        frame.createEdge(ObjectType.Fills, origin: fba, target: a)
+        frame.createEdge(ObjectType.Flow, origin: a, target: fab)
+        frame.createEdge(ObjectType.Flow, origin: fab, target: b)
+        frame.createEdge(ObjectType.Flow, origin: b, target: fba)
+        frame.createEdge(ObjectType.Flow, origin: fba, target: a)
 
         let compiler = Compiler(frame: try design.accept(frame))
         // Test no throw
