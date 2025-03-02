@@ -131,7 +131,7 @@ import Testing
         let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
 
-        let diff = try sim.stockDifference(state: state, time: 1.0)
+        let diff = sim.stockDifference(state: state, time: 1.0)
         
         #expect(diff[plan.stockIndex(stock.id)] == -10)
     }
@@ -148,7 +148,7 @@ import Testing
         let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
 
-        let diff = try sim.stockDifference(state: state, time: 1.0)
+        let diff = sim.stockDifference(state: state, time: 1.0)
 
         #expect(diff[plan.stockIndex(stock.id)] == -5)
     }
@@ -165,7 +165,7 @@ import Testing
         let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
 
-        let diff = try sim.stockDifference(state: state, time: 1.0)
+        let diff = sim.stockDifference(state: state, time: 1.0)
 
         #expect(diff[plan.stockIndex(stock.id)] == 0)
     }
@@ -182,7 +182,7 @@ import Testing
         let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
 
-        let diff = try sim.stockDifference(state: state, time: 1.0)
+        let diff = sim.stockDifference(state: state, time: 1.0)
 
         #expect(diff[plan.stockIndex(stock.id)] == 0)
     }
@@ -222,25 +222,25 @@ import Testing
         #expect(state[index(happyFlow)] == 10)
         #expect(state[index(sadFlow)] == 10)
         
-        let sourceDiff = try sim.computeStockDelta(plan.compiledStock(source.id), in: &state)
+        let sourceDiff = sim.computeStockDelta(plan.compiledStock(source.id), in: &state)
         // Adjusted flow to actual outflow
         #expect(state[index(happyFlow)] == 5.0)
         #expect(state[index(sadFlow)] == 0.0)
         #expect(sourceDiff == -5.0)
         
-        let happyDiff = try sim.computeStockDelta(plan.compiledStock(happy.id), in: &state)
+        let happyDiff = sim.computeStockDelta(plan.compiledStock(happy.id), in: &state)
         // Remains the same as above
         #expect(state[index(happyFlow)] == 5.0)
         #expect(state[index(sadFlow)] == 0.0)
         #expect(happyDiff == +5.0)
         
-        let sadDiff = try sim.computeStockDelta(plan.compiledStock(sad.id), in: &state)
+        let sadDiff = sim.computeStockDelta(plan.compiledStock(sad.id), in: &state)
         // Remains the same as above
         #expect(state[index(happyFlow)] == 5.0)
         #expect(state[index(sadFlow)] == 0.0)
         #expect(sadDiff == 0.0)
         
-        let diff = try sim.stockDifference(state: initial, time: 1.0)
+        let diff = sim.stockDifference(state: initial, time: 1.0)
         
         #expect(diff[plan.stockIndex(source.id)] == -5)
         #expect(diff[plan.stockIndex(happy.id)] == +5)
@@ -260,7 +260,7 @@ import Testing
         let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
 
-        let diff = try sim.stockDifference(state: state, time: 1.0)
+        let diff = sim.stockDifference(state: state, time: 1.0)
 
         #expect(diff[plan.stockIndex(kettle.id)] == -100.0)
         #expect(diff[plan.stockIndex(cup.id)] == 100.0)
@@ -279,7 +279,7 @@ import Testing
         let sim = StockFlowSimulation(plan)
         let state = try sim.initialize(timeDelta: 0.5)
 
-        let diff = try sim.stockDifference(state: state, time: 1.0)
+        let diff = sim.stockDifference(state: state, time: 1.0)
 
         #expect(diff[plan.stockIndex(kettle.id)] == -50.0)
         #expect(diff[plan.stockIndex(cup.id)] == 50.0)

@@ -48,19 +48,19 @@ extension StockFlowSimulation {
         let timeDelta = state.timeDelta
         
         let stage1 = state
-        let k1 = try stockDifference(state: stage1, time: time)
+        let k1 = stockDifference(state: stage1, time: time)
         
         var stage2 = stage1
         stage2.numericAdd(timeDelta * (k1 / 2), atIndices: stocks)
-        let k2 = try stockDifference(state: stage2, time: time)
+        let k2 = stockDifference(state: stage2, time: time)
         
         var stage3 = stage2
         stage3.numericAdd(timeDelta * (k2 / 2), atIndices: stocks)
-        let k3 = try stockDifference(state: stage3, time: time)
+        let k3 = stockDifference(state: stage3, time: time)
         
         var stage4 = stage3
         stage4.numericAdd(k3, atIndices: stocks)
-        let k4 = try stockDifference(state: stage4, time: time)
+        let k4 = stockDifference(state: stage4, time: time)
         
         let resultDelta = (1.0/6.0) * state.timeDelta * (k1 + (2*k2) + (2*k3) + k4)
         

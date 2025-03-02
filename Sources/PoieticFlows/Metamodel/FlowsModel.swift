@@ -43,7 +43,7 @@ extension Metamodel {
         ///
         traits: [
             Trait.Name,
-            Trait.Position,
+            Trait.DiagramNode,
             // Abstract
             Trait.Auxiliary,
             Trait.ComputedValue,
@@ -93,6 +93,27 @@ extension Metamodel {
         // MARK: Edge Rules
         // TODO: Add tests for violation of each of the rules
         // --------------------------------------------------------------------
+        /**
+         edge       origin  target    origin outgoing    target incoming
+         ---
+         parameter  aux     aux         many    many
+         parameter  stock   aux         many    many
+         parameter  flow    aux         many    many
+         
+         parameter  aux     flow        many    many
+         parameter  flow    flow        many    many
+         parameter  stock   flow        many    many
+
+         parameter  aux     gr func     many    one
+         parameter  stock   gr func     many    one
+         parameter  flow    gr func     many    one
+         flow       stock   flow        many    one
+         flow       flow    stock       one    many
+         flow       cloud   flow        many    one
+         flow       flow    cloud       one    many
+         comment    any     any         many    many
+         */
+
         /// List of rules describing which edges are valid and what are their requirements.
         ///
         edgeRules: [
@@ -116,13 +137,9 @@ extension Metamodel {
                                 .or(IsTypePredicate(.Stock))
                                 .or(IsTypePredicate(.FlowRate)),
                      outgoing: .many,
-                     target: HasTraitPredicate(.Auxiliary),
-                     incoming: .many),
-            EdgeRule(type: .Parameter,
-                     origin: HasTraitPredicate(.Auxiliary)
+                     target: HasTraitPredicate(.Auxiliary)
+                                .or(IsTypePredicate(.Stock))
                                 .or(IsTypePredicate(.FlowRate)),
-                     outgoing: .many,
-                     target: HasTraitPredicate(.FlowRate),
                      incoming: .many),
             EdgeRule(type: .Comment,
                      outgoing: .many,

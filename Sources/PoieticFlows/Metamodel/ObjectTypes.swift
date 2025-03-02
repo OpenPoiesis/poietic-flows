@@ -24,7 +24,7 @@ extension ObjectType {
             Trait.Name,
             Trait.Formula,
             Trait.Stock,
-            Trait.Position,
+            Trait.DiagramNode,
         ]
     )
     
@@ -53,7 +53,7 @@ extension ObjectType {
             Trait.Name,
             Trait.Formula,
             Trait.FlowRate,
-            Trait.Position,
+            Trait.DiagramNode,
             // DescriptionComponent.self,
             // ErrorComponent.self,
         ]
@@ -69,7 +69,7 @@ extension ObjectType {
             Trait.Auxiliary,
             Trait.Name,
             Trait.Formula,
-            Trait.Position,
+            Trait.DiagramNode,
             // DescriptionComponent.self,
             // ErrorComponent.self,
         ]
@@ -86,7 +86,7 @@ extension ObjectType {
             Trait.ComputedValue,
             Trait.Auxiliary,
             Trait.Name,
-            Trait.Position,
+            Trait.DiagramNode,
             Trait.GraphicalFunction,
             // DescriptionComponent.self,
             // ErrorComponent.self,
@@ -103,7 +103,7 @@ extension ObjectType {
             Trait.ComputedValue,
             Trait.Auxiliary,
             Trait.Name,
-            Trait.Position,
+            Trait.DiagramNode,
             Trait.Delay,
             // DescriptionComponent.self,
             // ErrorComponent.self,
@@ -119,7 +119,7 @@ extension ObjectType {
             Trait.ComputedValue,
             Trait.Auxiliary,
             Trait.Name,
-            Trait.Position,
+            Trait.DiagramNode,
             Trait.Smooth,
             // DescriptionComponent.self,
             // ErrorComponent.self,
