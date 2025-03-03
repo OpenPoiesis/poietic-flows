@@ -12,7 +12,7 @@ extension StockFlowSimulation {
     ///
     @discardableResult
     public func updateWithEuler(_ state: inout SimulationState) throws (SimulationError) -> NumericVector {
-        let delta = try stockDifference(state: state, time: state.time)
+        let delta = stockDifference(state: state, time: state.time)
         state.numericAdd(delta, atIndices: plan.stockIndices)
         return delta
     }

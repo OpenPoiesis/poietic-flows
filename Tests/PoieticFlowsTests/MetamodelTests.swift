@@ -55,7 +55,7 @@ import Testing
         #expect {
             try checker.check(frame)
         } throws: {
-            guard let error = $0 as? FrameConstraintError else {
+            guard let error = $0 as? FrameValidationError else {
                 Issue.record("Unexpected error: \($0)")
                 return false
             }
