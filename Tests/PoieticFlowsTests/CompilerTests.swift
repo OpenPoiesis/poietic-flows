@@ -36,7 +36,7 @@ extension TransientFrame {
     }
     
     @Test func noComputedVariables() throws {
-        let compiler = Compiler(frame: try design.accept(frame))
+        let compiler = Compiler(frame: try design.validate(try design.accept(frame)))
         let model = try compiler.compile()
         
         #expect(model.simulationObjects.count == 0)
@@ -49,7 +49,7 @@ extension TransientFrame {
         frame.createNode(ObjectType.Stock, name: "c", attributes: ["formula": "0"])
         frame.createNode(ObjectType.Note, name: "note")
         
-        let compiler = Compiler(frame: try design.accept(frame))
+        let compiler = Compiler(frame: try design.validate(try design.accept(frame)))
         let compiled = try compiler.compile()
         let names = compiled.simulationObjects.map { $0.name } .sorted()
         
@@ -66,7 +66,7 @@ extension TransientFrame {
         frame.createEdge(ObjectType.Parameter, origin: a, target: b)
         frame.createEdge(ObjectType.Parameter, origin: b, target: c)
         
-        let compiler = Compiler(frame: try design.accept(frame))
+        let compiler = Compiler(frame: try design.validate(try design.accept(frame)))
         let compiled = try compiler.compile()
 
         let sorted = compiled.simulationObjects
@@ -80,7 +80,7 @@ extension TransientFrame {
     @Test func badFunctionName() throws {
         let aux = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "nonexistent(10)"])
         
-        let compiler = Compiler(frame: try design.accept(frame))
+        let compiler = Compiler(frame: try design.validate(try design.accept(frame)))
         #expect {
             try compiler.compile()
         } throws: {
@@ -98,7 +98,7 @@ extension TransientFrame {
     @Test func singleComputedVariable() throws {
         let _ = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "if(time < 2, 0, 1)"])
         
-        let compiler = Compiler(frame: try design.accept(frame))
+        let compiler = Compiler(frame: try design.validate(try design.accept(frame)))
         let compiled = try compiler.compile()
         let names = compiled.simulationObjects.map { $0.name }.sorted()
         
@@ -112,7 +112,7 @@ extension TransientFrame {
         frame.createNode(ObjectType.Stock, name: "b", attributes: ["formula": "0"])
 
         
-        let compiler = Compiler(frame: try design.accept(frame))
+        let compiler = Compiler(frame: try design.validate(try design.accept(frame)))
         #expect {
             try compiler.compile()
         } throws: {
@@ -133,7 +133,7 @@ extension TransientFrame {
         frame.createEdge(ObjectType.Flow, origin: source, target: flow)
         frame.createEdge(ObjectType.Flow, origin: flow, target: sink)
         
-        let compiler = Compiler(frame: try design.accept(frame))
+        let compiler = Compiler(frame: try design.validate(try design.accept(frame)))
         let compiled = try compiler.compile()
         
         #expect(compiled.stocks.count == 2)
@@ -150,7 +150,7 @@ extension TransientFrame {
         let gf = frame.createNode(ObjectType.GraphicalFunction,
                                   name: "g")
 
-        let compiler = Compiler(frame: try design.accept(frame))
+        let compiler = Compiler(frame: try design.validate(try design.accept(frame)))
         #expect {
             try compiler.compile()
         } throws: {
@@ -170,7 +170,7 @@ extension TransientFrame {
         frame.createEdge(ObjectType.Parameter, origin: param, target: gf)
         frame.createEdge(ObjectType.Parameter, origin: gf, target: aux)
 
-        let compiler = Compiler(frame: try design.accept(frame))
+        let compiler = Compiler(frame: try design.validate(try design.accept(frame)))
         let compiled = try compiler.compile()
 
         let funcs = compiled.graphicalFunctions
@@ -196,7 +196,7 @@ extension TransientFrame {
         frame.createEdge(ObjectType.Parameter, origin: p, target: gf)
         frame.createEdge(ObjectType.Parameter, origin: gf, target: aux)
 
-        let compiler = Compiler(frame: try design.accept(frame))
+        let compiler = Compiler(frame: try design.validate(try design.accept(frame)))
         let compiled = try compiler.compile()
         let object = try #require(compiled.simulationObject(gf.id),
                                   "No compiled variable for the graphical function")
@@ -214,7 +214,7 @@ extension TransientFrame {
         let b = frame.createNode(ObjectType.Auxiliary, name:"b", attributes: ["formula": "a"])
         frame.createEdge(ObjectType.Parameter, origin: a, target: b)
         frame.createEdge(ObjectType.Parameter, origin: b, target: a)
-        let compiler = Compiler(frame: try design.accept(frame))
+        let compiler = Compiler(frame: try design.validate(try design.accept(frame)))
         #expect {
             try compiler.compile()
         } throws: {
@@ -234,7 +234,7 @@ extension TransientFrame {
         frame.createEdge(ObjectType.Flow, origin: b, target: fba)
         frame.createEdge(ObjectType.Flow, origin: fba, target: a)
 
-        let compiler = Compiler(frame: try design.accept(frame))
+        let compiler = Compiler(frame: try design.validate(try design.accept(frame)))
         #expect {
             try compiler.compile()
         } throws: {
@@ -256,7 +256,7 @@ extension TransientFrame {
         frame.createEdge(ObjectType.Flow, origin: b, target: fba)
         frame.createEdge(ObjectType.Flow, origin: fba, target: a)
 
-        let compiler = Compiler(frame: try design.accept(frame))
+        let compiler = Compiler(frame: try design.validate(try design.accept(frame)))
         // Test no throw
         let _ = try compiler.compile()
     }

@@ -4,8 +4,9 @@
 //
 //  Created by Stefan Urbanek on 21/06/2022.
 
-import PoieticCore
+// TODO: Remove checks that are not necessary with ValidatedFrame (safely make them preconditions/fatalErrors)
 
+import PoieticCore
 
 /// Error thrown by the compiler during compilation.
 ///
@@ -50,10 +51,10 @@ public class Compiler {
     ///
     /// The frame must be valid according to the ``FlowsMetamodel``.
     ///
-    public let frame: DesignFrame
+    public let frame: ValidatedFrame
     
     /// Flows domain view of the frame.
-    public let view: StockFlowView<DesignFrame>
+    public let view: StockFlowView<ValidatedFrame>
 
     // MARK: - Compiler State
     // -----------------------------------------------------------------
@@ -125,7 +126,7 @@ public class Compiler {
     ///
     /// The frame must be validated using the ``FlowsMetamodel``.
     ///
-    public init(frame: DesignFrame) {
+    public init(frame: ValidatedFrame) {
         self.frame = frame
         self.view = StockFlowView(frame)
         
@@ -253,7 +254,7 @@ public class Compiler {
         }
         
         // 2. Sort nodes based on computation dependency.
-        let parameterEdges:[EdgeSnapshot<DesignObject>] = frame.filterEdges {
+        let parameterEdges:[EdgeObject] = frame.filterEdges {
             $0.object.type === ObjectType.Parameter
         }
         let parameterDependency = Graph(nodes: unorderedSimulationNodes,
@@ -735,7 +736,7 @@ public class Compiler {
     public func compileControlBindings() throws (CompilerError) -> [CompiledControlBinding] {
         var bindings: [CompiledControlBinding] = []
         for object in frame.filter(type: ObjectType.ValueBinding) {
-            guard let edge = EdgeSnapshot(object, in: frame) else {
+            guard let edge = EdgeObject(object, in: frame) else {
                 throw .structureTypeMismatch(object.id)
             }
             

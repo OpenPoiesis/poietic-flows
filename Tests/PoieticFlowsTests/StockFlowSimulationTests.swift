@@ -20,7 +20,7 @@ import Testing
     }
     
     mutating func compile() throws {
-        let compiler = Compiler(frame: try design.accept(frame))
+        let compiler = Compiler(frame: try design.validate(try design.accept(frame)))
         self.plan = try compiler.compile()
     }
     

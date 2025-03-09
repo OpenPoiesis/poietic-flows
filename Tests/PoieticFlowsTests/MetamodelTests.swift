@@ -31,7 +31,7 @@ import Testing
                     attributes[attribute.name, default: []].append(trait.name)
                 }
             }
-            for (attr, traits) in attributes {
+            for (_, traits) in attributes {
                 #expect(traits.count <= 1)
             }
         }
@@ -59,9 +59,17 @@ import Testing
                 Issue.record("Unexpected error: \($0)")
                 return false
             }
-            return error.objectErrors.count == 2
-            && error.objectErrors[e1.id] != nil
-            && error.objectErrors[e2.id] != nil
+            guard error.edgeRuleViolations.count == 2 else {
+                return false
+            }
+            guard let e1 = error.edgeRuleViolations[e1.id]?.first else {
+                return false
+            }
+            guard let e2 = error.edgeRuleViolations[e2.id]?.first else {
+                return false
+            }
+            return e1 == .noRuleSatisfied && e2 == .noRuleSatisfied
+            
         }
     }
 }

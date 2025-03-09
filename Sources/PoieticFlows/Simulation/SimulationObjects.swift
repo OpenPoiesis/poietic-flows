@@ -247,7 +247,7 @@ public struct BoundSmooth {
 ///
 /// - SeeAlso: ``StockFlowSimulation/stockDifference(state:time:)``
 /// 
-public struct StockAdjacency: EdgeProtocol {
+public struct StockAdjacency: EdgeProtocol, Identifiable {
     /// OD of a flow that connects the two stocks
     public let id: ObjectID
     /// ID of a stock being drained by the flow.

@@ -56,14 +56,17 @@ public class StockFlowView<F: Frame>{
     // Parameter queries
     // ---------------------------------------------------------------------
     //
-    public func incomingParameterEdges(_ nodeID: ObjectID) -> [EdgeSnapshot<DesignObject>] {
-        return frame.incoming(nodeID).filter { $0.object.type === ObjectType.Parameter }
-
+    public func incomingParameterEdges(_ target: ObjectID) -> [EdgeObject] {
+        // TODO: (minor) We are unnecessarily doing lookup for target when we are fetching the edges
+        return frame.incoming(target).filter {
+            $0.object.type === ObjectType.Parameter
+        }
     }
     /// Nodes representing parameters of a given node.
     ///
     public func incomingParameterNodes(_ nodeID: ObjectID) -> [DesignObject] {
-        return incomingParameterEdges(nodeID).map { frame[$0.origin] }
+        // TODO: In the compiler, do this once and create a map: originID -> [DesignObject]
+        return incomingParameterEdges(nodeID).map { $0.originObject }
     }
 
     // Fills/drains queries
@@ -72,7 +75,7 @@ public class StockFlowView<F: Frame>{
     /// List of all edges that fill a stocks. It originates in a flow,
     /// and terminates in a stock.
     ///
-    public var flowEdges: [EdgeSnapshot<DesignObject>] {
+    public var flowEdges: [EdgeObject] {
         frame.filterEdges { $0.object.type === ObjectType.Flow }
     }
     
@@ -110,13 +113,6 @@ public class StockFlowView<F: Frame>{
         }?.origin
     }
 
-    /// List of all edges that drain from a stocks. It originates in a
-    /// stock and terminates in a flow.
-    ///
-    public var drainsEdges: [EdgeSnapshot<DesignObject>] {
-        frame.filterEdges { $0.object.type === ObjectType.Flow }
-    }
-            
     /// Information about node parameters.
     ///
     /// The status is provided by the function ``resolveParameters(_:required:)``.
@@ -124,7 +120,7 @@ public class StockFlowView<F: Frame>{
     public struct ResolvedParameters {
         public let missing: [String]
         // TODO: Change to [ObjectID] for edges
-        public let unused: [EdgeSnapshot<DesignObject>]
+        public let unused: [EdgeObject]
     }
 
     /// Resolve missing and unused parameter connections.
@@ -134,7 +130,7 @@ public class StockFlowView<F: Frame>{
     ///
     public func resolveParameters(_ nodeID: ObjectID, required: [String]) ->  ResolvedParameters {
         var missing: Set<String> = Set(required)
-        var unused: [EdgeSnapshot<DesignObject>] = []
+        var unused: [EdgeObject] = []
         
         for edge in incomingParameterEdges(nodeID) {
             let parameter = edge.originObject
