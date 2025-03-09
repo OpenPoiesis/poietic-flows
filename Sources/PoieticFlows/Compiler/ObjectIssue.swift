@@ -97,3 +97,89 @@ public enum ObjectIssue: Equatable, CustomStringConvertible, Error {
         }
     }
 }
+
+extension ObjectIssue: DesignIssueConvertible {
+    public func asDesignIssue() -> PoieticCore.DesignIssue {
+        switch self {
+        case .expressionSyntaxError(let error):
+            // TODO: Make ExpressionError DesignIssueConvertible
+            DesignIssue(domain: .compilation,
+                        severity: .error,
+                        identifier: "syntax_error",
+                        message: description,
+                        hint: hint,
+                        details: [
+                            "attribute": "formula",
+                            "underlying_error": Variant(error.description),
+                            // TODO: Add text location, name
+                        ])
+        case .expressionError(let error):
+            // TODO: Make ExpressionError DesignIssueConvertible
+            DesignIssue(domain: .compilation,
+                        severity: .error,
+                        identifier: "expression_error",
+                        message: description,
+                        hint: hint,
+                        details: [
+                            "attribute": "formula",
+                            "underlying_error": Variant(error.description),
+                            // TODO: Add text location, name
+                        ])
+        case .unusedInput(let name):
+            DesignIssue(domain: .compilation,
+                        severity: .error,
+                        identifier: "unused_input",
+                        message: description,
+                        hint: hint,
+                        details: [
+                            "name": Variant(name),
+                        ])
+        case .unknownParameter(let name):
+            DesignIssue(domain: .compilation,
+                        severity: .error,
+                        identifier: "unknown_parameter",
+                        message: description,
+                        hint: hint,
+                        details: [
+                            "name": Variant(name),
+                        ])
+        case .duplicateName(let name):
+            DesignIssue(domain: .compilation,
+                        severity: .error,
+                        identifier: "duplicate_name",
+                        message: description,
+                        hint: hint,
+                        details: [
+                            "attribute": "name",
+                            "name": Variant(name),
+                        ])
+        case .missingRequiredParameter:
+            DesignIssue(domain: .compilation,
+                        severity: .error,
+                        identifier: "missing_parameter",
+                        message: description,
+                        hint: hint)
+        case .computationCycle:
+            DesignIssue(domain: .compilation,
+                        severity: .error,
+                        identifier: "computation_cycle",
+                        message: description,
+                        hint: hint)
+        case .flowCycle:
+            DesignIssue(domain: .compilation,
+                        severity: .error,
+                        identifier: "flow_cycle",
+                        message: description,
+                        hint: hint)
+        case .unsupportedDelayValueType(let type):
+            DesignIssue(domain: .compilation,
+                        severity: .error,
+                        identifier: "unsupported_value_type",
+                        message: description,
+                        hint: hint,
+                        details: [
+                            "type": Variant(type.description),
+                        ])
+        }
+    }
+}

@@ -27,6 +27,8 @@ extension BoundExpression {
     }
 }
 
+
+// TODO: Make ExpressionError DesignIssueConvertible
 public enum ExpressionError: Error, CustomStringConvertible, Equatable {
     case unknownVariable(String)
     case unknownFunction(String)

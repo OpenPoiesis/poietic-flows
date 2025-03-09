@@ -15,7 +15,8 @@ import PoieticCore
 /// After catching the ``hasIssues`` error, the caller might get the issues from
 /// the compiler and propagate them to the user.
 ///
-public enum CompilerError: Error {
+public enum CompilerError: Error, Equatable {
+    // TODO: Throw hasIssues(...)
     /// Object has issues, they were added to the list of issues.
     ///
     /// This error means that the input frame has user issues. The caller should
@@ -55,24 +56,24 @@ public class Compiler {
     
     /// Flows domain view of the frame.
     public let view: StockFlowView<ValidatedFrame>
-
+    
     // MARK: - Compiler State
     // -----------------------------------------------------------------
-
+    
     /// Issues of the object gathered during compilation.
     ///
     public var issues: [ObjectID: [ObjectIssue]]
-
+    
     /// List of objects in an order of computational dependency.
     ///
     public private(set) var orderedObjects: [DesignObject]
-
+    
     /// List of simulation objects that will be included in the simulation plan.
     ///
     /// - SeeAlso: ``SimulationPlan/simulationObjects``
     ///
     public private(set) var simulationObjects: [SimulationObject] = []
-
+    
     /// List of simulation state variables.
     ///
     /// The list of state variables contain values of builtins, values of
@@ -94,26 +95,26 @@ public class Compiler {
     ///   ``createStateVariable(content:valueType:name:)``
     ///
     public private(set) var stateVariables: [StateVariable]
-
+    
     /// Mapping between object ID and index of its corresponding simulation
     /// variable.
     ///
     /// Used in compilation of simulation nodes.
     ///
     internal var objectVariableIndex: [ObjectID: Int]
-
+    
     /// Mapping between a variable name and a bound variable reference.
     ///
     /// Used in binding of arithmetic expressions.
     private var nameIndex: [String:SimulationState.Index]
-
+    
     private var parsedExpressions: [ObjectID:UnboundExpression]
-
+    
     /// List of built-in variable names, fetched from the metamodel.
     ///
     /// Used in binding of arithmetic expressions.
     private var builtinVariableNames: [String]
-
+    
     /// List of built-in functions.
     ///
     /// Used in binding of arithmetic expressions.
@@ -121,7 +122,7 @@ public class Compiler {
     /// - SeeAlso: ``compileFormulaObject(_:)``
     ///
     private let functions: [String: Function]
-
+    
     /// Create a new compiler for a given frame.
     ///
     /// The frame must be validated using the ``FlowsMetamodel``.
@@ -132,7 +133,7 @@ public class Compiler {
         
         // Notes:
         // - It might be desired in the future to cache parsedExpressions in some cases
-
+        
         orderedObjects = []
         stateVariables = []
         builtinVariableNames = []
@@ -140,21 +141,21 @@ public class Compiler {
         parsedExpressions = [:]
         nameIndex = [:]
         objectVariableIndex = [:]
-
+        
         var functions:[String:Function] = [:]
         for function in Function.AllBuiltinFunctions {
             functions[function.name] = function
         }
         self.functions = functions
     }
-
+    
     // - MARK: State Queries
     /// Get a list of issues for given object.
     ///
     public func issues(for id: ObjectID) -> [ObjectIssue] {
         return issues[id] ?? []
     }
-
+    
     /// Appends an error to the list of of node issues
     ///
     func appendIssue(_ error: ObjectIssue, for id: ObjectID) {
@@ -172,7 +173,7 @@ public class Compiler {
     public var hasIssues: Bool {
         return issues.values.contains { !$0.isEmpty }
     }
-
+    
     // - MARK: Compilation
     /// Compiles the design and returns compiled model that can be simulated.
     ///
@@ -200,7 +201,7 @@ public class Compiler {
     /// - Note: The compilation is trying to gather as many errors as possible.
     ///   It does not fail in the first error encountered unless the error
     ///   might prevent from other steps to be executed.
-    ///   
+    ///
     /// - SeeAlso: ``Simulator/init(_:simulation:)``
     ///
     public func compile() throws (CompilerError) -> SimulationPlan {
@@ -215,7 +216,7 @@ public class Compiler {
         if hasIssues {
             throw .hasIssues
         }
-
+        
         let stocks = try compileStocksAndFlows()
         let bindings = try compileControlBindings()
         let defaults = try compileDefaults()
@@ -224,7 +225,7 @@ public class Compiler {
         guard let timeIndex = nameIndex["time"] else {
             fatalError("No time variable within the builtins")
         }
-
+        
         return SimulationPlan(
             simulationObjects: self.simulationObjects,
             stateVariables: self.stateVariables,
@@ -263,7 +264,7 @@ public class Compiler {
         guard let ordered = parameterDependency.topologicalSort() else {
             let cycleEdges = parameterDependency.cycles()
             var nodes: Set<ObjectID> = Set()
-
+            
             for edge in cycleEdges {
                 nodes.insert(edge.origin)
                 nodes.insert(edge.target)
@@ -290,10 +291,10 @@ public class Compiler {
         if hasIssues {
             throw .hasIssues
         }
-
+        
         self.orderedObjects = ordered.map { frame.object($0) }
     }
-
+    
     func parseExpressions() throws (CompilerError) {
         // TODO: This does not have to be in the Compiler
         parsedExpressions = [:]
@@ -316,7 +317,7 @@ public class Compiler {
             parsedExpressions[object.id] = expr
         }
     }
-
+    
     /// Prepare built-in variables.
     ///
     /// For each builtin from the ``BuiltinVariable`` a state variable is allocated. Newly allocated
@@ -325,24 +326,24 @@ public class Compiler {
     /// All variable names are extracted to be used in the ``compileFormulaObject()``.
     ///
     /// - SeeAlso: ``StockFlowSimulation/updateBuiltins(_:)``
-    /// 
+    ///
     func prepareBuiltins() throws (CompilerError) -> CompiledBuiltinState {
         let builtins = CompiledBuiltinState(
             time: createStateVariable(builtin: .time),
             timeDelta: createStateVariable(builtin: .timeDelta),
             step: createStateVariable(builtin: .step)
         )
-
+        
         self.nameIndex[BuiltinVariable.time.name] = builtins.time
         self.nameIndex[BuiltinVariable.timeDelta.name] = builtins.timeDelta
         self.nameIndex[BuiltinVariable.step.name] = builtins.step
-
+        
         // Extract builtin variable names to be used in compileFormulaObject()
         self.builtinVariableNames = BuiltinVariable.allCases.map { $0.name }
-
+        
         return builtins
     }
-
+    
     /// Compile a simulation node.
     ///
     /// The function compiles a node that represents a variable or a kind of
@@ -360,7 +361,7 @@ public class Compiler {
     ///
     func compile(_ object: DesignObject) throws (CompilerError) {
         let rep: ComputationalRepresentation
-
+        
         if object.type.hasTrait(Trait.Formula) {
             rep = try compileFormulaObject(object)
         }
@@ -383,11 +384,11 @@ public class Compiler {
             //
             fatalError("Unknown simulation object type \(object.type.name), object: \(object.id)")
         }
-
+        
         guard let name = object.name else {
             throw .attributeExpectationFailure(object.id, "name")
         }
-
+        
         // Determine simulation type
         //
         let simType: SimulationObject.SimulationObjectType
@@ -409,17 +410,17 @@ public class Compiler {
                                         name: name)
         self.objectVariableIndex[object.id] = index
         self.nameIndex[name] = index
-
+        
         let sim = SimulationObject(id: object.id,
                                    type: simType,
                                    variableIndex: index,
                                    valueType: rep.valueType,
                                    computation: rep,
                                    name: name)
-
+        
         self.simulationObjects.append(sim)
     }
-
+    
     /// Compile a node containing a formula.
     ///
     /// For each node with an arithmetic expression the expression is parsed
@@ -451,7 +452,7 @@ public class Compiler {
             !builtinVariableNames.contains($0)
         }
         
-        // TODO: Move this outside of this method. This is not required for binding
+        // FIXME: [IMPORTANT] Move this outside of this method. This is not required for binding
         // Validate parameters.
         //
         let parameterIssues = validateParameters(object.id, required: required)
@@ -473,7 +474,7 @@ public class Compiler {
         
         return .formula(boundExpression)
     }
-
+    
     /// Compiles a graphical function.
     ///
     /// This method creates a ``/PoieticCore/Function`` object with a single argument and a
@@ -512,9 +513,9 @@ public class Compiler {
                                              name: "delay_queue_\(object.id)")
         
         let initialValueIndex = createStateVariable(content: .internalState(object.id),
-                                             valueType: .doubles,
-                                             name: "delay_init_\(object.id)")
-
+                                                    valueType: .doubles,
+                                                    name: "delay_init_\(object.id)")
+        
         let parameters = view.incomingParameterNodes(object.id)
         guard let parameterNode = parameters.first else {
             appendIssue(ObjectIssue.missingRequiredParameter, for: object.id)
@@ -527,7 +528,7 @@ public class Compiler {
         guard let duration = try? object["delay_duration"]?.intValue() else {
             throw .attributeExpectationFailure(object.id, "delay_duration")
         }
-
+        
         let initialValue = object["initial_value"]
         
         guard case let .atom(atomType) = variable.valueType else {
@@ -547,14 +548,14 @@ public class Compiler {
         
         return .delay(compiled)
     }
-
+    
     /// Compile a value smoothing node.
     ///
     func compileSmoothNode(_ object: DesignObject) throws (CompilerError) -> ComputationalRepresentation{
         let smoothValueIndex = createStateVariable(content: .internalState(object.id),
-                                             valueType: .doubles,
-                                             name: "smooth_value_\(object.id)")
-
+                                                   valueType: .doubles,
+                                                   name: "smooth_value_\(object.id)")
+        
         let parameters = view.incomingParameterNodes(object.id)
         guard let parameterNode = parameters.first else {
             appendIssue(ObjectIssue.missingRequiredParameter, for: object.id)
@@ -567,7 +568,7 @@ public class Compiler {
         guard let windowTime = try? object["window_time"]?.doubleValue() else {
             throw .attributeExpectationFailure(object.id, "window_time")
         }
-
+        
         guard case .atom(_) = variable.valueType else {
             appendIssue(.unsupportedDelayValueType(variable.valueType), for: object.id)
             throw .hasIssues
@@ -607,7 +608,7 @@ public class Compiler {
         guard let sorted = adjacencySubgraph.topologicalSort() else {
             let cycleEdges = adjacencySubgraph.cycles()
             var nodes: Set<ObjectID> = Set()
-
+            
             for edge in cycleEdges {
                 nodes.insert(edge.origin)
                 nodes.insert(edge.target)
@@ -618,9 +619,9 @@ public class Compiler {
             }
             throw .hasIssues
         }
-
+        
         let sortedStocks = sorted.map { frame.object($0) }
-
+        
         for edge in view.flowEdges {
             if edge.originObject.type === ObjectType.Stock && edge.targetObject.type === ObjectType.FlowRate {
                 outflows[edge.origin, default: []].append(edge.target)
@@ -640,7 +641,7 @@ public class Compiler {
             }
             flowPriorities[flow.id] = priority
         }
-
+        
         for stock in sortedStocks {
             if let unsorted = outflows[stock.id] {
                 let items = unsorted.map { (id: $0, priority: flowPriorities[$0]!) }
@@ -673,10 +674,10 @@ public class Compiler {
             )
             result.append(compiled)
         }
-
+        
         return result
     }
-
+    
     /// Validates parameter of a node.
     ///
     /// The method checks whether the following two requirements are met:
@@ -715,7 +716,7 @@ public class Compiler {
         
         return issues
     }
-
+    
     func compileCharts() throws (CompilerError) -> [Chart] {
         let nodes = frame.filter { $0.type === ObjectType.Chart }
         
@@ -724,7 +725,7 @@ public class Compiler {
             let hood = frame.hood(node.id, direction: .outgoing) {
                 $0.object.type === ObjectType.ChartSeries
             }
-                                  
+            
             let series = hood.nodes.map { $0 }
             let chart = PoieticFlows.Chart(node: node,
                                            series: series)
@@ -749,7 +750,7 @@ public class Compiler {
         }
         return bindings
     }
-
+    
     public func compileDefaults() throws (CompilerError) -> SimulationDefaults? {
         guard let simInfo = frame.first(trait: Trait.Simulation) else {
             return nil
@@ -795,5 +796,17 @@ public class Compiler {
         return createStateVariable(content: .builtin(builtin),
                                    valueType: builtin.valueType,
                                    name: builtin.name)
+    }
+    
+    // TODO: Move to the CompilerError
+    public func designIssueCollection() -> DesignIssueCollection {
+        var result: DesignIssueCollection = DesignIssueCollection()
+
+        for (id, errors) in issues {
+            for error in errors {
+                result.append(error.asDesignIssue(), for: id)
+            }
+        }
+        return result
     }
 }
