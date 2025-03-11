@@ -158,6 +158,7 @@ extension Metamodel {
     )
 }
 
+// FIXME: [IMPORTANT] There is confusion between FlowsMetamodel and Metamodel.StockFlow, name one as -base and other as -complete or -user
 public let FlowsMetamodel = Metamodel(name: "Flows",
                                       merging: Metamodel.Basic,
                                                Metamodel.StockFlow)
