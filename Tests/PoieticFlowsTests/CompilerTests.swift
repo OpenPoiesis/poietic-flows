@@ -84,14 +84,20 @@ extension TransientFrame {
         #expect {
             try compiler.compile()
         } throws: {
-            guard $0 as? CompilerError != nil else {
+            guard let error = $0 as? CompilerError else {
                 Issue.record("Unexpected error: \($0)")
                 return false
             }
-            let issues = compiler.issues(for: aux.id)
-            
-            return issues.count == 1
-                    && issues.first == .expressionError(.unknownFunction("nonexistent"))
+            guard case .issues(let issues) = error else {
+                Issue.record("Unexpected error type: \($0)")
+                return false
+            }
+            guard let objectIssues = issues[aux.id] else {
+                Issue.record("Expected object issues, foud none")
+                return false
+            }
+            return objectIssues.count == 1
+                    && objectIssues.first == .expressionError(.unknownFunction("nonexistent"))
         }
     }
 
@@ -116,12 +122,16 @@ extension TransientFrame {
         #expect {
             try compiler.compile()
         } throws: {
-            guard $0 as? CompilerError != nil else {
+            guard let error = $0 as? CompilerError else {
                 Issue.record("Unexpected error: \($0)")
                 return false
             }
-            return compiler.issues(for: c1.id).count == 1
-                    && compiler.issues(for: c2.id).count == 1
+            guard case .issues(let issues) = error else {
+                Issue.record("Unexpected error type: \($0)")
+                return false
+            }
+            return issues[c1.id]?.count == 1
+                    && issues[c2.id]?.count == 1
         }
     }
     
@@ -154,8 +164,20 @@ extension TransientFrame {
         #expect {
             try compiler.compile()
         } throws: {
-            let issues = compiler.issues(for: gf.id)
-            
+            guard let error = $0 as? CompilerError else {
+                Issue.record("Unexpected error: \($0)")
+                return false
+            }
+            guard case .issues(let allIssues) = error else {
+                Issue.record("Unexpected error type: \($0)")
+                return false
+            }
+
+            guard let issues = allIssues[gf.id]else {
+                Issue.record("Issues expected, got none")
+                return false
+            }
+
             return $0 is CompilerError
                     && issues.count == 1
                     && issues.first == ObjectIssue.missingRequiredParameter
@@ -180,9 +202,6 @@ extension TransientFrame {
         #expect(boundFn.parameterIndex == compiled.variableIndex(of:param.id))
 
         #expect(compiled.simulationObjects.contains { $0.name == "g" })
-        
-        let issues = compiler.validateParameters(aux.id, required: ["g"])
-        #expect(issues.isEmpty)
     }
 
     @Test func graphicalFunctionComputation() throws {
@@ -218,9 +237,18 @@ extension TransientFrame {
         #expect {
             try compiler.compile()
         } throws: {
+            guard let error = $0 as? CompilerError else {
+                Issue.record("Unexpected error: \($0)")
+                return false
+            }
+            guard case .issues(let issues) = error else {
+                Issue.record("Unexpected error type: \($0)")
+                return false
+            }
+
             return $0 is CompilerError
-                    && compiler.issues(for: a.id).first == ObjectIssue.computationCycle
-                    && compiler.issues(for: b.id).first == ObjectIssue.computationCycle
+                    && issues[a.id]?.first == ObjectIssue.computationCycle
+                    && issues[b.id]?.first == ObjectIssue.computationCycle
         }
     }
     
@@ -238,9 +266,17 @@ extension TransientFrame {
         #expect {
             try compiler.compile()
         } throws: {
+            guard let error = $0 as? CompilerError else {
+                Issue.record("Unexpected error: \($0)")
+                return false
+            }
+            guard case .issues(let issues) = error else {
+                Issue.record("Unexpected error type: \($0)")
+                return false
+            }
             return $0 is CompilerError
-                    && compiler.issues(for: a.id).first == ObjectIssue.flowCycle
-                    && compiler.issues(for: b.id).first == ObjectIssue.flowCycle
+                    && issues[a.id]?.first == ObjectIssue.flowCycle
+                    && issues[b.id]?.first == ObjectIssue.flowCycle
         }
     }
     

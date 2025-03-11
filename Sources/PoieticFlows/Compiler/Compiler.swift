@@ -8,6 +8,41 @@
 
 import PoieticCore
 
+
+public struct CompilationIssueCollection: Sendable {
+    /// Issues specific to particular object.
+    public var objectIssues: [ObjectID:[ObjectIssue]]
+    
+    /// Create an empty design issue collection.
+    public init() {
+        self.objectIssues = [:]
+    }
+    
+    public var isEmpty: Bool {
+        objectIssues.isEmpty
+    }
+    
+    public subscript(id: ObjectID) -> [ObjectIssue]? {
+        return objectIssues[id]
+    }
+    
+    /// Append an issue for a specific object.
+    public mutating func append(_ issue: ObjectIssue, for id: ObjectID) {
+        objectIssues[id, default: []].append(issue)
+    }
+
+    public func asDesignIssueCollection() -> DesignIssueCollection {
+        var result: DesignIssueCollection = DesignIssueCollection()
+
+        for (id, errors) in objectIssues {
+            for error in errors {
+                result.append(error.asDesignIssue(), for: id)
+            }
+        }
+        return result
+    }
+}
+
 /// Error thrown by the compiler during compilation.
 ///
 /// The only relevant case is ``hasIssues``, any other case means a programming error.
@@ -15,7 +50,7 @@ import PoieticCore
 /// After catching the ``hasIssues`` error, the caller might get the issues from
 /// the compiler and propagate them to the user.
 ///
-public enum CompilerError: Error, Equatable {
+public enum CompilerError: Error {
     // TODO: Throw hasIssues(...)
     /// Object has issues, they were added to the list of issues.
     ///
@@ -25,8 +60,11 @@ public enum CompilerError: Error, Equatable {
     /// This is the only error that is relevant. Any other error means
     /// that something failed internally.
     ///
-    case hasIssues
+    case issues(CompilationIssueCollection)
+    case internalError(InternalCompilerError)
+}
 
+public enum InternalCompilerError: Error, Equatable {
     /// Attribute is missing or attribute type is mismatched. This error means
     /// that the frame is not valid according to the ``FlowsMetamodel``.
     case attributeExpectationFailure(ObjectID, String)
@@ -62,7 +100,7 @@ public class Compiler {
     
     /// Issues of the object gathered during compilation.
     ///
-    public var issues: [ObjectID: [ObjectIssue]]
+    public var issues: CompilationIssueCollection
     
     /// List of objects in an order of computational dependency.
     ///
@@ -137,41 +175,16 @@ public class Compiler {
         orderedObjects = []
         stateVariables = []
         builtinVariableNames = []
-        issues = [:]
         parsedExpressions = [:]
         nameIndex = [:]
         objectVariableIndex = [:]
+        issues = CompilationIssueCollection()
         
         var functions:[String:Function] = [:]
         for function in Function.AllBuiltinFunctions {
             functions[function.name] = function
         }
         self.functions = functions
-    }
-    
-    // - MARK: State Queries
-    /// Get a list of issues for given object.
-    ///
-    public func issues(for id: ObjectID) -> [ObjectIssue] {
-        return issues[id] ?? []
-    }
-    
-    /// Appends an error to the list of of node issues
-    ///
-    func appendIssue(_ error: ObjectIssue, for id: ObjectID) {
-        issues[id, default:[]].append(error)
-    }
-    
-    /// Append a list of issues to an object.
-    ///
-    func appendIssues(_ errors: [ObjectIssue], for id: ObjectID) {
-        issues[id, default:[]] += errors
-    }
-    
-    /// Flag whether the compiler has encountered any issues.
-    ///
-    public var hasIssues: Bool {
-        return issues.values.contains { !$0.isEmpty }
     }
     
     // - MARK: Compilation
@@ -208,13 +221,14 @@ public class Compiler {
         try initialize()
         let builtins = try prepareBuiltins()
         try parseExpressions()
+        try validateFormulaParameterConnections()
         
         for object in self.orderedObjects {
             try self.compile(object)
         }
         
-        if hasIssues {
-            throw .hasIssues
+        guard issues.isEmpty else {
+            throw .issues(issues)
         }
         
         let stocks = try compileStocksAndFlows()
@@ -241,7 +255,7 @@ public class Compiler {
     /// - Precondition: Simulation nodes must have a name
     ///
     func initialize() throws (CompilerError) {
-        issues = [:]
+        issues = CompilationIssueCollection()
         
         let unorderedSimulationNodes = view.simulationNodes
         var homonyms: [String: [ObjectID]] = [:]
@@ -249,7 +263,7 @@ public class Compiler {
         // 1. Collect nodes relevant to the simulation
         for node in unorderedSimulationNodes {
             guard let name = node.name else {
-                throw .attributeExpectationFailure(node.id, "name")
+                throw .internalError(.attributeExpectationFailure(node.id, "name"))
             }
             homonyms[name, default: []].append(node.id)
         }
@@ -268,12 +282,12 @@ public class Compiler {
             for edge in cycleEdges {
                 nodes.insert(edge.origin)
                 nodes.insert(edge.target)
-                appendIssue(.computationCycle, for: edge.id)
+                issues.append(.computationCycle, for: edge.id)
             }
             for node in nodes {
-                appendIssue(ObjectIssue.computationCycle, for: node)
+                issues.append(.computationCycle, for: node)
             }
-            throw .hasIssues
+            throw .issues(issues)
         }
         
         // 3. Report the duplicates, if any
@@ -284,12 +298,12 @@ public class Compiler {
             let issue = ObjectIssue.duplicateName(name)
             dupes.append(name)
             for id in ids {
-                appendIssue(issue, for: id)
+                issues.append(issue, for: id)
             }
         }
         
-        if hasIssues {
-            throw .hasIssues
+        guard issues.isEmpty else {
+            throw .issues(issues)
         }
         
         self.orderedObjects = ordered.map { frame.object($0) }
@@ -310,7 +324,7 @@ public class Compiler {
                 expr = try parser.parse()
             }
             catch { // is ExpressionSyntaxError
-                appendIssue(.expressionSyntaxError(error), for: object.id)
+                issues.append(.expressionSyntaxError(error), for: object.id)
                 continue
             }
             
@@ -386,7 +400,7 @@ public class Compiler {
         }
         
         guard let name = object.name else {
-            throw .attributeExpectationFailure(object.id, "name")
+            throw .internalError(.attributeExpectationFailure(object.id, "name"))
         }
         
         // Determine simulation type
@@ -442,7 +456,7 @@ public class Compiler {
     ///
     func compileFormulaObject(_ object: DesignObject) throws (CompilerError) -> ComputationalRepresentation {
         guard let unboundExpression = parsedExpressions[object.id] else {
-            throw .attributeExpectationFailure(object.id, "formula")
+            throw .internalError(.attributeExpectationFailure(object.id, "formula"))
         }
         
         // List of required parameters: variables in the expression that
@@ -451,12 +465,6 @@ public class Compiler {
         let required: [String] = unboundExpression.allVariables.filter {
             !builtinVariableNames.contains($0)
         }
-        
-        // FIXME: [IMPORTANT] Move this outside of this method. This is not required for binding
-        // Validate parameters.
-        //
-        let parameterIssues = validateParameters(object.id, required: required)
-        appendIssues(parameterIssues, for: object.id)
         
         // Finally bind the expression.
         //
@@ -468,8 +476,8 @@ public class Compiler {
                                                  functions: functions)
         }
         catch /* ExpressionError */ {
-            appendIssue(.expressionError(error), for: object.id)
-            throw .hasIssues
+            issues.append(.expressionError(error), for: object.id)
+            throw .issues(issues)
         }
         
         return .formula(boundExpression)
@@ -489,15 +497,15 @@ public class Compiler {
     ///
     func compileGraphicalFunctionNode(_ object: DesignObject) throws (CompilerError) -> ComputationalRepresentation{
         guard let points = try? object["graphical_function_points"]?.pointArray() else {
-            throw CompilerError.attributeExpectationFailure(object.id, "graphical_function_points")
+            throw .internalError(.attributeExpectationFailure(object.id, "graphical_function_points"))
         }
         // TODO: Interpolation method
         let function = GraphicalFunction(points: points)
         
         let parameters = view.incomingParameterNodes(object.id)
         guard let parameterNode = parameters.first else {
-            appendIssue(ObjectIssue.missingRequiredParameter, for: object.id)
-            throw .hasIssues
+            issues.append(ObjectIssue.missingRequiredParameter, for: object.id)
+            throw .issues(issues)
         }
         
         let boundFunc = BoundGraphicalFunction(function: function,
@@ -518,22 +526,22 @@ public class Compiler {
         
         let parameters = view.incomingParameterNodes(object.id)
         guard let parameterNode = parameters.first else {
-            appendIssue(ObjectIssue.missingRequiredParameter, for: object.id)
-            throw .hasIssues
+            issues.append(ObjectIssue.missingRequiredParameter, for: object.id)
+            throw .issues(issues)
         }
         
         let parameterIndex = objectVariableIndex[parameterNode.id]!
         let variable = stateVariables[parameterIndex]
         
         guard let duration = try? object["delay_duration"]?.intValue() else {
-            throw .attributeExpectationFailure(object.id, "delay_duration")
+            throw .internalError(.attributeExpectationFailure(object.id, "delay_duration"))
         }
         
         let initialValue = object["initial_value"]
         
         guard case let .atom(atomType) = variable.valueType else {
-            appendIssue(.unsupportedDelayValueType(variable.valueType), for: object.id)
-            throw .hasIssues
+            issues.append(.unsupportedDelayValueType(variable.valueType), for: object.id)
+            throw .issues(issues)
         }
         
         // TODO: Check whether the initial value and variable.valueType are the same
@@ -558,20 +566,20 @@ public class Compiler {
         
         let parameters = view.incomingParameterNodes(object.id)
         guard let parameterNode = parameters.first else {
-            appendIssue(ObjectIssue.missingRequiredParameter, for: object.id)
-            throw .hasIssues
+            issues.append(ObjectIssue.missingRequiredParameter, for: object.id)
+            throw .issues(issues)
         }
         
         let parameterIndex = objectVariableIndex[parameterNode.id]!
         let variable = stateVariables[parameterIndex]
         
         guard let windowTime = try? object["window_time"]?.doubleValue() else {
-            throw .attributeExpectationFailure(object.id, "window_time")
+            throw .internalError(.attributeExpectationFailure(object.id, "window_time"))
         }
         
         guard case .atom(_) = variable.valueType else {
-            appendIssue(.unsupportedDelayValueType(variable.valueType), for: object.id)
-            throw .hasIssues
+            issues.append(.unsupportedDelayValueType(variable.valueType), for: object.id)
+            throw .issues(issues)
         }
         
         let compiled = BoundSmooth(
@@ -612,12 +620,12 @@ public class Compiler {
             for edge in cycleEdges {
                 nodes.insert(edge.origin)
                 nodes.insert(edge.target)
-                appendIssue(.flowCycle, for: edge.id)
+                issues.append(.flowCycle, for: edge.id)
             }
             for node in nodes {
-                appendIssue(ObjectIssue.flowCycle, for: node)
+                issues.append(ObjectIssue.flowCycle, for: node)
             }
-            throw .hasIssues
+            throw .issues(issues)
         }
         
         let sortedStocks = sorted.map { frame.object($0) }
@@ -637,7 +645,7 @@ public class Compiler {
         // Sort the outflows by priority
         for flow in flows {
             guard let priority = try? flow["priority"]?.intValue() else {
-                throw .attributeExpectationFailure(flow.id, "priority")
+                throw .internalError(.attributeExpectationFailure(flow.id, "priority"))
             }
             flowPriorities[flow.id] = priority
         }
@@ -682,8 +690,8 @@ public class Compiler {
     ///
     /// The method checks whether the following two requirements are met:
     ///
-    /// - node using a parameter name in an expression (in the `required` list)
-    ///   must have a ``/PoieticCore/ObjectType/Parameter`` edge from the parameter node
+    /// - node using a parameter name in an expression must have a
+    ///   ``/PoieticCore/ObjectType/Parameter`` edge from the parameter node
     ///   with given name.
     /// - node must _not_ have a ``/PoieticCore/ObjectType/Parameter``connection from
     ///   a node if the expression is not referring to that node.
@@ -691,31 +699,58 @@ public class Compiler {
     /// If any of the two requirements are not met, then a corresponding
     /// type of ``ObjectIssue`` is added to the list of issues.
     ///
-    /// - Parameters:
-    ///     - nodeID: ID of a node to be validated for inputs
-    ///     - required: List of names (of nodes) that are required for the node
-    ///       with an id `nodeID`.
+    /// - Throws: Compiler error with ``ObjectIssue/unknownParameter(_:)`` or
+    ///   ``ObjectIssue/unusedInput(_:)`` assigned to each offending object.
     ///
-    /// - Returns: List of issues that the node with ID `nodeID` caused. The
-    ///   issues can be either ``ObjectIssue/unknownParameter(_:)`` or
-    ///   ``ObjectIssue/unusedInput(_:)``.
-    ///
-    public func validateParameters(_ nodeID: ObjectID, required: [String]) -> [ObjectIssue] {
-        let parameters = view.resolveParameters(nodeID, required: required)
-        var issues: [ObjectIssue] = []
+    public func validateFormulaParameterConnections() throws (CompilerError) {
+        var hasIssues: Bool = false
         
-        for name in parameters.missing {
-            issues.append(.unusedInput(name))
+        // Edges into formula objects
+        let parameterEdges = frame.filterEdges {
+            $0.object.type === ObjectType.Parameter
+            && $0.targetObject.type.hasTrait(Trait.Formula)
         }
-        for edge in parameters.unused {
-            guard let name = frame.object(edge.origin).name else {
-                fatalError("Expected named object")
+        
+        var required: [ObjectID:Set<String>] = [:]
+        var unused: [ObjectID:[EdgeObject]] = [:]
+
+        for (id, expression) in parsedExpressions {
+            let vars = expression.allVariables.filter { !builtinVariableNames.contains($0) }
+            required[id] = Set(vars)
+        }
+        
+        for edge in parameterEdges {
+            guard let parameter = edge.originObject.name else {
+                // TODO: Use internal compiler error
+                preconditionFailure("Named node expected for parameter")
             }
-            issues.append(.unknownParameter(name))
+            if let existing = required[edge.target], existing.contains(parameter) {
+                required[edge.target]!.remove(parameter)
+            }
+            else {
+                unused[edge.target, default: []].append(edge)
+            }
         }
         
-        return issues
+        for (id, params) in required {
+            for name in params {
+                issues.append(.unknownParameter(name), for: id)
+                hasIssues = true
+            }
+        }
+
+        for (id, edges) in unused {
+            for edge in edges {
+                issues.append(.unusedInput(edge.originObject.name!), for: id)
+                hasIssues = true
+            }
+        }
+
+        guard !hasIssues else {
+            throw .issues(issues)
+        }
     }
+
     
     func compileCharts() throws (CompilerError) -> [Chart] {
         let nodes = frame.filter { $0.type === ObjectType.Chart }
@@ -738,11 +773,11 @@ public class Compiler {
         var bindings: [CompiledControlBinding] = []
         for object in frame.filter(type: ObjectType.ValueBinding) {
             guard let edge = EdgeObject(object, in: frame) else {
-                throw .structureTypeMismatch(object.id)
+                throw .internalError(.structureTypeMismatch(object.id))
             }
             
             guard let index = objectVariableIndex[edge.target] else {
-                throw .objectNotFound(edge.target)
+                throw .internalError(.objectNotFound(edge.target))
             }
             let binding = CompiledControlBinding(control: edge.origin,
                                                  variableIndex: index)
@@ -796,17 +831,5 @@ public class Compiler {
         return createStateVariable(content: .builtin(builtin),
                                    valueType: builtin.valueType,
                                    name: builtin.name)
-    }
-    
-    // TODO: Move to the CompilerError
-    public func designIssueCollection() -> DesignIssueCollection {
-        var result: DesignIssueCollection = DesignIssueCollection()
-
-        for (id, errors) in issues {
-            for error in errors {
-                result.append(error.asDesignIssue(), for: id)
-            }
-        }
-        return result
     }
 }
