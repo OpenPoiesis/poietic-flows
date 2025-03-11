@@ -296,4 +296,32 @@ extension TransientFrame {
         // Test no throw
         let _ = try compiler.compile()
     }
+    
+    @Test func syntaxErrorIsNotInternalError() throws {
+        let a = frame.createNode(ObjectType.Auxiliary,
+                                 name:"a",
+                                 attributes: ["formula": "10 + "])
+        let compiler = Compiler(frame: try design.validate(try design.accept(frame)))
+        #expect {
+            try compiler.compile()
+        } throws: {
+            guard let error = $0 as? CompilerError else {
+                Issue.record("Unexpected error: \($0)")
+                return false
+            }
+            guard case .issues(let issues) = error else {
+                Issue.record("Expected issues, got internal error: \(error)")
+                return false
+            }
+            guard let issue = issues[a.id]?.first else {
+                Issue.record("Expected an object issue for \(a.id)")
+                return false
+            }
+            guard case .expressionSyntaxError(let syntaxError) = issue else {
+                Issue.record("Expected syntax error, got: \(issue)")
+                return false
+            }
+            return syntaxError == .expressionExpected
+        }
+    }
 }

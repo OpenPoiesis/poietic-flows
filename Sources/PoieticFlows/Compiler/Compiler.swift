@@ -64,11 +64,28 @@ public enum CompilerError: Error {
     case internalError(InternalCompilerError)
 }
 
+/// Error caused by some compiler internals, not by the user.
+///
+/// This error should not be displayed to the user fully, only as a debug information or as an
+/// information provided to the developers by the user.
+///
 public enum InternalCompilerError: Error, Equatable {
+    /// Error thrown during compilation that should be captured by the compiler.
+    ///
+    /// Used to indicate that the compilation might continue to collect more errors, but must
+    /// result in an error at the end.
+    ///
+    /// This error should never escape the compiler.
+    ///
+    case intermediateError
+    
     /// Attribute is missing or attribute type is mismatched. This error means
     /// that the frame is not valid according to the ``FlowsMetamodel``.
     case attributeExpectationFailure(ObjectID, String)
-
+    
+    /// Formula compilation failed in an unexpected way.
+    case formulaCompilationFailure(ObjectID)
+    
     // Invalid Frame Error - validation on the caller side failed
     case structureTypeMismatch(ObjectID)
     case objectNotFound(ObjectID)
@@ -223,11 +240,19 @@ public class Compiler {
         try parseExpressions()
         try validateFormulaParameterConnections()
         
+        var intermediateError: Bool = false
+        
         for object in self.orderedObjects {
-            try self.compile(object)
+            do {
+                try self.compile(object)
+            }
+            catch .internalError(.intermediateError) {
+                intermediateError = true
+                continue
+            }
         }
         
-        guard issues.isEmpty else {
+        guard issues.isEmpty && !intermediateError else {
             throw .issues(issues)
         }
         
@@ -314,16 +339,21 @@ public class Compiler {
         parsedExpressions = [:]
         
         for object in orderedObjects {
-            guard let formula = try? object["formula"]?.stringValue() else {
+            guard object.type.hasTrait(.Formula) else {
                 continue
             }
+            
+            guard let formula = try? object["formula"]?.stringValue() else {
+                throw .internalError(.attributeExpectationFailure(object.id, "formula"))
+            }
+            
             let parser = ExpressionParser(string: formula)
             let expr: UnboundExpression
             
             do {
                 expr = try parser.parse()
             }
-            catch { // is ExpressionSyntaxError
+            catch {
                 issues.append(.expressionSyntaxError(error), for: object.id)
                 continue
             }
@@ -456,14 +486,13 @@ public class Compiler {
     ///
     func compileFormulaObject(_ object: DesignObject) throws (CompilerError) -> ComputationalRepresentation {
         guard let unboundExpression = parsedExpressions[object.id] else {
-            throw .internalError(.attributeExpectationFailure(object.id, "formula"))
-        }
-        
-        // List of required parameters: variables in the expression that
-        // are not built-in variables.
-        //
-        let required: [String] = unboundExpression.allVariables.filter {
-            !builtinVariableNames.contains($0)
+            if issues[object.id] != nil {
+                // Compilation already has issues, we just proceed to collect some more.
+                throw .internalError(.intermediateError)
+            }
+            else {
+                throw .internalError(.formulaCompilationFailure(object.id))
+            }
         }
         
         // Finally bind the expression.
