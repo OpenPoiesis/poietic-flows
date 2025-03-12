@@ -51,7 +51,6 @@ public struct CompilationIssueCollection: Sendable {
 /// the compiler and propagate them to the user.
 ///
 public enum CompilerError: Error {
-    // TODO: Throw hasIssues(...)
     /// Object has issues, they were added to the list of issues.
     ///
     /// This error means that the input frame has user issues. The caller should
@@ -61,6 +60,10 @@ public enum CompilerError: Error {
     /// that something failed internally.
     ///
     case issues(CompilationIssueCollection)
+    
+    /// Error caused by some internal functioning. This error typically means something was not
+    /// correctly validated either within the library or by an application. The internal error
+    /// is not caused by the user.
     case internalError(InternalCompilerError)
 }
 
@@ -335,7 +338,6 @@ public class Compiler {
     }
     
     func parseExpressions() throws (CompilerError) {
-        // TODO: This does not have to be in the Compiler
         parsedExpressions = [:]
         
         for object in orderedObjects {
@@ -750,8 +752,7 @@ public class Compiler {
         
         for edge in parameterEdges {
             guard let parameter = edge.originObject.name else {
-                // TODO: Use internal compiler error
-                preconditionFailure("Named node expected for parameter")
+                throw .internalError(.attributeExpectationFailure(edge.id, "name"))
             }
             if let existing = required[edge.target], existing.contains(parameter) {
                 required[edge.target]!.remove(parameter)

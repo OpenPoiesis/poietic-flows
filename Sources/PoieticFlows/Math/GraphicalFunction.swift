@@ -21,14 +21,12 @@ import PoieticCore
 //    case sShape
 //}
 
-// TODO: This is a late-night sketch implementation, GFComponent + GF should be merged
 /// Object representing a function defined by a graph.
 ///
 /// The graphical function is defined by a set of points. The function output
 /// value for given input value is computed using the function's interpolation
 /// method.
 ///
-
 public class GraphicalFunction {
     public enum InterpolationMethod: String, CaseIterable {
         case step = "step"

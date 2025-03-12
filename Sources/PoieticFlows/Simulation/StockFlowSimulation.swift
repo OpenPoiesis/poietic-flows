@@ -236,8 +236,7 @@ public class StockFlowSimulation: Simulation {
     ///
     public func update(delay: BoundDelay, in state: inout SimulationState) throws (EvaluationError) -> Variant {
         guard case let .atom(inputValue) = state[delay.inputValueIndex] else {
-            // TODO: Runtime error
-            fatalError("Expected atom for delay input value, got array (runtime error)")
+            throw .valueError(.atomExpected)
         }
         guard case var .array(queue) = state[delay.queueIndex] else {
             // FIXME: Use array states
@@ -250,8 +249,7 @@ public class StockFlowSimulation: Simulation {
         // TODO: Use `step` as future function parameter instead of this workaround for queue lenght
         if queue.count + 1 < delay.steps {
             guard case let .atom(initialValue) = state[delay.initialValueIndex] else {
-                // TODO: Runtime error
-                fatalError("Expected atom for delay initial value, got array (runtime error)")
+                throw .valueError(.atomExpected)
             }
 
             // We do have at least one value in the array (see initialize(delay:...))

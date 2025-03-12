@@ -7,22 +7,6 @@
 
 import PoieticCore
 
-let con = Constraint(
-    name: "flow_drain_or_fill_only",
-    abstract: """
-          Flow must be only between a stock and a flow rate.
-          """,
-    match: EdgePredicate(.Flow),
-    requirement: AllSatisfy(
-        EdgePredicate(origin: .FlowRate, target: .Stock)
-        .or(EdgePredicate(origin: .Stock, target: .FlowRate))
-    )
-)
-
-
-
-
-// TODO: [IMPORTANT] Rename Flow node to FlowRate and Fills/Drains edges to Flow
 
 extension Metamodel {
     /// The metamodel for Stock-and-Flows domain model.
@@ -47,6 +31,8 @@ extension Metamodel {
             // Abstract
             Trait.Auxiliary,
             Trait.ComputedValue,
+            Trait.DiagramNode,
+            Trait.DiagramConnection,
 
             // Basic Stock-Flow nodes
             Trait.Stock,
@@ -58,6 +44,7 @@ extension Metamodel {
             
             // Others
             Trait.Chart,
+            Trait.Control,
             Trait.Simulation,
             Trait.BibliographicalReference,
         ],
@@ -91,7 +78,6 @@ extension Metamodel {
         ],
         
         // MARK: Edge Rules
-        // TODO: Add tests for violation of each of the rules
         // --------------------------------------------------------------------
         /**
          edge       origin  target    origin outgoing    target incoming

@@ -171,39 +171,6 @@ public struct SimulationPlan {
         stocks.map { $0.variableIndex }
     }
     
-    /// Get a compiled stock by object ID.
-    ///
-    /// This property is used in computation.
-    ///
-    /// - SeeAlso: ``StockFlowSimulation/computeStockDelta(_:in:)``,
-    /// ``StockFlowSimulation/stockDifference(state:time:)``
-    ///
-    /// - Complexity: O(n)
-    ///
-    func compiledStock(_ id: ObjectID) -> BoundStock {
-        // TODO: What to do with this method?
-        return stocks.first { $0.id == id }!
-    }
-
-    /// Selection of simulation variables that represent graphical functions.
-    ///
-    /// This property is not used during computation, it is provided for
-    /// consumers of the simulation state or simulation result.
-    ///
-    public var graphicalFunctions: [BoundGraphicalFunction] {
-        // FIXME: Remove this, used only for tests
-        // FIXME: Materialise this in the simulation object or somewhere
-        let vars: [BoundGraphicalFunction] = simulationObjects.compactMap {
-            if case let .graphicalFunction(fun) = $0.computation {
-                return fun
-            }
-            else {
-                return nil
-            }
-        }
-        return vars
-    }
-    
     /// Get a compiled variable by its name.
     ///
     /// This function is mostly for user-facing tools that would like to

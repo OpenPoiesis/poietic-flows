@@ -193,15 +193,23 @@ extension TransientFrame {
         frame.createEdge(ObjectType.Parameter, origin: gf, target: aux)
 
         let compiler = Compiler(frame: try design.validate(try design.accept(frame)))
-        let compiled = try compiler.compile()
+        let plan = try compiler.compile()
 
-        let funcs = compiled.graphicalFunctions
+        var funcs = plan.simulationObjects.compactMap {
+            if case let .graphicalFunction(fun) = $0.computation {
+                fun
+            }
+            else {
+                nil
+            }
+        }
+
         #expect(funcs.count == 1)
 
         let boundFn = funcs.first!
-        #expect(boundFn.parameterIndex == compiled.variableIndex(of:param.id))
+        #expect(boundFn.parameterIndex == plan.variableIndex(of:param.id))
 
-        #expect(compiled.simulationObjects.contains { $0.name == "g" })
+        #expect(plan.simulationObjects.contains { $0.name == "g" })
     }
 
     @Test func graphicalFunctionComputation() throws {

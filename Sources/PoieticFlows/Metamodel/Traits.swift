@@ -36,7 +36,7 @@ extension Trait {
     public static let Formula = Trait(
         name: "Formula",
         attributes: [
-            Attribute("formula", type: .string,
+            Attribute("formula", type: .string, default: "0",
                       abstract: "Arithmetic formula or a constant value represented by the node."
                      ),
         ]

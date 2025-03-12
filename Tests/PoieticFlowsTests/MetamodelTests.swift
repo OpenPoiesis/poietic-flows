@@ -37,6 +37,15 @@ import Testing
         }
     }
     
+    @Test func metamodelTypeTraits() throws {
+        let metamodel = FlowsMetamodel
+        for type in metamodel.types {
+            for trait in type.traits {
+                #expect(metamodel.trait(name: trait.name) != nil, "Missing trait \(trait.name)")
+            }
+        }
+    }
+    
     @Test func constraintStockFlowRate() throws {
         let a = frame.createNode(.Stock, name: "a", attributes: ["formula": "0"])
         let flow = frame.createNode(.FlowRate, name: "f", attributes: ["formula": "0"])
@@ -68,8 +77,10 @@ import Testing
             guard let e2 = error.edgeRuleViolations[e2.id]?.first else {
                 return false
             }
-            return e1 == .noRuleSatisfied && e2 == .noRuleSatisfied
-            
+            switch (e1, e2) {
+            case (.noRuleSatisfied, .noRuleSatisfied): return true
+            default: return false
+            }
         }
     }
 }
