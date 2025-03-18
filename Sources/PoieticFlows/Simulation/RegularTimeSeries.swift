@@ -11,9 +11,9 @@
 public class RegularTimeSeries /*: Sequence, RandomAccessCollection? */ {
     
     /// Time of the first data sample.
-    let startTime: Double
+    public let startTime: Double
     /// Time interval between samples.
-    let timeDelta: Double
+    public let timeDelta: Double
     var _dataMin: Double? = nil
     var _dataMax: Double? = nil
     
@@ -21,7 +21,7 @@ public class RegularTimeSeries /*: Sequence, RandomAccessCollection? */ {
     ///
     /// For application convenience, if the data is empty, then the value is zero.
     ///
-    var dataMin: Double {
+    public var dataMin: Double {
         if _dataMin == nil {
             _dataMin = data.min() ?? 0
         }
@@ -32,16 +32,16 @@ public class RegularTimeSeries /*: Sequence, RandomAccessCollection? */ {
     ///
     /// For application convenience, if the data is empty, then the value is zero.
     ///
-    var dataMax: Double {
+    public var dataMax: Double {
         if _dataMax == nil {
             _dataMax = data.max() ?? 0
         }
         return _dataMax!
     }
-    var endTime: Double { startTime + Double(data.count - 1) * timeDelta }
-    let data: [Double]
+    public var endTime: Double { startTime + Double(data.count - 1) * timeDelta }
+    public let data: [Double]
     
-    var isEmpty: Bool { data.isEmpty }
+    public var isEmpty: Bool { data.isEmpty }
 
     /// Create new series from data.
     ///
@@ -53,7 +53,7 @@ public class RegularTimeSeries /*: Sequence, RandomAccessCollection? */ {
     /// - Note: For application convenience, if the data is empty, then the min/max values
     ///         are zero. It is impractical to have the values to be optional.
     ///
-    init(data: [Double], startTime: Double, timeDelta: Double) {
+    public init(data: [Double], startTime: Double, timeDelta: Double) {
         precondition(data.isEmpty)
         self.data = data
         self.startTime = startTime
