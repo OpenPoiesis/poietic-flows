@@ -276,7 +276,7 @@ public class Compiler {
             stocks: stocks,
             charts: charts,
             valueBindings: bindings,
-            simulationDefaults: defaults
+            simulationParameters: defaults
         )
     }
     
@@ -816,16 +816,12 @@ public class Compiler {
         return bindings
     }
     
-    public func compileDefaults() throws (CompilerError) -> SimulationDefaults? {
+    // TODO: Rename to compileSimulationParameters
+    public func compileDefaults() throws (CompilerError) -> SimulationParameters? {
         guard let simInfo = frame.first(trait: Trait.Simulation) else {
             return nil
         }
-        let initialTime = try! simInfo["initial_time"]?.doubleValue()
-        let timeDelta = try! simInfo["time_delta"]?.doubleValue()
-        let steps = try! simInfo["steps"]?.intValue()
-        return SimulationDefaults(initialTime: initialTime ?? 0.0,
-                                  timeDelta: timeDelta ?? 1.0,
-                                  simulationSteps: steps ?? 10)
+        return SimulationParameters(fromObject: simInfo)
     }
     
     /// Creates a state variable.

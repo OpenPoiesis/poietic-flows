@@ -7,31 +7,73 @@
 
 import PoieticCore
 
+/// Parameters of the simulation.
+///
+public struct SimulationParameters {
+    /// Time of the initialisation state of the simulation.
+    public let initialTime: Double
+    
+    /// Advancement of time for each simulation step.
+    public let timeDelta: Double
+
+    /// Final simulation time.
+    ///
+    /// Simulation is run while the simulation is less than ``endTime``.
+    public let endTime: Double
+    
+    /// Create new simulation options.
+    ///
+    /// - Parameters:
+    ///     - initialTime: Time of the initialisation state of the simulation.
+    ///     - timeDelta: Advancement of time for each simulation step.
+    ///     - endTime: Final simulation time.
+    ///
+    /// The default ``endTime`` is set to 10.0 (like the `head` UNIX command number of lines).
+    /// It is enough for a reasonable default preview.
+    ///
+    public init(initialTime: Double = 0.0, timeDelta: Double = 1.0, endTime: Double = 10.0) {
+        self.initialTime = initialTime
+        self.timeDelta = timeDelta
+        self.endTime = endTime
+    }
+
+    /// Create new simulation parameters from an object.
+    ///
+    /// The object is expected to be of a ``Trait/Simulation`` type, although any object with
+    /// expected attributes can be used.
+    ///
+    public init(fromObject object: DesignObject) {
+        self.initialTime = try! object["initial_time"]?.doubleValue() ?? 0.0
+        self.timeDelta = try! object["time_delta"]?.doubleValue() ?? 1.0
+
+        if let endTime = try! object["end_time"]?.doubleValue() {
+            self.endTime = endTime
+        }
+        else {
+            if let steps = try! object["steps"]?.intValue() {
+                self.endTime = initialTime + Double(steps + 1) * timeDelta
+            }
+            else {
+                let steps = 10
+                self.endTime = initialTime + Double(steps + 1) * timeDelta
+            }
+        }
+    }
+}
+
 // TODO: Move this class to Core, we are half-way through decoupling.
 
 /// Object for controlling a simulation session.
 ///
 public class Simulator {
-    // Simulation parameters
-
-    /// Initial time of the simulation.
-    public var initialTime: Double
-    
-    /// Time between simulation steps.
-    public var timeDelta: Double
-    
-    // MARK: - Simulator state
-    
-    /// Current simulation step
+    // Simulation state
+    public var parameters: SimulationParameters
+    public var currentTime: Double = 0.0
     public var currentStep: Int = 0
-    public var currentTime: Double = 0
-    // TODO: Make currentState non-optional
-    public var currentState: SimulationState!
-    public var compiledModel: SimulationPlan
+    public var currentState: SimulationState?
     
-    // TODO: Make this an object, so we can derive more info
     /// Collected data
-    public var output: [SimulationState]
+    public var result: SimulationResult
     
     // TODO: Allow multiple
     public let simulation: Simulation
@@ -52,23 +94,14 @@ public class Simulator {
     /// - `initialTime = 0.0`
     /// - `timeDelta = 1.0`
     ///
-    public init(_ model: SimulationPlan, simulation: Simulation? = nil) {
-        self.compiledModel = model
+    public init(simulation: Simulation, parameters: SimulationParameters? = nil) {
+        self.simulation = simulation
+        self.parameters = parameters ?? SimulationParameters()
         self.currentState = nil
-        self.simulation = simulation ?? StockFlowSimulation(model)
-        
-        if let defaults = model.simulationDefaults {
-            self.initialTime = defaults.initialTime
-            self.timeDelta = defaults.timeDelta
-        }
-        else {
-            self.initialTime = 0.0
-            self.timeDelta = 1.0
-        }
-        
-        output = []
+        self.result = SimulationResult(initialTime: self.parameters.initialTime,
+                                       timeDelta: self.parameters.timeDelta)
     }
-
+    
     // MARK: - State Initialisation
 
     /// Initialise the computation state.
@@ -89,16 +122,7 @@ public class Simulator {
     @discardableResult
     public func initializeState(time: Double? = nil, override: [ObjectID:Double] = [:]) throws -> SimulationState {
         currentStep = 0
-
-        if let defaults = compiledModel.simulationDefaults {
-            self.initialTime = time ?? defaults.initialTime
-            self.timeDelta = defaults.timeDelta
-        }
-        else {
-            self.initialTime = time ?? 0.0
-            self.timeDelta = 1.0
-        }
-        currentTime = initialTime
+        currentTime = time ?? parameters.initialTime
 
         var overrideVariants: [ObjectID:Variant] = [:]
         for (id, value) in override {
@@ -106,12 +130,12 @@ public class Simulator {
         }
 
         let state = try simulation.initialize(step: 0,
-                                              time: self.initialTime,
-                                              timeDelta: self.timeDelta,
+                                              time: currentTime,
+                                              timeDelta: parameters.timeDelta,
                                               override: overrideVariants)
         
-        output.removeAll()
-        output.append(state)
+        self.result = SimulationResult(initialTime: currentTime, timeDelta: parameters.timeDelta)
+        self.result.append(state)
         self.currentState = state
         
         return state
@@ -150,7 +174,7 @@ public class Simulator {
         // 3. Finalisation
         // -------------------------------------------------------
 
-        output.append(result)
+        self.result.append(result)
         self.currentState = result
     }
     
@@ -158,24 +182,14 @@ public class Simulator {
     ///
     /// Convenience method.
     ///
-    public func run(_ steps: Int) throws {
-        // TODO: Add step function (SimulationState, SimulationContext) -> Void or Bool for halt
-        for _ in (1...steps) {
+    public func run(_ steps: Int? = nil) throws {
+        var stepCount = 0
+        while currentTime < parameters.endTime {
+            if let steps, stepCount >= steps {
+                break
+            }
             try step()
+            stepCount += 1
         }
-    }
-
-    /// Get data series for computed variable at given index.
-    ///
-    public func dataSeries(index: Int) -> [Double] {
-        return output.map { try! $0[index].doubleValue() }
-    }
-    
-    /// Get series of time points.
-    ///
-    /// - SeeAlso: ``SimulationPlan/timeVariableIndex``
-    ///
-    public var timePoints: [Double] {
-        return output.map { $0.time }
     }
 }

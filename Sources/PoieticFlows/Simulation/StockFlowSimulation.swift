@@ -67,7 +67,10 @@ public class StockFlowSimulation: Simulation {
     ///
     public func initialize(step: Int=0, time: Double=0, timeDelta: Double=1.0, override: [ObjectID:Variant]=[:])  throws (SimulationError) -> SimulationState {
         // TODO: [WIP] Move SiulationState.init() code in here, free it from the model
-        var state = SimulationState(plan: plan, step: 0, time: time, timeDelta: timeDelta)
+        var state = SimulationState(count: plan.stateVariables.count,
+                                    step: 0,
+                                    time: time,
+                                    timeDelta: timeDelta)
 
         updateBuiltins(&state)
 

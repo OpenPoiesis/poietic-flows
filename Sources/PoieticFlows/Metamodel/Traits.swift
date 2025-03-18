@@ -12,13 +12,13 @@ extension Trait {
     public static let ComputedValue = Trait(
         name: "ComputedValue",
         attributes: [],
-        abstract: "Abstract trait for nodes that have a computed value."
+        abstract: "Abstract trait for nodes that have a computed value"
     )
 
     public static let Auxiliary = Trait(
         name: "Auxiliary",
         attributes: [],
-        abstract: "Abstract trait for auxiliary nodes."
+        abstract: "Abstract trait for auxiliary nodes"
     )
 
     /// Trait of simulation nodes that are computed using an arithmetic formula.
@@ -37,7 +37,7 @@ extension Trait {
         name: "Formula",
         attributes: [
             Attribute("formula", type: .string, default: "0",
-                      abstract: "Arithmetic formula or a constant value represented by the node."
+                      abstract: "Arithmetic formula or a constant value represented by the node"
                      ),
         ]
     )
@@ -52,11 +52,11 @@ extension Trait {
         attributes: [
             Attribute("allows_negative", type: .bool,
                       default: Variant(false),
-                      abstract: "Flag whether the stock can contain a negative value."
+                      abstract: "Flag whether the stock can contain a negative value"
                      ),
             Attribute("delayed_inflow", type: .bool,
                       default: Variant(false),
-                      abstract: "Flag whether the inflow of the stock is delayed by one step, when the stock is part of a cycle."
+                      abstract: "Flag whether the inflow of the stock is delayed by one step, when the stock is part of a cycle"
                      ),
         ]
     )
@@ -147,15 +147,15 @@ extension Trait {
             Attribute("min_value",
                       type: .double,
                       optional: true,
-                      abstract: "Minimum possible value of the target variable."),
+                      abstract: "Minimum possible value of the target variable"),
             Attribute("max_value",
                       type: .double,
                       optional: true,
-                      abstract: "Maximum possible value of the target variable."),
+                      abstract: "Maximum possible value of the target variable"),
             Attribute("step_value",
                       type: .double,
                       optional: true,
-                      abstract: "Step for a slider control."),
+                      abstract: "Step for a slider control"),
             // TODO: numeric (default), percent, currency
             Attribute("value_format",
                       type: .string,
@@ -183,20 +183,24 @@ extension Trait {
     public static let Simulation = Trait(
         name: "Simulation",
         attributes: [
-            Attribute("steps", type: .int,
-                      default: Variant(10),
-                      optional: true,
-                      abstract: "Number of steps the simulation is run by default."
-                     ),
             Attribute("initial_time", type: .double,
                       default: Variant(0.0),
                       optional: true,
-                      abstract: "Initial simulation time."
+                      abstract: "Initial simulation time"
                      ),
             Attribute("time_delta", type: .double,
                       default: Variant(1.0),
                       optional: true,
-                      abstract: "Simulation step time delta."
+                      abstract: "Advancement of time for each simulation step"
+                     ),
+            Attribute("end_time", type: .double,
+                      default: Variant(10.0),
+                      optional: true,
+                      abstract: "Final simulation time"
+                     ),
+            Attribute("steps", type: .int,
+                      optional: true,
+                      abstract: "Number of steps the simulation is run by default [deprecated]"
                      ),
             // TODO: Add stop_time or final_time
             // TODO: Support date/time

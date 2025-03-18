@@ -5,6 +5,8 @@
 //  Created by Stefan Urbanek on 28/10/2024.
 //
 
+import PoieticCore
+
 extension StockFlowSimulation {
     /// Solver that integrates using the Euler method.
     ///

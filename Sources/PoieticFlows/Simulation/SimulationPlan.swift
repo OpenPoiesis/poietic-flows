@@ -7,17 +7,6 @@
 
 import PoieticCore
 
-/// Defaults fro simulation taken from an object with a trait
-/// ``PoieticCore/Trait/Simulation``.
-///
-/// - SeeAlso: ``Simulator/init(_:simulation:)``
-///
-public struct SimulationDefaults {
-    public let initialTime: Double
-    public let timeDelta: Double
-    public let simulationSteps: Int
-}
-
 /// Core structure describing the simulation.
 ///
 /// Simulation plan describes how the simulation is computed, how does the simulation state look
@@ -129,9 +118,9 @@ public struct SimulationPlan {
         
     /// Collection of default values for running a simulation.
     ///
-    /// See ``SimulationDefaults`` for more information.
+    /// See ``SimulationParameters`` for more information.
     ///
-    public var simulationDefaults: SimulationDefaults?
+    public var simulationParameters: SimulationParameters?
     
     /// Get index into a list of computed variables for an object with given ID.
     ///

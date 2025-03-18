@@ -24,10 +24,11 @@ final class TestSimulator: XCTestCase {
     }
     
     func testTime() throws {
-        let compiled = try compile()
-        let timeIndex = compiled.timeVariableIndex
+        let plan = try compile()
+        let simulation = StockFlowSimulation(plan)
+        let timeIndex = plan.timeVariableIndex
 
-        let simulator = Simulator(compiled)
+        let simulator = Simulator(simulation: simulation)
 
         let state = try simulator.initializeState(time: 10.0)
         XCTAssertEqual(state[timeIndex], 10.0)
