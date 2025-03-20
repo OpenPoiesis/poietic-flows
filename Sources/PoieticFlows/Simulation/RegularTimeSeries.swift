@@ -54,7 +54,7 @@ public class RegularTimeSeries /*: Sequence, RandomAccessCollection? */ {
     ///         are zero. It is impractical to have the values to be optional.
     ///
     public init(data: [Double], startTime: Double, timeDelta: Double) {
-        precondition(data.isEmpty)
+        precondition(!data.isEmpty, "Time series data is empty")
         self.data = data
         self.startTime = startTime
         self.timeDelta = timeDelta

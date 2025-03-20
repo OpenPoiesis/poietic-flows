@@ -8,8 +8,10 @@
 public struct SimulationResult {
     public let initialTime: Double
     public let timeDelta: Double
-    public var states:[SimulationState]
+    public var states: [SimulationState]
 
+    public var endTime: Double { initialTime + Double(min(states.count - 1, 0)) * timeDelta }
+    
     // TODO: Add sub-steps and grain enum
 
     //    enum Grain {
