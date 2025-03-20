@@ -33,6 +33,7 @@ extension Metamodel {
             Trait.ComputedValue,
             Trait.DiagramNode,
             Trait.DiagramConnection,
+            Trait.NumericIndicator,
 
             // Basic Stock-Flow nodes
             Trait.Stock,

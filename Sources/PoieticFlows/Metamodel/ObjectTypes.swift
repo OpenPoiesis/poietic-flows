@@ -20,10 +20,11 @@ extension ObjectType {
         name: "Stock",
         structuralType: .node,
         traits: [
-            Trait.ComputedValue,
             Trait.Name,
             Trait.Formula,
             Trait.Stock,
+            Trait.ComputedValue,
+            Trait.NumericIndicator,
             Trait.DiagramNode,
         ]
     )
@@ -49,10 +50,11 @@ extension ObjectType {
         name: "FlowRate",
         structuralType: .node,
         traits: [
-            Trait.ComputedValue,
             Trait.Name,
             Trait.Formula,
             Trait.FlowRate,
+            Trait.ComputedValue,
+            Trait.NumericIndicator,
             Trait.DiagramNode,
             // DescriptionComponent.self,
             // ErrorComponent.self,
@@ -65,10 +67,11 @@ extension ObjectType {
         name: "Auxiliary",
         structuralType: .node,
         traits: [
-            Trait.ComputedValue,
             Trait.Auxiliary,
             Trait.Name,
             Trait.Formula,
+            Trait.ComputedValue,
+            Trait.NumericIndicator,
             Trait.DiagramNode,
             // DescriptionComponent.self,
             // ErrorComponent.self,
@@ -83,11 +86,12 @@ extension ObjectType {
         name: "GraphicalFunction",
         structuralType: .node,
         traits: [
-            Trait.ComputedValue,
             Trait.Auxiliary,
             Trait.Name,
             Trait.DiagramNode,
             Trait.GraphicalFunction,
+            Trait.ComputedValue,
+            Trait.NumericIndicator
             // DescriptionComponent.self,
             // ErrorComponent.self,
             // TODO: IMPORTANT: Make sure we do not have formula component here or handle the type
@@ -100,10 +104,11 @@ extension ObjectType {
         name: "Delay",
         structuralType: .node,
         traits: [
-            Trait.ComputedValue,
             Trait.Auxiliary,
             Trait.Name,
             Trait.DiagramNode,
+            Trait.ComputedValue,
+            Trait.NumericIndicator,
             Trait.Delay,
             // DescriptionComponent.self,
             // ErrorComponent.self,
@@ -120,6 +125,8 @@ extension ObjectType {
             Trait.Auxiliary,
             Trait.Name,
             Trait.DiagramNode,
+            Trait.ComputedValue,
+            Trait.NumericIndicator,
             Trait.Smooth,
             // DescriptionComponent.self,
             // ErrorComponent.self,

@@ -12,8 +12,22 @@ extension Trait {
     public static let ComputedValue = Trait(
         name: "ComputedValue",
         attributes: [],
-        abstract: "Abstract trait for nodes that have a computed value"
+        abstract: "Trait for nodes that have a computed value"
     )
+
+    public static let NumericIndicator = Trait(
+        name: "NumericIndicator",
+        attributes: [
+            Attribute("indicator_min_value", type: .double, optional: true,
+                      abstract: "Typically expected minimum value"),
+            Attribute("indicator_max_value", type: .double, optional: true,
+                      abstract: "Typically expected maxim value"),
+            Attribute("indicator_mid_value", type: .double, optional: true,
+                      abstract: "Typically expected middle value for differentiating positive and negative relative to the mid-value"),
+        ],
+        abstract: "Trait for objects that might have a visual numeric indicator"
+    )
+
 
     public static let Auxiliary = Trait(
         name: "Auxiliary",
