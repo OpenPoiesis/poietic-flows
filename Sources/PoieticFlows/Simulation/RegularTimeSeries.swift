@@ -5,6 +5,7 @@
 //  Created by Stefan Urbanek on 17/03/2025.
 //
 
+import PoieticCore
 
 /// Structure representing numeric time series with regular time intervals.
 ///
@@ -58,5 +59,15 @@ public class RegularTimeSeries /*: Sequence, RandomAccessCollection? */ {
         self.data = data
         self.startTime = startTime
         self.timeDelta = timeDelta
+    }
+    
+    public func points() -> [Point] {
+        var result: [Point] = []
+        var time = startTime
+        for value in data {
+            result.append(Point(time, value))
+            time += timeDelta
+        }
+        return result
     }
 }
