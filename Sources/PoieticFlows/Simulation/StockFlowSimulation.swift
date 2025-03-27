@@ -65,7 +65,7 @@ public class StockFlowSimulation: Simulation {
     ///
     /// - Returns: Newly initialised simulation state.
     ///
-    public func initialize(step: Int=0, time: Double=0, timeDelta: Double=1.0, override: [ObjectID:Variant]=[:])  throws (SimulationError) -> SimulationState {
+    public func initialize(time: Double=0, timeDelta: Double=1.0, override: [ObjectID:Variant]=[:])  throws (SimulationError) -> SimulationState {
         // TODO: [WIP] Move SiulationState.init() code in here, free it from the model
         var state = SimulationState(count: plan.stateVariables.count,
                                     step: 0,
@@ -322,7 +322,7 @@ public class StockFlowSimulation: Simulation {
     /// - Returns: A state vector that contains difference values for each
     /// stock.
     ///
-    public func stockDifference(state: SimulationState, time: Double) -> NumericVector {
+    public func stockDifference(state: SimulationState) -> NumericVector {
         var estimate = state
         var deltaVector = NumericVector(zeroCount: plan.stocks.count)
 

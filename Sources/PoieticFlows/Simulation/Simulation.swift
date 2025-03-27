@@ -43,7 +43,7 @@ public protocol Simulation {
     ///
     /// - Returns: Newly initialised simulation state.
     ///
-    func initialize(step: Int, time: Double, timeDelta: Double, override: [ObjectID:Variant])  throws (SimulationError) -> SimulationState
+    func initialize(time: Double, timeDelta: Double, override: [ObjectID:Variant])  throws (SimulationError) -> SimulationState
 
     /// Function that updates a simulation state.
     ///

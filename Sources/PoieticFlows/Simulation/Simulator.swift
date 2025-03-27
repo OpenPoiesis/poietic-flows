@@ -11,15 +11,15 @@ import PoieticCore
 ///
 public struct SimulationParameters {
     /// Time of the initialisation state of the simulation.
-    public let initialTime: Double
+    public var initialTime: Double
     
     /// Advancement of time for each simulation step.
-    public let timeDelta: Double
+    public var timeDelta: Double
 
     /// Final simulation time.
     ///
     /// Simulation is run while the simulation is less than ``endTime``.
-    public let endTime: Double
+    public var endTime: Double
     
     /// Create new simulation options.
     ///
@@ -129,8 +129,7 @@ public class Simulator {
             overrideVariants[id] = Variant(value)
         }
 
-        let state = try simulation.initialize(step: 0,
-                                              time: currentTime,
+        let state = try simulation.initialize(time: currentTime,
                                               timeDelta: parameters.timeDelta,
                                               override: overrideVariants)
         
