@@ -181,7 +181,7 @@ extension ObjectType {
         name: "Comment",
         structuralType: .edge,
         traits: [
-            .DiagramConnection
+            .DiagramConnector
         ]
     )
     
@@ -196,7 +196,7 @@ extension ObjectType {
         name: "Flow",
         structuralType: .edge,
         traits: [
-            .DiagramConnection
+            .DiagramConnector
         ],
         abstract: "Edge between a stock node and a flow rate node"
     )
@@ -210,7 +210,7 @@ extension ObjectType {
         name: "Parameter",
         structuralType: .edge,
         traits: [
-            .DiagramConnection
+            .DiagramConnector
         ]
     )
     

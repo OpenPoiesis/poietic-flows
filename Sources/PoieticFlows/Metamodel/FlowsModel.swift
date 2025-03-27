@@ -32,7 +32,7 @@ extension Metamodel {
             Trait.Auxiliary,
             Trait.ComputedValue,
             Trait.DiagramNode,
-            Trait.DiagramConnection,
+            Trait.DiagramConnector,
             Trait.NumericIndicator,
 
             // Basic Stock-Flow nodes

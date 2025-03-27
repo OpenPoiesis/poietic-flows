@@ -787,11 +787,11 @@ public class Compiler {
         
         var charts: [PoieticFlows.Chart] = []
         for node in nodes {
-            let hood = frame.hood(node.id, direction: .outgoing) {
+            let edges = frame.filterEdges {
                 $0.object.type === ObjectType.ChartSeries
             }
             
-            let series = hood.nodes.map { $0 }
+            let series = edges.map { $0.targetObject }
             let chart = PoieticFlows.Chart(node: node,
                                            series: series)
             charts.append(chart)
