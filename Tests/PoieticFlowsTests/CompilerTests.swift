@@ -93,7 +93,7 @@ extension TransientFrame {
                 return false
             }
             guard let objectIssues = issues[aux.id] else {
-                Issue.record("Expected object issues, foud none")
+                Issue.record("Expected object issues, found none")
                 return false
             }
             return objectIssues.count == 1
@@ -109,6 +109,25 @@ extension TransientFrame {
         let names = compiled.simulationObjects.map { $0.name }.sorted()
         
         #expect(names == ["a"])
+    }
+
+    @Test func emptyNames() throws {
+        let a = frame.createNode(ObjectType.Stock, name: "", attributes: ["formula": "0"])
+        let b = frame.createNode(ObjectType.Stock, name: "   ", attributes: ["formula": "0"])
+        let c = frame.createNode(ObjectType.Stock, name: "\t\n", attributes: ["formula": "0"])
+
+        let compiler = Compiler(frame: try design.validate(try design.accept(frame)))
+        #expect {
+            try compiler.compile()
+        } throws: {
+            guard let error = $0 as? CompilerError, case .issues(let issues) = error else {
+                Issue.record("Unexpected error: \($0)")
+                return false
+            }
+            return issues[a.id] == [.emptyName]
+                    && issues[b.id] == [.emptyName]
+                    && issues[c.id] == [.emptyName]
+        }
     }
 
     @Test func duplicateNames() throws {

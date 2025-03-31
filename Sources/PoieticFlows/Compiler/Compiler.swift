@@ -293,6 +293,10 @@ public class Compiler {
             guard let name = node.name else {
                 throw .internalError(.attributeExpectationFailure(node.id, "name"))
             }
+            // TODO: Validate for whitespaces
+            if name.isEmpty || name.allSatisfy({ $0.isWhitespace}){
+                issues.append(.emptyName, for: node.id)
+            }
             homonyms[name, default: []].append(node.id)
         }
         

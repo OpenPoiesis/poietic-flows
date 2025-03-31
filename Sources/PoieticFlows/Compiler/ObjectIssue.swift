@@ -32,6 +32,9 @@ public enum ObjectIssue: Equatable, CustomStringConvertible, Error {
     /// The node has the same name as some other node.
     case duplicateName(String)
     
+    /// The node has the same name as some other node.
+    case emptyName
+
     /// Missing a connection from a parameter node to a graphical function.
     case missingRequiredParameter
     
@@ -58,6 +61,8 @@ public enum ObjectIssue: Equatable, CustomStringConvertible, Error {
             return "Parameter '\(name)' is unknown or not connected"
         case .duplicateName(let name):
             return "Duplicate node name: '\(name)'"
+        case .emptyName:
+            return "Node name is empty"
         case .missingRequiredParameter:
             return "Node is missing a required parameter connection"
         case .computationCycle:
@@ -86,6 +91,8 @@ public enum ObjectIssue: Equatable, CustomStringConvertible, Error {
             return "Connect the parameter node '\(name)'; or check the formula for typos; or remove the parameter from the formula."
         case .duplicateName(_):
             return nil
+        case .emptyName:
+            return "Set a node name"
         case .missingRequiredParameter:
             return "Connect exactly one node as a parameter. Name does not matter."
         case .computationCycle:
@@ -152,6 +159,15 @@ extension ObjectIssue: DesignIssueConvertible {
                         details: [
                             "attribute": "name",
                             "name": Variant(name),
+                        ])
+        case .emptyName:
+            DesignIssue(domain: .compilation,
+                        severity: .error,
+                        identifier: "empty_name",
+                        message: description,
+                        hint: hint,
+                        details: [
+                            "attribute": "name"
                         ])
         case .missingRequiredParameter:
             DesignIssue(domain: .compilation,
