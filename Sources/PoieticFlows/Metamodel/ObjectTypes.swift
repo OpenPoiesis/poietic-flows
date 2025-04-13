@@ -239,7 +239,7 @@ extension ObjectType {
         name: "ChartSeries",
         structuralType: .edge,
         traits: [
-            // None for now
+            Trait.ChartSeries,
         ],
         abstract: "Edge between a control and its target."
     )

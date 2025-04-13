@@ -5,6 +5,8 @@
 //  Created by Stefan Urbanek on 28/10/2024.
 //
 
+// TODO: Store negative initial value in non-negative stock
+
 import Testing
 @testable import PoieticFlows
 @testable import PoieticCore
@@ -18,7 +20,7 @@ import Testing
         self.design = Design(metamodel: FlowsMetamodel)
         self.frame = design.createFrame()
     }
-    
+
     mutating func compile() throws {
         let compiler = Compiler(frame: try design.validate(try design.accept(frame)))
         self.plan = try compiler.compile()
@@ -29,7 +31,8 @@ import Testing
     }
 
     @Test mutating func initializeStocks() throws {
-        let c =  frame.createNode(ObjectType.Stock, name: "const", attributes: ["formula": "100"])
+        let c = frame.createNode(ObjectType.Stock, name: "const", attributes: ["formula": "100"])
+        let a = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "1"])
         
         try compile()
         
@@ -37,29 +40,19 @@ import Testing
         let state = try sim.initialize()
         
         #expect(state[index(c)] == 100)
+        #expect(state[index(a)] == 1)
     }
-    
-    @Test mutating func testOrphanedInitialize() throws {
-        
-        let a = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "1"])
-        try compile()
-        
-        let sim = StockFlowSimulation(plan)
-        let state = try sim.initialize()
 
-        #expect(state[index(a)] != nil)
-    }
-    
     @Test mutating func testEverythingInitialized() throws {
         let aux = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "10"])
         let stock = frame.createNode(ObjectType.Stock, name: "b", attributes: ["formula": "20"])
         let flow = frame.createNode(ObjectType.FlowRate, name: "c", attributes: ["formula": "30"])
-       
+        
         try compile()
         
         let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
-
+        
         #expect(state[index(aux)] == 10)
         #expect(state[index(stock)] == 20)
         #expect(state[index(flow)] == 30)
@@ -74,12 +67,12 @@ import Testing
         try compile()
         
         let sim = StockFlowSimulation(plan)
-
+        
         let overrides: [ObjectID:Variant] = [
             a.id: Variant(999),
         ]
         let state = try sim.initialize(override: overrides)
-
+        
         #expect(state[index(a)] == 999)
         #expect(state[index(b)] == 20)
         #expect(state[index(c)] == 998)
@@ -90,13 +83,13 @@ import Testing
         let flow = frame.createNode(ObjectType.FlowRate, name: "flow", attributes: ["formula": "time * 10"])
         
         try compile()
-
+        
         let sim = StockFlowSimulation(plan)
         let state = try sim.initialize(time: 1.0)
-
+        
         #expect(state[index(aux)] == 1.0)
         #expect(state[index(flow)] == 10.0)
-
+        
         var state2 = state.advance(time: 2.0)
         state2[plan.timeVariableIndex] = Variant(state2.time)
         try sim.update(&state2)
@@ -109,7 +102,7 @@ import Testing
         #expect(state3[index(aux)] == 10.0)
         #expect(state3[index(flow)] == 100.0)
     }
-    
+
     @Test mutating func allowNegativeStock() throws {
         let stock = frame.createNode(ObjectType.Stock, name: "stock",
                                      attributes: ["formula": "5", "allows_negative": true])
@@ -121,13 +114,13 @@ import Testing
         
         let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
-
+        
         let diff = sim.stockDifference(state: state)
         
         #expect(diff[plan.stockIndex(stock.id)] == -10)
     }
-    
-    @Test mutating func nonNegativeStock() throws {
+
+\    @Test mutating func nonNegativeStock() throws {
         let stock = frame.createNode(ObjectType.Stock, name: "stock",
                                      attributes: ["formula": "5", "allows_negative": false])
         let flow = frame.createNode(ObjectType.FlowRate, name: "flow", attributes: ["formula": "10"])
@@ -138,9 +131,9 @@ import Testing
         
         let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
-
+        
         let diff = sim.stockDifference(state: state)
-
+        
         #expect(diff[plan.stockIndex(stock.id)] == -5)
     }
     // TODO: Also negative outflow
@@ -155,12 +148,12 @@ import Testing
         
         let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
-
+        
         let diff = sim.stockDifference(state: state)
-
+        
         #expect(diff[plan.stockIndex(stock.id)] == 0)
     }
-    
+
     @Test mutating func stockNegativeOutflow() throws {
         let stock = frame.createNode(ObjectType.Stock, name: "stock",
                                      attributes: ["formula": "5", "allows_negative": false])
@@ -172,12 +165,12 @@ import Testing
         
         let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
-
+        
         let diff = sim.stockDifference(state: state)
-
+        
         #expect(diff[plan.stockIndex(stock.id)] == 0)
     }
-    
+
     @Test mutating func nonNegativeToTwo() throws {
         // TODO: Break this into multiple tests
         let source = frame.createNode(ObjectType.Stock, name: "stock",
@@ -196,13 +189,13 @@ import Testing
         
         frame.createEdge(ObjectType.Flow, origin: source, target: sadFlow)
         frame.createEdge(ObjectType.Flow, origin: sadFlow, target: sad)
-       
+        
         try compile()
         
         let sim = StockFlowSimulation(plan)
         let initial = try sim.initialize()
         var state = try sim.initialize()
-
+        
         // We require that the stocks will be computed in the following order:
         // 1. source
         // 2. happy
@@ -226,7 +219,7 @@ import Testing
         #expect(state[index(happyFlow)] == 5.0)
         #expect(state[index(sadFlow)] == 0.0)
         #expect(happyDiff == +5.0)
-
+        
         let sadStock = try #require(plan.stocks.first {$0.id == sad.id})
         let sadDiff = sim.computeStockDelta(sadStock, in: &state)
         // Remains the same as above
@@ -248,14 +241,14 @@ import Testing
         
         frame.createEdge(ObjectType.Flow, origin: kettle, target: flow)
         frame.createEdge(ObjectType.Flow, origin: flow, target: cup)
-
+        
         try compile()
         
         let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
-
+        
         let diff = sim.stockDifference(state: state)
-
+        
         #expect(diff[plan.stockIndex(kettle.id)] == -100.0)
         #expect(diff[plan.stockIndex(cup.id)] == 100.0)
     }
@@ -267,19 +260,18 @@ import Testing
         
         frame.createEdge(ObjectType.Flow, origin: kettle, target: flow)
         frame.createEdge(ObjectType.Flow, origin: flow, target: cup)
-
+        
         try compile()
-
+        
         let sim = StockFlowSimulation(plan)
         let state = try sim.initialize(timeDelta: 0.5)
-
+        
         let diff = sim.stockDifference(state: state)
-
+        
         #expect(diff[plan.stockIndex(kettle.id)] == -50.0)
         #expect(diff[plan.stockIndex(cup.id)] == 50.0)
     }
 
-    
     @Test mutating func compute() throws {
         let kettle = frame.createNode(ObjectType.Stock, name: "kettle", attributes: ["formula": "1000"])
         let flow = frame.createNode(ObjectType.FlowRate, name: "pour", attributes: ["formula": "100"])
@@ -289,10 +281,10 @@ import Testing
         frame.createEdge(ObjectType.Flow, origin: flow, target: cup)
         
         try compile()
-
+        
         let sim = StockFlowSimulation(plan)
         var state = try sim.initialize()
-
+        
         try sim.update(&state)
         #expect(state[index(kettle)] == 900.0 )
         #expect(state[index(cup)] == 100.0)
@@ -301,8 +293,7 @@ import Testing
         #expect(state[index(kettle)] == 800.0 )
         #expect(state[index(cup)] == 200.0)
     }
-    
-    
+
     @Test mutating func graphicalFunction() throws {
         let p1 = frame.createNode(ObjectType.Auxiliary, name:"p1", attributes: ["formula": "0"])
         let g1 = frame.createNode(ObjectType.GraphicalFunction, name: "g1")
@@ -317,73 +308,101 @@ import Testing
         frame.createEdge(ObjectType.Parameter, origin: p2, target: g2)
         
         try compile()
-
+        
         let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
-
+        
         #expect(state[index(g1)] == 0.0)
         #expect(state[index(g2)] == 10.0)
         #expect(state[index(aux)] == 10.0)
     }
     
     // Other tests - that should rather be at lower level
-    
+
     @Test mutating func builtinFunctionIf() throws {
         // TODO: This should be tested at expression evaluation level
         let aux = frame.createNode(ObjectType.Auxiliary,
                                    name: "a",
                                    attributes: ["formula": "if(time < 2, 0, 1)"])
-
+        
         try compile()
-
+        
         let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
-
+        
         #expect(state[index(aux)] == 0.0)
         
         var state1 = state.advance()
         state1[plan.timeVariableIndex] = Variant(state1.time)
         try sim.update(&state1)
         #expect(state1[index(aux)] == 0.0)
-
+        
         var state2 = state1.advance()
         state2[plan.timeVariableIndex] = Variant(state2.time)
         try sim.update(&state2)
         #expect(state2[index(aux)] == 1.0)
-
+        
         var state3 = state2.advance()
         state3[plan.timeVariableIndex] = Variant(state3.time)
         try sim.update(&state3)
         #expect(state3[index(aux)] == 1.0)
     }
-
+    
     @Test mutating func delay() throws {
         let delay = frame.createNode(ObjectType.Delay,
-                                      name: "delay",
-                                      attributes: [
+                                     name: "delay",
+                                     attributes: [
                                         "delay_duration": 2,
                                         "initial_value": 0.0,
-                                      ])
+                                     ])
         let x = frame.createNode(ObjectType.Auxiliary,
-                                    name: "x",
-                                    attributes: ["formula": "10"])
+                                 name: "x",
+                                 attributes: ["formula": "10"])
         
         frame.createEdge(ObjectType.Parameter, origin: x, target: delay)
         
         try compile()
-
+        
         let sim = StockFlowSimulation(plan)
         var state = try sim.initialize()
-
+        
         #expect(state.double(at: index(delay)) == 0.0)
-
+        
         try sim.update(&state)
         #expect(state[index(delay)] == 0.0)
-
+        
         try sim.update(&state)
         #expect(state[index(delay)] == 0.0)
-
+        
         try sim.update(&state)
         #expect(state[index(delay)] == 10.0)
+    }
+    @Test mutating func nanInflow() throws {
+        let stock = frame.createNode(ObjectType.Stock, name: "stock", attributes: ["formula": "0"])
+        let flow = frame.createNode(ObjectType.FlowRate, name: "flow", attributes: ["formula": "1 / 0"])
+        frame.createEdge(ObjectType.Flow, origin: flow, target: stock)
+        
+        try compile()
+        
+        let sim = StockFlowSimulation(plan)
+        let state = try sim.initialize()
+
+        let diff = sim.stockDifference(state: state)
+
+        #expect(diff[plan.stockIndex(stock.id)].isNaN)
+    }
+    @Test mutating func nanOutflow() throws {
+        let stock = frame.createNode(ObjectType.Stock, name: "stock", attributes: ["formula": "0"])
+        let flow = frame.createNode(ObjectType.FlowRate, name: "flow", attributes: ["formula": "1 / 0"])
+        frame.createEdge(ObjectType.Flow, origin: stock, target: flow)
+        
+        try compile()
+        
+        let sim = StockFlowSimulation(plan)
+        let state = try sim.initialize()
+
+        let diff = sim.stockDifference(state: state)
+
+        #expect(diff[plan.stockIndex(stock.id)].isNaN)
     }
 }

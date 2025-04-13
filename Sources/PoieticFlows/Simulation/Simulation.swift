@@ -17,6 +17,7 @@ public struct SimulationError: Error {
 /// Error raised during simulation.
 ///
 public enum EvaluationError: Error {
+    case invalidNumber
     case valueError(ValueError)
     case functionError(String, FunctionError)
 }

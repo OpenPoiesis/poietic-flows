@@ -45,6 +45,7 @@ extension Metamodel {
             
             // Others
             Trait.Chart,
+            Trait.ChartSeries,
             Trait.Control,
             Trait.Simulation,
             Trait.BibliographicalReference,
@@ -146,6 +147,7 @@ extension Metamodel {
 }
 
 // FIXME: [IMPORTANT] There is confusion between FlowsMetamodel and Metamodel.StockFlow, name one as -base and other as -complete or -user
-public let FlowsMetamodel = Metamodel(name: "Flows",
-                                      merging: Metamodel.Basic,
-                                               Metamodel.StockFlow)
+public let FlowsMetamodel = Metamodel(
+    name: "Flows",
+    merging: Metamodel.Basic, Metamodel.StockFlow
+)

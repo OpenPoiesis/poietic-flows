@@ -214,7 +214,7 @@ extension TransientFrame {
         let compiler = Compiler(frame: try design.validate(try design.accept(frame)))
         let plan = try compiler.compile()
 
-        var funcs = plan.simulationObjects.compactMap {
+        let funcs = plan.simulationObjects.compactMap {
             if case let .graphicalFunction(fun) = $0.computation {
                 fun
             }

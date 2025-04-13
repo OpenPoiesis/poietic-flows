@@ -140,10 +140,21 @@ extension Trait {
     public static let Chart = Trait(
         name: "Chart",
         attributes: [
-//            AttributeDescription(
-//                name: "chartType",
-//                type: .string,
-//                abstract: "Chart type"),
+            Attribute("min_x_value", type: .numeric, optional: true, abstract: "Minimum value"),
+            Attribute("max_x_value", type: .numeric, optional: true, abstract: "Maximum value"),
+            Attribute("major_x_steps", type: .numeric, optional: true, abstract: "Major marks and grid steps"),
+            Attribute("minor_x_steps", type: .numeric, optional: true, abstract: "Minor marks and grid steps"),
+            Attribute("min_y_value", type: .numeric, optional: true, abstract: "Minimum value"),
+            Attribute("max_y_value", type: .numeric, optional: true, abstract: "Maximum value"),
+            Attribute("major_y_steps", type: .numeric, optional: true, abstract: "Major marks and grid steps"),
+            Attribute("minor_y_steps", type: .numeric, optional: true, abstract: "Minor marks and grid steps"),
+        ]
+    )
+
+    public static let ChartSeries = Trait(
+        name: "ChartSeries",
+        attributes: [
+            Attribute("color", type: .string, optional: true, abstract: "Colour name from the palette of colours"),
         ]
     )
 

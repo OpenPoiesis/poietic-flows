@@ -290,6 +290,7 @@ public class StockFlowSimulation: Simulation {
         let inputValue = try state[smooth.inputValueIndex].doubleValue()
         let oldSmooth = state.double(at: smooth.smoothValueIndex)
         
+        // TODO: Division by zero
         let alpha = state.timeDelta / smooth.windowTime
         let newSmooth = alpha * inputValue + (1 - alpha) * oldSmooth
         
@@ -365,9 +366,11 @@ public class StockFlowSimulation: Simulation {
         
         // Compute inflow (regardless whether we allow negative)
         //
-        for inflow in stock.inflows {
+        for inflowIndex in stock.inflows {
             // TODO: All flows are uni-flows for now. Ignore negative inflows.
-            totalInflow += max(state.double(at: inflow), 0)
+            let inflow = state.double(at: inflowIndex)
+            guard inflow.isFinite else { return Double.nan }
+            totalInflow += max(inflow, 0)
         }
         
         if stock.allowsNegative {
@@ -394,15 +397,16 @@ public class StockFlowSimulation: Simulation {
             // current value of the stock with aggregate of all inflows.
             //
             var availableOutflow: Double = state.double(at: stock.variableIndex) + totalInflow
+            availableOutflow = max(availableOutflow, 0)
             let initialAvailableOutflow: Double = availableOutflow
-
-            for outflow in stock.outflows {
+            for outflowIndex in stock.outflows {
+                let outflow = state.double(at: outflowIndex)
+                guard outflow.isFinite else { return Double.nan }
                 // Assumed outflow value can not be greater than what we
                 // have in the stock. We either take it all or whatever is
                 // expected to be drained.
                 //
-                let actualOutflow = min(availableOutflow,
-                                        max(state.double(at: outflow), 0))
+                let actualOutflow = min(availableOutflow, max(outflow, 0))
                 
                 totalOutflow += actualOutflow
                 // We drain the stock
@@ -413,18 +417,12 @@ public class StockFlowSimulation: Simulation {
                 // did not drain.
                 //
                 // FIXME: We are changing the current state, we should be changing some "estimated state"
-                state[outflow] = Variant(actualOutflow)
-
-                // Sanity check. This should always pass, unless we did
-                // something wrong above.
-                assert(actualOutflow >= 0.0,
-                       "Resulting state must be non-negative")
+                state[outflowIndex] = Variant(actualOutflow)
             }
             // Another sanity check. This should always pass, unless we did
             // something wrong above.
             assert(totalOutflow <= initialAvailableOutflow,
-                   "Resulting total outflow must not exceed initial available outflow")
-
+                   "Total outflow must not exceed initial available outflow")
         }
         let delta = totalInflow - totalOutflow
         return delta
