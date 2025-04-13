@@ -120,7 +120,7 @@ import Testing
         #expect(diff[plan.stockIndex(stock.id)] == -10)
     }
 
-\    @Test mutating func nonNegativeStock() throws {
+    @Test mutating func nonNegativeStock() throws {
         let stock = frame.createNode(ObjectType.Stock, name: "stock",
                                      attributes: ["formula": "5", "allows_negative": false])
         let flow = frame.createNode(ObjectType.FlowRate, name: "flow", attributes: ["formula": "10"])
