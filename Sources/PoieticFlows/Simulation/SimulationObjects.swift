@@ -204,7 +204,7 @@ public struct CompiledControlBinding {
 ///
 public struct BoundDelay {
     /// Number of steps to delay the input value by.
-    public let steps: Int
+    public let steps: UInt
     
     /// Initial value of the delay node output.
     ///

@@ -15,12 +15,12 @@ import Testing
     let design: Design
     let frame: TransientFrame
     var plan: SimulationPlan!
-
+    
     init() throws {
         self.design = Design(metamodel: FlowsMetamodel)
         self.frame = design.createFrame()
     }
-
+    
     mutating func compile() throws {
         let compiler = Compiler(frame: try design.validate(try design.accept(frame)))
         self.plan = try compiler.compile()
@@ -29,7 +29,7 @@ import Testing
     func index(_ object: MutableObject) -> SimulationState.Index {
         plan.variableIndex(of: object.id)!
     }
-
+    
     @Test mutating func initializeStocks() throws {
         let c = frame.createNode(ObjectType.Stock, name: "const", attributes: ["formula": "100"])
         let a = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "1"])
@@ -42,7 +42,7 @@ import Testing
         #expect(state[index(c)] == 100)
         #expect(state[index(a)] == 1)
     }
-
+    
     @Test mutating func testEverythingInitialized() throws {
         let aux = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "10"])
         let stock = frame.createNode(ObjectType.Stock, name: "b", attributes: ["formula": "20"])
@@ -57,7 +57,7 @@ import Testing
         #expect(state[index(stock)] == 20)
         #expect(state[index(flow)] == 30)
     }
-
+    
     @Test mutating func initializeOverride() throws {
         let a = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "10"])
         let b = frame.createNode(ObjectType.Auxiliary, name: "b", attributes: ["formula": "20"])
@@ -77,7 +77,7 @@ import Testing
         #expect(state[index(b)] == 20)
         #expect(state[index(c)] == 998)
     }
-
+    
     @Test mutating func stageWithTime() throws {
         let aux = frame.createNode(ObjectType.Auxiliary, name: "aux", attributes: ["formula": "time"])
         let flow = frame.createNode(ObjectType.FlowRate, name: "flow", attributes: ["formula": "time * 10"])
@@ -102,7 +102,7 @@ import Testing
         #expect(state3[index(aux)] == 10.0)
         #expect(state3[index(flow)] == 100.0)
     }
-
+    
     @Test mutating func allowNegativeStock() throws {
         let stock = frame.createNode(ObjectType.Stock, name: "stock",
                                      attributes: ["formula": "5", "allows_negative": true])
@@ -119,7 +119,7 @@ import Testing
         
         #expect(diff[plan.stockIndex(stock.id)] == -10)
     }
-
+    
     @Test mutating func nonNegativeStock() throws {
         let stock = frame.createNode(ObjectType.Stock, name: "stock",
                                      attributes: ["formula": "5", "allows_negative": false])
@@ -153,7 +153,7 @@ import Testing
         
         #expect(diff[plan.stockIndex(stock.id)] == 0)
     }
-
+    
     @Test mutating func stockNegativeOutflow() throws {
         let stock = frame.createNode(ObjectType.Stock, name: "stock",
                                      attributes: ["formula": "5", "allows_negative": false])
@@ -170,7 +170,7 @@ import Testing
         
         #expect(diff[plan.stockIndex(stock.id)] == 0)
     }
-
+    
     @Test mutating func nonNegativeToTwo() throws {
         // TODO: Break this into multiple tests
         let source = frame.createNode(ObjectType.Stock, name: "stock",
@@ -271,7 +271,7 @@ import Testing
         #expect(diff[plan.stockIndex(kettle.id)] == -50.0)
         #expect(diff[plan.stockIndex(cup.id)] == 50.0)
     }
-
+    
     @Test mutating func compute() throws {
         let kettle = frame.createNode(ObjectType.Stock, name: "kettle", attributes: ["formula": "1000"])
         let flow = frame.createNode(ObjectType.FlowRate, name: "pour", attributes: ["formula": "100"])
@@ -293,7 +293,7 @@ import Testing
         #expect(state[index(kettle)] == 800.0 )
         #expect(state[index(cup)] == 200.0)
     }
-
+    
     @Test mutating func graphicalFunction() throws {
         let p1 = frame.createNode(ObjectType.Auxiliary, name:"p1", attributes: ["formula": "0"])
         let g1 = frame.createNode(ObjectType.GraphicalFunction, name: "g1")
@@ -318,7 +318,7 @@ import Testing
     }
     
     // Other tests - that should rather be at lower level
-
+    
     @Test mutating func builtinFunctionIf() throws {
         // TODO: This should be tested at expression evaluation level
         let aux = frame.createNode(ObjectType.Auxiliary,
@@ -349,34 +349,53 @@ import Testing
     }
     
     @Test mutating func delay() throws {
-        let delay = frame.createNode(ObjectType.Delay,
-                                     name: "delay",
-                                     attributes: [
-                                        "delay_duration": 2,
-                                        "initial_value": 0.0,
-                                     ])
-        let x = frame.createNode(ObjectType.Auxiliary,
-                                 name: "x",
-                                 attributes: ["formula": "10"])
-        
-        frame.createEdge(ObjectType.Parameter, origin: x, target: delay)
-        
+        let input = frame.createNode(ObjectType.Auxiliary, name: "input", attributes: ["formula": "10"])
+        let delay0 = frame.createNode(ObjectType.Delay, name: "delay0",
+                                     attributes: [ "delay_duration": 0, "initial_value": 0.0, ])
+        let delay1 = frame.createNode(ObjectType.Delay, name: "delay1",
+                                     attributes: [ "delay_duration": 1, "initial_value": 0.0, ])
+        let delay3 = frame.createNode(ObjectType.Delay, name: "delay3",
+                                     attributes: [ "delay_duration": 3, "initial_value": 0.0, ])
+
+        frame.createEdge(ObjectType.Parameter, origin: input, target: delay0)
+        frame.createEdge(ObjectType.Parameter, origin: input, target: delay1)
+        frame.createEdge(ObjectType.Parameter, origin: input, target: delay3)
+
         try compile()
         
         let sim = StockFlowSimulation(plan)
         var state = try sim.initialize()
         
-        #expect(state.double(at: index(delay)) == 0.0)
-        
+        // Init 0
+        #expect(state.double(at: index(delay0)) == 0.0)
+        #expect(state.double(at: index(delay1)) == 0.0)
+        #expect(state.double(at: index(delay3)) == 0.0)
+
+        // Step 1
         try sim.update(&state)
-        #expect(state[index(delay)] == 0.0)
-        
+        #expect(state[index(delay0)] == 10.0)
+        #expect(state[index(delay1)] == 0.0)
+        #expect(state[index(delay3)] == 0.0)
+
+        // Step 2
         try sim.update(&state)
-        #expect(state[index(delay)] == 0.0)
-        
+        #expect(state[index(delay0)] == 10.0)
+        #expect(state[index(delay1)] == 10.0)
+        #expect(state[index(delay3)] == 0.0)
+
+        // Step 3
         try sim.update(&state)
-        #expect(state[index(delay)] == 10.0)
+        #expect(state[index(delay0)] == 10.0)
+        #expect(state[index(delay1)] == 10.0)
+        #expect(state[index(delay3)] == 0.0)
+
+        // Step 4
+        try sim.update(&state)
+        #expect(state[index(delay0)] == 10.0)
+        #expect(state[index(delay1)] == 10.0)
+        #expect(state[index(delay3)] == 10.0)
     }
+    
     @Test mutating func nanInflow() throws {
         let stock = frame.createNode(ObjectType.Stock, name: "stock", attributes: ["formula": "0"])
         let flow = frame.createNode(ObjectType.FlowRate, name: "flow", attributes: ["formula": "1 / 0"])
@@ -386,9 +405,9 @@ import Testing
         
         let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
-
+        
         let diff = sim.stockDifference(state: state)
-
+        
         #expect(diff[plan.stockIndex(stock.id)].isNaN)
     }
     @Test mutating func nanOutflow() throws {
@@ -400,9 +419,9 @@ import Testing
         
         let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
-
+        
         let diff = sim.stockDifference(state: state)
-
+        
         #expect(diff[plan.stockIndex(stock.id)].isNaN)
     }
 }

@@ -571,7 +571,11 @@ public class Compiler {
         guard let duration = try? object["delay_duration"]?.intValue() else {
             throw .internalError(.attributeExpectationFailure(object.id, "delay_duration"))
         }
-        
+        guard let posDuration = UInt(exactly: duration) else {
+            issues.append(ObjectIssue.invalidAttributeValue("delay_duration", Variant(duration)), for: object.id)
+            throw .issues(issues)
+        }
+
         let initialValue = object["initial_value"]
         
         guard case let .atom(atomType) = variable.valueType else {
@@ -581,7 +585,7 @@ public class Compiler {
         
         // TODO: Check whether the initial value and variable.valueType are the same
         let compiled = BoundDelay(
-            steps: duration,
+            steps: posDuration,
             initialValue: initialValue,
             valueType: atomType,
             initialValueIndex: initialValueIndex,

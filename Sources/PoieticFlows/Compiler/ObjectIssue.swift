@@ -32,6 +32,9 @@ public enum ObjectIssue: Equatable, CustomStringConvertible, Error {
     /// The node has the same name as some other node.
     case duplicateName(String)
     
+    /// Invalid value for a given attribute
+    case invalidAttributeValue(String, Variant)
+
     /// The node has the same name as some other node.
     case emptyName
 
@@ -52,9 +55,11 @@ public enum ObjectIssue: Equatable, CustomStringConvertible, Error {
     public var description: String {
         switch self {
         case .expressionSyntaxError(let error):
-            return "Syntax error: \(error)"
+            return "The formula contains a syntax error (\(error))"
         case .expressionError(let error):
-            return "Expression error: \(error)"
+            return "The formula contains an error (\(error))"
+        case .invalidAttributeValue(let attribute, let value):
+            return "Invalid value for attribute '\(attribute)': \(value)"
         case .unusedInput(let name):
             return "Parameter '\(name)' is connected but not used"
         case .unknownParameter(let name):
@@ -82,9 +87,11 @@ public enum ObjectIssue: Equatable, CustomStringConvertible, Error {
     public var hint: String? {
         switch self {
         case .expressionSyntaxError(_):
-            return "Check the expression"
+            return "Check the formula syntax"
         case .expressionError(_):
-            return "Check the expression for correct variables, types and functions"
+            return "Check the variables, types and functions in the formula and consult the manual for list of available variables and functions."
+        case .invalidAttributeValue(_, _):
+            return "Check the attribute documentation for allowed values"
         case .unusedInput(let name):
             return "Use the connected parameter or disconnect the node '\(name)'."
         case .unknownParameter(let name):
@@ -131,6 +138,17 @@ extension ObjectIssue: DesignIssueConvertible {
                             "attribute": "formula",
                             "underlying_error": Variant(error.description),
                             // TODO: Add text location, name
+                        ])
+        case .invalidAttributeValue(let attribute, let value):
+            // TODO: Make ExpressionError DesignIssueConvertible
+            DesignIssue(domain: .compilation,
+                        severity: .error,
+                        identifier: "invalid_attribute_value",
+                        message: description,
+                        hint: hint,
+                        details: [
+                            "attribute": Variant(attribute),
+                            "value": value,
                         ])
         case .unusedInput(let name):
             DesignIssue(domain: .compilation,

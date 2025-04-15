@@ -115,7 +115,7 @@ public class StockFlowSimulation: Simulation {
             case let .graphicalFunction(function):
                 result = try evaluate(graphicalFunction: function, with: state)
             case let .delay(delay):
-                result = initialize(delay: delay, in: &state)
+                result = try initialize(delay: delay, in: &state)
             case let .smooth(smooth):
                 result = initialize(smooth: smooth, in: &state)
             }
@@ -136,7 +136,7 @@ public class StockFlowSimulation: Simulation {
     ///     - state: Simulation state in which the delay is initialised.
     /// - Returns: Value of the delay node.
     ///
-    public func initialize(delay: BoundDelay, in state: inout SimulationState) -> Variant {
+    public func initialize(delay: BoundDelay, in state: inout SimulationState) throws (EvaluationError) -> Variant {
         let outputValue: Variant
         if let intialValue = delay.initialValue {
             outputValue = intialValue
@@ -144,7 +144,20 @@ public class StockFlowSimulation: Simulation {
         else {
             outputValue = state[delay.inputValueIndex]
         }
-        state[delay.queueIndex] = .array(VariantArray(type: delay.valueType))
+        guard case let .atom(atom) = outputValue else {
+            throw .valueError(.atomExpected)
+        }
+
+        var queue: VariantArray = VariantArray(type: delay.valueType)
+        if delay.steps > 0 {
+            do {
+                try queue.append(atom)
+            }
+            catch {
+                throw .valueError(error)
+            }
+        }
+        state[delay.queueIndex] = .array(queue)
         
         return outputValue
     }
@@ -183,7 +196,6 @@ public class StockFlowSimulation: Simulation {
         }
         
         for (index, object) in plan.simulationObjects.enumerated() {
-            // Skip the stocks
             if object.type == .stock {
                 continue
             }
@@ -248,21 +260,25 @@ public class StockFlowSimulation: Simulation {
 
         let outputValue: VariantAtom
         let nextValue: VariantAtom // Value to be pushed
+
+        if delay.steps == 0 {
+            return .atom(inputValue)
+        }
         
-        // TODO: Use `step` as future function parameter instead of this workaround for queue lenght
-        if queue.count + 1 < delay.steps {
+        if queue.count < delay.steps {
             guard case let .atom(initialValue) = state[delay.initialValueIndex] else {
                 throw .valueError(.atomExpected)
             }
 
             // We do have at least one value in the array (see initialize(delay:...))
             outputValue = initialValue
-            nextValue = initialValue
+            nextValue = inputValue
         }
         else {
             outputValue = queue.remove(at:0)
             nextValue = inputValue
         }
+        
         do {
             try queue.append(nextValue)
         }
