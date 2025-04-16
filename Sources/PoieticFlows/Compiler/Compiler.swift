@@ -80,7 +80,7 @@ public enum InternalCompilerError: Error, Equatable {
     ///
     /// This error should never escape the compiler.
     ///
-    case intermediateError
+    case objectIssue
     
     /// Attribute is missing or attribute type is mismatched. This error means
     /// that the frame is not valid according to the ``FlowsMetamodel``.
@@ -239,8 +239,13 @@ public class Compiler {
     ///
     public func compile() throws (CompilerError) -> SimulationPlan {
         try initialize()
-        let builtins = try prepareBuiltins()
-        try parseExpressions()
+        let builtins = prepareBuiltins()
+        do {
+            try parseExpressions()
+        }
+        catch {
+            throw .internalError(error)
+        }
         try validateFormulaParameterConnections()
         
         var intermediateError: Bool = false
@@ -249,9 +254,12 @@ public class Compiler {
             do {
                 try self.compile(object)
             }
-            catch .internalError(.intermediateError) {
+            catch .objectIssue {
                 intermediateError = true
                 continue
+            }
+            catch {
+                throw .internalError(error)
             }
         }
         
@@ -341,7 +349,7 @@ public class Compiler {
         self.orderedObjects = ordered.map { frame.object($0) }
     }
     
-    func parseExpressions() throws (CompilerError) {
+    func parseExpressions() throws (InternalCompilerError) {
         parsedExpressions = [:]
         
         for object in orderedObjects {
@@ -350,7 +358,7 @@ public class Compiler {
             }
             
             guard let formula = try? object["formula"]?.stringValue() else {
-                throw .internalError(.attributeExpectationFailure(object.id, "formula"))
+                throw .attributeExpectationFailure(object.id, "formula")
             }
             
             let parser = ExpressionParser(string: formula)
@@ -377,7 +385,7 @@ public class Compiler {
     ///
     /// - SeeAlso: ``StockFlowSimulation/updateBuiltins(_:)``
     ///
-    func prepareBuiltins() throws (CompilerError) -> CompiledBuiltinState {
+    func prepareBuiltins() -> CompiledBuiltinState {
         let builtins = CompiledBuiltinState(
             time: createStateVariable(builtin: .time),
             timeDelta: createStateVariable(builtin: .timeDelta),
@@ -409,7 +417,7 @@ public class Compiler {
     /// - Throws: ``NodeIssuesError`` with list of issues for the node.
     /// - SeeAlso: ``compileFormulaNode(_:)``, ``compileGraphicalFunctionNode(_:)``.
     ///
-    func compile(_ object: DesignObject) throws (CompilerError) {
+    func compile(_ object: DesignObject) throws (InternalCompilerError) {
         let rep: ComputationalRepresentation
         
         if object.type.hasTrait(Trait.Formula) {
@@ -436,7 +444,7 @@ public class Compiler {
         }
         
         guard let name = object.name else {
-            throw .internalError(.attributeExpectationFailure(object.id, "name"))
+            throw .attributeExpectationFailure(object.id, "name")
         }
         
         // Determine simulation type
@@ -490,14 +498,14 @@ public class Compiler {
     /// - Throws: ``NodeIssueError`` if there is an issue with parameters,
     ///   function names or other variable names in the expression.
     ///
-    func compileFormulaObject(_ object: DesignObject) throws (CompilerError) -> ComputationalRepresentation {
+    func compileFormulaObject(_ object: DesignObject) throws (InternalCompilerError) -> ComputationalRepresentation {
         guard let unboundExpression = parsedExpressions[object.id] else {
             if issues[object.id] != nil {
                 // Compilation already has issues, we just proceed to collect some more.
-                throw .internalError(.intermediateError)
+                throw .objectIssue
             }
             else {
-                throw .internalError(.formulaCompilationFailure(object.id))
+                throw .formulaCompilationFailure(object.id)
             }
         }
         
@@ -512,7 +520,7 @@ public class Compiler {
         }
         catch /* ExpressionError */ {
             issues.append(.expressionError(error), for: object.id)
-            throw .internalError(.intermediateError)
+            throw .objectIssue
         }
         
         return .formula(boundExpression)
@@ -530,9 +538,9 @@ public class Compiler {
     ///
     /// - SeeAlso: ``CompiledGraphicalFunction``, ``Solver/evaluate(objectAt:with:)``
     ///
-    func compileGraphicalFunctionNode(_ object: DesignObject) throws (CompilerError) -> ComputationalRepresentation{
+    func compileGraphicalFunctionNode(_ object: DesignObject) throws (InternalCompilerError) -> ComputationalRepresentation{
         guard let points = try? object["graphical_function_points"]?.pointArray() else {
-            throw .internalError(.attributeExpectationFailure(object.id, "graphical_function_points"))
+            throw .attributeExpectationFailure(object.id, "graphical_function_points")
         }
         // TODO: Interpolation method
         let function = GraphicalFunction(points: points)
@@ -540,7 +548,7 @@ public class Compiler {
         let parameters = view.incomingParameterNodes(object.id)
         guard let parameterNode = parameters.first else {
             issues.append(ObjectIssue.missingRequiredParameter, for: object.id)
-            throw .internalError(.intermediateError)
+            throw .objectIssue
         }
         
         let boundFunc = BoundGraphicalFunction(function: function,
@@ -550,7 +558,7 @@ public class Compiler {
     
     /// Compile a delay node.
     ///
-    func compileDelayNode(_ object: DesignObject) throws (CompilerError) -> ComputationalRepresentation{
+    func compileDelayNode(_ object: DesignObject) throws (InternalCompilerError) -> ComputationalRepresentation{
         let queueIndex = createStateVariable(content: .internalState(object.id),
                                              valueType: .doubles,
                                              name: "delay_queue_\(object.id)")
@@ -562,25 +570,25 @@ public class Compiler {
         let parameters = view.incomingParameterNodes(object.id)
         guard let parameterNode = parameters.first else {
             issues.append(ObjectIssue.missingRequiredParameter, for: object.id)
-            throw .internalError(.intermediateError)
+            throw .objectIssue
         }
         
         let parameterIndex = objectVariableIndex[parameterNode.id]!
         let variable = stateVariables[parameterIndex]
         
         guard let duration = try? object["delay_duration"]?.intValue() else {
-            throw .internalError(.attributeExpectationFailure(object.id, "delay_duration"))
+            throw .attributeExpectationFailure(object.id, "delay_duration")
         }
         guard let posDuration = UInt(exactly: duration) else {
             issues.append(ObjectIssue.invalidAttributeValue("delay_duration", Variant(duration)), for: object.id)
-            throw .internalError(.intermediateError)
+            throw .objectIssue
         }
 
         let initialValue = object["initial_value"]
         
         guard case let .atom(atomType) = variable.valueType else {
             issues.append(.unsupportedDelayValueType(variable.valueType), for: object.id)
-            throw .internalError(.intermediateError)
+            throw .objectIssue
         }
         
         // TODO: Check whether the initial value and variable.valueType are the same
@@ -598,7 +606,7 @@ public class Compiler {
     
     /// Compile a value smoothing node.
     ///
-    func compileSmoothNode(_ object: DesignObject) throws (CompilerError) -> ComputationalRepresentation{
+    func compileSmoothNode(_ object: DesignObject) throws (InternalCompilerError) -> ComputationalRepresentation{
         let smoothValueIndex = createStateVariable(content: .internalState(object.id),
                                                    valueType: .doubles,
                                                    name: "smooth_value_\(object.id)")
@@ -606,19 +614,19 @@ public class Compiler {
         let parameters = view.incomingParameterNodes(object.id)
         guard let parameterNode = parameters.first else {
             issues.append(ObjectIssue.missingRequiredParameter, for: object.id)
-            throw .internalError(.intermediateError)
+            throw .objectIssue
         }
         
         let parameterIndex = objectVariableIndex[parameterNode.id]!
         let variable = stateVariables[parameterIndex]
         
         guard let windowTime = try? object["window_time"]?.doubleValue() else {
-            throw .internalError(.attributeExpectationFailure(object.id, "window_time"))
+            throw .attributeExpectationFailure(object.id, "window_time")
         }
         
         guard case .atom(_) = variable.valueType else {
             issues.append(.unsupportedDelayValueType(variable.valueType), for: object.id)
-            throw .internalError(.intermediateError)
+            throw .objectIssue
         }
         
         let compiled = BoundSmooth(
