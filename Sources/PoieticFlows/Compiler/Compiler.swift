@@ -512,7 +512,7 @@ public class Compiler {
         }
         catch /* ExpressionError */ {
             issues.append(.expressionError(error), for: object.id)
-            throw .issues(issues)
+            throw .internalError(.intermediateError)
         }
         
         return .formula(boundExpression)
@@ -540,7 +540,7 @@ public class Compiler {
         let parameters = view.incomingParameterNodes(object.id)
         guard let parameterNode = parameters.first else {
             issues.append(ObjectIssue.missingRequiredParameter, for: object.id)
-            throw .issues(issues)
+            throw .internalError(.intermediateError)
         }
         
         let boundFunc = BoundGraphicalFunction(function: function,
@@ -562,7 +562,7 @@ public class Compiler {
         let parameters = view.incomingParameterNodes(object.id)
         guard let parameterNode = parameters.first else {
             issues.append(ObjectIssue.missingRequiredParameter, for: object.id)
-            throw .issues(issues)
+            throw .internalError(.intermediateError)
         }
         
         let parameterIndex = objectVariableIndex[parameterNode.id]!
@@ -573,14 +573,14 @@ public class Compiler {
         }
         guard let posDuration = UInt(exactly: duration) else {
             issues.append(ObjectIssue.invalidAttributeValue("delay_duration", Variant(duration)), for: object.id)
-            throw .issues(issues)
+            throw .internalError(.intermediateError)
         }
 
         let initialValue = object["initial_value"]
         
         guard case let .atom(atomType) = variable.valueType else {
             issues.append(.unsupportedDelayValueType(variable.valueType), for: object.id)
-            throw .issues(issues)
+            throw .internalError(.intermediateError)
         }
         
         // TODO: Check whether the initial value and variable.valueType are the same
@@ -606,7 +606,7 @@ public class Compiler {
         let parameters = view.incomingParameterNodes(object.id)
         guard let parameterNode = parameters.first else {
             issues.append(ObjectIssue.missingRequiredParameter, for: object.id)
-            throw .issues(issues)
+            throw .internalError(.intermediateError)
         }
         
         let parameterIndex = objectVariableIndex[parameterNode.id]!
@@ -618,7 +618,7 @@ public class Compiler {
         
         guard case .atom(_) = variable.valueType else {
             issues.append(.unsupportedDelayValueType(variable.valueType), for: object.id)
-            throw .issues(issues)
+            throw .internalError(.intermediateError)
         }
         
         let compiled = BoundSmooth(

@@ -73,7 +73,7 @@ public enum ObjectIssue: Equatable, CustomStringConvertible, Error {
         case .computationCycle:
             return "Node is part of a computation cycle."
         case .flowCycle:
-            return "Stock is part of a flow cycle."
+            return "Node is in a flow cycle that has no ."
         case .unsupportedDelayValueType(let type):
             return "Unsupported delay value type: \(type)"
         }

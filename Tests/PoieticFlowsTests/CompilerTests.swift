@@ -351,4 +351,24 @@ extension TransientFrame {
             return syntaxError == .expressionExpected
         }
     }
+    
+    @Test func multipleDelayErrors() throws {
+        frame.createNode(ObjectType.Delay, name:"a")
+        frame.createNode(ObjectType.Delay, name:"b")
+        let compiler = Compiler(frame: try design.validate(try design.accept(frame)))
+        #expect {
+            try compiler.compile()
+        } throws: {
+            guard let error = $0 as? CompilerError else {
+                Issue.record("Unexpected error: \($0)")
+                return false
+            }
+            guard case .issues(let issues) = error else {
+                Issue.record("Expected issues, got internal error: \(error)")
+                return false
+            }
+            return issues.objectIssues.count == 2
+        }
+
+    }
 }
