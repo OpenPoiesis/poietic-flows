@@ -155,24 +155,27 @@ extension TransientFrame {
     }
     
     @Test func inflowOutflow() throws {
-        let source = frame.createNode(ObjectType.Stock, name: "source", attributes: ["formula": "0"])
+        let a = frame.createNode(ObjectType.Stock, name: "a", attributes: ["formula": "0"])
         let flow = frame.createNode(ObjectType.FlowRate, name: "f", attributes: ["formula": "1"])
-        let sink = frame.createNode(ObjectType.Stock, name: "sink", attributes: ["formula": "0"])
+        let b = frame.createNode(ObjectType.Stock, name: "b", attributes: ["formula": "0"])
 
-        frame.createEdge(ObjectType.Flow, origin: source, target: flow)
-        frame.createEdge(ObjectType.Flow, origin: flow, target: sink)
+        frame.createEdge(ObjectType.Flow, origin: a, target: flow)
+        frame.createEdge(ObjectType.Flow, origin: flow, target: b)
         
         let compiler = Compiler(frame: try design.validate(try design.accept(frame)))
         let compiled = try compiler.compile()
         
-        #expect(compiled.stocks.count == 2)
-        #expect(compiled.stocks[0].id == source.id)
-        #expect(compiled.stocks[0].inflows == [])
-        #expect(compiled.stocks[0].outflows == [compiled.variableIndex(of: flow.id)])
+        let aIndex = try #require(compiled.stocks.firstIndex { $0.id == a.id })
+        let bIndex = try #require(compiled.stocks.firstIndex { $0.id == b.id })
 
-        #expect(compiled.stocks[1].id == sink.id)
-        #expect(compiled.stocks[1].inflows == [compiled.variableIndex(of: flow.id)])
-        #expect(compiled.stocks[1].outflows == [])
+        #expect(compiled.stocks.count == 2)
+        #expect(compiled.stocks[aIndex].id == a.id)
+        #expect(compiled.stocks[aIndex].inflows == [])
+        #expect(compiled.stocks[aIndex].outflows == [compiled.variableIndex(of: flow.id)])
+
+        #expect(compiled.stocks[bIndex].id == b.id)
+        #expect(compiled.stocks[bIndex].inflows == [compiled.variableIndex(of: flow.id)])
+        #expect(compiled.stocks[bIndex].outflows == [])
     }
     
     @Test func disconnectedGraphicalFunction() throws {
@@ -276,34 +279,6 @@ extension TransientFrame {
             return $0 is CompilerError
                     && issues[a.id]?.first == ObjectIssue.computationCycle
                     && issues[b.id]?.first == ObjectIssue.computationCycle
-        }
-    }
-    
-    @Test func stockCycleError() throws {
-        let a = frame.createNode(ObjectType.Stock, name:"a", attributes: ["formula": "0"])
-        let b = frame.createNode(ObjectType.Stock, name:"b", attributes: ["formula": "0"])
-        let fab = frame.createNode(ObjectType.FlowRate, name: "fab", attributes: ["formula": "0"])
-        let fba = frame.createNode(ObjectType.FlowRate, name: "fba", attributes: ["formula": "0"])
-        frame.createEdge(ObjectType.Flow, origin: a, target: fab)
-        frame.createEdge(ObjectType.Flow, origin: fab, target: b)
-        frame.createEdge(ObjectType.Flow, origin: b, target: fba)
-        frame.createEdge(ObjectType.Flow, origin: fba, target: a)
-
-        let compiler = Compiler(frame: try design.validate(try design.accept(frame)))
-        #expect {
-            try compiler.compile()
-        } throws: {
-            guard let error = $0 as? CompilerError else {
-                Issue.record("Unexpected error: \($0)")
-                return false
-            }
-            guard case .issues(let issues) = error else {
-                Issue.record("Unexpected error type: \($0)")
-                return false
-            }
-            return $0 is CompilerError
-                    && issues[a.id]?.first == ObjectIssue.flowCycle
-                    && issues[b.id]?.first == ObjectIssue.flowCycle
         }
     }
     

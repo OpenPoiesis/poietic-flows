@@ -44,11 +44,6 @@ public enum ObjectIssue: Equatable, CustomStringConvertible, Error {
     /// Node is part of a computation cycle.
     case computationCycle
     
-    /// Stock is part of a flow cycle. Needs to be broken with
-    /// delayed inflow.
-    ///
-    case flowCycle
-    
     case unsupportedDelayValueType(ValueType)
     
     /// Get the human-readable description of the issue.
@@ -71,9 +66,7 @@ public enum ObjectIssue: Equatable, CustomStringConvertible, Error {
         case .missingRequiredParameter:
             return "Node is missing a required parameter connection"
         case .computationCycle:
-            return "Node is part of a computation cycle."
-        case .flowCycle:
-            return "Node is in a flow cycle that has no ."
+            return "Node is part of a computation cycle"
         case .unsupportedDelayValueType(let type):
             return "Unsupported delay value type: \(type)"
         }
@@ -104,8 +97,6 @@ public enum ObjectIssue: Equatable, CustomStringConvertible, Error {
             return "Connect exactly one node as a parameter. Name does not matter."
         case .computationCycle:
             return "Follow connections from and to the offending node."
-        case .flowCycle:
-            return "Mark one of the stocks in the cycle to have delayed inflow to break the cycle."
         case .unsupportedDelayValueType(_):
             return "Delay can use only atom types, no array types"
         }
@@ -197,12 +188,6 @@ extension ObjectIssue: DesignIssueConvertible {
             DesignIssue(domain: .compilation,
                         severity: .error,
                         identifier: "computation_cycle",
-                        message: description,
-                        hint: hint)
-        case .flowCycle:
-            DesignIssue(domain: .compilation,
-                        severity: .error,
-                        identifier: "flow_cycle",
                         message: description,
                         hint: hint)
         case .unsupportedDelayValueType(let type):

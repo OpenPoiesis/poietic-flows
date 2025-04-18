@@ -6,6 +6,29 @@
 
 // TODO: Remove checks that are not necessary with ValidatedFrame (safely make them preconditions/fatalErrors)
 
+/*
+ TODO: Split the file in the following:
+    Compiler Core (Compiler.swift):
+        Main compiler class
+         Public interface (compile())
+         High-level compilation phases
+    Expression Handling (Compiler+Expressions.swift):
+         parseExpressions()
+         compileFormulaObject()
+         bindExpression() (though this is in a separate file already)
+    Node Type Compilation (Compiler+Nodes.swift):
+         compileGraphicalFunctionNode()
+         compileDelayNode()
+         compileSmoothNode()
+    Validation (Compiler+Validation.swift):
+        validateFormulaParameterConnections()
+        Name validation checks
+    Stock/Flow Handling (Compiler+Stocks.swift):
+        compileStocksAndFlows()
+        Stock adjacency calculations
+ 
+ */
+
 import PoieticCore
 
 
@@ -164,9 +187,9 @@ public class Compiler {
     /// Mapping between a variable name and a bound variable reference.
     ///
     /// Used in binding of arithmetic expressions.
-    private var nameIndex: [String:SimulationState.Index]
+    internal var nameIndex: [String:SimulationState.Index]
     
-    private var parsedExpressions: [ObjectID:UnboundExpression]
+    internal var parsedExpressions: [ObjectID:UnboundExpression]
     
     /// List of built-in variable names, fetched from the metamodel.
     ///
@@ -179,7 +202,7 @@ public class Compiler {
     ///
     /// - SeeAlso: ``compileFormulaObject(_:)``
     ///
-    private let functions: [String: Function]
+    internal let functions: [String: Function]
     
     /// Create a new compiler for a given frame.
     ///
@@ -267,7 +290,17 @@ public class Compiler {
             throw .issues(issues)
         }
         
-        let stocks = try compileStocksAndFlows()
+        let stocks: [BoundStock]
+        let flows: [BoundFlow]
+        do {
+            (stocks, flows) = try compileStocksAndFlows()
+        }
+        catch .objectIssue {
+            throw .issues(issues)
+        }
+        catch {
+            throw .internalError(error)
+        }
         let bindings = try compileControlBindings()
         let defaults = try compileDefaults()
         let charts = try compileCharts()
@@ -282,6 +315,7 @@ public class Compiler {
             builtins: builtins,
             timeVariableIndex: timeIndex,
             stocks: stocks,
+            flows: flows,
             charts: charts,
             valueBindings: bindings,
             simulationParameters: defaults
@@ -347,33 +381,6 @@ public class Compiler {
         }
         
         self.orderedObjects = ordered.map { frame.object($0) }
-    }
-    
-    func parseExpressions() throws (InternalCompilerError) {
-        parsedExpressions = [:]
-        
-        for object in orderedObjects {
-            guard object.type.hasTrait(.Formula) else {
-                continue
-            }
-            
-            guard let formula = try? object["formula"]?.stringValue() else {
-                throw .attributeExpectationFailure(object.id, "formula")
-            }
-            
-            let parser = ExpressionParser(string: formula)
-            let expr: UnboundExpression
-            
-            do {
-                expr = try parser.parse()
-            }
-            catch {
-                issues.append(.expressionSyntaxError(error), for: object.id)
-                continue
-            }
-            
-            parsedExpressions[object.id] = expr
-        }
     }
     
     /// Prepare built-in variables.
@@ -477,260 +484,6 @@ public class Compiler {
                                    name: name)
         
         self.simulationObjects.append(sim)
-    }
-    
-    /// Compile a node containing a formula.
-    ///
-    /// For each node with an arithmetic expression the expression is parsed
-    /// from a text into an internal representation. The variable and function
-    /// names are resolved to point to actual entities and a new bound
-    /// expression is formed.
-    ///
-    /// - Returns: Computational representation wrapping a formula.
-    ///
-    /// - Parameters:
-    ///     - node: node containing already parsed formula in
-    ///       ``ParsedFormulaComponent``.
-    ///
-    /// - Precondition: The node must have ``ParsedFormulaComponent`` associated
-    ///   with it.
-    ///
-    /// - Throws: ``NodeIssueError`` if there is an issue with parameters,
-    ///   function names or other variable names in the expression.
-    ///
-    func compileFormulaObject(_ object: DesignObject) throws (InternalCompilerError) -> ComputationalRepresentation {
-        guard let unboundExpression = parsedExpressions[object.id] else {
-            if issues[object.id] != nil {
-                // Compilation already has issues, we just proceed to collect some more.
-                throw .objectIssue
-            }
-            else {
-                throw .formulaCompilationFailure(object.id)
-            }
-        }
-        
-        // Finally bind the expression.
-        //
-        let boundExpression: BoundExpression
-        do {
-            boundExpression = try bindExpression(unboundExpression,
-                                                 variables: stateVariables,
-                                                 names: nameIndex,
-                                                 functions: functions)
-        }
-        catch /* ExpressionError */ {
-            issues.append(.expressionError(error), for: object.id)
-            throw .objectIssue
-        }
-        
-        return .formula(boundExpression)
-    }
-    
-    /// Compiles a graphical function.
-    ///
-    /// This method creates a ``/PoieticCore/Function`` object with a single argument and a
-    /// numeric return value. The function will compute the output based on the
-    /// input parameter and on specifics of the graphical function points
-    /// interpolation.
-    ///
-    /// - Requires: node
-    /// - Throws: ``NodeIssue`` if the function parameter is not connected.
-    ///
-    /// - SeeAlso: ``CompiledGraphicalFunction``, ``Solver/evaluate(objectAt:with:)``
-    ///
-    func compileGraphicalFunctionNode(_ object: DesignObject) throws (InternalCompilerError) -> ComputationalRepresentation{
-        guard let points = try? object["graphical_function_points"]?.pointArray() else {
-            throw .attributeExpectationFailure(object.id, "graphical_function_points")
-        }
-        // TODO: Interpolation method
-        let function = GraphicalFunction(points: points)
-        
-        let parameters = view.incomingParameterNodes(object.id)
-        guard let parameterNode = parameters.first else {
-            issues.append(ObjectIssue.missingRequiredParameter, for: object.id)
-            throw .objectIssue
-        }
-        
-        let boundFunc = BoundGraphicalFunction(function: function,
-                                               parameterIndex: objectVariableIndex[parameterNode.id]!)
-        return .graphicalFunction(boundFunc)
-    }
-    
-    /// Compile a delay node.
-    ///
-    func compileDelayNode(_ object: DesignObject) throws (InternalCompilerError) -> ComputationalRepresentation{
-        let queueIndex = createStateVariable(content: .internalState(object.id),
-                                             valueType: .doubles,
-                                             name: "delay_queue_\(object.id)")
-        
-        let initialValueIndex = createStateVariable(content: .internalState(object.id),
-                                                    valueType: .doubles,
-                                                    name: "delay_init_\(object.id)")
-        
-        let parameters = view.incomingParameterNodes(object.id)
-        guard let parameterNode = parameters.first else {
-            issues.append(ObjectIssue.missingRequiredParameter, for: object.id)
-            throw .objectIssue
-        }
-        
-        let parameterIndex = objectVariableIndex[parameterNode.id]!
-        let variable = stateVariables[parameterIndex]
-        
-        guard let duration = try? object["delay_duration"]?.intValue() else {
-            throw .attributeExpectationFailure(object.id, "delay_duration")
-        }
-        guard let posDuration = UInt(exactly: duration) else {
-            issues.append(ObjectIssue.invalidAttributeValue("delay_duration", Variant(duration)), for: object.id)
-            throw .objectIssue
-        }
-
-        let initialValue = object["initial_value"]
-        
-        guard case let .atom(atomType) = variable.valueType else {
-            issues.append(.unsupportedDelayValueType(variable.valueType), for: object.id)
-            throw .objectIssue
-        }
-        
-        // TODO: Check whether the initial value and variable.valueType are the same
-        let compiled = BoundDelay(
-            steps: posDuration,
-            initialValue: initialValue,
-            valueType: atomType,
-            initialValueIndex: initialValueIndex,
-            queueIndex: queueIndex,
-            inputValueIndex: parameterIndex
-        )
-        
-        return .delay(compiled)
-    }
-    
-    /// Compile a value smoothing node.
-    ///
-    func compileSmoothNode(_ object: DesignObject) throws (InternalCompilerError) -> ComputationalRepresentation{
-        let smoothValueIndex = createStateVariable(content: .internalState(object.id),
-                                                   valueType: .doubles,
-                                                   name: "smooth_value_\(object.id)")
-        
-        let parameters = view.incomingParameterNodes(object.id)
-        guard let parameterNode = parameters.first else {
-            issues.append(ObjectIssue.missingRequiredParameter, for: object.id)
-            throw .objectIssue
-        }
-        
-        let parameterIndex = objectVariableIndex[parameterNode.id]!
-        let variable = stateVariables[parameterIndex]
-        
-        guard let windowTime = try? object["window_time"]?.doubleValue() else {
-            throw .attributeExpectationFailure(object.id, "window_time")
-        }
-        
-        guard case .atom(_) = variable.valueType else {
-            issues.append(.unsupportedDelayValueType(variable.valueType), for: object.id)
-            throw .objectIssue
-        }
-        
-        let compiled = BoundSmooth(
-            windowTime: windowTime,
-            smoothValueIndex: smoothValueIndex,
-            inputValueIndex: parameterIndex
-        )
-        
-        return .smooth(compiled)
-    }
-    
-    /// Compile all stock nodes.
-    ///
-    /// The function extracts component from the stock that is necessary
-    /// for simulation. Then the function collects all inflows and outflows
-    /// of the stock.
-    ///
-    /// - Returns: Extracted and derived stock node information.
-    ///
-    func compileStocksAndFlows() throws (CompilerError) -> [BoundStock] {
-        let stocks = simulationObjects.filter { $0.type == .stock }
-        let flows = simulationObjects.filter { $0.type == .flow }.compactMap { frame[$0.id] }
-        
-        var flowPriorities: [ObjectID:Int] = [:]
-        var outflows: [ObjectID: [ObjectID]] = [:]
-        var inflows: [ObjectID: [ObjectID]] = [:]
-        
-        // This step is needed for proper computation of non-negative stocks
-        // Stock adjacencies without delayed input - break the cycle at stocks
-        // with delayed_input=true.
-        let adjacencies = view.stockAdjacencies().filter { !$0.targetHasDelayedInflow }
-        let adjacencySubgraph = Graph(nodes: stocks, edges: adjacencies)
-        
-        guard let sorted = adjacencySubgraph.topologicalSort() else {
-            let cycleEdges = adjacencySubgraph.cycles()
-            var nodes: Set<ObjectID> = Set()
-            
-            for edge in cycleEdges {
-                nodes.insert(edge.origin)
-                nodes.insert(edge.target)
-                issues.append(.flowCycle, for: edge.id)
-            }
-            for node in nodes {
-                issues.append(ObjectIssue.flowCycle, for: node)
-            }
-            throw .issues(issues)
-        }
-        
-        let sortedStocks = sorted.map { frame.object($0) }
-        
-        for edge in view.flowEdges {
-            if edge.originObject.type === ObjectType.Stock && edge.targetObject.type === ObjectType.FlowRate {
-                outflows[edge.origin, default: []].append(edge.target)
-            }
-            else if edge.originObject.type === ObjectType.FlowRate && edge.targetObject.type === ObjectType.Stock {
-                inflows[edge.target, default: []].append(edge.origin)
-            }
-            else {
-                fatalError("Compiler error: Flow edge endpoints constraint violated")
-            }
-        }
-        
-        // Sort the outflows by priority
-        for flow in flows {
-            guard let priority = try? flow["priority"]?.intValue() else {
-                throw .internalError(.attributeExpectationFailure(flow.id, "priority"))
-            }
-            flowPriorities[flow.id] = priority
-        }
-        
-        for stock in sortedStocks {
-            if let unsorted = outflows[stock.id] {
-                let items = unsorted.map { (id: $0, priority: flowPriorities[$0]!) }
-                let sorted = items.sorted { $0.priority < $1.priority }
-                outflows[stock.id] = sorted.map { $0.id }
-            }
-            else {
-                outflows[stock.id] = []
-            }
-        }
-        
-        var result: [BoundStock] = []
-        
-        for object in sortedStocks {
-            let inflowIndices = inflows[object.id]?.map { objectVariableIndex[$0]! } ?? []
-            let outflowIndices = outflows[object.id]?.map { objectVariableIndex[$0]! } ?? []
-            
-            // We can `try!` and force unwrap, because here we already assume
-            // the model was validated
-            let allowsNegative = try! object["allows_negative"]!.boolValue()
-            let delayedInflow = try! object["delayed_inflow"]!.boolValue()
-            
-            let compiled = BoundStock(
-                id: object.id,
-                variableIndex: objectVariableIndex[object.id]!,
-                allowsNegative: allowsNegative,
-                delayedInflow: delayedInflow,
-                inflows: inflowIndices,
-                outflows: outflowIndices
-            )
-            result.append(compiled)
-        }
-        
-        return result
     }
     
     /// Validates parameter of a node.
