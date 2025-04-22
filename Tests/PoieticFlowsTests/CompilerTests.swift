@@ -171,10 +171,10 @@ extension TransientFrame {
         #expect(compiled.stocks.count == 2)
         #expect(compiled.stocks[aIndex].id == a.id)
         #expect(compiled.stocks[aIndex].inflows == [])
-        #expect(compiled.stocks[aIndex].outflows == [compiled.variableIndex(of: flow.id)])
+        #expect(compiled.stocks[aIndex].outflows == [compiled.flowIndex(flow.id)])
 
         #expect(compiled.stocks[bIndex].id == b.id)
-        #expect(compiled.stocks[bIndex].inflows == [compiled.variableIndex(of: flow.id)])
+        #expect(compiled.stocks[bIndex].inflows == [compiled.flowIndex(flow.id)])
         #expect(compiled.stocks[bIndex].outflows == [])
     }
     

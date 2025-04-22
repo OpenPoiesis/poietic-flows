@@ -7,6 +7,7 @@
 
 import PoieticCore
 
+// TODO: Separate numeric values (doubles) from Variant values, too many conversions/unwrapping
 
 /// A collection of simulation state variables.
 ///
@@ -49,7 +50,7 @@ public struct SimulationState: CustomStringConvertible {
     ///
     /// Callers might override any of the values.
     ///
-    public func advance(step: Int?=nil, time: Double?=nil, timeDelta: Double?=nil) -> SimulationState {
+    public func advanced(step: Int?=nil, time: Double?=nil, timeDelta: Double?=nil) -> SimulationState {
         SimulationState(values: values,
                         step: step ?? self.step + 1,
                         time: time ?? self.time + (timeDelta ?? self.timeDelta),
@@ -59,14 +60,25 @@ public struct SimulationState: CustomStringConvertible {
     /// Get or set a simulation variable by reference.
     ///
     @inlinable
-    public subscript(ref: Index) -> Variant {
+    public subscript(_ index: Index) -> Variant {
         get {
-            return values[ref]
+            return values[index]
         }
         set(value) {
-            values[ref] = value
+            values[index] = value
         }
     }
+    
+    @inlinable
+    public subscript(_ index: Index) -> Double {
+        get {
+            try! values[index].doubleValue()
+        }
+        set(value) {
+            values[index] = Variant(value)
+        }
+    }
+
     
     /// Get or set a simulation variable as double by reference.
     ///
@@ -80,6 +92,23 @@ public struct SimulationState: CustomStringConvertible {
         }
         catch {
             fatalError("Unexpected non-double state value at \(index)")
+        }
+    }
+
+    /// - Precondition: Values at given indices must be convertible to a floating point number.
+    @inlinable
+    func numericVector(at indices: [Index]) -> NumericVector {
+        var vector = NumericVector(zeroCount: indices.count)
+        for (index, variableIndex) in indices.enumerated() {
+            vector[index] = try! values[variableIndex].doubleValue()
+        }
+        return vector
+    }
+
+    @inlinable
+    public subscript(indices: [Index]) -> NumericVector {
+        get {
+            return numericVector(at: indices)
         }
     }
 

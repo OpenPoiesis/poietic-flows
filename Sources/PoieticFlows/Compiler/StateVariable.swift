@@ -45,12 +45,16 @@ public struct StateVariable: CustomStringConvertible {
         /// is ID of an object that owns the state.
         ///
         case internalState(ObjectID)
-        
+
+        /// Actual or adjusted value of the object after computation
+        case adjustedResult(ObjectID)
+
         public static func ==(lhs: Content, rhs: Content) -> Bool {
             switch (lhs, rhs) {
             case let (.object(left), .object(right)): return left == right
             case let (.builtin(left), .builtin(right)): return left == right
             case let (.internalState(left), .internalState(right)): return left == right
+            case let (.adjustedResult(left), .adjustedResult(right)): return left == right
             default: return false
             }
         }
@@ -59,7 +63,8 @@ public struct StateVariable: CustomStringConvertible {
             switch self {
             case .object(let id): "object(\(id))"
             case .builtin(let variable): "builtin(\(variable))"
-            case .internalState(let id): "internal(\(id))"
+            case .internalState(let id): "internalState(\(id))"
+            case .adjustedResult(let id): "adjustedResult(\(id))"
             }
         }
     }
@@ -80,6 +85,7 @@ public struct StateVariable: CustomStringConvertible {
         ///
         case builtin
         case internalState
+        case adjusted
     }
     
     /// Type of the simulation variable.
@@ -89,6 +95,7 @@ public struct StateVariable: CustomStringConvertible {
         case .builtin: .builtin
         case .object: .object
         case .internalState: .internalState
+        case .adjustedResult: .adjusted
         }
     }
     
@@ -111,6 +118,7 @@ public struct StateVariable: CustomStringConvertible {
         case .builtin(_): nil
         case .object(let id): id
         case .internalState(_): nil
+        case .adjustedResult(let id): id
         }
     }
 

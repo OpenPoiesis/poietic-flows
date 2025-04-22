@@ -154,6 +154,7 @@ public class Compiler {
     /// - SeeAlso: ``SimulationPlan/simulationObjects``
     ///
     public private(set) var simulationObjects: [SimulationObject] = []
+    public private(set) var flows: [BoundFlow] = []
     
     /// List of simulation state variables.
     ///
@@ -261,8 +262,11 @@ public class Compiler {
     /// - SeeAlso: ``Simulator/init(_:simulation:)``
     ///
     public func compile() throws (CompilerError) -> SimulationPlan {
-        try initialize()
+        issues = CompilationIssueCollection()
+
+        try collectAndSortObjects()
         let builtins = prepareBuiltins()
+
         do {
             try parseExpressions()
         }
@@ -271,14 +275,15 @@ public class Compiler {
         }
         try validateFormulaParameterConnections()
         
-        var intermediateError: Bool = false
+        // 1. Compile flows (stocks require them)
+        // 2. Compile stocks
+        // 3. Compile auxiliaries (everything else)
         
         for object in self.orderedObjects {
             do {
-                try self.compile(object)
+                try self.compileObject(object)
             }
             catch .objectIssue {
-                intermediateError = true
                 continue
             }
             catch {
@@ -286,14 +291,11 @@ public class Compiler {
             }
         }
         
-        guard issues.isEmpty && !intermediateError else {
-            throw .issues(issues)
-        }
+        guard issues.isEmpty else { throw .issues(issues) }
         
         let stocks: [BoundStock]
-        let flows: [BoundFlow]
         do {
-            (stocks, flows) = try compileStocksAndFlows()
+            stocks = try compileStocks()
         }
         catch .objectIssue {
             throw .issues(issues)
@@ -315,18 +317,15 @@ public class Compiler {
             builtins: builtins,
             timeVariableIndex: timeIndex,
             stocks: stocks,
-            flows: flows,
+            flows: self.flows,
             charts: charts,
             valueBindings: bindings,
             simulationParameters: defaults
         )
     }
-    
-    /// - Precondition: Simulation nodes must have a name
-    ///
-    func initialize() throws (CompilerError) {
-        issues = CompilationIssueCollection()
-        
+   
+    func collectAndSortObjects() throws (CompilerError) {
+        // TODO: [WIP] Deprecate view.simulationNodes (?)
         let unorderedSimulationNodes = view.simulationNodes
         var homonyms: [String: [ObjectID]] = [:]
         
@@ -335,13 +334,22 @@ public class Compiler {
             guard let name = node.name else {
                 throw .internalError(.attributeExpectationFailure(node.id, "name"))
             }
-            // TODO: Validate for whitespaces
             if name.isEmpty || name.allSatisfy({ $0.isWhitespace}){
                 issues.append(.emptyName, for: node.id)
             }
             homonyms[name, default: []].append(node.id)
         }
         
+        var dupes: [String] = []
+        
+        for (name, ids) in homonyms where ids.count > 1 {
+            let issue = ObjectIssue.duplicateName(name)
+            dupes.append(name)
+            for id in ids {
+                issues.append(issue, for: id)
+            }
+        }
+    
         // 2. Sort nodes based on computation dependency.
         let parameterEdges:[EdgeObject] = frame.filterEdges {
             $0.object.type === ObjectType.Parameter
@@ -364,21 +372,7 @@ public class Compiler {
             throw .issues(issues)
         }
         
-        // 3. Report the duplicates, if any
-        
-        var dupes: [String] = []
-        
-        for (name, ids) in homonyms where ids.count > 1 {
-            let issue = ObjectIssue.duplicateName(name)
-            dupes.append(name)
-            for id in ids {
-                issues.append(issue, for: id)
-            }
-        }
-        
-        guard issues.isEmpty else {
-            throw .issues(issues)
-        }
+        guard issues.isEmpty else { throw .issues(issues) }
         
         self.orderedObjects = ordered.map { frame.object($0) }
     }
@@ -392,11 +386,11 @@ public class Compiler {
     ///
     /// - SeeAlso: ``StockFlowSimulation/updateBuiltins(_:)``
     ///
-    func prepareBuiltins() -> CompiledBuiltinState {
-        let builtins = CompiledBuiltinState(
+    func prepareBuiltins() -> BoundBuiltins {
+        let builtins = BoundBuiltins(
+            step: createStateVariable(builtin: .step),
             time: createStateVariable(builtin: .time),
-            timeDelta: createStateVariable(builtin: .timeDelta),
-            step: createStateVariable(builtin: .step)
+            timeDelta: createStateVariable(builtin: .timeDelta)
         )
         
         self.nameIndex[BuiltinVariable.time.name] = builtins.time
@@ -424,9 +418,10 @@ public class Compiler {
     /// - Throws: ``NodeIssuesError`` with list of issues for the node.
     /// - SeeAlso: ``compileFormulaNode(_:)``, ``compileGraphicalFunctionNode(_:)``.
     ///
-    func compile(_ object: DesignObject) throws (InternalCompilerError) {
+    func compileObject(_ object: DesignObject) throws (InternalCompilerError) {
+        let role: SimulationObject.Role
         let rep: ComputationalRepresentation
-        
+
         if object.type.hasTrait(Trait.Formula) {
             rep = try compileFormulaObject(object)
         }
@@ -450,24 +445,9 @@ public class Compiler {
             fatalError("Unknown simulation object type \(object.type.name), object: \(object.id)")
         }
         
+        // TODO: [WIP] We must have name here already
         guard let name = object.name else {
             throw .attributeExpectationFailure(object.id, "name")
-        }
-        
-        // Determine simulation type
-        //
-        let simType: SimulationObject.SimulationObjectType
-        if object.type === ObjectType.Stock {
-            simType = .stock
-        }
-        else if object.type === ObjectType.FlowRate {
-            simType = .flow
-        }
-        else if object.type.hasTrait(Trait.Auxiliary) {
-            simType = .auxiliary
-        }
-        else {
-            fatalError("Unknown simulation node type: \(object.type.name)")
         }
         
         let index = createStateVariable(content: .object(object.id),
@@ -475,13 +455,36 @@ public class Compiler {
                                         name: name)
         self.objectVariableIndex[object.id] = index
         self.nameIndex[name] = index
+
+        if object.type === ObjectType.Stock {
+            role = .stock
+        }
+        else if object.type === ObjectType.FlowRate {
+            role = .flow
+            let flow = try compileFlow(object,
+                                       name: name,
+                                       valueType: rep.valueType)
+            self.flows.append(flow)
+        }
+        else if object.type.hasTrait(Trait.Auxiliary) {
+            role = .auxiliary
+        }
+        else {
+            // Hint: If this error happens, then check the following:
+            // - stock-flow metamodel and its validation
+            // - method collectAndSortObjects()
+            // - view.simulationNodes
+            fatalError("Unknown simulation object role for object type: \(object.type.name)")
+        }
+        
         
         let sim = SimulationObject(id: object.id,
-                                   type: simType,
-                                   variableIndex: index,
-                                   valueType: rep.valueType,
                                    computation: rep,
+                                   variableIndex: index,
+                                   role: role,
+                                   valueType: rep.valueType,
                                    name: name)
+   
         
         self.simulationObjects.append(sim)
     }

@@ -162,14 +162,12 @@ public class Simulator {
         
         // 1. Advance time and prepare
         // -------------------------------------------------------
-        var result = currentState.advance()
+        // 2. Computation
+        // -------------------------------------------------------
+        let result = try simulation.step(currentState)
         currentStep = result.step
         currentTime = result.time
         
-        // 2. Computation
-        // -------------------------------------------------------
-        try simulation.update(&result)
-
         // 3. Finalisation
         // -------------------------------------------------------
 

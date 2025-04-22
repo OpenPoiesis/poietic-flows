@@ -6,68 +6,101 @@
 //
 
 extension StockFlowSimulation {
-    /// Solver that integrates using the Euler method.
-    ///
-    /// - SeeAlso: [Euler method](https://en.wikipedia.org/wiki/Euler_method)
-    ///
-    @discardableResult
-    public func updateWithEuler(_ state: inout SimulationState) throws (SimulationError) -> NumericVector {
-        let delta = stockDifference(state: state)
-        state.numericAdd(delta, atIndices: plan.stockIndices)
+    /// Adjust the flow rates within a given time unit.
+    @inlinable
+    func adjustFlows(flows estimated: NumericVector, stocks: NumericVector) -> NumericVector {
+        var adjusted = estimated
+
+        for (s, stock) in plan.stocks.enumerated() {
+            guard !stock.allowsNegative else { continue }
+
+            let inflow: Double = estimated[stock.inflows].sum()
+            let outflow: Double = estimated[stock.outflows].sum()
+
+            let current: Double = stocks[s]
+            guard outflow > 0 else { continue }
+            
+            switch flowScaling {
+            case .outflowFirst:
+                guard outflow > current else { break }
+                let scale = min(1, current / outflow)
+                for o in stock.outflows {
+                    adjusted[o] = estimated[o] * scale
+                }
+            case .inflowFirst:
+                let available = current + inflow
+                guard available < outflow else { break }
+                let scale = min(1, available / outflow)
+                for o in stock.outflows {
+                    adjusted[o] = estimated[o] * scale
+                }
+            }
+        }
+        return adjusted
+    }
+
+    @inlinable
+    func computeDerivatives(flows: NumericVector, stocks: NumericVector, timeDelta: Double) -> NumericVector {
+        var delta = NumericVector(zeroCount: plan.stocks.count)
+        for (s, stock) in plan.stocks.enumerated() {
+            let inflow = flows[stock.inflows].sum()
+            let outflow = flows[stock.outflows].sum()
+            let netFlow: Double
+            if stock.allowsNegative {
+                netFlow = (inflow - outflow) * timeDelta
+            }
+            else {
+                // Safeguard clamping (might introduce an error)
+                let current: Double = stocks[s]
+                netFlow = max(-current, (inflow - outflow) * timeDelta)
+            }
+            delta[s] = netFlow
+        }
         return delta
     }
+    
+    @inlinable
+    public func flows(_ state: SimulationState) -> NumericVector {
+        var flows = NumericVector(zeroCount: plan.flows.count)
+        for (i, flow) in plan.flows.enumerated() {
+            flows[i] = state[flow.estimatedValueIndex]
+        }
+        return flows
+    }
 
-    /// Solver that integrates using the Runge Kutta 4 method.
-    ///
-    /// - SeeAlso: [Runge Kutta methods](https://en.wikipedia.org/wiki/Runge–Kutta_methods)
-    /// - Important: Does not work well with non-negative stocks.
-    ///
-    @discardableResult
-    public func updateWithRK4(_ state: inout SimulationState) throws (SimulationError) -> NumericVector {
-        /*
-         RK4:
-         
-         dy/dt = f(t,y)
-         
-         k1 = f(tn, yn)
-         k2 = f(tn + h/2, yn + h*k1/2)
-         k3 = f(tn + h/2, yn + h*k2/2)
-         k4 = f(tn + h, yn + h*k3)
-         
-         yn+1 = yn + 1/6(k1 + 2k2 + 2k3 + k4)*h
-         tn+1 = tn + h
-         */
-        // TODO: Does not work well with non-negative stocks.
-        // Is this the issue?
-        // https://arxiv.org/abs/2005.06268
-        // Paper: "Positivity-Preserving Adaptive Runge-Kutta Methods"
-
-        let stocks = plan.stockIndices
-        
-        // FIXME: This needs attention, after some recent refactoring the time is unused
-        // let time = state.time
-        let timeDelta = state.timeDelta
-        
-        let stage1 = state
-        let k1 = stockDifference(state: stage1)
-        
-        var stage2 = stage1
-        stage2.numericAdd(timeDelta * (k1 / 2), atIndices: stocks)
-        let k2 = stockDifference(state: stage2)
-        
-        var stage3 = stage2
-        stage3.numericAdd(timeDelta * (k2 / 2), atIndices: stocks)
-        let k3 = stockDifference(state: stage3)
-        
-        var stage4 = stage3
-        stage4.numericAdd(k3, atIndices: stocks)
-        let k4 = stockDifference(state: stage4)
-        
-        let resultDelta = (1.0/6.0) * state.timeDelta * (k1 + (2*k2) + (2*k3) + k4)
-        
-        state.numericAdd(resultDelta, atIndices: stocks)
-        
-        return resultDelta
+    @inlinable
+    public func stocks(_ state: SimulationState) -> NumericVector {
+        var stocks = NumericVector(zeroCount: plan.stocks.count)
+        for (i, stock) in plan.stocks.enumerated() {
+            stocks[i] = state[stock.variableIndex]
+        }
+        return stocks
     }
     
+    /// Solver that integrates using the Euler method.
+    ///
+    @inlinable
+    public func integrateWithEuler(in state: inout SimulationState) throws (SimulationError) {
+        let estimatedFlows = self.flows(state)
+        let stocks = self.stocks(state)
+       
+        let adjustedFlows = adjustFlows(flows: estimatedFlows, stocks: stocks)
+
+        let delta = computeDerivatives(flows: adjustedFlows,
+                                       stocks: stocks,
+                                       timeDelta: state.timeDelta)
+        for (i, stock) in plan.stocks.enumerated() {
+            let newStock = state[stock.variableIndex] + delta[i]
+            if stock.allowsNegative {
+                state[stock.variableIndex] = newStock
+            }
+            else {
+                state[stock.variableIndex] = max(0, newStock)
+            }
+        }
+
+        for (i, flow) in plan.flows.enumerated() {
+            state[flow.adjustedValueIndex] = adjustedFlows[i]
+        }
+    }
 }
