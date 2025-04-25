@@ -444,4 +444,26 @@ import Testing
         let state1 = try sim.step(state)
         #expect(state1[index(stock)].isInfinite)
     }
+    
+    @Test mutating func stockCycle() throws {
+        let a = frame.createNode(ObjectType.Stock, name: "a", attributes: ["formula": "10"])
+        let b = frame.createNode(ObjectType.Stock, name: "b", attributes: ["formula": "0"])
+        let atob = frame.createNode(ObjectType.FlowRate, name: "a_to_b", attributes: ["formula": "2"])
+        let btoa = frame.createNode(ObjectType.FlowRate, name: "b_to_a", attributes: ["formula": "1"])
+        frame.createEdge(.Flow, origin: a, target: atob)
+        frame.createEdge(.Flow, origin: atob, target: b)
+        frame.createEdge(.Flow, origin: b, target: btoa)
+        frame.createEdge(.Flow, origin: btoa, target: a)
+        try compile()
+        let sim = StockFlowSimulation(plan)
+        let state = try sim.initialize()
+        let state1 = try sim.step(state)
+        #expect(state1[index(a)] == 8.0)
+        #expect(state1[index(b)] == 2.0)
+
+        let state2 = try sim.step(state1)
+        #expect(state2[index(a)] == 7.0)
+        #expect(state2[index(b)] == 3.0)
+
+    }
 }

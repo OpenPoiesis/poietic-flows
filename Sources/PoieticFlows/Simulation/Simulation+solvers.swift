@@ -134,8 +134,13 @@ extension StockFlowSimulation {
     }
     
 
+    /// Compute a RK method stage.
+    ///
+    /// - Returns: A tuple _(delta, adjustedRates)_ where `delta` is the computed stock net flow
+    /// (vector corresponds to the vector of stocks) and `adjustedFlows` is a vector of size of
+    /// flows vector that is used for debug purposes.
     @inlinable
-    func computeStage(delta: NumericVector, in state: inout SimulationState) throws (SimulationError) -> NumericVector {
+    func computeStage(delta: NumericVector, in state: inout SimulationState) throws (SimulationError) -> (NumericVector, NumericVector) {
         updateStocks(delta: delta, in: &state)
         try updateAuxiliariesAndFlows(in: &state)
         
@@ -145,34 +150,36 @@ extension StockFlowSimulation {
         let delta = computeDerivatives(flows: adjustedFlows,
                                        stocks: stocks,
                                        timeDelta: state.timeDelta)
-        return delta
+        return (delta, adjustedFlows)
     }
     
     /// Solver that integrates using the Runge-Kutta 4th order method.
     @inlinable
     public func integrateWithRK4(_ state: SimulationState) throws (SimulationError) -> SimulationState {
-        // Stage 1
-        // ------------------------------
         let stocks1 = self.stocks(state)
         let estimatedFlows1 = self.flows(state)
         let adjustedFlows1 = self.adjustFlows(flows: estimatedFlows1, stocks: stocks1)
         let k1 = computeDerivatives(flows: adjustedFlows1, stocks: stocks1, timeDelta: state.timeDelta)
 
         var state2 = advance(state, timeDelta: state.timeDelta/2)
-        let k2 = try computeStage(delta: k1, in: &state2)
+        let (k2, adjustedFlows2) = try computeStage(delta: k1, in: &state2)
 
         var state3 = advance(state, timeDelta: state.timeDelta/2)
-        let k3 = try computeStage(delta: k2, in: &state3)
+        let (k3, adjustedFlows3) = try computeStage(delta: k2, in: &state3)
 
         var state4 = advance(state, timeDelta: state.timeDelta)
-        let k4 = try computeStage(delta: k3, in: &state4)
+        let (k4, adjustedFlows4) = try computeStage(delta: k3, in: &state4)
 
         var result = advance(state)
         let finalNetFlow = (k1 + 2*k2 + 2*k3 + k4) / 6
         updateStocks(delta: finalNetFlow, in: &result)
         try updateAuxiliariesAndFlows(in: &result)
 
-        // TODO: Adjusted flows
+        let finalAdjustedFlows = (adjustedFlows1 + 2*adjustedFlows2 + 2*adjustedFlows3 + adjustedFlows4) / 6
+        for (i, flow) in plan.flows.enumerated() {
+            result[flow.adjustedValueIndex] = finalAdjustedFlows[i]
+        }
+        
         // TODO: Post-clamping of non-negative stocks
         
         return result
