@@ -176,23 +176,29 @@ public class StockFlowSimulation: Simulation {
     /// This is the main method that performs the concrete computation using a concrete solver.
     ///
     public func step(_ state: SimulationState) throws (SimulationError) -> SimulationState {
-        // TODO: [WIP] AUX/RATES
-        // TODO: [WIP] Delays
-        
-        var result = state.advanced()
-        
-        setBuiltins(in: &result)
+        let result: SimulationState
         
         switch solver {
-        case .euler: try integrateWithEuler(in: &result)
-        case .rk4: fatalError("RK4 not implemented") // FIXME: try evaluateWithRK4(&state)
+        case .euler: result = try integrateWithEuler(state)
+        case .rk4: result = try integrateWithRK4(state)
         }
-        
-        try evaluateAuxiliariesAndFlows(in: &result)
         
         return result
     }
 
+    /// Creates a copy of a state and advances the time.
+    ///
+    /// The returned state has time-dependent built-in variables updated.
+    ///
+    /// This is a designated method to get a new state before performing computation of the next
+    /// step.
+    ///
+    public func advance(_ state: SimulationState, time: Double? = nil, timeDelta: Double? = nil) -> SimulationState {
+        var newState = state.advanced(time: time, timeDelta: timeDelta)
+        setBuiltins(in: &newState)
+        return newState
+    }
+    
     func evaluateFlows(_ state: SimulationState) -> NumericVector {
         var result = NumericVector(zeroCount: plan.flows.count)
         for (i, flow) in plan.flows.enumerated() {
@@ -201,7 +207,7 @@ public class StockFlowSimulation: Simulation {
         return result
     }
     
-    public func evaluateAuxiliariesAndFlows(in state: inout SimulationState) throws (SimulationError) {
+    public func updateAuxiliariesAndFlows(in state: inout SimulationState) throws (SimulationError) {
         for object in plan.simulationObjects {
             guard object.role == .auxiliary || object.role == .flow else { continue }
             try evaluate(object: object, in: &state)

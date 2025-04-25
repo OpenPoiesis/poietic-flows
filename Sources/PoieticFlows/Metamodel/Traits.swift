@@ -68,10 +68,6 @@ extension Trait {
                       default: Variant(false),
                       abstract: "Flag whether the stock can contain a negative value"
                      ),
-            Attribute("delayed_inflow", type: .bool,
-                      default: Variant(false),
-                      abstract: "Flag whether the inflow of the stock is delayed by one step, when the stock is part of a cycle"
-                     ),
         ]
     )
     

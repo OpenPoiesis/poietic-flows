@@ -6,17 +6,26 @@
 //
 
 extension StockFlowSimulation {
-    /// Adjust the flow rates within a given time unit.
+    /// Adjust the flow rates based on flow scaling method.
+    ///
+    /// - Parameters:
+    ///     - flows: Estimated flow rates – rates as computed by the user-provided computation
+    ///              the model.
+    ///     - stocks: Vector of stock values.
+    ///
+    /// The items of `flows` correspond to the items in the simulation plan's `flows` and the items
+    /// in `stocks` correspond to the items in the simulation plan's `stocks`.
+    /// 
     @inlinable
     func adjustFlows(flows estimated: NumericVector, stocks: NumericVector) -> NumericVector {
         var adjusted = estimated
-
+        
         for (s, stock) in plan.stocks.enumerated() {
             guard !stock.allowsNegative else { continue }
-
+            
             let inflow: Double = estimated[stock.inflows].sum()
             let outflow: Double = estimated[stock.outflows].sum()
-
+            
             let current: Double = stocks[s]
             guard outflow > 0 else { continue }
             
@@ -38,7 +47,14 @@ extension StockFlowSimulation {
         }
         return adjusted
     }
-
+    
+    /// Compute stock derivatives given adjusted flows.
+    ///
+    /// - Parameters:
+    ///     - flows: Flow rates adjusted for non-negative constraints.
+    ///     - stocks: Vector of stock values.
+    ///     - timeDelta: Time increment used for computation of the derivative.
+    ///
     @inlinable
     func computeDerivatives(flows: NumericVector, stocks: NumericVector, timeDelta: Double) -> NumericVector {
         var delta = NumericVector(zeroCount: plan.stocks.count)
@@ -59,6 +75,10 @@ extension StockFlowSimulation {
         return delta
     }
     
+    /// Get a vector with estimated flow rates from the state.
+    ///
+    /// Estimated flows rates are rates computed using user-provided computations in the model.
+    /// Estimated flows need to be adjusted for the constraints before applying.
     @inlinable
     public func flows(_ state: SimulationState) -> NumericVector {
         var flows = NumericVector(zeroCount: plan.flows.count)
@@ -67,7 +87,8 @@ extension StockFlowSimulation {
         }
         return flows
     }
-
+    
+    /// Get a vector with stock values in the simulation state.
     @inlinable
     public func stocks(_ state: SimulationState) -> NumericVector {
         var stocks = NumericVector(zeroCount: plan.stocks.count)
@@ -77,18 +98,12 @@ extension StockFlowSimulation {
         return stocks
     }
     
-    /// Solver that integrates using the Euler method.
+    /// Update the stocks with given derivative (delta).
     ///
+    /// The function also performs a fail-safe clamping of non-negative stocks, setting them to 0 if
+    /// they underflow.
     @inlinable
-    public func integrateWithEuler(in state: inout SimulationState) throws (SimulationError) {
-        let estimatedFlows = self.flows(state)
-        let stocks = self.stocks(state)
-       
-        let adjustedFlows = adjustFlows(flows: estimatedFlows, stocks: stocks)
-
-        let delta = computeDerivatives(flows: adjustedFlows,
-                                       stocks: stocks,
-                                       timeDelta: state.timeDelta)
+    func updateStocks(delta: NumericVector, in state: inout SimulationState) {
         for (i, stock) in plan.stocks.enumerated() {
             let newStock = state[stock.variableIndex] + delta[i]
             if stock.allowsNegative {
@@ -98,9 +113,68 @@ extension StockFlowSimulation {
                 state[stock.variableIndex] = max(0, newStock)
             }
         }
-
+    }
+    
+    /// Solver that integrates using the Euler method.
+    ///
+    @inlinable
+    public func integrateWithEuler(_ state: SimulationState) throws (SimulationError) -> SimulationState {
+        var result = advance(state)
+        let stocks = self.stocks(state)
+        let estimatedFlows = self.flows(state)
+        let adjustedFlows = adjustFlows(flows: estimatedFlows, stocks: stocks)
+        
+        let netFlow = computeDerivatives(flows: adjustedFlows, stocks: stocks, timeDelta: state.timeDelta)
+        updateStocks(delta: netFlow, in: &result)
+        try updateAuxiliariesAndFlows(in: &result)
         for (i, flow) in plan.flows.enumerated() {
-            state[flow.adjustedValueIndex] = adjustedFlows[i]
+            result[flow.adjustedValueIndex] = adjustedFlows[i]
         }
+        return result
+    }
+    
+
+    @inlinable
+    func computeStage(delta: NumericVector, in state: inout SimulationState) throws (SimulationError) -> NumericVector {
+        updateStocks(delta: delta, in: &state)
+        try updateAuxiliariesAndFlows(in: &state)
+        
+        let estimatedFlows = self.flows(state)
+        let stocks = self.stocks(state)
+        let adjustedFlows = adjustFlows(flows: estimatedFlows, stocks: stocks)
+        let delta = computeDerivatives(flows: adjustedFlows,
+                                       stocks: stocks,
+                                       timeDelta: state.timeDelta)
+        return delta
+    }
+    
+    /// Solver that integrates using the Runge-Kutta 4th order method.
+    @inlinable
+    public func integrateWithRK4(_ state: SimulationState) throws (SimulationError) -> SimulationState {
+        // Stage 1
+        // ------------------------------
+        let stocks1 = self.stocks(state)
+        let estimatedFlows1 = self.flows(state)
+        let adjustedFlows1 = self.adjustFlows(flows: estimatedFlows1, stocks: stocks1)
+        let k1 = computeDerivatives(flows: adjustedFlows1, stocks: stocks1, timeDelta: state.timeDelta)
+
+        var state2 = advance(state, timeDelta: state.timeDelta/2)
+        let k2 = try computeStage(delta: k1, in: &state2)
+
+        var state3 = advance(state, timeDelta: state.timeDelta/2)
+        let k3 = try computeStage(delta: k2, in: &state3)
+
+        var state4 = advance(state, timeDelta: state.timeDelta)
+        let k4 = try computeStage(delta: k3, in: &state4)
+
+        var result = advance(state)
+        let finalNetFlow = (k1 + 2*k2 + 2*k3 + k4) / 6
+        updateStocks(delta: finalNetFlow, in: &result)
+        try updateAuxiliariesAndFlows(in: &result)
+
+        // TODO: Adjusted flows
+        // TODO: Post-clamping of non-negative stocks
+        
+        return result
     }
 }

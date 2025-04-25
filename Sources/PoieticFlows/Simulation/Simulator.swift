@@ -121,6 +121,7 @@ public class Simulator {
     ///
     @discardableResult
     public func initializeState(time: Double? = nil, override: [ObjectID:Double] = [:]) throws -> SimulationState {
+        // TODO: Rename to createInitialState()
         currentStep = 0
         currentTime = time ?? parameters.initialTime
 

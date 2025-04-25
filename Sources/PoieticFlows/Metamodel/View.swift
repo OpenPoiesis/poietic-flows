@@ -168,6 +168,7 @@ public class StockFlowView<F: Frame>{
     /// ```
     ///
     public func stockAdjacencies() -> [StockAdjacency] {
+        // FIXME: [WIP] Reconsider necessity of this one
         var adjacencies: [StockAdjacency] = []
 
         let flowNodes: [DesignObject] = frame.filter {
@@ -183,12 +184,7 @@ public class StockFlowView<F: Frame>{
                 continue
             }
 
-            let delayedInflow = try! frame[drains]["delayed_inflow"]!.boolValue()
-            
-            let adjacency = StockAdjacency(id: flow.id,
-                                           origin: drains,
-                                           target: fills,
-                                           targetHasDelayedInflow: delayedInflow)
+            let adjacency = StockAdjacency(id: flow.id, origin: drains, target: fills)
 
             adjacencies.append(adjacency)
         }
