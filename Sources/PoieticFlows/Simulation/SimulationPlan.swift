@@ -176,17 +176,6 @@ public struct SimulationPlan {
         
     }
     
-    /// Indices of variables representing stocks.
-    ///
-    // TODO: [WIP] remove this or make inlinable
-    public var stockIndices: [SimulationState.Index] {
-        stocks.map { $0.variableIndex }
-    }
-    
-//    public var flowIndices: [SimulationState.Index] {
-//        flows.map { $0.variableIndex }
-//    }
-    
     /// Get a compiled variable by its name.
     ///
     /// This function is mostly for user-facing tools that would like to

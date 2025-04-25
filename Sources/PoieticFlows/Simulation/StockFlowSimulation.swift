@@ -6,7 +6,7 @@
 //
 
 // FIXME: [IMPORTANT] Test for dt = 0
-// TODO: [WIP] Halt on negative inflow or outflow (optional)
+// TODO: Halt on negative inflow or outflow (optional)
 
 import PoieticCore
 
@@ -58,7 +58,6 @@ public class StockFlowSimulation: Simulation {
     /// - Returns: Newly initialised simulation state.
     ///
     public func initialize(time: Double=0, timeDelta: Double=1.0, override: [ObjectID:Variant]=[:])  throws (SimulationError) -> SimulationState {
-        // TODO: [WIP] Move SiulationState.init() code in here, free it from the model
         var state = SimulationState(count: plan.stateVariables.count,
                                     step: 0,
                                     time: time,

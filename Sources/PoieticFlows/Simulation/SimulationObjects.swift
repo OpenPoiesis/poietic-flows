@@ -83,7 +83,6 @@ public enum ComputationalRepresentation: CustomStringConvertible {
 ///   ``StockFlowSimulation/evaluate(expression:with:)``
 ///
 public struct SimulationObject: CustomStringConvertible, Identifiable {
-    // FIXME: [REFACTORING] Rename to ComputationObject?
     /// ID of the object, usually a node, that is being represented.
     ///
     public let id: ObjectID
@@ -118,27 +117,14 @@ public struct SimulationObject: CustomStringConvertible, Identifiable {
     ///
     public let variableIndex: Int
     
-    // TODO: [WIP] Review usage
     public let role: Role
-
-    /// Index of a variable holding adjusted value after computation.
-    ///
-    /// Some of the nodes, such as _flow rates_ might have different value between expected and the
-    /// actually applied. For example, flow rate from a non-negative stock might be capped at the
-    /// actual stock content.
-    ///
-    // TODO: [WIP] Review usage
-//    public let adjustedVariableIndex: Int?
 
     /// Type of the variable value.
     ///
-    // TODO: [WIP] Review usage
     public var valueType: ValueType
-    
     
     /// Name of the object.
     ///
-    // TODO: [WIP] Review usage
     public let name: String
     
     public var description: String {

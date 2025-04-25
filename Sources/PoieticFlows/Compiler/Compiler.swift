@@ -325,7 +325,6 @@ public class Compiler {
     }
    
     func collectAndSortObjects() throws (CompilerError) {
-        // TODO: [WIP] Deprecate view.simulationNodes (?)
         let unorderedSimulationNodes = view.simulationNodes
         var homonyms: [String: [ObjectID]] = [:]
         
@@ -445,7 +444,7 @@ public class Compiler {
             fatalError("Unknown simulation object type \(object.type.name), object: \(object.id)")
         }
         
-        // TODO: [WIP] We must have name here already
+        // TODO: We must have name here already, this is redundant fetching
         guard let name = object.name else {
             throw .attributeExpectationFailure(object.id, "name")
         }
