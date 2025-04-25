@@ -38,6 +38,26 @@ import PoieticCore
 /// - SeeAlso: ``Compiler/compile()``, ``StockFlowSimulation``,
 ///
 public struct SimulationPlan {
+    internal init(simulationObjects: [SimulationObject] = [],
+                  stateVariables: [StateVariable] = [],
+                  builtins: BoundBuiltins = BoundBuiltins(),
+                  timeVariableIndex: SimulationState.Index,
+                  stocks: [BoundStock] = [],
+                  flows: [BoundFlow] = [],
+                  charts: [Chart] = [],
+                  valueBindings: [CompiledControlBinding] = [],
+                  simulationParameters: SimulationParameters? = nil) {
+        self.simulationObjects = simulationObjects
+        self.stateVariables = stateVariables
+        self.builtins = builtins
+        self.timeVariableIndex = timeVariableIndex
+        self.stocks = stocks
+        self.flows = flows
+        self.charts = charts
+        self.valueBindings = valueBindings
+        self.simulationParameters = simulationParameters
+    }
+    
     /// List of objects that are considered in the computation computed, ordered by computational
     /// dependency.
     ///
@@ -52,7 +72,7 @@ public struct SimulationPlan {
     /// - SeeAlso: ``variableIndex(of:)``
     ///
     public let simulationObjects: [SimulationObject]
-
+    
     /// List of simulation state variables.
     ///
     /// The list of state variables contain values of builtins, values of
@@ -82,7 +102,7 @@ public struct SimulationPlan {
     /// - SeeAlso: ``stateVariables``, ``CompiledBuiltin``, ``/PoieticCore/Variable``,
     ///   ``FlowsMetamodel``
     ///
-    public let builtins: CompiledBuiltinState
+    public let builtins: BoundBuiltins
     
     /// Index of _time_ variable within the state variables.
     ///
@@ -104,18 +124,20 @@ public struct SimulationPlan {
     ///
     public let stocks: [BoundStock]
     
+    public let flows: [BoundFlow]
+    
     /// List of charts.
     ///
     /// This property is not used during computation, it is provided for
     /// consumers of the simulation state or simulation result.
     ///
     public let charts: [Chart]
-
-
+    
+    
     /// Compiled bindings of controls to their value objects.
     ///
     public let valueBindings: [CompiledControlBinding]
-        
+    
     /// Collection of default values for running a simulation.
     ///
     /// See ``SimulationParameters`` for more information.
@@ -138,7 +160,7 @@ public struct SimulationPlan {
         }
         return first.variableIndex
     }
-   
+    
     /// Get a simulation variable for an object with given ID, if exists.
     ///
     /// This function is not used during computation, it is provided for
@@ -152,12 +174,6 @@ public struct SimulationPlan {
     public func simulationObject(_ id: ObjectID) -> SimulationObject? {
         return simulationObjects.first { $0.id == id }
         
-    }
-
-    /// Indices of variables representing stocks.
-    ///
-    public var stockIndices: [SimulationState.Index] {
-        stocks.map { $0.variableIndex }
     }
     
     /// Get a compiled variable by its name.
@@ -180,7 +196,7 @@ public struct SimulationPlan {
         guard let object = simulationObjects.first(where: { $0.name == name}) else {
             return nil
         }
-                 
+        
         return object
     }
     
@@ -191,11 +207,18 @@ public struct SimulationPlan {
     ///
     /// - Precondition: The plan must contain a stock with given ID.
     ///
-    public func stockIndex(_ id: ObjectID) -> NumericVector.Index {
+    func stockIndex(_ id: ObjectID) -> NumericVector.Index {
         guard let index = stocks.firstIndex(where: { $0.id == id }) else {
             preconditionFailure("The plan does not contain stock with ID \(id)")
         }
         return index
     }
+    func flowIndex(_ id: ObjectID) -> NumericVector.Index {
+        guard let index = flows.firstIndex(where: { $0.id == id }) else {
+            preconditionFailure("The plan does not contain flow with ID \(id)")
+        }
+        return index
+    }
+
 }
 

@@ -51,7 +51,7 @@ public protocol Simulation {
     /// - SeeAlso: ``Simulator/initializeState(time:override:)``,
     ///   ``Simulator/updateBuiltins(_:)````
     ///
-    func update(_ state: inout SimulationState) throws (SimulationError)
+    func step(_ state: SimulationState) throws (SimulationError) -> SimulationState
 
 }
 

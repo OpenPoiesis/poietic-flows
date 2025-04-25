@@ -11,6 +11,8 @@ import PoieticCore
 /// be computed.
 ///
 public enum ComputationalRepresentation: CustomStringConvertible {
+//    case stock(BoundStock)
+//    case flow(BoundFlow)
     /// Arithmetic formula representation of a node.
     ///
     case formula(BoundExpression)
@@ -32,6 +34,10 @@ public enum ComputationalRepresentation: CustomStringConvertible {
     
     public var valueType: ValueType {
         switch self {
+//        case .stock(_):
+//            return .double
+//        case .flow(_):
+//            return .double
         case let .formula(formula):
             return formula.valueType
         case .graphicalFunction(_):
@@ -47,6 +53,10 @@ public enum ComputationalRepresentation: CustomStringConvertible {
 
     public var description: String {
         switch self {
+//        case let .stock(stock):
+//            return "\(stock)"
+//        case let .flow(flow):
+//            return "\(flow)"
         case let .formula(formula):
             return "\(formula)"
         case let .graphicalFunction(fun):
@@ -76,15 +86,30 @@ public struct SimulationObject: CustomStringConvertible, Identifiable {
     /// ID of the object, usually a node, that is being represented.
     ///
     public let id: ObjectID
+    
+    /// Information denoting how the object is being computed.
+    ///
+    public let computation: ComputationalRepresentation
 
-    public enum SimulationObjectType: Codable {
+    /// Role in the Stock-Flow simulation.
+    ///
+    /// Role determines when and how the simulation object is being computed.
+    ///
+    /// - `stock` – computation defined through formula is done only during initialisation phase
+    /// - `flow` – computation is performed during initialisation and after stock integration
+    /// - `auxiliary` – same rule as flow applies
+    ///
+    public enum Role: Codable {
+        /// Computation defined through formula is done only during initialisation phase.
         case stock
+        /// Computation is performed during initialisation and after stock integration,
+        /// same as auxiliary.
         case flow
+        /// Computation is performed during initialisation and after stock integration,
+        /// same as flow.
         case auxiliary
     }
    
-    public let type: SimulationObjectType
-
     /// Index of the variable representing the object's state in the
     /// simulation state.
     ///
@@ -92,13 +117,11 @@ public struct SimulationObject: CustomStringConvertible, Identifiable {
     ///
     public let variableIndex: Int
     
+    public let role: Role
+
     /// Type of the variable value.
     ///
     public var valueType: ValueType
-    
-    /// Information denoting how the object is being computed.
-    ///
-    public let computation: ComputationalRepresentation
     
     /// Name of the object.
     ///
@@ -109,15 +132,24 @@ public struct SimulationObject: CustomStringConvertible, Identifiable {
     }
 }
 
-/// Indices of built-in variables.
+/// Indices of built-in variables bound to a simulation plan.
 ///
 /// - SeeAlso: ``BuiltinVariable``
 ///
-public struct CompiledBuiltinState {
-    // NOTE: Synchronise with ``StockFlowSimulation/updateBuiltins``
+public struct BoundBuiltins {
+    // NOTE: Synchronise with ``StockFlowSimulation/setBuiltins``
+    let step: SimulationState.Index
     let time: SimulationState.Index
     let timeDelta: SimulationState.Index
-    let step: SimulationState.Index
+
+    internal init(step: SimulationState.Index = 0,
+                  time: SimulationState.Index = 1,
+                  timeDelta: SimulationState.Index = 2) {
+        self.step = step
+        self.time = time
+        self.timeDelta = timeDelta
+    }
+    
 }
 
 /// Stock bound to a simulation plan and a simulation state.
@@ -145,33 +177,60 @@ public struct BoundStock {
     ///
     public let allowsNegative: Bool
     
-    /// Flag that controls how flow for the stock is being computed when the
-    /// stock is non-negative.
+    /// Indices of flows from the list of flows that represent stock's inflows.
     ///
-    /// If the stock is non-negative, normally its outflow depends on the
-    /// inflow. This is not a problem unless there is a loop of flows between
-    /// stocks. In that case, to proceed with computation we need to break the
-    /// loop. Stock being with 'delayed inflow' means that the outflow will not
-    /// immediately depend on the inflow. The outflow will be computed from
-    /// the actual stock value, ignoring the inflow. The inflow will be added
-    /// later to the stock.
+    /// To get flow details:
     ///
-    public let delayedInflow: Bool
+    /// ```swift
+    /// let plan: SimulationPlan // Plan is given
+    /// let stock: BoundStock    // Stock is given
+    /// for index in inflows {
+    ///     let inflow = plan.flows[index]
+    ///     let value = state[inflow.estimatedValueIndex]
+    ///     ...
+    /// }
+    /// ```
+    public let inflows: [Int]
 
-    /// List indices of simulation variables representing flows
-    /// which fill the stock.
+    /// Indices of flows from the list of flows that represent stock's inflows.
     ///
-    /// - SeeAlso: ``StockFlowSimulation/computeStockDelta(A
+    /// To get flow details:
     ///
-    public let inflows: [SimulationState.Index]
-
-    /// List indices of simulation variables representing flows
-    /// which drain the stock.
-    ///
-    /// - SeeAlso: ``StockFlowSimulation/computeStockDelta(A
-    ///
-    public let outflows: [SimulationState.Index]
+    /// ```swift
+    /// let plan: SimulationPlan // Plan is given
+    /// let stock: BoundStock    // Stock is given
+    /// for index in outflows {
+    ///     let inflow = plan.flows[index]
+    ///     let value = state[inflow.estimatedValueIndex]
+    ///     ...
+    /// }
+    /// ```
+    public let outflows: [Int]
 }
+
+/// Represents a flow rate between stocks.
+public struct BoundFlow {
+    /// ID of object that represents this flow rate.
+    public let id: ObjectID
+
+    /// Index of a variable in the state holding value of the flow rate that is expected.
+    public let estimatedValueIndex: SimulationState.Index
+
+    /// Index of a variable in the state holding value of the flow rate that was used in the
+    /// computation.
+    ///
+    /// This value might be different from expected value if a non-negative stocks are used.
+    public let adjustedValueIndex: SimulationState.Index
+    
+    public let priority: Int
+    
+    /// Index of a stock in bound stocks that the flow drains.
+    public let drains: ObjectID?
+    
+    /// Index of a stock in bound stocks that the flow fills.
+    public let fills: ObjectID?
+}
+
 
 /// A structure representing a concrete instance of a graphical function
 /// in the context of a graph.
@@ -254,7 +313,4 @@ public struct StockAdjacency: EdgeProtocol, Identifiable {
     public let origin: ObjectID
     /// ID of a stock being filled by the flow.
     public let target: ObjectID
-
-    /// Flag whether the target has delayed inflow.
-    public let targetHasDelayedInflow: Bool
 }

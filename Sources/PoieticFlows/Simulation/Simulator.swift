@@ -121,6 +121,7 @@ public class Simulator {
     ///
     @discardableResult
     public func initializeState(time: Double? = nil, override: [ObjectID:Double] = [:]) throws -> SimulationState {
+        // TODO: Rename to createInitialState()
         currentStep = 0
         currentTime = time ?? parameters.initialTime
 
@@ -162,14 +163,12 @@ public class Simulator {
         
         // 1. Advance time and prepare
         // -------------------------------------------------------
-        var result = currentState.advance()
+        // 2. Computation
+        // -------------------------------------------------------
+        let result = try simulation.step(currentState)
         currentStep = result.step
         currentTime = result.time
         
-        // 2. Computation
-        // -------------------------------------------------------
-        try simulation.update(&result)
-
         // 3. Finalisation
         // -------------------------------------------------------
 

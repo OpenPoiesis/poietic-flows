@@ -48,7 +48,8 @@ public class StockFlowView<F: Frame>{
     public var simulationNodes: [DesignObject] {
         frame.filter {
             $0.structure.type == .node
-            && ($0.type.hasTrait(Trait.Formula)
+            && ($0.type === ObjectType.Stock
+                || $0.type === ObjectType.FlowRate
                 || $0.type.hasTrait(Trait.Auxiliary))
         }
     }
@@ -72,13 +73,6 @@ public class StockFlowView<F: Frame>{
     // Fills/drains queries
     // ---------------------------------------------------------------------
     //
-    /// List of all edges that fill a stocks. It originates in a flow,
-    /// and terminates in a stock.
-    ///
-    public var flowEdges: [EdgeObject] {
-        frame.filterEdges { $0.object.type === ObjectType.Flow }
-    }
-    
     /// Selector for an edge originating in a flow and ending in a stock denoting
     /// which stock the flow fills. There must be only one of such edges
     /// originating in a flow.
@@ -183,12 +177,7 @@ public class StockFlowView<F: Frame>{
                 continue
             }
 
-            let delayedInflow = try! frame[drains]["delayed_inflow"]!.boolValue()
-            
-            let adjacency = StockAdjacency(id: flow.id,
-                                           origin: drains,
-                                           target: fills,
-                                           targetHasDelayedInflow: delayedInflow)
+            let adjacency = StockAdjacency(id: flow.id, origin: drains, target: fills)
 
             adjacencies.append(adjacency)
         }
