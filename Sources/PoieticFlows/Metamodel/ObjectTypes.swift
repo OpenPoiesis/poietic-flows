@@ -235,13 +235,12 @@ extension ObjectType {
     /// the target of the node is a node representing a value.
     ///
     public static let ChartSeries = ObjectType(
-        // TODO: Origin: Chart, target: Expression
         name: "ChartSeries",
         structuralType: .edge,
         traits: [
             Trait.ChartSeries,
         ],
-        abstract: "Edge between a control and its target."
+        abstract: "Edge between a chart and an object with time series"
     )
     // ---------------------------------------------------------------------
 

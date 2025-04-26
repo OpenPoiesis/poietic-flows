@@ -14,15 +14,17 @@ import Testing
     // TODO: Split to Compiler and DomainView test cases
     
     let db: Design
-    let frame: TransientFrame
+    let trans: TransientFrame
     
     init() throws {
         db = Design(metamodel: FlowsMetamodel)
-        frame = db.createFrame()
+        trans = db.createFrame()
     }
         
     @Test func testInvalidInput2() throws {
-        let broken = frame.createNode(.Stock, name: "broken", attributes: ["formula": "price"])
+        let broken = trans.createNode(.Stock, name: "broken", attributes: ["formula": "price"])
+        let frame = try! db.validate(try! db.accept(trans))
+        
         let view = StockFlowView(frame)
         
         let resolved = view.resolveParameters(broken.id, required:["price"])
@@ -32,13 +34,13 @@ import Testing
     }
     
     @Test func testUnusedInputs() throws {
-        let used = frame.createNode(.Auxiliary, name: "used", attributes: ["formula": "0"])
-        let unused = frame.createNode(.Auxiliary, name: "unused", attributes: ["formula": "0"])
-        let tested = frame.createNode(.Auxiliary, name: "tested", attributes: ["formula": "used"])
+        let used = trans.createNode(.Auxiliary, name: "used", attributes: ["formula": "0"])
+        let unused = trans.createNode(.Auxiliary, name: "unused", attributes: ["formula": "0"])
+        let tested = trans.createNode(.Auxiliary, name: "tested", attributes: ["formula": "used"])
         
-        let _ = frame.createEdge(.Parameter, origin: used, target: tested)
-        let unusedEdge = frame.createEdge(.Parameter, origin: unused, target: tested)
-        
+        let _ = trans.createEdge(.Parameter, origin: used, target: tested)
+        let unusedEdge = trans.createEdge(.Parameter, origin: unused, target: tested)
+        let frame = try! db.validate(try! db.accept(trans))
         let view = StockFlowView(frame)
         
         // TODO: Get the required list from the compiler
@@ -50,10 +52,11 @@ import Testing
     }
     
     @Test func testUnknownParameters() throws {
-        let known = frame.createNode(ObjectType.Auxiliary, name: "known", attributes: ["formula": "0"])
-        let tested = frame.createNode(ObjectType.Auxiliary, name: "tested", attributes: ["formula": "known + unknown"])
-        let _ = frame.createEdge(ObjectType.Parameter, origin: known, target: tested)
+        let known = trans.createNode(ObjectType.Auxiliary, name: "known", attributes: ["formula": "0"])
+        let tested = trans.createNode(ObjectType.Auxiliary, name: "tested", attributes: ["formula": "known + unknown"])
+        let _ = trans.createEdge(ObjectType.Parameter, origin: known, target: tested)
         
+        let frame = try! db.validate(try! db.accept(trans))
         let view = StockFlowView(frame)
         
         let resolved = view.resolveParameters(tested.id, required:["known", "unknown"])
@@ -64,13 +67,14 @@ import Testing
     }
     
     @Test func testFlowFillsAndDrains() throws {
-        let flow = frame.createNode(ObjectType.FlowRate, name: "f", attributes: ["formula": "1"])
-        let source = frame.createNode(ObjectType.Stock, name: "source", attributes: ["formula": "0"])
-        let sink = frame.createNode(ObjectType.Stock, name: "sink", attributes: ["formula": "0"])
+        let flow = trans.createNode(ObjectType.FlowRate, name: "f", attributes: ["formula": "1"])
+        let source = trans.createNode(ObjectType.Stock, name: "source", attributes: ["formula": "0"])
+        let sink = trans.createNode(ObjectType.Stock, name: "sink", attributes: ["formula": "0"])
         
-        frame.createEdge(ObjectType.Flow, origin: source, target: flow)
-        frame.createEdge(ObjectType.Flow, origin: flow, target: sink)
+        trans.createEdge(ObjectType.Flow, origin: source, target: flow)
+        trans.createEdge(ObjectType.Flow, origin: flow, target: sink)
         
+        let frame = try! db.validate(try! db.accept(trans))
         let view = StockFlowView(frame)
         
         #expect(view.fills(flow.id) == sink.id)
@@ -79,18 +83,19 @@ import Testing
    
     @Test func testStockAdjacency() throws {
         // TODO: Test loops and delayed inflow
-        let a = frame.createNode(ObjectType.Stock, name: "a", attributes: ["formula": "0"])
-        let b = frame.createNode(ObjectType.Stock, name: "b", attributes: ["formula": "0"])
-        let c = frame.createNode(ObjectType.Stock, name: "c", attributes: ["formula": "0"])
-        let flow = frame.createNode(ObjectType.FlowRate, name: "f", attributes: ["formula": "0"])
-        let inflow = frame.createNode(ObjectType.FlowRate, name: "inflow", attributes: ["formula": "0"])
-        let outflow = frame.createNode(ObjectType.FlowRate, name: "outflow", attributes: ["formula": "0"])
+        let a = trans.createNode(ObjectType.Stock, name: "a", attributes: ["formula": "0"])
+        let b = trans.createNode(ObjectType.Stock, name: "b", attributes: ["formula": "0"])
+        let c = trans.createNode(ObjectType.Stock, name: "c", attributes: ["formula": "0"])
+        let flow = trans.createNode(ObjectType.FlowRate, name: "f", attributes: ["formula": "0"])
+        let inflow = trans.createNode(ObjectType.FlowRate, name: "inflow", attributes: ["formula": "0"])
+        let outflow = trans.createNode(ObjectType.FlowRate, name: "outflow", attributes: ["formula": "0"])
 
-        frame.createEdge(ObjectType.Flow, origin: a, target: flow)
-        frame.createEdge(ObjectType.Flow, origin: flow, target: b)
-        frame.createEdge(ObjectType.Flow, origin: inflow, target: c)
-        frame.createEdge(ObjectType.Flow, origin: c, target: outflow)
+        trans.createEdge(ObjectType.Flow, origin: a, target: flow)
+        trans.createEdge(ObjectType.Flow, origin: flow, target: b)
+        trans.createEdge(ObjectType.Flow, origin: inflow, target: c)
+        trans.createEdge(ObjectType.Flow, origin: c, target: outflow)
 
+        let frame = try! db.validate(try! db.accept(trans))
         let view = StockFlowView(frame)
 
         let result = view.stockAdjacencies()

@@ -136,7 +136,7 @@ public class Compiler {
     public let frame: ValidatedFrame
     
     /// Flows domain view of the frame.
-    public let view: StockFlowView<ValidatedFrame>
+    public let view: StockFlowView
     
     // MARK: - Compiler State
     // -----------------------------------------------------------------

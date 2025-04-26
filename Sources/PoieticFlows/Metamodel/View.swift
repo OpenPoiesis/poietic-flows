@@ -17,6 +17,16 @@ public enum ParameterStatus:Equatable {
     case used(node: ObjectID, edge: ObjectID)
 }
 
+/// Information about node parameters.
+///
+/// The status is provided by the function ``resolveParameters(_:required:)``.
+///
+public struct ResolvedParameters {
+    public let missing: [String]
+    // TODO: Change to [ObjectID] for edges
+    public let unused: [EdgeObject]
+}
+
 
 /// View of Stock-and-Flow domain-specific aspects of the design.
 ///
@@ -26,16 +36,14 @@ public enum ParameterStatus:Equatable {
 /// The view assumes that the frame conforms to the metamodel and satisfies all of the
 /// metamodel constraints.
 ///
-public class StockFlowView<F: Frame>{
-    public typealias ViewedFrame = F
-    
+public class StockFlowView {
     /// Graph that the view projects.
     ///
-    public let frame: ViewedFrame
+    public let frame: ValidatedFrame
     
     /// Create a new view on top of a graph.
     ///
-    public init(_ frame: ViewedFrame) {
+    public init(_ frame: ValidatedFrame) {
         self.frame = frame
     }
     
@@ -46,9 +54,8 @@ public class StockFlowView<F: Frame>{
     /// - SeeAlso: ``StateVariable``, ``CompiledModel``
     ///
     public var simulationNodes: [DesignObject] {
-        frame.filter {
-            $0.structure.type == .node
-            && ($0.type === ObjectType.Stock
+        frame.nodes.filter {
+            ($0.type === ObjectType.Stock
                 || $0.type === ObjectType.FlowRate
                 || $0.type.hasTrait(Trait.Auxiliary))
         }
@@ -107,16 +114,6 @@ public class StockFlowView<F: Frame>{
         }?.origin
     }
 
-    /// Information about node parameters.
-    ///
-    /// The status is provided by the function ``resolveParameters(_:required:)``.
-    ///
-    public struct ResolvedParameters {
-        public let missing: [String]
-        // TODO: Change to [ObjectID] for edges
-        public let unused: [EdgeObject]
-    }
-
     /// Resolve missing and unused parameter connections.
     ///
     /// The Stock and Flow model requires that parameters are connected to the nodes where they are
@@ -164,9 +161,8 @@ public class StockFlowView<F: Frame>{
     public func stockAdjacencies() -> [StockAdjacency] {
         var adjacencies: [StockAdjacency] = []
 
-        let flowNodes: [DesignObject] = frame.filter {
-                $0.structure.type == .node
-                && $0.type === ObjectType.FlowRate
+        let flowNodes: [DesignObject] = frame.nodes.filter {
+                $0.type === ObjectType.FlowRate
             }
 
         for flow in flowNodes {
