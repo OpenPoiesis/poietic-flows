@@ -49,6 +49,7 @@ extension Metamodel {
             Trait.Control,
             Trait.Simulation,
             Trait.BibliographicalReference,
+            Trait.Orderable,
         ],
         
         // NOTE: If we were able to use Mirror on types, we would not need this

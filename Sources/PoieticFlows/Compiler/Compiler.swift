@@ -4,30 +4,9 @@
 //
 //  Created by Stefan Urbanek on 21/06/2022.
 
+// TODO: Add compileExpressions() -> [ObjectID:UnboundExpression], make it independent
+// TODO: Add resolvedParameters(...) -> something, make it independent (for auto-connect)
 // TODO: Remove checks that are not necessary with ValidatedFrame (safely make them preconditions/fatalErrors)
-
-/*
- TODO: Split the file in the following:
-    Compiler Core (Compiler.swift):
-        Main compiler class
-         Public interface (compile())
-         High-level compilation phases
-    Expression Handling (Compiler+Expressions.swift):
-         parseExpressions()
-         compileFormulaObject()
-         bindExpression() (though this is in a separate file already)
-    Node Type Compilation (Compiler+Nodes.swift):
-         compileGraphicalFunctionNode()
-         compileDelayNode()
-         compileSmoothNode()
-    Validation (Compiler+Validation.swift):
-        validateFormulaParameterConnections()
-        Name validation checks
-    Stock/Flow Handling (Compiler+Stocks.swift):
-        compileStocksAndFlows()
-        Stock adjacency calculations
- 
- */
 
 import PoieticCore
 

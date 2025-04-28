@@ -158,7 +158,7 @@ extension ObjectType {
         name: "Chart",
         structuralType: .node,
         traits: [
-            Trait.Name,
+            Trait.Orderable,
             Trait.Chart,
         ]
     )
@@ -238,6 +238,7 @@ extension ObjectType {
         name: "ChartSeries",
         structuralType: .edge,
         traits: [
+            Trait.Orderable,
             Trait.ChartSeries,
         ],
         abstract: "Edge between a chart and an object with time series"
@@ -252,6 +253,7 @@ extension ObjectType {
         traits: [
             Trait.Name,
             Trait.Documentation,
+            Trait.Orderable,
         ]
         
         // Outgoing edges: ValueBinding with attribute "value"
