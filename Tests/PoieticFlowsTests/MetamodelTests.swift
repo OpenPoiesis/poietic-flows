@@ -16,14 +16,14 @@ import Testing
     let checker: ConstraintChecker
 
     init() throws {
-        self.design = Design(metamodel: FlowsMetamodel)
+        self.design = Design(metamodel: StockFlowMetamodel)
         self.frame = design.createFrame()
         self.checker = ConstraintChecker(design.metamodel)
     }
     
 
     @Test func testUniqueNames() throws {
-        for type in FlowsMetamodel.types {
+        for type in StockFlowMetamodel.types {
             var attributes: [String:[String]] = [:]
 
             for trait in type.traits {
@@ -38,7 +38,7 @@ import Testing
     }
     
     @Test func metamodelTypeTraits() throws {
-        let metamodel = FlowsMetamodel
+        let metamodel = StockFlowMetamodel
         for type in metamodel.types {
             for trait in type.traits {
                 #expect(metamodel.trait(name: trait.name) != nil, "Missing trait \(trait.name)")

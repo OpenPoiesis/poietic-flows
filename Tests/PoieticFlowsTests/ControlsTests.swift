@@ -16,7 +16,7 @@ final class TestControls: XCTestCase {
     var model: SimulationPlan!
     
     override func setUp() {
-        design = Design(metamodel: FlowsMetamodel.self)
+        design = Design(metamodel: StockFlowMetamodel.self)
         frame = design.createFrame()
     }
     

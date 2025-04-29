@@ -21,7 +21,7 @@ extension Metamodel {
     /// - SeeAlso: `Metamodel` protocol description for more information and reasons
     /// behind this approach of describing the metamodel.
     ///
-    public static let StockFlow = Metamodel(
+    public static let StockFlowBase = Metamodel(
         name: "StockFlow",
         /// List of components that are used in the Stock and Flow models.
         ///
@@ -147,8 +147,7 @@ extension Metamodel {
     )
 }
 
-// FIXME: [IMPORTANT] There is confusion between FlowsMetamodel and Metamodel.StockFlow, name one as -base and other as -complete or -user
-public let FlowsMetamodel = Metamodel(
-    name: "Flows",
-    merging: Metamodel.Basic, Metamodel.StockFlow
+public let StockFlowMetamodel = Metamodel(
+    name: "StockFlow",
+    merging: Metamodel.Basic, Metamodel.StockFlowBase
 )

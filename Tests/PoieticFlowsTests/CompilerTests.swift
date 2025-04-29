@@ -31,7 +31,7 @@ extension TransientFrame {
     let frame: TransientFrame
     
     init() throws {
-        self.design = Design(metamodel: FlowsMetamodel)
+        self.design = Design(metamodel: StockFlowMetamodel)
         self.frame = design.createFrame()
     }
     

@@ -14,7 +14,7 @@ final class TestSimulator: XCTestCase {
     var frame: TransientFrame!
     
     override func setUp() {
-        design = Design(metamodel: FlowsMetamodel)
+        design = Design(metamodel: StockFlowMetamodel)
         frame = design.createFrame()
     }
     

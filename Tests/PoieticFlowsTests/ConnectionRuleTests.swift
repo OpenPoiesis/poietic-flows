@@ -14,7 +14,7 @@ import Testing
     let checker: ConstraintChecker
     
     init() throws {
-        self.metamodel = Metamodel.StockFlow
+        self.metamodel = Metamodel.StockFlowBase
         self.design = Design(metamodel: self.metamodel)
         self.checker = ConstraintChecker(metamodel)
     }

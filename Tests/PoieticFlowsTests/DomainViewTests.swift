@@ -17,7 +17,7 @@ import Testing
     let trans: TransientFrame
     
     init() throws {
-        db = Design(metamodel: FlowsMetamodel)
+        db = Design(metamodel: StockFlowMetamodel)
         trans = db.createFrame()
     }
         
