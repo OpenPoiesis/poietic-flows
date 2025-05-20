@@ -82,10 +82,10 @@ public enum ComputationalRepresentation: CustomStringConvertible {
 /// - SeeAlso: ``ComputationalRepresentation``,
 ///   ``StockFlowSimulation/evaluate(expression:with:)``
 ///
-public struct SimulationObject: CustomStringConvertible, Identifiable {
+public struct SimulationObject: CustomStringConvertible {
     /// ID of the object, usually a node, that is being represented.
     ///
-    public let id: ObjectID
+    public let objectID: ObjectID
     
     /// Information denoting how the object is being computed.
     ///
@@ -128,7 +128,7 @@ public struct SimulationObject: CustomStringConvertible, Identifiable {
     public let name: String
     
     public var description: String {
-        "var(\(name), id:\(id), idx:\(variableIndex))"
+        "var(\(name), id:\(objectID), idx:\(variableIndex))"
     }
 }
 
@@ -163,7 +163,7 @@ public struct BoundStock {
     ///
     /// This is used mostly for inspection and debugging purposes.
     ///
-    public let id: ObjectID
+    public let objectID: ObjectID
     
     /// Index in of the simulation state variable that represents the stock.
     ///
@@ -211,7 +211,7 @@ public struct BoundStock {
 /// Represents a flow rate between stocks.
 public struct BoundFlow {
     /// ID of object that represents this flow rate.
-    public let id: ObjectID
+    public let objectID: ObjectID
 
     /// Index of a variable in the state holding value of the flow rate that is expected.
     public let estimatedValueIndex: SimulationState.Index
@@ -299,18 +299,4 @@ public struct BoundSmooth {
     
     /// Index of the value where the smooth node input is stored.
     public let inputValueIndex: SimulationState.Index
-}
-
-
-/// Describes a connection between two stocks through a flow.
-///
-/// - SeeAlso: ``StockFlowSimulation/stockDifference(state:time:)``
-/// 
-public struct StockAdjacency: EdgeProtocol, Identifiable {
-    /// OD of a flow that connects the two stocks
-    public let id: ObjectID
-    /// ID of a stock being drained by the flow.
-    public let origin: ObjectID
-    /// ID of a stock being filled by the flow.
-    public let target: ObjectID
 }

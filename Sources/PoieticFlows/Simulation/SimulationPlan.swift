@@ -155,7 +155,7 @@ public struct SimulationPlan {
     public func variableIndex(of id: ObjectID) -> SimulationState.Index? {
         // Since this is just for debug purposes, O(n) should be fine, no need
         // for added complexity of the code.
-        guard let first = simulationObjects.first(where: {$0.id == id}) else {
+        guard let first = simulationObjects.first(where: {$0.objectID == id}) else {
             return nil
         }
         return first.variableIndex
@@ -172,7 +172,7 @@ public struct SimulationPlan {
     /// - SeeAlso: ``simulationObjects``, ``variableIndex(of:)``
     ///
     public func simulationObject(_ id: ObjectID) -> SimulationObject? {
-        return simulationObjects.first { $0.id == id }
+        return simulationObjects.first { $0.objectID == id }
         
     }
     
@@ -208,13 +208,13 @@ public struct SimulationPlan {
     /// - Precondition: The plan must contain a stock with given ID.
     ///
     func stockIndex(_ id: ObjectID) -> NumericVector.Index {
-        guard let index = stocks.firstIndex(where: { $0.id == id }) else {
+        guard let index = stocks.firstIndex(where: { $0.objectID == id }) else {
             preconditionFailure("The plan does not contain stock with ID \(id)")
         }
         return index
     }
     func flowIndex(_ id: ObjectID) -> NumericVector.Index {
-        guard let index = flows.firstIndex(where: { $0.id == id }) else {
+        guard let index = flows.firstIndex(where: { $0.objectID == id }) else {
             preconditionFailure("The plan does not contain flow with ID \(id)")
         }
         return index
