@@ -66,7 +66,7 @@ public class StockFlowSimulation: Simulation {
         setBuiltins(in: &state)
 
         for (index, obj) in plan.simulationObjects.enumerated() {
-            if let value = override[obj.id] {
+            if let value = override[obj.objectID] {
                 state[obj.variableIndex] = value
             }
             else {
@@ -110,7 +110,7 @@ public class StockFlowSimulation: Simulation {
             }
         }
         catch {
-            throw SimulationError(objectID: object.id, error: error)
+            throw SimulationError(objectID: object.objectID, error: error)
         }
         state[object.variableIndex] = result
     }
@@ -245,7 +245,7 @@ public class StockFlowSimulation: Simulation {
             }
         }
         catch /* EvaluationError */ {
-            throw SimulationError(objectID: object.id, error: error)
+            throw SimulationError(objectID: object.objectID, error: error)
         }
         
         state[object.variableIndex] = result

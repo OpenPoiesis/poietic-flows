@@ -16,10 +16,10 @@ extension TransientFrame {
                            target: MutableObject,
                            attributes: [String:Variant] = [:]) -> MutableObject {
         precondition(type.structuralType == .edge, "Structural type mismatch")
-        precondition(contains(origin.id), "Missing edge origin")
-        precondition(contains(target.id), "Missing edge target")
+        precondition(contains(origin.objectID), "Missing edge origin")
+        precondition(contains(target.objectID), "Missing edge target")
 
-        let snapshot = create(type, structure: .edge(origin.id, target.id), attributes: attributes)
+        let snapshot = create(type, structure: .edge(origin.objectID, target.objectID), attributes: attributes)
         
         return snapshot
     }
@@ -72,9 +72,9 @@ extension TransientFrame {
         let sorted = compiled.simulationObjects
         
         #expect(sorted.count == 3)
-        #expect(sorted[0].id == a.id)
-        #expect(sorted[1].id == b.id)
-        #expect(sorted[2].id == c.id)
+        #expect(sorted[0].objectID == a.objectID)
+        #expect(sorted[1].objectID == b.objectID)
+        #expect(sorted[2].objectID == c.objectID)
     }
 
     @Test func badFunctionName() throws {
@@ -92,7 +92,7 @@ extension TransientFrame {
                 Issue.record("Unexpected error type: \($0)")
                 return false
             }
-            guard let objectIssues = issues[aux.id] else {
+            guard let objectIssues = issues[aux.objectID] else {
                 Issue.record("Expected object issues, found none")
                 return false
             }
@@ -124,9 +124,9 @@ extension TransientFrame {
                 Issue.record("Unexpected error: \($0)")
                 return false
             }
-            return issues[a.id] == [.emptyName]
-                    && issues[b.id] == [.emptyName]
-                    && issues[c.id] == [.emptyName]
+            return issues[a.objectID] == [.emptyName]
+                    && issues[b.objectID] == [.emptyName]
+                    && issues[c.objectID] == [.emptyName]
         }
     }
 
@@ -149,8 +149,8 @@ extension TransientFrame {
                 Issue.record("Unexpected error type: \($0)")
                 return false
             }
-            return issues[c1.id]?.count == 1
-                    && issues[c2.id]?.count == 1
+            return issues[c1.objectID]?.count == 1
+                    && issues[c2.objectID]?.count == 1
         }
     }
     
@@ -165,16 +165,16 @@ extension TransientFrame {
         let compiler = Compiler(frame: try design.validate(try design.accept(frame)))
         let compiled = try compiler.compile()
         
-        let aIndex = try #require(compiled.stocks.firstIndex { $0.id == a.id })
-        let bIndex = try #require(compiled.stocks.firstIndex { $0.id == b.id })
+        let aIndex = try #require(compiled.stocks.firstIndex { $0.objectID == a.objectID })
+        let bIndex = try #require(compiled.stocks.firstIndex { $0.objectID == b.objectID })
 
         #expect(compiled.stocks.count == 2)
-        #expect(compiled.stocks[aIndex].id == a.id)
+        #expect(compiled.stocks[aIndex].objectID == a.objectID)
         #expect(compiled.stocks[aIndex].inflows == [])
-        #expect(compiled.stocks[aIndex].outflows == [compiled.flowIndex(flow.id)])
+        #expect(compiled.stocks[aIndex].outflows == [compiled.flowIndex(flow.objectID)])
 
-        #expect(compiled.stocks[bIndex].id == b.id)
-        #expect(compiled.stocks[bIndex].inflows == [compiled.flowIndex(flow.id)])
+        #expect(compiled.stocks[bIndex].objectID == b.objectID)
+        #expect(compiled.stocks[bIndex].inflows == [compiled.flowIndex(flow.objectID)])
         #expect(compiled.stocks[bIndex].outflows == [])
     }
     
@@ -195,7 +195,7 @@ extension TransientFrame {
                 return false
             }
 
-            guard let issues = allIssues[gf.id]else {
+            guard let issues = allIssues[gf.objectID]else {
                 Issue.record("Issues expected, got none")
                 return false
             }
@@ -229,7 +229,7 @@ extension TransientFrame {
         #expect(funcs.count == 1)
 
         let boundFn = funcs.first!
-        #expect(boundFn.parameterIndex == plan.variableIndex(of:param.id))
+        #expect(boundFn.parameterIndex == plan.variableIndex(of:param.objectID))
 
         #expect(plan.simulationObjects.contains { $0.name == "g" })
     }
@@ -247,7 +247,7 @@ extension TransientFrame {
 
         let compiler = Compiler(frame: try design.validate(try design.accept(frame)))
         let compiled = try compiler.compile()
-        let object = try #require(compiled.simulationObject(gf.id),
+        let object = try #require(compiled.simulationObject(gf.objectID),
                                   "No compiled variable for the graphical function")
 
         switch object.computation {
@@ -277,8 +277,8 @@ extension TransientFrame {
             }
 
             return $0 is CompilerError
-                    && issues[a.id]?.first == ObjectIssue.computationCycle
-                    && issues[b.id]?.first == ObjectIssue.computationCycle
+                    && issues[a.objectID]?.first == ObjectIssue.computationCycle
+                    && issues[b.objectID]?.first == ObjectIssue.computationCycle
         }
     }
     
@@ -315,7 +315,7 @@ extension TransientFrame {
                 Issue.record("Expected issues, got internal error: \(error)")
                 return false
             }
-            guard let issue = issues[a.id]?.first else {
+            guard let issue = issues[a.objectID]?.first else {
                 Issue.record("Expected an object issue for \(a.id)")
                 return false
             }

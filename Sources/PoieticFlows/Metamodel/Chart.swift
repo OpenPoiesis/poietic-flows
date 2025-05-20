@@ -15,18 +15,18 @@ public struct Chart {
     /// Series are connected from the node through a `Series` edge, where the chart is the
     /// edge origin and the series node is the edge target.
     ///
-    public let node: DesignObject
+    public let node: ObjectSnapshot
     
     /// Nodes that represent the chart series.
     ///
     /// Series are connected from the node through a `Series` edge, where the chart is the
     /// edge origin and the series node is the edge target.
     ///
-    public let series: [DesignObject]
+    public let series: [ObjectSnapshot]
     
     /// Create a chart object.
     ///
-    public init(node: DesignObject, series: [DesignObject]) {
+    public init(node: ObjectSnapshot, series: [ObjectSnapshot]) {
         self.node = node
         self.series = series
     }

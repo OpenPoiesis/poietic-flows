@@ -17,7 +17,7 @@ extension Compiler {
             }
             
             guard let formula = try? object["formula"]?.stringValue() else {
-                throw .attributeExpectationFailure(object.id, "formula")
+                throw .attributeExpectationFailure(object.objectID, "formula")
             }
             
             let parser = ExpressionParser(string: formula)
@@ -27,11 +27,11 @@ extension Compiler {
                 expr = try parser.parse()
             }
             catch {
-                issues.append(.expressionSyntaxError(error), for: object.id)
+                issues.append(.expressionSyntaxError(error), for: object.objectID)
                 continue
             }
             
-            parsedExpressions[object.id] = expr
+            parsedExpressions[object.objectID] = expr
         }
     }
     
@@ -54,14 +54,14 @@ extension Compiler {
     /// - Throws: ``NodeIssueError`` if there is an issue with parameters,
     ///   function names or other variable names in the expression.
     ///
-    func compileFormulaObject(_ object: DesignObject) throws (InternalCompilerError) -> ComputationalRepresentation {
-        guard let unboundExpression = parsedExpressions[object.id] else {
-            if issues[object.id] != nil {
+    func compileFormulaObject(_ object: ObjectSnapshot) throws (InternalCompilerError) -> ComputationalRepresentation {
+        guard let unboundExpression = parsedExpressions[object.objectID] else {
+            if issues[object.objectID] != nil {
                 // Compilation already has issues, we just proceed to collect some more.
                 throw .objectIssue
             }
             else {
-                throw .formulaCompilationFailure(object.id)
+                throw .formulaCompilationFailure(object.objectID)
             }
         }
         
@@ -75,7 +75,7 @@ extension Compiler {
                                                  functions: functions)
         }
         catch /* ExpressionError */ {
-            issues.append(.expressionError(error), for: object.id)
+            issues.append(.expressionError(error), for: object.objectID)
             throw .objectIssue
         }
         

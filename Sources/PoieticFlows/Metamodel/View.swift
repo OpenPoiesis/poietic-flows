@@ -53,8 +53,8 @@ public class StockFlowView {
     ///
     /// - SeeAlso: ``StateVariable``, ``CompiledModel``
     ///
-    public var simulationNodes: [DesignObject] {
-        frame.nodes.filter {
+    public var simulationNodes: [ObjectSnapshot] {
+        frame.filter {
             ($0.type === ObjectType.Stock
                 || $0.type === ObjectType.FlowRate
                 || $0.type.hasTrait(Trait.Auxiliary))
@@ -72,7 +72,7 @@ public class StockFlowView {
     }
     /// Nodes representing parameters of a given node.
     ///
-    public func incomingParameterNodes(_ nodeID: ObjectID) -> [DesignObject] {
+    public func incomingParameterNodes(_ nodeID: ObjectID) -> [ObjectSnapshot] {
         // TODO: In the compiler, do this once and create a map: originID -> [DesignObject]
         return incomingParameterEdges(nodeID).map { $0.originObject }
     }
@@ -138,46 +138,5 @@ public class StockFlowView {
         }
         
         return ResolvedParameters(missing: Array(missing), unused: unused)
-    }
-
-    /// Get a list of stock-to-stock adjacency.
-    ///
-    /// Two stocks are adjacent if there is a flow that connects the two stocks.
-    /// One stock is being drained – origin of the adjacency,
-    /// another stock is being filled – target of the adjacency.
-    ///
-    /// The following diagram depicts two adjacent stocks, where the stock `a`
-    /// would be the origin and stock `b` would be the target:
-    ///
-    /// ```
-    ///              Drains           Fills
-    ///    Stock a ==========> Flow =========> Stock b
-    ///       ^                                  ^
-    ///       +----------------------------------+
-    ///                  adjacent stocks
-    ///
-    /// ```
-    ///
-    public func stockAdjacencies() -> [StockAdjacency] {
-        var adjacencies: [StockAdjacency] = []
-
-        let flowNodes: [DesignObject] = frame.nodes.filter {
-                $0.type === ObjectType.FlowRate
-            }
-
-        for flow in flowNodes {
-            guard let fills = fills(flow.id) else {
-                continue
-            }
-            guard let drains = drains(flow.id) else {
-                continue
-            }
-
-            let adjacency = StockAdjacency(id: flow.id, origin: drains, target: fills)
-
-            adjacencies.append(adjacency)
-        }
-        
-        return adjacencies
     }
 }
