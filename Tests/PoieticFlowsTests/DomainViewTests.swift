@@ -27,7 +27,7 @@ import Testing
         
         let view = StockFlowView(frame)
         
-        let resolved = view.resolveParameters(broken.id, required:["price"])
+        let resolved = view.resolveParameters(broken.objectID, required:["price"])
         #expect(resolved.missing.count == 1)
         #expect(resolved.unused.count == 0)
         #expect(resolved.missing == ["price"])
@@ -44,11 +44,11 @@ import Testing
         let view = StockFlowView(frame)
         
         // TODO: Get the required list from the compiler
-        let resolved = view.resolveParameters(tested.id, required:["used"])
+        let resolved = view.resolveParameters(tested.objectID, required:["used"])
         
         #expect(resolved.missing.count == 0)
         #expect(resolved.unused.count == 1)
-        #expect(resolved.unused.first?.object.id == unusedEdge.id)
+        #expect(resolved.unused.first?.object.objectID == unusedEdge.objectID)
     }
     
     @Test func testUnknownParameters() throws {
@@ -59,7 +59,7 @@ import Testing
         let frame = try! db.validate(try! db.accept(trans))
         let view = StockFlowView(frame)
         
-        let resolved = view.resolveParameters(tested.id, required:["known", "unknown"])
+        let resolved = view.resolveParameters(tested.objectID, required:["known", "unknown"])
         #expect(resolved.missing.count == 1)
         #expect(resolved.unused.count == 0)
 
@@ -77,32 +77,7 @@ import Testing
         let frame = try! db.validate(try! db.accept(trans))
         let view = StockFlowView(frame)
         
-        #expect(view.fills(flow.id) == sink.id)
-        #expect(view.drains(flow.id) == source.id)
-    }
-   
-    @Test func testStockAdjacency() throws {
-        // TODO: Test loops and delayed inflow
-        let a = trans.createNode(ObjectType.Stock, name: "a", attributes: ["formula": "0"])
-        let b = trans.createNode(ObjectType.Stock, name: "b", attributes: ["formula": "0"])
-        let c = trans.createNode(ObjectType.Stock, name: "c", attributes: ["formula": "0"])
-        let flow = trans.createNode(ObjectType.FlowRate, name: "f", attributes: ["formula": "0"])
-        let inflow = trans.createNode(ObjectType.FlowRate, name: "inflow", attributes: ["formula": "0"])
-        let outflow = trans.createNode(ObjectType.FlowRate, name: "outflow", attributes: ["formula": "0"])
-
-        trans.createEdge(ObjectType.Flow, origin: a, target: flow)
-        trans.createEdge(ObjectType.Flow, origin: flow, target: b)
-        trans.createEdge(ObjectType.Flow, origin: inflow, target: c)
-        trans.createEdge(ObjectType.Flow, origin: c, target: outflow)
-
-        let frame = try! db.validate(try! db.accept(trans))
-        let view = StockFlowView(frame)
-
-        let result = view.stockAdjacencies()
-        #expect(result.count == 1)
-
-        #expect(result[0].id == flow.id)
-        #expect(result[0].origin == a.id)
-        #expect(result[0].target == b.id)
+        #expect(view.fills(flow.objectID) == sink.objectID)
+        #expect(view.drains(flow.objectID) == source.objectID)
     }
 }

@@ -42,7 +42,7 @@ public struct SimulationParameters {
     /// The object is expected to be of a ``Trait/Simulation`` type, although any object with
     /// expected attributes can be used.
     ///
-    public init(fromObject object: DesignObject) {
+    public init(fromObject object: ObjectSnapshot) {
         self.initialTime = try! object["initial_time"]?.doubleValue() ?? 0.0
         self.timeDelta = try! object["time_delta"]?.doubleValue() ?? 1.0
 

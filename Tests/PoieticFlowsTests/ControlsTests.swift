@@ -39,7 +39,7 @@ final class TestControls: XCTestCase {
         
         let binding = model.valueBindings[0]
         
-        XCTAssertEqual(binding.control, control.id)
-        XCTAssertEqual(binding.variableIndex, model.variableIndex(of: a.id))
+        XCTAssertEqual(binding.control, control.objectID)
+        XCTAssertEqual(binding.variableIndex, model.variableIndex(of: a.objectID))
     }
 }
