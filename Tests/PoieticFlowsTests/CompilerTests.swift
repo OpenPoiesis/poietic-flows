@@ -12,9 +12,9 @@ import Testing
 extension TransientFrame {
     @discardableResult
     public func createEdge(_ type: ObjectType,
-                           origin: MutableObject,
-                           target: MutableObject,
-                           attributes: [String:Variant] = [:]) -> MutableObject {
+                           origin: TransientObject,
+                           target: TransientObject,
+                           attributes: [String:Variant] = [:]) -> TransientObject {
         precondition(type.structuralType == .edge, "Structural type mismatch")
         precondition(contains(origin.objectID), "Missing edge origin")
         precondition(contains(target.objectID), "Missing edge target")

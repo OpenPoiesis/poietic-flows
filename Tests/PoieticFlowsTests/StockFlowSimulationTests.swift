@@ -30,7 +30,7 @@ import Testing
         self.plan = try compiler.compile()
     }
     
-    func index(_ object: MutableObject) -> SimulationState.Index {
+    func index(_ object: TransientObject) -> SimulationState.Index {
         plan.variableIndex(of: object.objectID)!
     }
     

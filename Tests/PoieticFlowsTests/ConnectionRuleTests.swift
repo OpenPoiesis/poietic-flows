@@ -26,22 +26,22 @@ import Testing
         let flow = frame.createNode(.FlowRate)
         
         let aux_aux = frame.createEdge(.Parameter, origin: aux.objectID, target: aux.objectID)
-        try checker.validate(edge: frame.edge(aux_aux.objectID), in: frame)
+        try checker.validate(edge: frame.edge(aux_aux.objectID)!, in: frame)
         
         let stock_aux = frame.createEdge(.Parameter, origin: stock.objectID, target: aux.objectID)
-        try checker.validate(edge: frame.edge(stock_aux.objectID), in: frame)
+        try checker.validate(edge: frame.edge(stock_aux.objectID)!, in: frame)
         
         let flow_aux = frame.createEdge(.Parameter, origin: flow.objectID, target: aux.objectID)
-        try checker.validate(edge: frame.edge(flow_aux.objectID), in: frame)
+        try checker.validate(edge: frame.edge(flow_aux.objectID)!, in: frame)
         
         let aux_flow = frame.createEdge(.Parameter, origin: aux.objectID, target: flow.objectID)
-        try checker.validate(edge: frame.edge(aux_flow.objectID), in: frame)
+        try checker.validate(edge: frame.edge(aux_flow.objectID)!, in: frame)
         
         let stock_flow = frame.createEdge(.Parameter, origin: stock.objectID, target: flow.objectID)
-        try checker.validate(edge: frame.edge(stock_flow.objectID), in: frame)
+        try checker.validate(edge: frame.edge(stock_flow.objectID)!, in: frame)
         
         let flow_flow = frame.createEdge(.Parameter, origin: flow.objectID, target: flow.objectID)
-        try checker.validate(edge: frame.edge(flow_flow.objectID), in: frame)
+        try checker.validate(edge: frame.edge(flow_flow.objectID)!, in: frame)
     }
     
 //    @Test func invalidParameterEdges() async throws {
@@ -73,11 +73,11 @@ import Testing
         let aux = frame.createNode(.Auxiliary)
 
         let param1 = frame.createEdge(.Parameter, origin: aux, target: gf)
-        try checker.validate(edge: frame.edge(param1.objectID), in: frame)
+        try checker.validate(edge: frame.edge(param1.objectID)!, in: frame)
 
         let param2 = frame.createEdge(.Parameter, origin: aux, target: gf)
         #expect {
-            try checker.validate(edge: frame.edge(param2.objectID), in: frame)
+            try checker.validate(edge: frame.edge(param2.objectID)!, in: frame)
         }
         throws: {
             guard let error = $0 as? EdgeRuleViolation else {

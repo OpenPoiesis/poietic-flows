@@ -329,7 +329,7 @@ public class Compiler {
         }
     
         // 2. Sort nodes based on computation dependency.
-        let parameterEdges:[EdgeObject] = frame.filterEdges {
+        let parameterEdges:[EdgeObject] = frame.edges.filter {
             $0.object.type === ObjectType.Parameter
         }
 
@@ -550,6 +550,7 @@ public class Compiler {
         return charts
     }
     
+    // TODO: [WIP] This requires attention, too much going on in the filter
     public func compileControlBindings() throws (CompilerError) -> [CompiledControlBinding] {
         var bindings: [CompiledControlBinding] = []
         for object in frame.filter(type: ObjectType.ValueBinding) {
