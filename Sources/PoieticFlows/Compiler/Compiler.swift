@@ -488,7 +488,7 @@ public class Compiler {
         var hasIssues: Bool = false
         
         // Edges into formula objects
-        let parameterEdges = frame.filterEdges {
+        let parameterEdges = frame.edges.filter {
             $0.object.type === ObjectType.Parameter
             && $0.targetObject.type.hasTrait(Trait.Formula)
         }
@@ -538,7 +538,7 @@ public class Compiler {
         
         var charts: [PoieticFlows.Chart] = []
         for node in nodes {
-            let edges = frame.filterEdges {
+            let edges = frame.edges.filter {
                 $0.object.type === ObjectType.ChartSeries
             }
             
@@ -550,7 +550,6 @@ public class Compiler {
         return charts
     }
     
-    // TODO: [WIP] This requires attention, too much going on in the filter
     public func compileControlBindings() throws (CompilerError) -> [CompiledControlBinding] {
         var bindings: [CompiledControlBinding] = []
         for object in frame.filter(type: ObjectType.ValueBinding) {
