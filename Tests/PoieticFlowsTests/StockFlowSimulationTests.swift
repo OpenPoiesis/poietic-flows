@@ -30,8 +30,8 @@ import Testing
         self.plan = try compiler.compile()
     }
     
-    func index(_ object: MutableObject) -> SimulationState.Index {
-        plan.variableIndex(of: object.id)!
+    func index(_ object: TransientObject) -> SimulationState.Index {
+        plan.variableIndex(of: object.objectID)!
     }
     
     @Test mutating func initializeStocks() throws {
@@ -66,14 +66,14 @@ import Testing
         let a = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "10"])
         let b = frame.createNode(ObjectType.Auxiliary, name: "b", attributes: ["formula": "20"])
         let c = frame.createNode(ObjectType.Auxiliary, name: "c", attributes: ["formula": "a - 1"])
-        frame.createEdge(ObjectType.Parameter, origin: a.id, target: c.id)
+        frame.createEdge(ObjectType.Parameter, origin: a.objectID, target: c.objectID)
         
         try compile()
         
         let sim = StockFlowSimulation(plan)
         
         let overrides: [ObjectID:Variant] = [
-            a.id: Variant(999),
+            a.objectID: Variant(999),
         ]
         let state = try sim.initialize(override: overrides)
         
@@ -115,11 +115,11 @@ import Testing
         let state = try sim.initialize()
         let flows = sim.flows(state)
         #expect(flows.count == 2)
-        #expect(flows[plan.flowIndex(inflow.id)] == 10.0)
-        #expect(flows[plan.flowIndex(outflow.id)] == 20.0)
+        #expect(flows[plan.flowIndex(inflow.objectID)] == 10.0)
+        #expect(flows[plan.flowIndex(outflow.objectID)] == 20.0)
         let estimated = sim.adjustFlows(flows: flows, stocks: sim.stocks(state))
-        #expect(estimated[plan.flowIndex(inflow.id)] == 10.0)
-        #expect(estimated[plan.flowIndex(outflow.id)] == 20.0)
+        #expect(estimated[plan.flowIndex(inflow.objectID)] == 10.0)
+        #expect(estimated[plan.flowIndex(outflow.objectID)] == 20.0)
     }
 
     @Test mutating func adjustedNonNegativeFlowsOutflowFirst() throws {
@@ -136,15 +136,15 @@ import Testing
         let state = try sim.initialize()
         let flows = sim.flows(state)
         #expect(flows.count == 3)
-        #expect(flows[plan.flowIndex(inflow.id)] == 100.0)
-        #expect(flows[plan.flowIndex(out1.id)] == 10.0)
-        #expect(flows[plan.flowIndex(out2.id)] == 20.0)
+        #expect(flows[plan.flowIndex(inflow.objectID)] == 100.0)
+        #expect(flows[plan.flowIndex(out1.objectID)] == 10.0)
+        #expect(flows[plan.flowIndex(out2.objectID)] == 20.0)
         let adjusted = sim.adjustFlows(flows: flows, stocks: sim.stocks(state))
-        #expect(adjusted[plan.flowIndex(out1.id)] == 4.0)
-        #expect(adjusted[plan.flowIndex(out2.id)] == 8.0)
+        #expect(adjusted[plan.flowIndex(out1.objectID)] == 4.0)
+        #expect(adjusted[plan.flowIndex(out2.objectID)] == 8.0)
         
         let delta = sim.computeDerivatives(flows: adjusted, stocks: sim.stocks(state), timeDelta: state.timeDelta)
-        #expect(delta[plan.stockIndex(stock.id)] == 100 - 4.0 - 8.0)
+        #expect(delta[plan.stockIndex(stock.objectID)] == 100 - 4.0 - 8.0)
     }
 
     @Test mutating func adjustedNonNegativeFlowsInflowFirst() throws {
@@ -162,16 +162,16 @@ import Testing
 
         let flows = sim.flows(state)
         #expect(flows.count == 3)
-        #expect(flows[plan.flowIndex(inflow.id)] == 2.0)
-        #expect(flows[plan.flowIndex(out1.id)] == 10.0)
-        #expect(flows[plan.flowIndex(out2.id)] == 20.0)
+        #expect(flows[plan.flowIndex(inflow.objectID)] == 2.0)
+        #expect(flows[plan.flowIndex(out1.objectID)] == 10.0)
+        #expect(flows[plan.flowIndex(out2.objectID)] == 20.0)
 
         let adjusted = sim.adjustFlows(flows: flows, stocks: sim.stocks(state))
-        #expect(adjusted[plan.flowIndex(out1.id)] == 4.0)
-        #expect(adjusted[plan.flowIndex(out2.id)] == 8.0)
+        #expect(adjusted[plan.flowIndex(out1.objectID)] == 4.0)
+        #expect(adjusted[plan.flowIndex(out2.objectID)] == 8.0)
 
         let delta = sim.computeDerivatives(flows: adjusted, stocks: sim.stocks(state), timeDelta: state.timeDelta)
-        #expect(delta[plan.stockIndex(stock.id)] == 2.0 - 4.0 - 8.0)
+        #expect(delta[plan.stockIndex(stock.objectID)] == 2.0 - 4.0 - 8.0)
     }
 
     @Test mutating func allowsNegativeStock() throws {
@@ -188,15 +188,15 @@ import Testing
         let state = try sim.initialize()
 
         let flows = sim.flows(state)
-        #expect(flows[plan.flowIndex(out1.id)] == 200.0)
-        #expect(flows[plan.flowIndex(out2.id)] == 400.0)
+        #expect(flows[plan.flowIndex(out1.objectID)] == 200.0)
+        #expect(flows[plan.flowIndex(out2.objectID)] == 400.0)
 
         let adjusted = sim.adjustFlows(flows: flows, stocks: sim.stocks(state))
-        #expect(adjusted[plan.flowIndex(out1.id)] == 200.0)
-        #expect(adjusted[plan.flowIndex(out2.id)] == 400.0)
+        #expect(adjusted[plan.flowIndex(out1.objectID)] == 200.0)
+        #expect(adjusted[plan.flowIndex(out2.objectID)] == 400.0)
 
         let delta = sim.computeDerivatives(flows: adjusted, stocks: sim.stocks(state), timeDelta: state.timeDelta)
-        #expect(delta[plan.stockIndex(stock.id)] == 100.0 - 200.0 - 400.0)
+        #expect(delta[plan.stockIndex(stock.objectID)] == 100.0 - 200.0 - 400.0)
     }
 
     @Test mutating func diffTimeDelta() throws {
@@ -212,15 +212,15 @@ import Testing
         let sim = StockFlowSimulation(plan, flowScaling: .outflowFirst)
         let state = try sim.initialize(timeDelta: 0.5)
         let flows = sim.flows(state)
-        #expect(flows[plan.flowIndex(inflow.id)] == 100.0)
-        #expect(flows[plan.flowIndex(out1.id)] == 10.0)
-        #expect(flows[plan.flowIndex(out2.id)] == 20.0)
+        #expect(flows[plan.flowIndex(inflow.objectID)] == 100.0)
+        #expect(flows[plan.flowIndex(out1.objectID)] == 10.0)
+        #expect(flows[plan.flowIndex(out2.objectID)] == 20.0)
         let adjusted = sim.adjustFlows(flows: flows, stocks: sim.stocks(state))
-        #expect(adjusted[plan.flowIndex(out1.id)] == 5.0)
-        #expect(adjusted[plan.flowIndex(out2.id)] == 10.0)
+        #expect(adjusted[plan.flowIndex(out1.objectID)] == 5.0)
+        #expect(adjusted[plan.flowIndex(out2.objectID)] == 10.0)
         
         let delta = sim.computeDerivatives(flows: adjusted, stocks: sim.stocks(state), timeDelta: state.timeDelta)
-        #expect(delta[plan.stockIndex(stock.id)] == 0.5 * (100.0 - 5.0 - 10.0))
+        #expect(delta[plan.stockIndex(stock.objectID)] == 0.5 * (100.0 - 5.0 - 10.0))
     }
 
     @Test mutating func allowNegativeStockIntegrated() throws {

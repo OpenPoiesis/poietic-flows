@@ -126,7 +126,7 @@ public class Compiler {
     
     /// List of objects in an order of computational dependency.
     ///
-    public private(set) var orderedObjects: [DesignObject]
+    public private(set) var orderedObjects: [ObjectSnapshot]
     
     /// List of simulation objects that will be included in the simulation plan.
     ///
@@ -304,18 +304,18 @@ public class Compiler {
     }
    
     func collectAndSortObjects() throws (CompilerError) {
-        let unorderedSimulationNodes = view.simulationNodes
+        let unorderedNodes = view.simulationNodes
         var homonyms: [String: [ObjectID]] = [:]
         
         // 1. Collect nodes relevant to the simulation
-        for node in unorderedSimulationNodes {
+        for node in unorderedNodes {
             guard let name = node.name else {
-                throw .internalError(.attributeExpectationFailure(node.id, "name"))
+                throw .internalError(.attributeExpectationFailure(node.objectID, "name"))
             }
             if name.isEmpty || name.allSatisfy({ $0.isWhitespace}){
-                issues.append(.emptyName, for: node.id)
+                issues.append(.emptyName, for: node.objectID)
             }
-            homonyms[name, default: []].append(node.id)
+            homonyms[name, default: []].append(node.objectID)
         }
         
         var dupes: [String] = []
@@ -329,10 +329,11 @@ public class Compiler {
         }
     
         // 2. Sort nodes based on computation dependency.
-        let parameterEdges:[EdgeObject] = frame.filterEdges {
+        let parameterEdges:[EdgeObject] = frame.edges.filter {
             $0.object.type === ObjectType.Parameter
         }
-        let parameterDependency = Graph(nodes: unorderedSimulationNodes,
+
+        let parameterDependency = Graph(nodes: unorderedNodes.map { $0.objectID },
                                         edges: parameterEdges)
         
         guard let ordered = parameterDependency.topologicalSort() else {
@@ -342,7 +343,7 @@ public class Compiler {
             for edge in cycleEdges {
                 nodes.insert(edge.origin)
                 nodes.insert(edge.target)
-                issues.append(.computationCycle, for: edge.id)
+                issues.append(.computationCycle, for: edge.key)
             }
             for node in nodes {
                 issues.append(.computationCycle, for: node)
@@ -396,7 +397,7 @@ public class Compiler {
     /// - Throws: ``NodeIssuesError`` with list of issues for the node.
     /// - SeeAlso: ``compileFormulaNode(_:)``, ``compileGraphicalFunctionNode(_:)``.
     ///
-    func compileObject(_ object: DesignObject) throws (InternalCompilerError) {
+    func compileObject(_ object: ObjectSnapshot) throws (InternalCompilerError) {
         let role: SimulationObject.Role
         let rep: ComputationalRepresentation
 
@@ -420,18 +421,18 @@ public class Compiler {
             // - whether the object design metamodel is stock-flows metamodel
             //   and that it has necessary components
             //
-            fatalError("Unknown simulation object type \(object.type.name), object: \(object.id)")
+            fatalError("Unknown simulation object type \(object.type.name), object: \(object.objectID)")
         }
         
         // TODO: We must have name here already, this is redundant fetching
         guard let name = object.name else {
-            throw .attributeExpectationFailure(object.id, "name")
+            throw .attributeExpectationFailure(object.objectID, "name")
         }
         
-        let index = createStateVariable(content: .object(object.id),
+        let index = createStateVariable(content: .object(object.objectID),
                                         valueType: rep.valueType,
                                         name: name)
-        self.objectVariableIndex[object.id] = index
+        self.objectVariableIndex[object.objectID] = index
         self.nameIndex[name] = index
 
         if object.type === ObjectType.Stock {
@@ -456,7 +457,7 @@ public class Compiler {
         }
         
         
-        let sim = SimulationObject(id: object.id,
+        let sim = SimulationObject(objectID: object.objectID,
                                    computation: rep,
                                    variableIndex: index,
                                    role: role,
@@ -487,7 +488,7 @@ public class Compiler {
         var hasIssues: Bool = false
         
         // Edges into formula objects
-        let parameterEdges = frame.filterEdges {
+        let parameterEdges = frame.edges.filter {
             $0.object.type === ObjectType.Parameter
             && $0.targetObject.type.hasTrait(Trait.Formula)
         }
@@ -502,7 +503,7 @@ public class Compiler {
         
         for edge in parameterEdges {
             guard let parameter = edge.originObject.name else {
-                throw .internalError(.attributeExpectationFailure(edge.id, "name"))
+                throw .internalError(.attributeExpectationFailure(edge.key, "name"))
             }
             if let existing = required[edge.target], existing.contains(parameter) {
                 required[edge.target]!.remove(parameter)
@@ -537,7 +538,7 @@ public class Compiler {
         
         var charts: [PoieticFlows.Chart] = []
         for node in nodes {
-            let edges = frame.filterEdges {
+            let edges = frame.edges.filter {
                 $0.object.type === ObjectType.ChartSeries
             }
             
@@ -553,7 +554,7 @@ public class Compiler {
         var bindings: [CompiledControlBinding] = []
         for object in frame.filter(type: ObjectType.ValueBinding) {
             guard let edge = EdgeObject(object, in: frame) else {
-                throw .internalError(.structureTypeMismatch(object.id))
+                throw .internalError(.structureTypeMismatch(object.objectID))
             }
             
             guard let index = objectVariableIndex[edge.target] else {

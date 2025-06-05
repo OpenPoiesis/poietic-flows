@@ -20,56 +20,56 @@ extension Compiler {
     ///
     /// - SeeAlso: ``CompiledGraphicalFunction``, ``Solver/evaluate(objectAt:with:)``
     ///
-    func compileGraphicalFunctionNode(_ object: DesignObject) throws (InternalCompilerError) -> ComputationalRepresentation{
+    func compileGraphicalFunctionNode(_ object: ObjectSnapshot) throws (InternalCompilerError) -> ComputationalRepresentation{
         guard let points = try? object["graphical_function_points"]?.pointArray() else {
-            throw .attributeExpectationFailure(object.id, "graphical_function_points")
+            throw .attributeExpectationFailure(object.objectID, "graphical_function_points")
         }
         // TODO: Interpolation method
         let function = GraphicalFunction(points: points)
         
-        let parameters = view.incomingParameterNodes(object.id)
+        let parameters = view.incomingParameterNodes(object.objectID)
         guard let parameterNode = parameters.first else {
-            issues.append(ObjectIssue.missingRequiredParameter, for: object.id)
+            issues.append(ObjectIssue.missingRequiredParameter, for: object.objectID)
             throw .objectIssue
         }
         
         let boundFunc = BoundGraphicalFunction(function: function,
-                                               parameterIndex: objectVariableIndex[parameterNode.id]!)
+                                               parameterIndex: objectVariableIndex[parameterNode.objectID]!)
         return .graphicalFunction(boundFunc)
     }
     
     /// Compile a delay node.
     ///
-    func compileDelayNode(_ object: DesignObject) throws (InternalCompilerError) -> ComputationalRepresentation{
-        let queueIndex = createStateVariable(content: .internalState(object.id),
+    func compileDelayNode(_ object: ObjectSnapshot) throws (InternalCompilerError) -> ComputationalRepresentation{
+        let queueIndex = createStateVariable(content: .internalState(object.objectID),
                                              valueType: .doubles,
-                                             name: "delay_queue_\(object.id)")
+                                             name: "delay_queue_\(object.objectID)")
         
-        let initialValueIndex = createStateVariable(content: .internalState(object.id),
+        let initialValueIndex = createStateVariable(content: .internalState(object.objectID),
                                                     valueType: .doubles,
-                                                    name: "delay_init_\(object.id)")
+                                                    name: "delay_init_\(object.objectID)")
         
-        let parameters = view.incomingParameterNodes(object.id)
+        let parameters = view.incomingParameterNodes(object.objectID)
         guard let parameterNode = parameters.first else {
-            issues.append(ObjectIssue.missingRequiredParameter, for: object.id)
+            issues.append(ObjectIssue.missingRequiredParameter, for: object.objectID)
             throw .objectIssue
         }
         
-        let parameterIndex = objectVariableIndex[parameterNode.id]!
+        let parameterIndex = objectVariableIndex[parameterNode.objectID]!
         let variable = stateVariables[parameterIndex]
         
         guard let duration = try? object["delay_duration"]?.intValue() else {
-            throw .attributeExpectationFailure(object.id, "delay_duration")
+            throw .attributeExpectationFailure(object.objectID, "delay_duration")
         }
         guard let posDuration = UInt(exactly: duration) else {
-            issues.append(ObjectIssue.invalidAttributeValue("delay_duration", Variant(duration)), for: object.id)
+            issues.append(ObjectIssue.invalidAttributeValue("delay_duration", Variant(duration)), for: object.objectID)
             throw .objectIssue
         }
         
         let initialValue = object["initial_value"]
         
         guard case let .atom(atomType) = variable.valueType else {
-            issues.append(.unsupportedDelayValueType(variable.valueType), for: object.id)
+            issues.append(.unsupportedDelayValueType(variable.valueType), for: object.objectID)
             throw .objectIssue
         }
         
@@ -88,26 +88,26 @@ extension Compiler {
     
     /// Compile a value smoothing node.
     ///
-    func compileSmoothNode(_ object: DesignObject) throws (InternalCompilerError) -> ComputationalRepresentation{
-        let smoothValueIndex = createStateVariable(content: .internalState(object.id),
+    func compileSmoothNode(_ object: ObjectSnapshot) throws (InternalCompilerError) -> ComputationalRepresentation{
+        let smoothValueIndex = createStateVariable(content: .internalState(object.objectID),
                                                    valueType: .doubles,
-                                                   name: "smooth_value_\(object.id)")
+                                                   name: "smooth_value_\(object.objectID)")
         
-        let parameters = view.incomingParameterNodes(object.id)
+        let parameters = view.incomingParameterNodes(object.objectID)
         guard let parameterNode = parameters.first else {
-            issues.append(ObjectIssue.missingRequiredParameter, for: object.id)
+            issues.append(ObjectIssue.missingRequiredParameter, for: object.objectID)
             throw .objectIssue
         }
         
-        let parameterIndex = objectVariableIndex[parameterNode.id]!
+        let parameterIndex = objectVariableIndex[parameterNode.objectID]!
         let variable = stateVariables[parameterIndex]
         
         guard let windowTime = try? object["window_time"]?.doubleValue() else {
-            throw .attributeExpectationFailure(object.id, "window_time")
+            throw .attributeExpectationFailure(object.objectID, "window_time")
         }
         
         guard case .atom(_) = variable.valueType else {
-            issues.append(.unsupportedDelayValueType(variable.valueType), for: object.id)
+            issues.append(.unsupportedDelayValueType(variable.valueType), for: object.objectID)
             throw .objectIssue
         }
         

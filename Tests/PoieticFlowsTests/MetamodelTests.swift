@@ -71,10 +71,10 @@ import Testing
             guard error.edgeRuleViolations.count == 2 else {
                 return false
             }
-            guard let e1 = error.edgeRuleViolations[e1.id]?.first else {
+            guard let e1 = error.edgeRuleViolations[e1.objectID]?.first else {
                 return false
             }
-            guard let e2 = error.edgeRuleViolations[e2.id]?.first else {
+            guard let e2 = error.edgeRuleViolations[e2.objectID]?.first else {
                 return false
             }
             switch (e1, e2) {

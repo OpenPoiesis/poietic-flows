@@ -7,26 +7,26 @@
 import PoieticCore
 
 extension Compiler {
-    func compileFlow(_ flow: DesignObject, name: String, valueType: ValueType) throws (InternalCompilerError) -> BoundFlow {
-        let drains = view.drains(flow.id)
-        let fills = view.fills(flow.id)
+    func compileFlow(_ flow: ObjectSnapshot, name: String, valueType: ValueType) throws (InternalCompilerError) -> BoundFlow {
+        let drains = view.drains(flow.objectID)
+        let fills = view.fills(flow.objectID)
         var priority: Int
         if let value = flow["priority"] {
             do {
                 priority = try value.intValue()
             }
             catch {
-                throw .attributeExpectationFailure(flow.id, "priority")
+                throw .attributeExpectationFailure(flow.objectID, "priority")
             }
         }
         else {
             priority = 0
         }
-        let actualIndex = self.createStateVariable(content: .adjustedResult(flow.id),
+        let actualIndex = self.createStateVariable(content: .adjustedResult(flow.objectID),
                                                    valueType: valueType,
                                                    name:  name)
-        let boundFlow = BoundFlow(id: flow.id,
-                                  estimatedValueIndex: objectVariableIndex[flow.id]!,
+        let boundFlow = BoundFlow(objectID: flow.objectID,
+                                  estimatedValueIndex: objectVariableIndex[flow.objectID]!,
                                   adjustedValueIndex: actualIndex,
                                   priority: priority,
                                   drains: drains,
@@ -49,24 +49,24 @@ extension Compiler {
         let stocks = frame.filter(type: .Stock)
         var flowIndices: [ObjectID: Int] = [:]
         for (index, flow) in flows.enumerated() {
-            flowIndices[flow.id] = index
+            flowIndices[flow.objectID] = index
         }
 
         for stock in stocks {
-            let inflows: [BoundFlow] = flows.filter { $0.fills == stock.id }
-            let outflows: [BoundFlow] = flows.filter { $0.drains == stock.id }
+            let inflows: [BoundFlow] = flows.filter { $0.fills == stock.objectID }
+            let outflows: [BoundFlow] = flows.filter { $0.drains == stock.objectID }
                 .sorted { $0.priority < $1.priority }
             
-            let inflowIndices = inflows.map { flowIndices[$0.id]! }
-            let outflowIndices = outflows.map { flowIndices[$0.id]! }
+            let inflowIndices = inflows.map { flowIndices[$0.objectID]! }
+            let outflowIndices = outflows.map { flowIndices[$0.objectID]! }
 
             guard let allowsNegative = try? stock["allows_negative"]?.boolValue() else {
-                throw .attributeExpectationFailure(stock.id, "allows_negative")
+                throw .attributeExpectationFailure(stock.objectID, "allows_negative")
             }
 
             let compiled = BoundStock(
-                id: stock.id,
-                variableIndex: objectVariableIndex[stock.id]!,
+                objectID: stock.objectID,
+                variableIndex: objectVariableIndex[stock.objectID]!,
                 allowsNegative: allowsNegative,
                 inflows: inflowIndices,
                 outflows: outflowIndices
