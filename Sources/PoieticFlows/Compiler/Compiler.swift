@@ -108,6 +108,7 @@ public enum InternalCompilerError: Error, Equatable {
 /// - SeeAlso: ``compile()``, ``SimulationPlan``
 ///
 public class Compiler {
+    // TODO: Use CompilationContext and have methods operate on it.
     /// The frame containing the design to be compiled.
     ///
     /// The frame must be valid according to the ``FlowsMetamodel``.

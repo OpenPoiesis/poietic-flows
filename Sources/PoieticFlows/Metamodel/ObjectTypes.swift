@@ -17,12 +17,14 @@ extension ObjectType {
     /// - SeeAlso: ``ObjectType/Flow``.
     ///
     public static let Stock = ObjectType(
+        // FIXME: Rename to "Reservoir" and make it conform to "Stock"
         name: "Stock",
         structuralType: .node,
         traits: [
             Trait.Name,
             Trait.Formula,
             Trait.Stock,
+            Trait.Reservoir,
             Trait.ComputedValue,
             Trait.NumericIndicator,
             Trait.DiagramNode,
@@ -78,6 +80,20 @@ extension ObjectType {
         ]
     )
     
+    /// A cloud node representing out-of-scope stock that has no restrictions.
+    ///
+    /// - SeeAlso: ``ObjectType/Stock``.
+    ///
+    public static let Cloud = ObjectType(
+        name: "Cloud",
+        structuralType: .node,
+        traits: [
+            Trait.Name,
+            Trait.Stock,
+            Trait.DiagramNode,
+        ]
+    )
+
     /// An auxiliary node with a function that is described by a graph.
     ///
     /// Graphical function is specified by a collection of 2D points.

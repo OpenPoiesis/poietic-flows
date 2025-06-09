@@ -61,8 +61,8 @@ extension Trait {
     /// Analogous concept to a stock is an accumulator, container, reservoir
     /// or a pool.
     ///
-    public static let Stock = Trait(
-        name: "Stock",
+    public static let Reservoir = Trait(
+        name: "Reservoir",
         attributes: [
             Attribute("allows_negative", type: .bool,
                       default: Variant(false),
@@ -70,7 +70,12 @@ extension Trait {
                      ),
         ]
     )
-    
+
+    public static let Stock = Trait(
+        name: "Stock",
+        attributes: [ /* No attributes for abstract stock */ ]
+    )
+
     /// Trait of nodes representing a flow rate valve.
     ///
     /// Flow is a node that can be connected to two stocks by a flow edge.

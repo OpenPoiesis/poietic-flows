@@ -256,6 +256,44 @@ import Testing
         
         #expect(result[index(stock)] == 0)
     }
+    @Test mutating func cloudOutflow() throws {
+        let stock = frame.createNode(.Stock, name: "stock",
+                                     attributes: ["formula": "10",
+                                                  "allows_negative": false])
+        let flow = frame.createNode(.FlowRate, name: "flow", attributes: ["formula": "100"])
+        let cloud = frame.createNode(.Cloud, name: "cloud")
+
+        frame.createEdge(ObjectType.Flow, origin: stock, target: flow)
+        frame.createEdge(ObjectType.Flow, origin: flow, target: cloud)
+
+        try compile()
+        
+        let sim = StockFlowSimulation(plan)
+        let state = try sim.initialize()
+        let result = try sim.step(state)
+        
+        #expect(result[index(stock)] == 0)
+    }
+    @Test mutating func cloudInflow() throws {
+        let stock = frame.createNode(.Stock, name: "stock",
+                                     attributes: ["formula": "0",
+                                                  "allows_negative": false])
+        let flow = frame.createNode(.FlowRate, name: "flow", attributes: ["formula": "100"])
+        let cloud = frame.createNode(.Cloud, name: "cloud")
+
+        frame.createEdge(ObjectType.Flow, origin: flow, target: stock)
+        frame.createEdge(ObjectType.Flow, origin: cloud, target: flow)
+
+        try compile()
+        
+        let sim = StockFlowSimulation(plan)
+        let state = try sim.initialize()
+        let result = try sim.step(state)
+        
+        #expect(result[index(stock)] == 100)
+    }
+
+
     // TODO: Negative flow is allowed only in bi-directional flow
 //    @Test mutating func nonNegativeStockNegativeInflow() throws {
 //        let stock = frame.createNode(ObjectType.Stock, name: "stock",

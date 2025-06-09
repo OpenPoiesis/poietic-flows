@@ -44,6 +44,85 @@ import Testing
         try checker.validate(edge: frame.edge(flow_flow.objectID)!, in: frame)
     }
     
+    @Test func validateFlowEdges() async throws {
+        let frame = design.createFrame()
+        let stock = frame.createNode(.Stock)
+        let inflow = frame.createNode(.FlowRate)
+        let outflow = frame.createNode(.FlowRate)
+
+        let stock_outflow = frame.createEdge(.Flow, origin: stock.objectID, target: outflow.objectID)
+        try checker.validate(edge: frame.edge(stock_outflow.objectID)!, in: frame)
+
+        let inflow_stock = frame.createEdge(.Flow, origin: inflow.objectID, target: stock.objectID)
+        try checker.validate(edge: frame.edge(inflow_stock.objectID)!, in: frame)
+
+        let inflow_outflow = frame.createEdge(.Flow, origin: inflow.objectID, target: outflow.objectID)
+        #expect {
+            try checker.validate(edge: frame.edge(inflow_outflow.objectID)!, in: frame)
+        }
+        throws: {
+            guard let error = $0 as? EdgeRuleViolation else {
+                return false
+            }
+            switch error {
+            case .noRuleSatisfied: return true
+            default: return false
+            }
+        }
+
+        let stock_stock = frame.createEdge(.Flow, origin: stock.objectID, target: stock.objectID)
+        #expect {
+            try checker.validate(edge: frame.edge(stock_stock.objectID)!, in: frame)
+        }
+        throws: {
+            guard let error = $0 as? EdgeRuleViolation else {
+                return false
+            }
+            switch error {
+            case .noRuleSatisfied: return true
+            default: return false
+            }
+        }
+
+    }
+    @Test func cloud() async throws {
+        let frame = design.createFrame()
+        let cloud1 = frame.createNode(.Cloud)
+        let cloud2 = frame.createNode(.Cloud)
+        let inflow = frame.createNode(.FlowRate)
+        let outflow = frame.createNode(.FlowRate)
+
+        let inflow_cloud = frame.createEdge(.Flow, origin: inflow.objectID, target: cloud1.objectID)
+        try checker.validate(edge: frame.edge(inflow_cloud.objectID)!, in: frame)
+
+        let cloud_outflow = frame.createEdge(.Flow, origin: cloud2.objectID, target: outflow.objectID)
+        try checker.validate(edge: frame.edge(cloud_outflow.objectID)!, in: frame)
+    }
+
+//    @Test
+    func inOutCloud() async throws {
+        let frame = design.createFrame()
+        let cloud = frame.createNode(.Cloud)
+        let inflow = frame.createNode(.FlowRate)
+        let outflow = frame.createNode(.FlowRate)
+
+        let inflow_cloud = frame.createEdge(.Flow, origin: inflow.objectID, target: cloud.objectID)
+        let cloud_outflow = frame.createEdge(.Flow, origin: cloud.objectID, target: outflow.objectID)
+        #expect {
+            try checker.validate(edge: frame.edge(cloud_outflow.objectID)!, in: frame)
+        }
+        throws: {
+            guard let error = $0 as? EdgeRuleViolation else {
+                return false
+            }
+            switch error {
+            case .edgeNotAllowed: return true
+            default: return false
+            }
+        }
+    }
+
+
 //    @Test func invalidParameterEdges() async throws {
 //        let frame = design.createFrame()
 //        let stock = frame.createNode(.Stock)
