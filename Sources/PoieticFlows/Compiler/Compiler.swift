@@ -108,15 +108,18 @@ public enum InternalCompilerError: Error, Equatable {
 /// - SeeAlso: ``compile()``, ``SimulationPlan``
 ///
 public class Compiler {
-    /// The compilation context that contains all the state during compilation.
-    public let context: CompilationContext
+    /// The frame containing the design to be compiled.
+    ///
+    /// The frame must be valid according to the ``FlowsMetamodel``.
+    ///
+    public let frame: ValidatedFrame
     
     /// Create a new compiler for a given frame.
     ///
     /// The frame must be validated using the ``FlowsMetamodel``.
     ///
     public init(frame: ValidatedFrame) {
-        self.context = CompilationContext(frame: frame)
+        self.frame = frame
     }
     
     // - MARK: Compilation
@@ -150,11 +153,21 @@ public class Compiler {
     /// - SeeAlso: ``Simulator/init(_:simulation:)``
     ///
     public func compile() throws (CompilerError) -> SimulationPlan {
+        let context = CompilationContext(frame: frame)
         context.issues = CompilationIssueCollection()
-
+        
+        try prepareCompilation(context)
+        try compileObjects(context)
+        try finalizeCompilation(context)
+        
+        return buildSimulationPlan(context)
+    }
+    
+    /// Prepares the compilation context by collecting, sorting, parsing and validating.
+    private func prepareCompilation(_ context: CompilationContext) throws (CompilerError) {
         try collectAndSortObjects(context)
-        let builtins = prepareBuiltins(context)
-
+        context.builtins = prepareBuiltins(context)
+        
         do {
             try parseExpressions(context)
         }
@@ -162,11 +175,11 @@ public class Compiler {
             throw .internalError(error)
         }
         try validateFormulaParameterConnections(context)
-        
-        // 1. Compile flows (stocks require them)
-        // 2. Compile stocks
-        // 3. Compile auxiliaries (everything else)
-        
+    }
+    
+    /// Compiles all computational objects: auxiliaries, flows, and stocks.
+    private func compileObjects(_ context: CompilationContext) throws (CompilerError) {
+        // Compile auxiliaries, flows, and other computational objects
         for object in context.orderedObjects {
             do {
                 try compileObject(object, context: context)
@@ -181,9 +194,9 @@ public class Compiler {
         
         guard context.issues.isEmpty else { throw .issues(context.issues) }
         
-        let stocks: [BoundStock]
+        // Compile stocks (requires flows to be compiled first)
         do {
-            stocks = try compileStocks(context)
+            context.stocks = try compileStocks(context)
         }
         catch .objectIssue {
             throw .issues(context.issues)
@@ -191,24 +204,30 @@ public class Compiler {
         catch {
             throw .internalError(error)
         }
-        let bindings = try compileControlBindings(context)
-        let defaults = try compileDefaults(context)
-        let charts = try compileCharts(context)
-        
-        guard let timeIndex = context.nameIndex["time"] else {
-            fatalError("No time variable within the builtins")
+    }
+    
+    /// Finalizes compilation by processing charts, bindings, and defaults.
+    private func finalizeCompilation(_ context: CompilationContext) throws (CompilerError) {
+        context.bindings = try compileControlBindings(context)
+        context.defaults = try compileDefaults(context)
+        context.charts = try compileCharts(context)
+    }
+    
+    /// Builds the final SimulationPlan from the compiled context.
+    private func buildSimulationPlan(_ context: CompilationContext) -> SimulationPlan {
+        guard let builtins = context.builtins else {
+            fatalError("Builtins not prepared during compilation")
         }
         
         return SimulationPlan(
             simulationObjects: context.simulationObjects,
             stateVariables: context.stateVariables,
             builtins: builtins,
-            timeVariableIndex: timeIndex,
-            stocks: stocks,
+            stocks: context.stocks,
             flows: context.flows,
-            charts: charts,
-            valueBindings: bindings,
-            simulationParameters: defaults
+            charts: context.charts,
+            valueBindings: context.bindings,
+            simulationParameters: context.defaults
         )
     }
    

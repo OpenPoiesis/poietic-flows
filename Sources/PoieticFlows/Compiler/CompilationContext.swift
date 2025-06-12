@@ -59,7 +59,7 @@ public class CompilationContext {
     ///
     /// Used in compilation of simulation nodes.
     ///
-    internal var objectVariableIndex: [ObjectID: Int]
+    internal var objectVariableIndex: [ObjectID: SimulationState.Index]
     
     /// Mapping between a variable name and a bound variable reference.
     ///
@@ -80,6 +80,24 @@ public class CompilationContext {
     /// - SeeAlso: ``compileFormulaObject(_:)``
     ///
     internal let functions: [String: Function]
+    
+    // MARK: - Compilation Results
+    // -----------------------------------------------------------------
+    
+    /// Compiled built-in variables ready for the simulation plan.
+    public var builtins: BoundBuiltins?
+    
+    /// Compiled stocks ready for the simulation plan.
+    public var stocks: [BoundStock] = []
+    
+    /// Compiled control bindings ready for the simulation plan.
+    public var bindings: [CompiledControlBinding] = []
+    
+    /// Compiled simulation parameters ready for the simulation plan.
+    public var defaults: SimulationParameters?
+    
+    /// Compiled charts ready for the simulation plan.
+    public var charts: [Chart] = []
     
     /// Create a new compiler for a given frame.
     ///
