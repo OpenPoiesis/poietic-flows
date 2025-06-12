@@ -7,9 +7,9 @@
 import PoieticCore
 
 extension Compiler {
-    func compileFlow(_ flow: ObjectSnapshot, name: String, valueType: ValueType) throws (InternalCompilerError) -> BoundFlow {
-        let drains = view.drains(flow.objectID)
-        let fills = view.fills(flow.objectID)
+    func compileFlow(_ flow: ObjectSnapshot, name: String, valueType: ValueType, context: CompilationContext) throws (InternalCompilerError) -> BoundFlow {
+        let drains = context.view.drains(flow.objectID)
+        let fills = context.view.fills(flow.objectID)
         var priority: Int
         if let value = flow["priority"] {
             do {
@@ -22,11 +22,12 @@ extension Compiler {
         else {
             priority = 0
         }
-        let actualIndex = self.createStateVariable(content: .adjustedResult(flow.objectID),
-                                                   valueType: valueType,
-                                                   name:  name)
+        let actualIndex = createStateVariable(content: .adjustedResult(flow.objectID),
+                                              valueType: valueType,
+                                              name:  name,
+                                              context: context)
         let boundFlow = BoundFlow(objectID: flow.objectID,
-                                  estimatedValueIndex: objectVariableIndex[flow.objectID]!,
+                                  estimatedValueIndex: context.objectVariableIndex[flow.objectID]!,
                                   adjustedValueIndex: actualIndex,
                                   priority: priority,
                                   drains: drains,
@@ -43,18 +44,18 @@ extension Compiler {
     ///
     /// - Returns: Extracted and derived stock node information.
     ///
-    func compileStocks() throws (InternalCompilerError) -> [BoundStock] {
+    func compileStocks(_ context: CompilationContext) throws (InternalCompilerError) -> [BoundStock] {
         var boundStocks: [BoundStock] = []
 
-        let stocks = frame.filter(type: .Stock)
+        let stocks = context.frame.filter(type: .Stock)
         var flowIndices: [ObjectID: Int] = [:]
-        for (index, flow) in flows.enumerated() {
+        for (index, flow) in context.flows.enumerated() {
             flowIndices[flow.objectID] = index
         }
 
         for stock in stocks {
-            let inflows: [BoundFlow] = flows.filter { $0.fills == stock.objectID }
-            let outflows: [BoundFlow] = flows.filter { $0.drains == stock.objectID }
+            let inflows: [BoundFlow] = context.flows.filter { $0.fills == stock.objectID }
+            let outflows: [BoundFlow] = context.flows.filter { $0.drains == stock.objectID }
                 .sorted { $0.priority < $1.priority }
             
             let inflowIndices = inflows.map { flowIndices[$0.objectID]! }
@@ -66,7 +67,7 @@ extension Compiler {
 
             let compiled = BoundStock(
                 objectID: stock.objectID,
-                variableIndex: objectVariableIndex[stock.objectID]!,
+                variableIndex: context.objectVariableIndex[stock.objectID]!,
                 allowsNegative: allowsNegative,
                 inflows: inflowIndices,
                 outflows: outflowIndices

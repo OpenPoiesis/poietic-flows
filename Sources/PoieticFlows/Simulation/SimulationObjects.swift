@@ -138,9 +138,9 @@ public struct SimulationObject: CustomStringConvertible {
 ///
 public struct BoundBuiltins {
     // NOTE: Synchronise with ``StockFlowSimulation/setBuiltins``
-    let step: SimulationState.Index
-    let time: SimulationState.Index
-    let timeDelta: SimulationState.Index
+    public let step: SimulationState.Index
+    public let time: SimulationState.Index
+    public let timeDelta: SimulationState.Index
 
     internal init(step: SimulationState.Index = 0,
                   time: SimulationState.Index = 1,

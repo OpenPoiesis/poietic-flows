@@ -88,7 +88,7 @@ extension ObjectType {
         name: "Cloud",
         structuralType: .node,
         traits: [
-            Trait.Name,
+//            Trait.Name,
             Trait.Stock,
             Trait.DiagramNode,
         ]
@@ -141,7 +141,6 @@ extension ObjectType {
             Trait.Auxiliary,
             Trait.Name,
             Trait.DiagramNode,
-            Trait.ComputedValue,
             Trait.NumericIndicator,
             Trait.Smooth,
             // DescriptionComponent.self,
