@@ -29,8 +29,7 @@ import PoieticCore
 ///   get a list of variables that can be observed.
 /// - ``variable(named:)`` to fetch detailed information about a specific
 ///   variable.
-/// - ``timeVariableIndex`` to get an index into ``stateVariables`` where the
-///   time variable is stored.
+/// - ``builtins`` to get indices of builtin variables like time.
 /// - ``simulationDefaults`` for simulation run configuration.
 ///
 /// - Note: The simulation plan is loosely analogous to a SQL execution plan.
@@ -41,7 +40,6 @@ public struct SimulationPlan {
     internal init(simulationObjects: [SimulationObject] = [],
                   stateVariables: [StateVariable] = [],
                   builtins: BoundBuiltins = BoundBuiltins(),
-                  timeVariableIndex: SimulationState.Index,
                   stocks: [BoundStock] = [],
                   flows: [BoundFlow] = [],
                   charts: [Chart] = [],
@@ -50,7 +48,6 @@ public struct SimulationPlan {
         self.simulationObjects = simulationObjects
         self.stateVariables = stateVariables
         self.builtins = builtins
-        self.timeVariableIndex = timeVariableIndex
         self.stocks = stocks
         self.flows = flows
         self.charts = charts
@@ -104,11 +101,6 @@ public struct SimulationPlan {
     ///
     public let builtins: BoundBuiltins
     
-    /// Index of _time_ variable within the state variables.
-    ///
-    /// - SeeAlso: ``stateVariables``, ``Simulator/timePoints``
-    ///
-    public let timeVariableIndex: SimulationState.Index
     
     /// Stocks ordered by the computation (parameter) dependency.
     ///

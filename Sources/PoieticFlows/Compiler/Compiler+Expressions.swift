@@ -8,10 +8,10 @@
 import PoieticCore
 
 extension Compiler {
-    func parseExpressions() throws (InternalCompilerError) {
-        parsedExpressions = [:]
+    func parseExpressions(_ context: CompilationContext) throws (InternalCompilerError) {
+        context.parsedExpressions = [:]
         
-        for object in orderedObjects {
+        for object in context.orderedObjects {
             guard object.type.hasTrait(.Formula) else {
                 continue
             }
@@ -27,11 +27,11 @@ extension Compiler {
                 expr = try parser.parse()
             }
             catch {
-                issues.append(.expressionSyntaxError(error), for: object.objectID)
+                context.issues.append(.expressionSyntaxError(error), for: object.objectID)
                 continue
             }
             
-            parsedExpressions[object.objectID] = expr
+            context.parsedExpressions[object.objectID] = expr
         }
     }
     
@@ -54,9 +54,9 @@ extension Compiler {
     /// - Throws: ``NodeIssueError`` if there is an issue with parameters,
     ///   function names or other variable names in the expression.
     ///
-    func compileFormulaObject(_ object: ObjectSnapshot) throws (InternalCompilerError) -> ComputationalRepresentation {
-        guard let unboundExpression = parsedExpressions[object.objectID] else {
-            if issues[object.objectID] != nil {
+    func compileFormulaObject(_ object: ObjectSnapshot, context: CompilationContext) throws (InternalCompilerError) -> ComputationalRepresentation {
+        guard let unboundExpression = context.parsedExpressions[object.objectID] else {
+            if context.issues[object.objectID] != nil {
                 // Compilation already has issues, we just proceed to collect some more.
                 throw .objectIssue
             }
@@ -70,12 +70,12 @@ extension Compiler {
         let boundExpression: BoundExpression
         do {
             boundExpression = try bindExpression(unboundExpression,
-                                                 variables: stateVariables,
-                                                 names: nameIndex,
-                                                 functions: functions)
+                                                 variables: context.stateVariables,
+                                                 names: context.nameIndex,
+                                                 functions: context.functions)
         }
         catch /* ExpressionError */ {
-            issues.append(.expressionError(error), for: object.objectID)
+            context.issues.append(.expressionError(error), for: object.objectID)
             throw .objectIssue
         }
         

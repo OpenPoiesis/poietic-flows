@@ -29,6 +29,7 @@ extension Metamodel {
             Trait.Name,
             Trait.DiagramNode,
             // Abstract
+            Trait.Stock,
             Trait.Auxiliary,
             Trait.ComputedValue,
             Trait.DiagramNode,
@@ -36,7 +37,7 @@ extension Metamodel {
             Trait.NumericIndicator,
 
             // Basic Stock-Flow nodes
-            Trait.Stock,
+            Trait.Reservoir,
             Trait.FlowRate,
             Trait.Formula,
             Trait.GraphicalFunction,
@@ -58,6 +59,7 @@ extension Metamodel {
         types: [
             // Nodes
             ObjectType.Stock,
+            ObjectType.Cloud,
             ObjectType.FlowRate,
             ObjectType.Auxiliary,
             ObjectType.GraphicalFunction,
@@ -86,20 +88,20 @@ extension Metamodel {
          edge       origin  target    origin outgoing    target incoming
          ---
          parameter  aux     aux         many    many
-         parameter  stock   aux         many    many
+         parameter  resv.   aux         many    many
          parameter  flow    aux         many    many
          
          parameter  aux     flow        many    many
          parameter  flow    flow        many    many
-         parameter  stock   flow        many    many
+         parameter  resv.   flow        many    many
 
          parameter  aux     gr func     many    one
-         parameter  stock   gr func     many    one
+         parameter  resv.   gr func     many    one
          parameter  flow    gr func     many    one
          flow       stock   flow        many    one
          flow       flow    stock       one    many
          flow       cloud   flow        many    one
-         flow       flow    cloud       one    many
+         flow       flow    stock       one    many
          comment    any     any         many    many
          */
 
@@ -109,9 +111,9 @@ extension Metamodel {
             EdgeRule(type: .Flow,
                      origin: IsTypePredicate(.FlowRate),
                      outgoing: .one,
-                     target: IsTypePredicate(.Stock)),
+                     target: HasTraitPredicate(.Stock)),
             EdgeRule(type: .Flow,
-                     origin: IsTypePredicate(.Stock),
+                     origin: HasTraitPredicate(.Stock),
                      target: IsTypePredicate(.FlowRate),
                      incoming: .one),
             EdgeRule(type: .Parameter,
