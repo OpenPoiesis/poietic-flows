@@ -27,12 +27,12 @@ extension Metamodel {
         ///
         traits: [
             Trait.Name,
-            Trait.DiagramNode,
+            Trait.DiagramBlock,
             // Abstract
             Trait.Stock,
             Trait.Auxiliary,
             Trait.ComputedValue,
-            Trait.DiagramNode,
+            Trait.DiagramBlock,
             Trait.DiagramConnector,
             Trait.NumericIndicator,
 

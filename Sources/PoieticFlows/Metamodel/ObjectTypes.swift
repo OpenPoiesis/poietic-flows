@@ -27,7 +27,7 @@ extension ObjectType {
             Trait.Reservoir,
             Trait.ComputedValue,
             Trait.NumericIndicator,
-            Trait.DiagramNode,
+            Trait.DiagramBlock,
         ],
         secondaryLabelAttribute: "formula"
     )
@@ -58,7 +58,7 @@ extension ObjectType {
             Trait.FlowRate,
             Trait.ComputedValue,
             Trait.NumericIndicator,
-            Trait.DiagramNode,
+            Trait.DiagramBlock,
             // DescriptionComponent.self,
             // ErrorComponent.self,
         ],
@@ -76,7 +76,7 @@ extension ObjectType {
             Trait.Formula,
             Trait.ComputedValue,
             Trait.NumericIndicator,
-            Trait.DiagramNode,
+            Trait.DiagramBlock,
             // DescriptionComponent.self,
             // ErrorComponent.self,
         ],
@@ -93,7 +93,7 @@ extension ObjectType {
         traits: [
 //            Trait.Name,
             Trait.Stock,
-            Trait.DiagramNode,
+            Trait.DiagramBlock,
         ],
         labelAttribute: nil, // default is "name", we do not want that
     )
@@ -108,7 +108,7 @@ extension ObjectType {
         traits: [
             Trait.Auxiliary,
             Trait.Name,
-            Trait.DiagramNode,
+            Trait.DiagramBlock,
             Trait.GraphicalFunction,
             Trait.ComputedValue,
             Trait.NumericIndicator
@@ -126,7 +126,7 @@ extension ObjectType {
         traits: [
             Trait.Auxiliary,
             Trait.Name,
-            Trait.DiagramNode,
+            Trait.DiagramBlock,
             Trait.ComputedValue,
             Trait.NumericIndicator,
             Trait.Delay,
@@ -145,7 +145,7 @@ extension ObjectType {
             Trait.ComputedValue,
             Trait.Auxiliary,
             Trait.Name,
-            Trait.DiagramNode,
+            Trait.DiagramBlock,
             Trait.NumericIndicator,
             Trait.Smooth,
             // DescriptionComponent.self,
@@ -193,7 +193,7 @@ extension ObjectType {
         name: "Note",
         structuralType: .node,
         traits: [
-            .DiagramNode,
+            .DiagramBlock,
             .Note,
         ]
     )
