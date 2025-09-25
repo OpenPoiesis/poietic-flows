@@ -27,8 +27,9 @@ extension ObjectType {
             Trait.Reservoir,
             Trait.ComputedValue,
             Trait.NumericIndicator,
-            Trait.DiagramNode,
-        ]
+            Trait.DiagramBlock,
+        ],
+        secondaryLabelAttribute: "formula"
     )
     
     /// A flow rate node.
@@ -57,10 +58,11 @@ extension ObjectType {
             Trait.FlowRate,
             Trait.ComputedValue,
             Trait.NumericIndicator,
-            Trait.DiagramNode,
+            Trait.DiagramBlock,
             // DescriptionComponent.self,
             // ErrorComponent.self,
-        ]
+        ],
+        secondaryLabelAttribute: "formula"
     )
     
     /// An auxiliary node - containing a constant or a formula.
@@ -74,10 +76,11 @@ extension ObjectType {
             Trait.Formula,
             Trait.ComputedValue,
             Trait.NumericIndicator,
-            Trait.DiagramNode,
+            Trait.DiagramBlock,
             // DescriptionComponent.self,
             // ErrorComponent.self,
-        ]
+        ],
+        secondaryLabelAttribute: "formula"
     )
     
     /// A cloud node representing out-of-scope stock that has no restrictions.
@@ -90,8 +93,9 @@ extension ObjectType {
         traits: [
 //            Trait.Name,
             Trait.Stock,
-            Trait.DiagramNode,
-        ]
+            Trait.DiagramBlock,
+        ],
+        labelAttribute: nil, // default is "name", we do not want that
     )
 
     /// An auxiliary node with a function that is described by a graph.
@@ -104,7 +108,7 @@ extension ObjectType {
         traits: [
             Trait.Auxiliary,
             Trait.Name,
-            Trait.DiagramNode,
+            Trait.DiagramBlock,
             Trait.GraphicalFunction,
             Trait.ComputedValue,
             Trait.NumericIndicator
@@ -122,13 +126,14 @@ extension ObjectType {
         traits: [
             Trait.Auxiliary,
             Trait.Name,
-            Trait.DiagramNode,
+            Trait.DiagramBlock,
             Trait.ComputedValue,
             Trait.NumericIndicator,
             Trait.Delay,
             // DescriptionComponent.self,
             // ErrorComponent.self,
-        ]
+        ],
+        secondaryLabelAttribute: "delay_duration",
     )
 
     /// Exponential smoothing.
@@ -140,12 +145,13 @@ extension ObjectType {
             Trait.ComputedValue,
             Trait.Auxiliary,
             Trait.Name,
-            Trait.DiagramNode,
+            Trait.DiagramBlock,
             Trait.NumericIndicator,
             Trait.Smooth,
             // DescriptionComponent.self,
             // ErrorComponent.self,
-        ]
+        ],
+        secondaryLabelAttribute: "window_time",
     )
 
     /// A user interface mode representing a control that modifies a value of
@@ -187,7 +193,7 @@ extension ObjectType {
         name: "Note",
         structuralType: .node,
         traits: [
-            .DiagramNode,
+            .DiagramBlock,
             .Note,
         ]
     )
