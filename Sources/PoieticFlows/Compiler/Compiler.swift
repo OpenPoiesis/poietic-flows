@@ -281,7 +281,7 @@ public class Compiler {
         
         guard context.issues.isEmpty else { throw .issues(context.issues) }
         
-        context.orderedObjects = ordered.map { context.frame.object($0) }
+        context.orderedObjects = ordered.compactMap { context.frame.object($0) }
     }
     
     /// Prepare built-in variables.

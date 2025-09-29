@@ -43,12 +43,12 @@ public struct FormulaCompilerSystem: RuntimeSystem {
                 expr = try parser.parse()
             }
             catch {
-                context.appendIssue(error, for: snapshot.id)
+                context.appendIssue(error, for: snapshot.objectID)
                 continue
             }
             
             context.setComponent(ParsedFormulaComponent(parsedFormula: expr),
-                                 for: snapshot.id)
+                                 for: snapshot.objectID)
         }
     }
 }
