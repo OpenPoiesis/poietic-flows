@@ -71,6 +71,7 @@ public enum ExpressionError: Error, CustomStringConvertible, Equatable {
 /// - `__div__` – binary division operator `/`
 /// - `__mod__` – binary modulo operator `%`
 /// - `__neg__` – unary negation operator `-`
+/// - `__exp__` – binary exponent operator `^`
 ///
 /// - Note: The operator names are similar to the operator method names in
 ///   Python.
@@ -129,6 +130,7 @@ public func bindExpression(_ expression: UnboundExpression,
         case "*": "__mul__"
         case "/": "__div__"
         case "%": "__mod__"
+        case "^": "__pow__"
         // Comparison
         case "==": "__eq__"
         case "!=": "__ne__"

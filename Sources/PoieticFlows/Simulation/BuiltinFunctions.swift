@@ -40,13 +40,18 @@ extension Function {
     public static let NumericModulo = Function(numericBinary: "__mod__") {
         $0.truncatingRemainder(dividingBy: $1)
     }
-    
+    nonisolated(unsafe)
+    public static let NumericExponent = Function(numericBinary: "__pow__") {
+        pow($0, $1)
+    }
+
     nonisolated(unsafe) static let NumericBinaryOperators = [
         NumericAdd,
         NumericSubtract,
         NumericMultiply,
         NumericDivide,
-        NumericModulo
+        NumericModulo,
+        NumericExponent
     ]
 
     /// Function for computing absolute (numeric) value.
