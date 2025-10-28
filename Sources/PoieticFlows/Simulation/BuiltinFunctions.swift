@@ -41,7 +41,7 @@ extension Function {
         $0.truncatingRemainder(dividingBy: $1)
     }
     nonisolated(unsafe)
-    public static let NumericExponent = Function(numericBinary: "__pow__") {
+    public static let NumericPower = Function(numericBinary: "__pow__") {
         pow($0, $1)
     }
 
@@ -51,7 +51,7 @@ extension Function {
         NumericMultiply,
         NumericDivide,
         NumericModulo,
-        NumericExponent
+        NumericPower,
     ]
 
     /// Function for computing absolute (numeric) value.
@@ -100,6 +100,11 @@ extension Function {
         pow($0, $1)
     }
 
+    nonisolated(unsafe)
+    public static let Exp = Function(numericUnary: "exp") {
+        exp($0)
+    }
+
     /// Function for computing a sum of one or more values.
     ///
     /// Expression: `sum(number, ...)`
@@ -131,6 +136,7 @@ extension Function {
         Ceiling,
         Round,
         Power,
+        Exp,
         Sum,
         Min,
         Max,

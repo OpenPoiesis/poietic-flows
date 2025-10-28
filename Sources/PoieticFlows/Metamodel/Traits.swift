@@ -16,6 +16,7 @@ extension Trait {
     )
 
     // TODO: Rename to display_value_* pattern and then min/max/baseline
+    // TODO: Consider renaming to "TimeSeries" or just "NumericValue"
     
     public static let NumericIndicator = Trait(
         name: "NumericIndicator",

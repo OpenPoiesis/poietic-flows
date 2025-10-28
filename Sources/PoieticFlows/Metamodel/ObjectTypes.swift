@@ -22,6 +22,7 @@ extension ObjectType {
         structuralType: .node,
         traits: [
             Trait.Name,
+            Trait.Color,
             Trait.Formula,
             Trait.Stock,
             Trait.Reservoir,
@@ -54,6 +55,7 @@ extension ObjectType {
         structuralType: .node,
         traits: [
             Trait.Name,
+            Trait.Color,
             Trait.Formula,
             Trait.FlowRate,
             Trait.ComputedValue,
@@ -73,6 +75,7 @@ extension ObjectType {
         traits: [
             Trait.Auxiliary,
             Trait.Name,
+            Trait.Color,
             Trait.Formula,
             Trait.ComputedValue,
             Trait.NumericIndicator,
@@ -107,6 +110,7 @@ extension ObjectType {
         structuralType: .node,
         traits: [
             Trait.Auxiliary,
+            Trait.Color,
             Trait.Name,
             Trait.DiagramBlock,
             Trait.GraphicalFunction,
@@ -125,6 +129,7 @@ extension ObjectType {
         structuralType: .node,
         traits: [
             Trait.Auxiliary,
+            Trait.Color,
             Trait.Name,
             Trait.DiagramBlock,
             Trait.ComputedValue,
@@ -142,6 +147,7 @@ extension ObjectType {
         name: "Smooth",
         structuralType: .node,
         traits: [
+            Trait.Color,
             Trait.ComputedValue,
             Trait.Auxiliary,
             Trait.Name,
