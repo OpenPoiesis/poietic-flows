@@ -313,7 +313,7 @@ public class StockFlowSimulation: Simulation {
         let inputValue = try state[smooth.inputValueIndex].doubleValue()
         let oldSmooth = state.double(at: smooth.smoothValueIndex)
         
-        // TODO: Division by zero
+        // TODO: Division by zero - what to do?
         let alpha = state.timeDelta / smooth.windowTime
         let newSmooth = alpha * inputValue + (1 - alpha) * oldSmooth
         
@@ -336,8 +336,7 @@ public class StockFlowSimulation: Simulation {
             throw .valueError(error)
         }
         
-        // TODO: Differentiate function type
-        let result = function.function.stepFunction(x: parameter)
+        let result = function.function.apply(x: parameter)
         return Variant(result)
     }
 }

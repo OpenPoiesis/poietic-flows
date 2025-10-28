@@ -21,11 +21,16 @@ extension Compiler {
     /// - SeeAlso: ``CompiledGraphicalFunction``, ``Solver/evaluate(objectAt:with:)``
     ///
     func compileGraphicalFunctionNode(_ object: ObjectSnapshot, context: CompilationContext) throws (InternalCompilerError) -> ComputationalRepresentation{
-        guard let points = try? object["graphical_function_points"]?.pointArray() else {
+        guard let points:[Point] = object["graphical_function_points"] else {
             throw .attributeExpectationFailure(object.objectID, "graphical_function_points")
         }
-        // TODO: Interpolation method
-        let function = GraphicalFunction(points: points)
+        let methodName: String = object["interpolation_method",
+                                        default: GraphicalFunction.InterpolationMethod.defaultMethod.rawValue]
+            
+        let method = GraphicalFunction.InterpolationMethod(rawValue: methodName)
+                        ?? GraphicalFunction.InterpolationMethod.defaultMethod
+
+        let function = GraphicalFunction(points: points, method: method)
         
         let parameters = context.view.incomingParameterNodes(object.objectID)
         guard let parameterNode = parameters.first else {
@@ -60,7 +65,7 @@ extension Compiler {
         let parameterIndex = context.objectVariableIndex[parameterNode.objectID]!
         let variable = context.stateVariables[parameterIndex]
         
-        guard let duration = try? object["delay_duration"]?.intValue() else {
+        guard let duration: Int = object["delay_duration"] else {
             throw .attributeExpectationFailure(object.objectID, "delay_duration")
         }
         guard let posDuration = UInt(exactly: duration) else {
@@ -105,7 +110,7 @@ extension Compiler {
         let parameterIndex = context.objectVariableIndex[parameterNode.objectID]!
         let variable = context.stateVariables[parameterIndex]
         
-        guard let windowTime = try? object["window_time"]?.doubleValue() else {
+        guard let windowTime: Double = object["window_time"] else {
             throw .attributeExpectationFailure(object.objectID, "window_time")
         }
         
