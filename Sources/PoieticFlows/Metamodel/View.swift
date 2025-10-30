@@ -28,6 +28,7 @@ public struct ResolvedParameters {
 }
 
 
+// FIXME: StockFlowView is a relic from the past, remove it. Replace with runtime frame components.
 /// View of Stock-and-Flow domain-specific aspects of the design.
 ///
 /// The domain view provides higher level view of the design through higher

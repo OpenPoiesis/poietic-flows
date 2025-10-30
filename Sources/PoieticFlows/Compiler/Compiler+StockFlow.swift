@@ -10,18 +10,7 @@ extension Compiler {
     func compileFlow(_ flow: ObjectSnapshot, name: String, valueType: ValueType, context: CompilationContext) throws (InternalCompilerError) -> BoundFlow {
         let drains = context.view.drains(flow.objectID)
         let fills = context.view.fills(flow.objectID)
-        var priority: Int
-        if let value = flow["priority"] {
-            do {
-                priority = try value.intValue()
-            }
-            catch {
-                throw .attributeExpectationFailure(flow.objectID, "priority")
-            }
-        }
-        else {
-            priority = 0
-        }
+        let priority: Int = flow["priority", default: 0]
         let actualIndex = createStateVariable(content: .adjustedResult(flow.objectID),
                                               valueType: valueType,
                                               name:  name,
@@ -61,7 +50,7 @@ extension Compiler {
             let inflowIndices = inflows.map { flowIndices[$0.objectID]! }
             let outflowIndices = outflows.map { flowIndices[$0.objectID]! }
 
-            guard let allowsNegative = try? stock["allows_negative"]?.boolValue() else {
+            guard let allowsNegative: Bool = stock["allows_negative"] else {
                 throw .attributeExpectationFailure(stock.objectID, "allows_negative")
             }
 

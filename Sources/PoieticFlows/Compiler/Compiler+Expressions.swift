@@ -16,7 +16,7 @@ extension Compiler {
                 continue
             }
             
-            guard let formula = try? object["formula"]?.stringValue() else {
+            guard let formula: String = object["formula"] else {
                 throw .attributeExpectationFailure(object.objectID, "formula")
             }
             
