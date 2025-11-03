@@ -71,7 +71,9 @@ struct SimulationOrderDependencySystem: System {
                 role = .auxiliary
             }
             else {
-                fatalError("Unknown simulation object role for object type: \(object.type.name)")
+                throw InternalSystemError(self,
+                                          message: "Unknown simulation object role for object type: \(object.type.name)",
+                                          context: .object(object.objectID))
             }
             let comp = SimulationRoleComponent(role: role)
             frame.setComponent(comp, for: object.objectID)

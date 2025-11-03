@@ -30,6 +30,11 @@ public struct ResolvedParametersComponent: Component {
 /// used. The visual representation must match computational representation for human-oriented
 /// clarity.
 ///
+/// - **Input:** Nodes with compiled expression in ``ParsedExpressionComponent``
+/// - **Output:** ``ResolvedParametersComponent`` set of each input component
+/// - **Forgiveness:** Nothing to be forgiven.
+/// - **Issues:** Issues added to objects with unknown parameters or unused inputs.
+///
 class ParameterResolutionSystem {
     nonisolated(unsafe) public static let dependencies: [SystemDependency] = [
         .after(ExpressionParserSystem.self), // We need variable names
@@ -59,9 +64,19 @@ class ParameterResolutionSystem {
                 }
             }
             
-            // Store only when there are some issues.
-            guard !missing.isEmpty || unused.isEmpty else { continue }
+            // If no parameters are required or unnecessarily connected, just continue
+            guard !(connected.isEmpty && missing.isEmpty && unused.isEmpty) else { continue }
             
+            // Set errors
+            for name in missing {
+                frame.appendIssue(ObjectIssue.unknownParameter(name), for: id)
+            }
+
+            for edge in unused {
+                guard let name = edge.originObject.name else { continue }
+                frame.appendIssue(ObjectIssue.unusedInput(name), for: edge.key)
+            }
+
             let paramComponent = ResolvedParametersComponent(
                 connected: connected,
                 missing: Array(missing),
