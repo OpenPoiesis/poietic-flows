@@ -7,46 +7,6 @@
 
 import PoieticCore
 
-
-/// Component with information about flow rate between two stocks.
-///
-/// Situation:
-///
-///     Stock --(Flow)--> FlowRate --(Flow)--> Stock
-///      ^                    ^                  ^
-///      |                    |                  |
-///      |             Node of component         +--- stock that the flow rate node fills
-///      |
-///     Stock that the flow rate node drains
-///
-public struct FlowRateComponent: Component {
-    /// ID of a stock that the flow fills. If nil, then infinite stock is assumed.
-    ///
-    /// The situation:
-    ///
-    ///     FlowRate --(Flow)--> Stock
-    ///      ^                     ^
-    ///      |                     +--- stock that the flow fills
-    ///      |
-    ///     Node of interest
-    ///
-    public let fillsStock: ObjectID?
-
-    /// ID of a stock that the flow drains. If nil, then infinite stock is assumed.
-    ///
-    /// The situation:
-    ///
-    ///     Stock --(Flow)--> Flow Rate
-    ///       |                   ^
-    ///       |                   +--- Node of interest, read from here
-    ///       +-- stock being drained
-    ///
-    public let drainsStock: ObjectID?
-    
-    /// Priority when sorting flow rates.
-    public let priority: Int
-}
-
 /// System that collects all flow rates and determines their inflows and outflows.
 ///
 /// - **Input:** Nodes of type ``ObjectType/FlowRate``,
@@ -67,30 +27,12 @@ public struct FlowCollectorSystem: System {
             
             let priority: Int = flow["priority", default: 0]
             
-            let component = FlowRateComponent(fillsStock: fills,
-                                              drainsStock: drains,
+            let component = FlowRateComponent(drainsStock: drains,
+                                              fillsStock: fills,
                                               priority: priority)
             frame.setComponent(component, for: flow.objectID)
         }
     }
-}
-
-/// Component describing dependencies between stocks and flow rates.
-///
-/// - SeeAlso: ``StockDependencySystem``, ``FlowCollectorSystem``.
-///
-public struct StockDependencyComponent: Component {
-    /// List of ``ObjectType/FlowRate`` nodes that fill the stock.
-    public let inflowRates: [ObjectID]
-
-    /// List of ``ObjectType/FlowRate`` nodes that drain the stock.
-    public let outflowRates: [ObjectID]
-
-    /// List of stocks that are the stock owning this component drains.
-    public let inflowStocks: [ObjectID]
-    
-    /// List of stocks that are the stock owning this component fills.
-    public let outflowStocks: [ObjectID]
 }
 
 /// System that collects all stocks and determines their dependent relationships.
@@ -138,10 +80,12 @@ struct StockDependencySystem: System {
                 inflowRates: filledByRate[stock.objectID] ?? [],
                 outflowRates: drainedByRate[stock.objectID] ?? [],
                 inflowStocks: inflowStocks[stock.objectID] ?? [],
-                outflowStocks: outflowStocks[stock.objectID] ?? []
+                outflowStocks: outflowStocks[stock.objectID] ?? [],
+                allowsNegative: stock["allows_negative", default: false]
             )
             frame.setComponent(component, for: stock.objectID)
         }
     }
 
 }
+

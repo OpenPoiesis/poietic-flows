@@ -37,6 +37,7 @@ public struct ResolvedParameters {
 /// The view assumes that the frame conforms to the metamodel and satisfies all of the
 /// metamodel constraints.
 ///
+@available(*, deprecated, message: "Use components and systems")
 public class StockFlowView {
     /// Graph that the view projects.
     ///
@@ -44,6 +45,7 @@ public class StockFlowView {
     
     /// Create a new view on top of a graph.
     ///
+    @available(*, deprecated, message: "Use components and systems")
     public init(_ frame: ValidatedFrame) {
         self.frame = frame
     }
@@ -54,6 +56,7 @@ public class StockFlowView {
     ///
     /// - SeeAlso: ``StateVariable``, ``CompiledModel``
     ///
+    @available(*, deprecated, message: "Use the new system based compiler")
     public var simulationNodes: [ObjectSnapshot] {
         frame.filter {
             ($0.type === ObjectType.Stock
@@ -65,6 +68,7 @@ public class StockFlowView {
     // Parameter queries
     // ---------------------------------------------------------------------
     //
+    @available(*, deprecated, message: "Use ParameterResolutionSystem")
     public func incomingParameterEdges(_ target: ObjectID) -> [EdgeObject] {
         // TODO: (minor) We are unnecessarily doing lookup for target when we are fetching the edges
         return frame.incoming(target).filter {
@@ -73,6 +77,7 @@ public class StockFlowView {
     }
     /// Nodes representing parameters of a given node.
     ///
+    @available(*, deprecated, message: "Use ParameterResolutionSystem")
     public func incomingParameterNodes(_ nodeID: ObjectID) -> [ObjectSnapshot] {
         // TODO: In the compiler, do this once and create a map: originID -> [DesignObject]
         return incomingParameterEdges(nodeID).map { $0.originObject }
@@ -93,6 +98,7 @@ public class StockFlowView {
     ///      |
     ///      *Node of interest*
     ///
+    @available(*, deprecated, message: "Use one of the new stock-flow systems")
     public func fills(_ flowID: ObjectID) -> ObjectID? {
         frame.outgoing(flowID).first {
             $0.object.type === ObjectType.Flow
@@ -109,6 +115,7 @@ public class StockFlowView {
     ///      |
     ///      Neighbourhood (only one)
     ///
+    @available(*, deprecated, message: "Use one of the new stock-flow systems")
     public func drains(_ flowID: ObjectID) -> ObjectID? {
         frame.incoming(flowID).first {
             $0.object.type === ObjectType.Flow
@@ -120,6 +127,7 @@ public class StockFlowView {
     /// The Stock and Flow model requires that parameters are connected to the nodes where they are
     /// used. This is a user-oriented requirement.
     ///
+    @available(*, deprecated, message: "Use ParameterResolutionSystem")
     public func resolveParameters(_ nodeID: ObjectID, required: [String]) ->  ResolvedParameters {
         var missing: Set<String> = Set(required)
         var unused: [EdgeObject] = []

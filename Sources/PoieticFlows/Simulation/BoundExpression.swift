@@ -7,6 +7,7 @@
 
 import PoieticCore
 
+// FIXME: Why do we need value type if we have index?
 public struct BoundVariable: CustomStringConvertible {
     let index: SimulationState.Index
     let valueType: ValueType
@@ -193,6 +194,112 @@ public func bindExpression(_ expression: UnboundExpression,
         case .typeMismatch(let index):
             // TODO: We need all indices
             throw ExpressionError.argumentTypeMismatch(index.first! + 1, "int or double")
+        default: //
+            return .function(function, boundArgs)
+        }
+    }
+}
+
+// FIXME: [REFACTORING] [SYSTEMS] Use this one instead of the one above.
+func bindExpression(_ expression: UnboundExpression,
+                    variables: StateVariableTable,
+                    functions: [String:Function])
+throws (ExpressionError) -> BoundExpression
+{
+    switch expression {
+    case let .value(value):
+        return .value(value)
+
+    case let .variable(name):
+        guard let variable: StateVariable = variables[name] else {
+            throw ExpressionError.unknownVariable(name)
+        }
+        return .variable(BoundVariable(index: variable.index,
+                                       valueType: variable.valueType))
+    case let .unary(op, operand):
+        let funcName: String = switch op {
+        case "-": "__neg__"
+        default: fatalError("Unknown unary operator: '\(op)'. Hint: check the expression parser.")
+        }
+
+        guard let function = functions[funcName] else {
+            fatalError("No function '\(funcName)' for unary operator: '\(op)'. Hint: Make sure it is defined in the builtin function list.")
+        }
+
+        let boundOperand = try bindExpression(operand, variables: variables, functions: functions)
+        
+        let result = function.signature.validate([boundOperand.valueType])
+        switch result {
+        case .invalidNumberOfArguments:
+            throw .invalidNumberOfArguments(1,
+                                                         function.signature.minimalArgumentCount)
+        case .typeMismatch(_):
+            throw .argumentTypeMismatch(1, "int or double")
+        default:
+            return .unary(function, boundOperand)
+        }
+        
+        
+    case let .binary(op, lhs, rhs):
+        let funcName: String = switch op {
+        case "+": "__add__"
+        case "-": "__sub__"
+        case "*": "__mul__"
+        case "/": "__div__"
+        case "%": "__mod__"
+        case "^": "__pow__"
+        // Comparison
+        case "==": "__eq__"
+        case "!=": "__ne__"
+        case "<" : "__lt__"
+        case "<=": "__le__"
+        case ">" : "__gt__"
+        case ">=": "__ge__"
+        default: fatalError("Unknown binary operator: '\(op)'. Internal hint: check the expression parser.")
+        }
+        
+        guard let function = functions[funcName] else {
+            fatalError("No function '\(funcName)' for binary operator: '\(op)'. Internal hint: Make sure it is defined in the builtin function list.")
+        }
+
+        let lBound = try bindExpression(lhs, variables: variables, functions: functions)
+        let rBound = try bindExpression(rhs, variables: variables, functions: functions)
+
+        let args = [lBound.valueType, rBound.valueType]
+        let result = function.signature.validate(args)
+        switch result {
+        case .invalidNumberOfArguments:
+            throw ExpressionError.invalidNumberOfArguments(2,
+                                                         function.signature.minimalArgumentCount)
+        case .typeMismatch(let index):
+            // TODO: We need all indices
+            throw ExpressionError.argumentTypeMismatch(index[0] + 1, String(describing: function.signature.returnType))
+        default: //
+            return .binary(function, lBound, rBound)
+        }
+
+    case let .function(name, arguments):
+        guard let function = functions[name] else {
+            throw ExpressionError.unknownFunction(name)
+        }
+        
+        var boundArgs: [BoundExpression] = []
+        
+        for arg in arguments {
+            let boundArg = try bindExpression(arg, variables: variables, functions: functions)
+            boundArgs.append(boundArg)
+        }
+
+        let types = boundArgs.map { $0.valueType }
+        let result = function.signature.validate(types)
+
+        switch result {
+        case .invalidNumberOfArguments:
+            throw ExpressionError.invalidNumberOfArguments(arguments.count,
+                                          function.signature.minimalArgumentCount)
+        case .typeMismatch(let index):
+            // TODO: We need all indices
+            throw ExpressionError.argumentTypeMismatch(index[0] + 1, "int or double")
         default: //
             return .function(function, boundArgs)
         }

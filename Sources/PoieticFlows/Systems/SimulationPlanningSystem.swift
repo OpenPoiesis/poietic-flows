@@ -6,52 +6,26 @@
 //
 import PoieticCore
 
-public struct SimulationOrderComponent: Component {
-    let objects: [ObjectSnapshot]
-}
-
-public struct NameIndexComponent: Component {
-    let nameToIndex: [String:Int]
-}
-
 
 /// System that ...
 ///
-/// - **Input:** ...
-/// - **Output:** ...
+/// - **Input:** Simulation objects (is `Stock` || is `FlowRate` || has trait `Auxiliary`)
+/// - **Output:**
+///     - Ordered list of objects in ``SimulationOrderComponent``.
+///     - Role associated with each object in ``SimulationRoleComponent``.
 /// - **Forgiveness:** ...
 ///
-struct SimulationObjectsCollectorSystem: System {
+struct SimulationOrderDependencySystem: System {
     func update(_ frame: RuntimeFrame) throws (InternalSystemError) {
+        // TODO: Replace with SimulationObject trait once we have it (there are practical reasons we don't yet)
+        // TODO: Should we use Trait.Stock? (also below)
+        // Note: See roles below
         let unordered: [ObjectSnapshot] = frame.filter {
             ($0.type === ObjectType.Stock
                 || $0.type === ObjectType.FlowRate
                 || $0.type.hasTrait(Trait.Auxiliary))
         }
 
-        var homonyms: [String: [ObjectID]] = [:]
-        
-        // 1. Collect nodes relevant to the simulation
-        for node in unordered {
-            guard let name = node.name else { continue }
-            
-            // Is visually empty?
-            if name.isEmpty || name.allSatisfy({ $0.isWhitespace}) {
-                frame.appendIssue(ObjectIssue.emptyName, for: node.objectID)
-            }
-            homonyms[name, default: []].append(node.objectID)
-        }
-        
-        var dupes: [String] = []
-        
-        for (name, ids) in homonyms where ids.count > 1 {
-            let issue = ObjectIssue.duplicateName(name)
-            dupes.append(name)
-            for id in ids {
-                frame.appendIssue(issue, for: id)
-            }
-        }
-    
         // 2. Sort nodes based on computation dependency.
         let parameterEdges:[EdgeObject] = frame.edges.filter {
             $0.object.type === ObjectType.Parameter
@@ -75,8 +49,99 @@ struct SimulationObjectsCollectorSystem: System {
             return
         }
         let snapshots = ordered.compactMap { frame[$0] }
-        let component = SimulationOrderComponent(objects: snapshots)
+
+        var stocks: [ObjectID] = []
+        var flows: [ObjectID] = []
+        
+        // Determine simulation role: stock, flow, aux
+        // Note: See filter at the beginning of the method
+        for object in snapshots {
+            let role: SimulationObject.Role
+
+            // TODO: Should we use Trait.Stock?
+            if object.type === ObjectType.Stock {
+                role = .stock
+                stocks.append(object.objectID)
+            }
+            else if object.type === ObjectType.FlowRate {
+                role = .flow
+                flows.append(object.objectID)
+            }
+            else if object.type.hasTrait(Trait.Auxiliary) {
+                role = .auxiliary
+            }
+            else {
+                fatalError("Unknown simulation object role for object type: \(object.type.name)")
+            }
+            let comp = SimulationRoleComponent(role: role)
+            frame.setComponent(comp, for: object.objectID)
+        }
+        
+        let component = SimulationOrderComponent(
+            objects: snapshots,
+            stocks: stocks,
+            flows: flows
+        )
+
         frame.setFrameComponent(component)
     }
 }
 
+/// System that collects object names and creates a name lookup.
+///
+/// - **Input:** Ordered simulation objects in frame component ``SimulationOrderComponent``.
+/// - **Output:** ``NamedObjectComponent`` for objects where the name is present and not visually
+///               empty; ``SimulationNameLookupComponent`` for the frame.
+/// - **Forgiveness:** Objects without name attribute set - assumed they can't be referred to by
+///   name, but can by other means, such as an edge.
+/// - **Issues collected:** Objects with duplicate name.
+///
+struct NameCollectorSystem: System {
+    // Note: In the future this system might be doing fully qualified name resolution, once we get
+    //       nested simulation blocks.
+    
+    nonisolated(unsafe) public static let dependencies: [SystemDependency] = [
+        .after(SimulationOrderDependencySystem.self),
+    ]
+
+    func update(_ frame: RuntimeFrame) throws (InternalSystemError) {
+        guard let order = frame.frameComponent(SimulationOrderComponent.self) else {
+            return
+        }
+        
+        var namedObjects: [String: [ObjectID]] = [:]
+        var nameLookup: [String:ObjectID] = [:]
+        
+
+        // 1. Collect names
+        for object in order.objects {
+            guard let name = object.name else { continue }
+            
+            // Is visually empty?
+            // TODO: Bring String.isVisuallyEmpty method from poietic-godot to core
+            if name.isEmpty || name.allSatisfy({ $0.isWhitespace}) {
+                frame.appendIssue(ObjectIssue.emptyName, for: object.objectID)
+            }
+            namedObjects[name, default: []].append(object.objectID)
+            let comp = SimObjectNameComponent(name: name)
+            frame.setComponent(comp, for: object.objectID)
+        }
+        
+        // 2. Find duplicates
+        for (name, ids) in namedObjects where ids.count > 1 {
+            guard ids.count == 1 else {
+                let issue = ObjectIssue.duplicateName(name)
+                for id in ids {
+                    frame.appendIssue(issue, for: id)
+                }
+                continue
+            }
+            nameLookup[name] = ids[0]
+        }
+
+        let component = SimulationNameLookupComponent(
+            namedObjects: nameLookup
+        )
+        frame.setFrameComponent(component)
+    }
+}
