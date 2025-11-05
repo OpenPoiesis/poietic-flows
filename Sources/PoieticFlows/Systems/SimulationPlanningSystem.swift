@@ -126,14 +126,10 @@ struct NameCollectorSystem: System {
         var namedObjects: [String: [ObjectID]] = [:]
         var nameLookup: [String:ObjectID] = [:]
         
-
-        // 1. Collect names
         for object in order.objects {
             guard let name = object.name else { continue }
-            
-            // Is visually empty?
-            // TODO: Bring String.isVisuallyEmpty method from poietic-godot to core
-            if name.isEmpty || name.allSatisfy({ $0.isWhitespace}) {
+            let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
+            if trimmedName.isEmpty {
                 let issue = Issue(
                     identifier: "empty_name",
                     severity: .error,
@@ -141,20 +137,19 @@ struct NameCollectorSystem: System {
                     error: PlanningError.emptyName,
                     )
                 frame.appendIssue(issue, for: object.objectID)
+                continue
             }
-            namedObjects[name, default: []].append(object.objectID)
-            let comp = SimObjectNameComponent(name: name)
-            frame.setComponent(comp, for: object.objectID)
+            namedObjects[trimmedName, default: []].append(object.objectID)
         }
         
         // 2. Find duplicates
-        for (name, ids) in namedObjects where ids.count > 1 {
+        for (name, ids) in namedObjects where ids.count >= 1 {
             guard ids.count == 1 else {
                 let issue = Issue(
                     identifier: "duplicate_name",
                     severity: .error,
                     system: self,
-                    error: PlanningError.computationCycle,
+                    error: PlanningError.duplicateName(name),
                     )
                 // TODO: Add related nodes
                 for id in ids {
@@ -163,6 +158,8 @@ struct NameCollectorSystem: System {
                 continue
             }
             nameLookup[name] = ids[0]
+            let comp = SimObjectNameComponent(name: name)
+            frame.setComponent(comp, for: ids[0])
         }
 
         let component = SimulationNameLookupComponent(
