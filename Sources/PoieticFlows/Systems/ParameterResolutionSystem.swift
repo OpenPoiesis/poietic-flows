@@ -98,7 +98,7 @@ public struct ParameterResolutionSystem: System {
                     identifier: "unknown_parameter",
                     severity: .error,
                     system: self,
-                    error: PlanningError.unknownParameter(name),
+                    error: ModelError.unknownParameter(name),
                     details: ["name": Variant(name)]
                     )
                 frame.appendIssue(issue, for: id)
@@ -110,7 +110,7 @@ public struct ParameterResolutionSystem: System {
                     identifier: "unused_input",
                     severity: .error,
                     system: self,
-                    error: PlanningError.unusedInput(name),
+                    error: ModelError.unusedInput(name),
                     details: ["name": Variant(name)]
                     )
                 frame.appendIssue(issue, for: id)
@@ -142,7 +142,7 @@ public struct ParameterResolutionSystem: System {
                     identifier: "missing_required_parameter",
                     severity: .error,
                     system: self,
-                    error: PlanningError.missingRequiredParameter,
+                    error: ModelError.missingRequiredParameter,
                 )
                 frame.appendIssue(issue, for: object.objectID)
 
@@ -155,7 +155,7 @@ public struct ParameterResolutionSystem: System {
                     identifier: "too_many_parameters",
                     severity: .error,
                     system: self,
-                    error: PlanningError.tooManyParameters,
+                    error: ModelError.tooManyParameters,
                 )
                 frame.appendIssue(issue, for: object.objectID)
 

@@ -47,7 +47,7 @@ struct ComputationOrderSystem: System {
                     identifier: "computation_cycle",
                     severity: .error,
                     system: self,
-                    error: PlanningError.computationCycle,
+                    error: ModelError.computationCycle,
                     )
                 frame.appendIssue(issue, for: edge.key)
             }
@@ -56,7 +56,7 @@ struct ComputationOrderSystem: System {
                     identifier: "computation_cycle",
                     severity: .error,
                     system: self,
-                    error: PlanningError.computationCycle,
+                    error: ModelError.computationCycle,
                     )
                 frame.appendIssue(issue, for: node)
             }

@@ -72,22 +72,16 @@ class StateVariableTable {
 
 }
 
-// TODO: [REFACTORING] Rename to simulation planner/planning system
-struct SimulationCompilerSystem: System {
-    // TODO: Compare with old CompilerError
+struct SimulationPlanningSystem: System {
+    /// Error thrown during the planning process
     internal enum CompilationError: Error, Equatable {
         /// Issue with object has been detected, appended to the list of issues. The caller might
         /// continue with the operation to gather more issues. Criticality of this error is
         /// problem specific.
         case objectIssue
-        
-        case corruptedState
-        
-        case corruptedComponent(String)
+        case corruptedState(String)
+        /// Missing required component. Probably the dependency was not satisfied.
         case missingComponent(String)
-        case missingAttribute(String)
-        case attributeTypeMismatch(String, ValueType)
-        case notImplemented // FIXME: Remove this once happy
     }
     
     nonisolated(unsafe) public static let dependencies: [SystemDependency] = [
@@ -99,6 +93,7 @@ struct SimulationCompilerSystem: System {
     ]
     
     let builtinFunctions: [String:Function]
+    
     init() {
         var builtinFunctions: [String:Function] = [:]
         for function in Function.AllBuiltinFunctions {
@@ -353,7 +348,7 @@ struct SimulationCompilerSystem: System {
         }
 
         guard let paramIndex = variables.index(parameterID) else {
-            throw .corruptedState
+            throw .corruptedState("Invalid variable index)")
         }
         
         let boundFunc = BoundGraphicalFunction(function: function, parameterIndex: paramIndex)
@@ -386,7 +381,7 @@ struct SimulationCompilerSystem: System {
         }
 
         guard let parameterIndex = variables.index(parameterID) else {
-            throw .corruptedState
+            throw .corruptedState("Invalid variable index)")
         }
         // FIXME: Store defaults somewhere. We should have values here anyways.
         let duration: UInt = object["delay_duration", default: 1]
@@ -399,7 +394,7 @@ struct SimulationCompilerSystem: System {
                 identifier: "invalid_parameter_type",
                 severity: .error,
                 system: self,
-                error: PlanningError.invalidParameterType,
+                error: ModelError.invalidParameterType,
                 relatedObjects: [parameterID]
                 )
             frame.appendIssue(issue, for: object.objectID)
@@ -435,7 +430,9 @@ struct SimulationCompilerSystem: System {
             throw .objectIssue
         }
 
-        guard let parameterIndex = variables.index(parameterID) else { throw .corruptedState }
+        guard let parameterIndex = variables.index(parameterID) else {
+            throw .corruptedState("Invalid variable index)")
+        }
         
         guard let type = variables.valueType(at: parameterIndex),
               case .atom(_) = type
@@ -444,7 +441,7 @@ struct SimulationCompilerSystem: System {
                 identifier: "invalid_parameter_type",
                 severity: .error,
                 system: self,
-                error: PlanningError.invalidParameterType,
+                error: ModelError.invalidParameterType,
                 relatedObjects: [parameterID]
                 )
             frame.appendIssue(issue, for: object.objectID)

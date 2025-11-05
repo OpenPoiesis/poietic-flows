@@ -53,8 +53,8 @@ import Testing
         let lookup = try #require(runtime.frameComponent(SimulationNameLookupComponent.self))
         #expect(lookup.namedObjects.isEmpty)
         
-        #expect(runtime.objectHasError(empty.objectID, error: PlanningError.emptyName))
-        #expect(runtime.objectHasError(whitespace.objectID, error: PlanningError.emptyName))
+        #expect(runtime.objectHasError(empty.objectID, error: ModelError.emptyName))
+        #expect(runtime.objectHasError(whitespace.objectID, error: ModelError.emptyName))
         
         let component1: SimulationObjectNameComponent? = runtime.component(for: empty.objectID)
         #expect(component1 == nil)
@@ -88,8 +88,8 @@ import Testing
         let dupeComponent: SimulationObjectNameComponent? = runtime.component(for: dupe.objectID)
         #expect(dupeComponent == nil)
 
-        #expect(runtime.objectHasError(object.objectID, error: PlanningError.duplicateName("object")))
-        #expect(runtime.objectHasError(dupe.objectID, error: PlanningError.duplicateName("object")))
+        #expect(runtime.objectHasError(object.objectID, error: ModelError.duplicateName("object")))
+        #expect(runtime.objectHasError(dupe.objectID, error: ModelError.duplicateName("object")))
     }
     @Test func validAndDuplicateMix() throws {
         let object = frame.createNode(.Auxiliary, name: "object")
@@ -107,8 +107,8 @@ import Testing
         let singleComponent: SimulationObjectNameComponent? = runtime.component(for: single.objectID)
         #expect(singleComponent?.name == "single")
 
-        #expect(runtime.objectHasError(object.objectID, error: PlanningError.duplicateName("object")))
-        #expect(runtime.objectHasError(dupe.objectID, error: PlanningError.duplicateName("object")))
+        #expect(runtime.objectHasError(object.objectID, error: ModelError.duplicateName("object")))
+        #expect(runtime.objectHasError(dupe.objectID, error: ModelError.duplicateName("object")))
         #expect(!runtime.objectHasIssues(single.objectID))
     }
 }

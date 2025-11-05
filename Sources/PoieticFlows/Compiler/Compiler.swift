@@ -125,7 +125,7 @@ public class Compiler {
             NameResolutionSystem(),
             FlowCollectorSystem(),
             StockDependencySystem(),
-            SimulationCompilerSystem(),
+            SimulationPlanningSystem(),
         ]
         )
         

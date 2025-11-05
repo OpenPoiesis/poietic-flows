@@ -66,8 +66,8 @@ import Testing
         let component = runtime.frameComponent(SimulationOrderComponent.self)
         #expect(component == nil)
         
-        #expect(runtime.objectHasError(a.objectID, error: PlanningError.computationCycle))
-        #expect(runtime.objectHasError(b.objectID, error: PlanningError.computationCycle))
+        #expect(runtime.objectHasError(a.objectID, error: ModelError.computationCycle))
+        #expect(runtime.objectHasError(b.objectID, error: ModelError.computationCycle))
     }
     @Test func orderWithSpecialAuxiliary() throws {
         // p:Aux -> g:GF -> a:Aux

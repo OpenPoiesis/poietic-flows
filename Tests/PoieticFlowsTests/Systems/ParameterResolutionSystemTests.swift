@@ -101,7 +101,7 @@ import Testing
         #expect(component.incoming.isEmpty == true)
         #expect(component.missing == ["x"])
         #expect(component.unused.isEmpty == true)
-        #expect(runtime.objectHasError(aux.objectID, error: PlanningError.unknownParameter("x")))
+        #expect(runtime.objectHasError(aux.objectID, error: ModelError.unknownParameter("x")))
     }
 
     @Test func formulaWithUnusedParameter() throws {
@@ -126,7 +126,7 @@ import Testing
         #expect(component.incoming["x"] == aux.objectID)
         #expect(component.missing.isEmpty == true)
         #expect(component.unused.count == 1)
-        #expect(runtime.objectHasError(aux.objectID, error: PlanningError.unusedInput("y")))
+        #expect(runtime.objectHasError(aux.objectID, error: ModelError.unusedInput("y")))
     }
 
     @Test func formulaWithMixedParameters() throws {
@@ -153,8 +153,8 @@ import Testing
         #expect(component.incoming["a"] == aux.objectID)
         #expect(component.missing == ["b"])
         #expect(component.unused.count == 1)
-        #expect(runtime.objectHasError(aux.objectID, error: PlanningError.unknownParameter("b")))
-        #expect(runtime.objectHasError(aux.objectID, error: PlanningError.unusedInput("c")))
+        #expect(runtime.objectHasError(aux.objectID, error: ModelError.unknownParameter("b")))
+        #expect(runtime.objectHasError(aux.objectID, error: ModelError.unusedInput("c")))
     }
 
     @Test func formulaWithBuiltinVariable() throws {
@@ -220,7 +220,7 @@ import Testing
         let component: ResolvedParametersComponent = try #require(runtime.component(for: delay.objectID))
         #expect(component.connectedUnnamed.isEmpty == true)
         #expect(component.missingUnnamed == 1)
-        #expect(runtime.objectHasError(delay.objectID, error: PlanningError.missingRequiredParameter))
+        #expect(runtime.objectHasError(delay.objectID, error: ModelError.missingRequiredParameter))
     }
 
     @Test func delayWithOneParameter() throws {
@@ -261,7 +261,7 @@ import Testing
 
         let component: ResolvedParametersComponent = try #require(runtime.component(for: delay.objectID))
         #expect(component.unused.count == 2)
-        #expect(runtime.objectHasError(delay.objectID, error: PlanningError.tooManyParameters))
+        #expect(runtime.objectHasError(delay.objectID, error: ModelError.tooManyParameters))
     }
 
     // MARK: - Other auxiliaries

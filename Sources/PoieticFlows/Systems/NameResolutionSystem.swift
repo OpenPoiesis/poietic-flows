@@ -40,7 +40,7 @@ struct NameResolutionSystem: System {
                     identifier: "empty_name",
                     severity: .error,
                     system: self,
-                    error: PlanningError.emptyName,
+                    error: ModelError.emptyName,
                     )
                 frame.appendIssue(issue, for: object.objectID)
                 continue
@@ -55,7 +55,7 @@ struct NameResolutionSystem: System {
                     identifier: "duplicate_name",
                     severity: .error,
                     system: self,
-                    error: PlanningError.duplicateName(name),
+                    error: ModelError.duplicateName(name),
                     )
                 // TODO: Add related nodes
                 for id in ids {

@@ -30,6 +30,8 @@ import Testing
         let validated = try design.validate(stable)
         return RuntimeFrame(validated)
     }
+   
+    // TEST: Failed expression -> tries to compile
     
     func createPlan() throws -> SimulationPlan? {
         fatalError()
