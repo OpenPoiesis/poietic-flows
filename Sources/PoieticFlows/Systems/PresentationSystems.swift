@@ -8,35 +8,6 @@
 import PoieticCore
 
 
-public struct ChartComponent: Component {
-    struct Series {
-        var colorName: String?
-    }
-    
-    /// Chart-type node.
-    ///
-    /// Series are connected from the node through a `Series` edge, where the chart is the
-    /// edge origin and the series node is the edge target.
-    ///
-    public let chartObject: ObjectSnapshot
-    
-//    let minX: Double?
-//    let maxX: Double?
-//    let minY: Double?
-//    let maxY: Double?
-//    let majorXSteps: Double?
-//    let minorXSteps: Double?
-//    let majorYSteps: Double?
-//    let minorYSteps: Double?
-    
-    /// Nodes that represent the chart series.
-    ///
-    /// Series are connected from the node through a `Series` edge, where the chart is the
-    /// edge origin and the series node is the edge target.
-    ///
-    public let series: [ObjectSnapshot]
-}
-
 /// System that collects all flow rates and determines their inflows and outflows.
 ///
 /// - **Input:** Nodes of type ``ObjectType/Chart``,

@@ -4,46 +4,10 @@
 //
 //  Created by Stefan Urbanek on 21/06/2022.
 
-// TODO: Add compileExpressions() -> [ObjectID:UnboundExpression], make it independent
-// TODO: Add resolvedParameters(...) -> something, make it independent (for auto-connect)
-// TODO: Remove checks that are not necessary with ValidatedFrame (safely make them preconditions/fatalErrors)
+// FIXME: Remove this file once users of this API are happy
 
 import PoieticCore
 
-
-public struct CompilationIssueCollection: Sendable {
-    /// Issues specific to particular object.
-    public var objectIssues: [ObjectID:[ObjectIssue]]
-    
-    /// Create an empty design issue collection.
-    public init() {
-        self.objectIssues = [:]
-    }
-    
-    public var isEmpty: Bool {
-        objectIssues.isEmpty
-    }
-    
-    public subscript(id: ObjectID) -> [ObjectIssue]? {
-        return objectIssues[id]
-    }
-    
-    /// Append an issue for a specific object.
-    public mutating func append(_ issue: ObjectIssue, for id: ObjectID) {
-        objectIssues[id, default: []].append(issue)
-    }
-
-    public func asDesignIssueCollection() -> DesignIssueCollection {
-        var result: DesignIssueCollection = DesignIssueCollection()
-
-        for (id, errors) in objectIssues {
-            for error in errors {
-                result.append(error.asDesignIssue(), for: id)
-            }
-        }
-        return result
-    }
-}
 /// Error thrown by the compiler during compilation.
 ///
 /// The only relevant case is ``hasIssues``, any other case means a programming error.
