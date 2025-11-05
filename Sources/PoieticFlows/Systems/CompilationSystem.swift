@@ -8,7 +8,9 @@ import PoieticCore
 
 // TODO: Do state variables need name? Can it be optional?
 
-class StateVariableTable: Component {
+/// Context used to construct state variables.
+///
+class StateVariableTable {
     var objectIndex: [ObjectID:Int] = [:]
     var nameIndex: [String:Int] = [:]
     var variables: [StateVariable] = []
@@ -41,6 +43,14 @@ class StateVariableTable: Component {
         nameIndex[name] = index
         return index
     }
+   
+    func valueType(for objectID: ObjectID) -> ValueType? {
+        guard let index = objectIndex[objectID] else { return nil }
+        return variables[index].valueType
+    }
+    func valueType(at index: Int) -> ValueType? {
+        return variables[index].valueType
+    }
     
     /// Get variable index by name.
     func index(_ name: String) -> Int? {
@@ -62,6 +72,7 @@ class StateVariableTable: Component {
 
 }
 
+// TODO: [REFACTORING] Rename to simulation planner/planning system
 struct SimulationCompilerSystem: System {
     // TODO: Compare with old CompilerError
     internal enum CompilationError: Error, Equatable {
@@ -81,8 +92,8 @@ struct SimulationCompilerSystem: System {
     
     nonisolated(unsafe) public static let dependencies: [SystemDependency] = [
         .after(ExpressionParserSystem.self), // Gets us UnboundExpression for each node
-        .after(SimulationOrderDependencySystem.self), // Gets us SimulationOrderComponent
-        .after(NameCollectorSystem.self), // We need name lookup and object names.
+        .after(ComputationOrderSystem.self), // Gets us SimulationOrderComponent
+        .after(NameResolutionSystem.self), // We need name lookup and object names.
         .after(FlowCollectorSystem.self),
         .after(StockDependencySystem.self),
     ]
@@ -110,7 +121,7 @@ struct SimulationCompilerSystem: System {
         let builtins = prepareBuiltins(variables: variables)
 
         for object in simOrder.objects {
-            guard let nameComp: SimObjectNameComponent = frame.component(for: object.objectID),
+            guard let nameComp: SimulationObjectNameComponent = frame.component(for: object.objectID),
                   let roleComp: SimulationRoleComponent = frame.component(for: object.objectID)
             else {
                 hasError = true
@@ -120,12 +131,9 @@ struct SimulationCompilerSystem: System {
             let rep: ComputationalRepresentation
 
             do {
-                debugPrint("--> compiling \(object.objectID) '\(object.name ?? "unnamed")' type: \(object.type.name) ")
                 rep = try compileObject(object, frame: frame, variables: variables)
-                debugPrint("<-- got rep: \(rep)")
             }
             catch .objectIssue {
-                debugPrint("!-- no rep (has issues)")
                 hasError = true
                 continue
             }
@@ -138,7 +146,7 @@ struct SimulationCompilerSystem: System {
             let index = variables.allocate(content: .object(object.objectID),
                                            valueType: rep.valueType,
                                            name: nameComp.name)
-
+            
             let sim = SimulationObject(objectID: object.objectID,
                                        computation: rep,
                                        variableIndex: index,
@@ -160,7 +168,6 @@ struct SimulationCompilerSystem: System {
         // here, because we did not fail, just the user content is not good for simulation.
         guard !hasError else { return }
 
-        print("--- Has errors? \(hasError ? "yes" : "no")")
         guard simOrder.objects.count == simulationObjects.count else {
             throw InternalSystemError(self,
                                       message: "Unprocessed simulation objects. Expected \(simOrder.objects.count), got \(simulationObjects.count)")
@@ -224,6 +231,7 @@ struct SimulationCompilerSystem: System {
                        frame: RuntimeFrame,
                        variables: StateVariableTable)
     throws (CompilationError) -> ComputationalRepresentation {
+        // FIXME: Precompute representation type (and add rep.type type) in sim ordering
         let rep: ComputationalRepresentation
         if object.type.hasTrait(Trait.Formula) {
             rep = try compileFormulaObject(object, frame: frame, variables: variables)
@@ -232,15 +240,12 @@ struct SimulationCompilerSystem: System {
             rep = try compileGraphicalFunctionNode(object, frame: frame, variables: variables)
         }
         else if object.type.hasTrait(Trait.Delay) {
-            throw .notImplemented
-            //            rep = try compileDelayNode(object, context: context)
+            rep = try compileDelayNode(object, frame: frame, variables: variables)
         }
         else if object.type.hasTrait(Trait.Smooth) {
-            throw .notImplemented
-            //            rep = try compileSmoothNode(object, context: context)
+            rep = try compileSmoothNode(object, frame: frame, variables: variables)
         }
         else {
-            throw .notImplemented
             // Hint: If this error happens, then check one of the the following:
             // - the condition in the stock-flows view method returning
             //   simulation nodes
@@ -254,7 +259,25 @@ struct SimulationCompilerSystem: System {
         return rep
     }
     
-    /// - **Forgiveness:** Objects without parsed expression are ignored.
+    /// Compile a node containing a formula.
+    ///
+    /// For each node with an arithmetic expression the expression is parsed
+    /// from a text into an internal representation. The variable and function
+    /// names are resolved to point to actual entities and a new bound
+    /// expression is formed.
+    ///
+    /// - Returns: Computational representation wrapping a formula.
+    ///
+    /// - Parameters:
+    ///     - node: node containing already parsed formula in
+    ///       ``ParsedFormulaComponent``.
+    ///
+    /// - Precondition: The node must have ``ParsedFormulaComponent`` associated
+    ///   with it.
+    ///
+    /// - Throws: ``NodeIssueError`` if there is an issue with parameters,
+    ///   function names or other variable names in the expression.
+    ///
     func compileFormulaObject(_ object: ObjectSnapshot, frame: RuntimeFrame,
                               variables: StateVariableTable)
     throws (CompilationError) -> ComputationalRepresentation
@@ -312,6 +335,7 @@ struct SimulationCompilerSystem: System {
                                       frame: RuntimeFrame,
                                       variables: StateVariableTable)
     throws (CompilationError) -> ComputationalRepresentation {
+        print("=== Compile graph function")
         let points:[Point] = object["graphical_function_points", default: []]
         let methodName: String = object["interpolation_method",
                                         default: GraphicalFunction.InterpolationMethod.defaultMethod.rawValue]
@@ -329,15 +353,117 @@ struct SimulationCompilerSystem: System {
         }
 
         guard let paramIndex = variables.index(parameterID) else {
-            debugPrint("--- No variable with index: \(parameterID)")
-            debugPrint("--- Vars: ", variables.objectIndex)
             throw .corruptedState
         }
         
         let boundFunc = BoundGraphicalFunction(function: function, parameterIndex: paramIndex)
         return .graphicalFunction(boundFunc)
     }
-    
+   
+    public func compileDelayNode(_ object: ObjectSnapshot,
+                                 frame: RuntimeFrame,
+                                 variables: StateVariableTable)
+    throws (CompilationError) -> ComputationalRepresentation {
+
+        // TODO: What to do if the input is not numeric or not an atom?
+        let queueIndex = variables.allocate(
+            content: .internalState(object.objectID),
+            valueType: .doubles,
+            name: "delay_queue_\(object.objectID)"
+        )
+        
+        let initialValueIndex = variables.allocate(
+            content: .internalState(object.objectID),
+            valueType: .double,
+            name: "delay_init_\(object.objectID)"
+        )
+
+        guard let paramComp: ResolvedParametersComponent = frame.component(for: object.objectID),
+              paramComp.connectedUnnamed.count == 1,
+              let parameterID = paramComp.connectedUnnamed.first
+        else {
+            throw .objectIssue
+        }
+
+        guard let parameterIndex = variables.index(parameterID) else {
+            throw .corruptedState
+        }
+        // FIXME: Store defaults somewhere. We should have values here anyways.
+        let duration: UInt = object["delay_duration", default: 1]
+        let initialValue: Variant? = object["initial_value"]
+        
+        guard let type = variables.valueType(at: parameterIndex),
+              case let .atom(atomType) = type
+        else {
+            let issue = Issue(
+                identifier: "invalid_parameter_type",
+                severity: .error,
+                system: self,
+                error: PlanningError.invalidParameterType,
+                relatedObjects: [parameterID]
+                )
+            frame.appendIssue(issue, for: object.objectID)
+            throw .objectIssue
+        }
+        
+        // TODO: Check whether the initial value and variable.valueType are the same
+        let compiled = BoundDelay(
+            steps: duration,
+            initialValue: initialValue,
+            valueType: atomType,
+            initialValueIndex: initialValueIndex,
+            queueIndex: queueIndex,
+            inputValueIndex: parameterIndex
+        )
+        
+        return .delay(compiled)
+    }
+    public func compileSmoothNode(_ object: ObjectSnapshot,
+                                 frame: RuntimeFrame,
+                                 variables: StateVariableTable)
+    throws (CompilationError) -> ComputationalRepresentation {
+        let smoothValueIndex = variables.allocate(
+            content: .internalState(object.objectID),
+            valueType: .doubles,
+            name: "smooth_value_\(object.objectID)"
+        )
+        
+        guard let paramComp: ResolvedParametersComponent = frame.component(for: object.objectID),
+              paramComp.connectedUnnamed.count == 1,
+              let parameterID = paramComp.connectedUnnamed.first
+        else {
+            throw .objectIssue
+        }
+
+        guard let parameterIndex = variables.index(parameterID) else { throw .corruptedState }
+        
+        guard let type = variables.valueType(at: parameterIndex),
+              case .atom(_) = type
+        else {
+            let issue = Issue(
+                identifier: "invalid_parameter_type",
+                severity: .error,
+                system: self,
+                error: PlanningError.invalidParameterType,
+                relatedObjects: [parameterID]
+                )
+            frame.appendIssue(issue, for: object.objectID)
+            throw .objectIssue
+        }
+
+        // FIXME: [REFACTORING] Require the attribute, do not assume the default here
+        // This requires attribute error
+        let windowTime: Double = object["window_time", default: 1]
+        
+        let compiled = BoundSmooth(
+            windowTime: windowTime,
+            smoothValueIndex: smoothValueIndex,
+            inputValueIndex: parameterIndex
+        )
+        
+        return .smooth(compiled)
+    }
+
 
     // MARK: - Flow
     
@@ -346,7 +472,6 @@ struct SimulationCompilerSystem: System {
         var boundFlows: [BoundFlow] = []
         
         for flow in flows {
-            debugPrint("--- binding flow \(flow)")
             let boundFlow: BoundFlow
             boundFlow = try bindFlow(flow.objectID,
                                      name: flow.name,
@@ -387,6 +512,8 @@ struct SimulationCompilerSystem: System {
         return boundFlow
     }
     
+    /// Bind stocks with their variables.
+    ///
     func bindStocks(_ stocks: [SimulationObject],
                     flowIndices: [ObjectID:Int], // Index into list of flows
                     frame: RuntimeFrame)
@@ -409,7 +536,7 @@ struct SimulationCompilerSystem: System {
                    flowIndices: [ObjectID:Int], // Index into list of flows
                    frame: RuntimeFrame)
     throws (InternalSystemError) -> BoundStock {
-        guard let comp: StockDependencyComponent = frame.component(for: objectID) else {
+        guard let comp: StockComponent = frame.component(for: objectID) else {
             throw InternalSystemError(self,
                                       message: "Missing component",
                                       context: .frameComponent("StockDependencyComponent"))

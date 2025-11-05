@@ -86,7 +86,6 @@ frame.createEdge(ObjectType.Fills, origin: interest, target: account)
 | ---- | ---- | ---- |
 | `formula` | string | Initial stock value |
 | `allows_negative` | bool | Flag whether the stock can contain a negative value |
-| `delayed_inflow` | bool | Flag whether the inflow of the stock is delayed by one step, when the stock is part of a cycle |
 
 ### Flow
 

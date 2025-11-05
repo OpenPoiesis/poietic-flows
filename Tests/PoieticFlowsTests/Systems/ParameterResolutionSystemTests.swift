@@ -78,8 +78,8 @@ import Testing
         try system.update(runtime)
 
         let component: ResolvedParametersComponent = try #require(runtime.component(for: aux.objectID))
-        #expect(component.connected.count == 1)
-        #expect(component.connected["x"] == aux.objectID)
+        #expect(component.incoming.count == 1)
+        #expect(component.incoming["x"] == aux.objectID)
         #expect(component.missing.isEmpty == true)
         #expect(component.unused.isEmpty == true)
         #expect(!runtime.objectHasIssues(aux.objectID))
@@ -98,7 +98,7 @@ import Testing
         try system.update(runtime)
 
         let component: ResolvedParametersComponent = try #require(runtime.component(for: aux.objectID))
-        #expect(component.connected.isEmpty == true)
+        #expect(component.incoming.isEmpty == true)
         #expect(component.missing == ["x"])
         #expect(component.unused.isEmpty == true)
         #expect(runtime.objectHasError(aux.objectID, error: PlanningError.unknownParameter("x")))
@@ -122,8 +122,8 @@ import Testing
         try system.update(runtime)
 
         let component: ResolvedParametersComponent = try #require(runtime.component(for: aux.objectID))
-        #expect(component.connected.count == 1)
-        #expect(component.connected["x"] == aux.objectID)
+        #expect(component.incoming.count == 1)
+        #expect(component.incoming["x"] == aux.objectID)
         #expect(component.missing.isEmpty == true)
         #expect(component.unused.count == 1)
         #expect(runtime.objectHasError(aux.objectID, error: PlanningError.unusedInput("y")))
@@ -149,8 +149,8 @@ import Testing
         try system.update(runtime)
 
         let component: ResolvedParametersComponent = try #require(runtime.component(for: aux.objectID))
-        #expect(component.connected.count == 1)
-        #expect(component.connected["a"] == aux.objectID)
+        #expect(component.incoming.count == 1)
+        #expect(component.incoming["a"] == aux.objectID)
         #expect(component.missing == ["b"])
         #expect(component.unused.count == 1)
         #expect(runtime.objectHasError(aux.objectID, error: PlanningError.unknownParameter("b")))
@@ -194,10 +194,10 @@ import Testing
         try system.update(runtime)
 
         let component: ResolvedParametersComponent = try #require(runtime.component(for: aux.objectID))
-        #expect(component.connected.count == 3)
-        #expect(component.connected["x"] == aux.objectID)
-        #expect(component.connected["y"] == aux.objectID)
-        #expect(component.connected["z"] == aux.objectID)
+        #expect(component.incoming.count == 3)
+        #expect(component.incoming["x"] == aux.objectID)
+        #expect(component.incoming["y"] == aux.objectID)
+        #expect(component.incoming["z"] == aux.objectID)
         #expect(component.missing.isEmpty == true)
         #expect(component.unused.isEmpty == true)
         #expect(!runtime.objectHasIssues(aux.objectID))
@@ -238,7 +238,7 @@ import Testing
         try system.update(runtime)
 
         let component: ResolvedParametersComponent = try #require(runtime.component(for: delay.objectID))
-        #expect(component.connectedUnnamed.count == 1)
+        #expect(component.connectedUnnamed == [source.objectID])
         #expect(component.missingUnnamed == 0)
         #expect(component.unused.isEmpty == true)
         #expect(!runtime.objectHasIssues(delay.objectID))
@@ -267,7 +267,6 @@ import Testing
     // MARK: - Other auxiliaries
 
     @Test func correctOneParameterAuxiliaries() throws {
-        // GraphicalFunction with no parameter - should error
         let source = frame.createNode(.Auxiliary, name: "source", attributes: ["formula": "100"])
         let gf = frame.createNode(.GraphicalFunction, name: "lookup")
         let delay = frame.createNode(.Delay, name: "delayed", attributes: ["delay_duration": 5])
@@ -288,9 +287,9 @@ import Testing
         let gfComp: ResolvedParametersComponent = try #require(runtime.component(for: gf.objectID))
         let delayComp: ResolvedParametersComponent = try #require(runtime.component(for: delay.objectID))
         let smoothComp: ResolvedParametersComponent = try #require(runtime.component(for: smooth.objectID))
-        #expect(gfComp.connectedUnnamed.count == 1)
-        #expect(delayComp.connectedUnnamed.count == 1)
-        #expect(smoothComp.connectedUnnamed.count == 1)
+        #expect(gfComp.connectedUnnamed == [source.objectID])
+        #expect(delayComp.connectedUnnamed == [source.objectID])
+        #expect(smoothComp.connectedUnnamed == [source.objectID])
         #expect(!runtime.objectHasIssues(gf.objectID))
         #expect(!runtime.objectHasIssues(delay.objectID))
         #expect(!runtime.objectHasIssues(smooth.objectID))

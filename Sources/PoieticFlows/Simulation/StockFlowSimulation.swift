@@ -262,6 +262,7 @@ public class StockFlowSimulation: Simulation {
             throw .valueError(.atomExpected)
         }
         guard case var .array(queue) = state[delay.queueIndex] else {
+            // FIXME: Throw runtime error here
             fatalError("Expected array for delay queue, got atom (compilation is corrupted)")
         }
 

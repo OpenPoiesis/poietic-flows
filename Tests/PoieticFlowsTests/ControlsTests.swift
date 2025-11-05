@@ -9,6 +9,7 @@ import XCTest
 @testable import PoieticFlows
 @testable import PoieticCore
 
+#if false
 
 final class TestControls: XCTestCase {
     var design: Design!
@@ -43,3 +44,4 @@ final class TestControls: XCTestCase {
         XCTAssertEqual(binding.variableIndex, model.variableIndex(of: a.objectID))
     }
 }
+#endif

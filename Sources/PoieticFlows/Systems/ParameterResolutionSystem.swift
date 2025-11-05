@@ -13,23 +13,22 @@ import PoieticCore
 /// connections.
 ///
 public struct ResolvedParametersComponent: Component {
-    internal init(connected: [String : ObjectID] = [:],
+    internal init(incoming: [String : ObjectID] = [:],
                   connectedUnnamed: [ObjectID] = [],
                   missing: [String] = [],
                   missingUnnamed: Int = 0,
                   unused: [ObjectID] = []) {
-        self.connected = connected
+        self.incoming = incoming
         self.connectedUnnamed = connectedUnnamed
         self.missing = missing
         self.missingUnnamed = missingUnnamed
         self.unused = unused
     }
     
-    // TODO: Rename "connected" to "incoming"
     /// Connected named parameters.
     ///
     /// The keys are parameter names, the values are object IDs of the parameter nodes.
-    public let connected: [String:ObjectID]
+    public let incoming: [String:ObjectID]
     /// List of connected parameters where the name is not used, such as parameters
     /// for graphical function, smooth or delay.
     public let connectedUnnamed: [ObjectID]
@@ -118,7 +117,7 @@ public struct ParameterResolutionSystem: System {
             }
 
             let paramComponent = ResolvedParametersComponent(
-                connected: connected,
+                incoming: connected,
                 missing: Array(missing),
                 unused: unused.map { $0.key }
             )
@@ -161,12 +160,12 @@ public struct ParameterResolutionSystem: System {
                 frame.appendIssue(issue, for: object.objectID)
 
                 component = ResolvedParametersComponent(
-                    unused: incomingParams.map { $0.key }
+                    unused: incomingParams.map { $0.origin }
                 )
             }
             else { // if incomingParams.count == 1
                 component = ResolvedParametersComponent(
-                    connectedUnnamed: [incomingParams[0].key]
+                    connectedUnnamed: [incomingParams[0].origin]
                 )
             }
 
@@ -176,38 +175,3 @@ public struct ParameterResolutionSystem: System {
         }
     }
 }
-
-//public enum ParameterResolutionError: Error, Equatable, CustomStringConvertible, IssueProtocol {
-//    case unknownParameter(String)
-//    case unusedInput(String)
-//    case missingRequiredParameter
-//    
-//    public var description: String {
-//        switch self {
-//        case .unusedInput(let name):
-//             "Parameter '\(name)' is connected but not used"
-//        case .unknownParameter(let name):
-//             "Parameter '\(name)' is unknown or not connected"
-//        case .missingRequiredParameter:
-//             "Missing required parameter connection"
-//        }
-//    }
-//    public var message: String { description }
-//    public var hints: [String] {
-//        switch self {
-//        case .unusedInput(let name):
-//            ["Use the connected parameter or disconnect the node '\(name)'."]
-//        case .unknownParameter(let name):
-//            [
-//                "Connect the parameter node '\(name)'",
-//                "Check the formula for typos",
-//                "Remove the parameter from the formula."
-//            ]
-//        case .missingRequiredParameter:
-//            [
-//                "Connect exactly one other node as a parameter. Name does not matter."
-//            ]
-//        }
-//
-//    }
-//}

@@ -14,6 +14,12 @@ import PoieticCore
 /// - **Produced by:** ``SimulationOrderDependencySystem``
 ///
 public struct SimulationOrderComponent: Component {
+    internal init(objects: [ObjectSnapshot] = [], stocks: [ObjectID] = [], flows: [ObjectID] = []) {
+        self.objects = objects
+        self.stocks = stocks
+        self.flows = flows
+    }
+    
     // TODO: Rename to orderedObjects
     /// List of simulation objects in order of their computational dependency.
     ///
@@ -51,7 +57,7 @@ public struct SimulationNameLookupComponent: Component {
 ///
 /// Only objects where the name is relevant to the simulation have this component.
 ///
-public struct SimObjectNameComponent: Component {
+public struct SimulationObjectNameComponent: Component {
     let name: String
 }
 
@@ -61,17 +67,17 @@ public struct SimObjectNameComponent: Component {
 ///
 /// - SeeAlso: ``StockDependencySystem``, ``FlowCollectorSystem``.
 ///
-public struct StockDependencyComponent: Component {
+public struct StockComponent: Component {
     /// List of ``ObjectType/FlowRate`` nodes that fill the stock.
     public let inflowRates: [ObjectID]
 
     /// List of ``ObjectType/FlowRate`` nodes that drain the stock.
     public let outflowRates: [ObjectID]
 
-    /// List of stocks that are the stock owning this component drains.
+    /// List of stocks that are drained.
     public let inflowStocks: [ObjectID]
     
-    /// List of stocks that are the stock owning this component fills.
+    /// List of stocks that are filled.
     public let outflowStocks: [ObjectID]
     
     public let allowsNegative: Bool

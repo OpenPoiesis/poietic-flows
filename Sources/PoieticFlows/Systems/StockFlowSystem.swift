@@ -5,6 +5,7 @@
 //  Created by Stefan Urbanek on 01/11/2025.
 //
 
+
 import PoieticCore
 
 /// System that collects all flow rates and determines their inflows and outflows.
@@ -37,6 +38,7 @@ public struct FlowCollectorSystem: System {
 
 /// System that collects all stocks and determines their dependent relationships.
 ///
+/// - **Dependency:** Must run after ``FlowCollectorSystem`` to get the ``FlowRateComponent``.
 /// - **Input:** Nodes of type ``ObjectType/Stock``, Flow rates with ``FlowRateComponent``.
 /// - **Output:** ``StockDependencyComponent`` set to each stock.
 /// - **Forgiveness:** Flow rates without computed component are ignored.
@@ -58,7 +60,6 @@ struct StockDependencySystem: System {
         var outflowStocks: [ObjectID:[ObjectID]] = [:] // [drained stock:[to filling stock]]
 
         for flow in frame.filter(type: .FlowRate) {
-            debugPrint("--- flow: \(flow.objectID) \(flow.name ?? "unnamed")")
             guard let component: FlowRateComponent = frame.component(for: flow.objectID) else {
                 continue
             }
@@ -77,9 +78,7 @@ struct StockDependencySystem: System {
         }
         
         for stock in frame.filter(type: .Stock) {
-            debugPrint("--- stock: \(stock.objectID) \(stock.name ?? "unnamed")")
-
-            let component = StockDependencyComponent(
+            let component = StockComponent(
                 inflowRates: filledByRate[stock.objectID] ?? [],
                 outflowRates: drainedByRate[stock.objectID] ?? [],
                 inflowStocks: inflowStocks[stock.objectID] ?? [],
@@ -89,6 +88,5 @@ struct StockDependencySystem: System {
             frame.setComponent(component, for: stock.objectID)
         }
     }
-
 }
 

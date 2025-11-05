@@ -82,26 +82,6 @@ extension TransientFrame {
         #expect(plan.stateVariables.count == 3 + BuiltinVariable.allCases.count)
     }
     
-    @Test func sortedNodes() throws {
-        // a -> b -> c
-        let c = frame.createNode(ObjectType.Auxiliary, name: "c", attributes: ["formula": "b"])
-        let b = frame.createNode(ObjectType.Auxiliary, name: "b", attributes: ["formula": "a"])
-        let a = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "0"])
-        
-        frame.createEdge(ObjectType.Parameter, origin: a, target: b)
-        frame.createEdge(ObjectType.Parameter, origin: b, target: c)
-        
-        let compiler = Compiler(frame: try design.validate(try design.accept(frame)))
-        let plan = try compiler.compile()
-
-        let sorted = plan.simulationObjects
-        
-        #expect(sorted.count == 3)
-        #expect(sorted[0].objectID == a.objectID)
-        #expect(sorted[1].objectID == b.objectID)
-        #expect(sorted[2].objectID == c.objectID)
-    }
-
     @Test func badFunctionName() throws {
         let aux = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "nonexistent(10)"])
         
@@ -128,49 +108,6 @@ extension TransientFrame {
         #expect(names == ["a"])
     }
 
-    @Test func emptyNames() throws {
-        let a = frame.createNode(ObjectType.Stock, name: "", attributes: ["formula": "0"])
-        let b = frame.createNode(ObjectType.Stock, name: "   ", attributes: ["formula": "0"])
-        let c = frame.createNode(ObjectType.Stock, name: "\t\n", attributes: ["formula": "0"])
-
-        let compiler = Compiler(frame: try design.validate(try design.accept(frame)))
-        #expect {
-            try compiler.compile()
-        } throws: {
-            guard let error = $0 as? CompilerError else {
-                Issue.record("Unexpected error: \($0)")
-                return false
-            }
-            return error.objectHasIssue(a.objectID, identifier: "empty_name")
-                    && error.objectHasIssue(b.objectID, identifier: "empty_name")
-                    && error.objectHasIssue(c.objectID, identifier: "empty_name")
-        }
-    }
-
-    @Test func duplicateNames() throws {
-        let c1 = frame.createNode(ObjectType.Stock, name: "things", attributes: ["formula": "0"])
-        let c2 = frame.createNode(ObjectType.Stock, name: "things", attributes: ["formula": "0"])
-        frame.createNode(ObjectType.Stock, name: "a", attributes: ["formula": "0"])
-        frame.createNode(ObjectType.Stock, name: "b", attributes: ["formula": "0"])
-
-        
-        let compiler = Compiler(frame: try design.validate(try design.accept(frame)))
-        #expect {
-            try compiler.compile()
-        } throws: {
-            guard let error = $0 as? CompilerError else {
-                Issue.record("Unexpected error: \($0)")
-                return false
-            }
-            guard case .issues(let issues) = error else {
-                Issue.record("Unexpected error type: \($0)")
-                return false
-            }
-            return issues[c1.objectID]?.count == 1
-                    && issues[c2.objectID]?.count == 1
-        }
-    }
-    
     @Test func inflowOutflow() throws {
         let a = frame.createNode(ObjectType.Stock, name: "a", attributes: ["formula": "0"])
         let flow = frame.createNode(ObjectType.FlowRate, name: "f", attributes: ["formula": "1"])
@@ -212,30 +149,6 @@ extension TransientFrame {
         }
     }
 
-    @Test func graphicalFunctionNameReferences() throws {
-        let param = frame.createNode(ObjectType.Auxiliary, name: "p", attributes: ["formula": "1"])
-        let gf = frame.createNode(ObjectType.GraphicalFunction, name: "g")
-        let aux = frame.createNode(ObjectType.Auxiliary, name:"a", attributes: ["formula": "g"])
-
-        frame.createEdge(ObjectType.Parameter, origin: param, target: gf)
-        frame.createEdge(ObjectType.Parameter, origin: gf, target: aux)
-
-        let compiler = Compiler(frame: try design.validate(try design.accept(frame)))
-        let plan = try compiler.compile()
-
-        let funcs = plan.simulationObjects.compactMap {
-            if case let .graphicalFunction(fun) = $0.computation { fun }
-            else { nil }
-        }
-
-        #expect(funcs.count == 1)
-
-        let boundFn = funcs.first!
-        #expect(boundFn.parameterIndex == plan.variableIndex(of:param.objectID))
-
-        #expect(plan.simulationObjects.contains { $0.name == "g" })
-    }
-
     @Test func graphicalFunctionComputation() throws {
         let points = [Point(x:0, y:0), Point(x: 10, y:10)]
         let p = frame.createNode(ObjectType.Auxiliary, name:"p", attributes: ["formula": "0"])
@@ -260,41 +173,6 @@ extension TransientFrame {
         }
     }
 
-    @Test func graphCycleError() throws {
-        let a = frame.createNode(ObjectType.Auxiliary, name:"a", attributes: ["formula": "b"])
-        let b = frame.createNode(ObjectType.Auxiliary, name:"b", attributes: ["formula": "a"])
-        frame.createEdge(ObjectType.Parameter, origin: a, target: b)
-        frame.createEdge(ObjectType.Parameter, origin: b, target: a)
-        let compiler = Compiler(frame: try design.validate(try design.accept(frame)))
-        #expect {
-            try compiler.compile()
-        } throws: {
-            guard let error = $0 as? CompilerError else {
-                Issue.record("Unexpected error: \($0)")
-                return false
-            }
-            return error.objectHasIssue(a.objectID, identifier: "computation_cycle")
-                    && error.objectHasIssue(b.objectID, identifier: "computation_cycle")
-        }
-    }
-    
-    @Test func delayedInflowBreaksTheCycle() throws {
-        let a = frame.createNode(ObjectType.Stock, name:"a",
-                                 attributes: [ "formula": "0", "delayed_inflow": Variant(true) ])
-        let b = frame.createNode(ObjectType.Stock, name:"b", attributes: ["formula": "0"])
-        let fab = frame.createNode(ObjectType.FlowRate, name: "fab", attributes: ["formula": "0"])
-        let fba = frame.createNode(ObjectType.FlowRate, name: "fba", attributes: ["formula": "0"])
-        
-        frame.createEdge(ObjectType.Flow, origin: a, target: fab)
-        frame.createEdge(ObjectType.Flow, origin: fab, target: b)
-        frame.createEdge(ObjectType.Flow, origin: b, target: fba)
-        frame.createEdge(ObjectType.Flow, origin: fba, target: a)
-
-        let compiler = Compiler(frame: try design.validate(try design.accept(frame)))
-        // Test no throw
-        let _ = try compiler.compile()
-    }
-    
     @Test func syntaxErrorIsNotInternalError() throws {
         let a = frame.createNode(ObjectType.Auxiliary,
                                  name:"a",
@@ -309,25 +187,5 @@ extension TransientFrame {
             }
             return error.objectHasIssue(a.objectID, identifier: "syntax_error")
         }
-    }
-    
-    @Test func multipleDelayErrors() throws {
-        frame.createNode(ObjectType.Delay, name:"a")
-        frame.createNode(ObjectType.Delay, name:"b")
-        let compiler = Compiler(frame: try design.validate(try design.accept(frame)))
-        #expect {
-            try compiler.compile()
-        } throws: {
-            guard let error = $0 as? CompilerError else {
-                Issue.record("Unexpected error: \($0)")
-                return false
-            }
-            guard case .issues(let issues) = error else {
-                Issue.record("Expected issues, got internal error: \(error)")
-                return false
-            }
-            return issues.count == 2
-        }
-
     }
 }

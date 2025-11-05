@@ -261,7 +261,7 @@ public struct CompiledControlBinding {
 ///
 /// - SeeAlso: ``StockFlowSimulation/initialize(delay:in:)``
 ///
-public struct BoundDelay {
+public struct BoundDelay: Component {
     /// Number of steps to delay the input value by.
     public let steps: UInt
     
@@ -289,7 +289,7 @@ public struct BoundDelay {
 ///
 /// - SeeAlso: ``StockFlowSimulation/initialize(smooth:in:)``
 ///
-public struct BoundSmooth {
+public struct BoundSmooth: Component {
     /// Time window over which the smooth is computed.
     public let windowTime: Double
 
@@ -300,3 +300,4 @@ public struct BoundSmooth {
     /// Index of the value where the smooth node input is stored.
     public let inputValueIndex: SimulationState.Index
 }
+

@@ -54,7 +54,7 @@ extension Trait {
                      ),
         ]
     )
-
+    // TODO: Remove this in favour of Reservoir
     public static let Stock = Trait(
         name: "Stock",
         attributes: [ /* No attributes for abstract stock */ ]
