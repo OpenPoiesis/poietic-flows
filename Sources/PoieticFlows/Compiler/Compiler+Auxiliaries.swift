@@ -6,8 +6,9 @@
 //
 
 import PoieticCore
+#if false // Disabled during refactoring.
 
-extension Compiler {
+extension OLD_Compiler {
     /// Compiles a graphical function.
     ///
     /// This method creates a ``/PoieticCore/Function`` object with a single argument and a
@@ -129,3 +130,4 @@ extension Compiler {
     }
     
 }
+#endif

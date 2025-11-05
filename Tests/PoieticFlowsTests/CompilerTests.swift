@@ -9,6 +9,31 @@ import Testing
 @testable import PoieticFlows
 @testable import PoieticCore
 
+extension CompilerError {
+    func objectHasIssue(_ objectID: ObjectID, identifier: String) -> Bool {
+        guard let issues = objectIssues(objectID) else { return false }
+        return issues.contains { $0.identifier == identifier }
+    }
+
+    func objectHasError<T:IssueProtocol>(_ objectID: ObjectID, error: T) -> Bool {
+        guard let issues = objectIssues(objectID) else { return false }
+        for issue in issues {
+            if let objectError = issue.error as? T {
+                return objectError == error
+            }
+        }
+        return false
+    }
+
+    func objectIssues(_ objectID: ObjectID) -> [PoieticCore.Issue]? {
+        switch self {
+        case .internalError(_): return nil
+        case .issues(let issues): return issues[objectID]
+        }
+        
+    }
+}
+
 extension TransientFrame {
     @discardableResult
     public func createEdge(_ type: ObjectType,
@@ -37,10 +62,10 @@ extension TransientFrame {
     
     @Test func noComputedVariables() throws {
         let compiler = Compiler(frame: try design.validate(try design.accept(frame)))
-        let model = try compiler.compile()
+        let plan = try compiler.compile()
         
-        #expect(model.simulationObjects.count == 0)
-        #expect(model.stateVariables.count == BuiltinVariable.allCases.count)
+        #expect(plan.simulationObjects.count == 0)
+        #expect(plan.stateVariables.count == BuiltinVariable.allCases.count)
     }
     
     @Test func computedVariables() throws {
@@ -50,11 +75,11 @@ extension TransientFrame {
         frame.createNode(ObjectType.Note, name: "note")
         
         let compiler = Compiler(frame: try design.validate(try design.accept(frame)))
-        let compiled = try compiler.compile()
-        let names = compiled.simulationObjects.map { $0.name } .sorted()
+        let plan = try compiler.compile()
+        let names = plan.simulationObjects.map { $0.name } .sorted()
         
         #expect(names == ["a", "b", "c"])
-        #expect(compiled.stateVariables.count == 3 + BuiltinVariable.allCases.count)
+        #expect(plan.stateVariables.count == 3 + BuiltinVariable.allCases.count)
     }
     
     @Test func sortedNodes() throws {
@@ -67,9 +92,9 @@ extension TransientFrame {
         frame.createEdge(ObjectType.Parameter, origin: b, target: c)
         
         let compiler = Compiler(frame: try design.validate(try design.accept(frame)))
-        let compiled = try compiler.compile()
+        let plan = try compiler.compile()
 
-        let sorted = compiled.simulationObjects
+        let sorted = plan.simulationObjects
         
         #expect(sorted.count == 3)
         #expect(sorted[0].objectID == a.objectID)
@@ -88,16 +113,8 @@ extension TransientFrame {
                 Issue.record("Unexpected error: \($0)")
                 return false
             }
-            guard case .issues(let issues) = error else {
-                Issue.record("Unexpected error type: \($0)")
-                return false
-            }
-            guard let objectIssues = issues[aux.objectID] else {
-                Issue.record("Expected object issues, found none")
-                return false
-            }
-            return objectIssues.count == 1
-                    && objectIssues.first == .expressionError(.unknownFunction("nonexistent"))
+            return error.objectHasError(aux.objectID,
+                                        error: ExpressionError.unknownFunction("nonexistent"))
         }
     }
 
@@ -120,13 +137,13 @@ extension TransientFrame {
         #expect {
             try compiler.compile()
         } throws: {
-            guard let error = $0 as? CompilerError, case .issues(let issues) = error else {
+            guard let error = $0 as? CompilerError else {
                 Issue.record("Unexpected error: \($0)")
                 return false
             }
-            return issues[a.objectID] == [.emptyName]
-                    && issues[b.objectID] == [.emptyName]
-                    && issues[c.objectID] == [.emptyName]
+            return error.objectHasIssue(a.objectID, identifier: "empty_name")
+                    && error.objectHasIssue(b.objectID, identifier: "empty_name")
+                    && error.objectHasIssue(c.objectID, identifier: "empty_name")
         }
     }
 
@@ -190,19 +207,8 @@ extension TransientFrame {
                 Issue.record("Unexpected error: \($0)")
                 return false
             }
-            guard case .issues(let allIssues) = error else {
-                Issue.record("Unexpected error type: \($0)")
-                return false
-            }
 
-            guard let issues = allIssues[gf.objectID]else {
-                Issue.record("Issues expected, got none")
-                return false
-            }
-
-            return $0 is CompilerError
-                    && issues.count == 1
-                    && issues.first == ObjectIssue.missingRequiredParameter
+            return error.objectHasIssue(gf.objectID, identifier: "missing_required_parameter")
         }
     }
 
@@ -218,12 +224,8 @@ extension TransientFrame {
         let plan = try compiler.compile()
 
         let funcs = plan.simulationObjects.compactMap {
-            if case let .graphicalFunction(fun) = $0.computation {
-                fun
-            }
-            else {
-                nil
-            }
+            if case let .graphicalFunction(fun) = $0.computation { fun }
+            else { nil }
         }
 
         #expect(funcs.count == 1)
@@ -271,14 +273,8 @@ extension TransientFrame {
                 Issue.record("Unexpected error: \($0)")
                 return false
             }
-            guard case .issues(let issues) = error else {
-                Issue.record("Unexpected error type: \($0)")
-                return false
-            }
-
-            return $0 is CompilerError
-                    && issues[a.objectID]?.first == ObjectIssue.computationCycle
-                    && issues[b.objectID]?.first == ObjectIssue.computationCycle
+            return error.objectHasIssue(a.objectID, identifier: "computation_cycle")
+                    && error.objectHasIssue(b.objectID, identifier: "computation_cycle")
         }
     }
     
@@ -311,19 +307,7 @@ extension TransientFrame {
                 Issue.record("Unexpected error: \($0)")
                 return false
             }
-            guard case .issues(let issues) = error else {
-                Issue.record("Expected issues, got internal error: \(error)")
-                return false
-            }
-            guard let issue = issues[a.objectID]?.first else {
-                Issue.record("Expected an object issue for \(a.id)")
-                return false
-            }
-            guard case .expressionSyntaxError(let syntaxError) = issue else {
-                Issue.record("Expected syntax error, got: \(issue)")
-                return false
-            }
-            return syntaxError == .expressionExpected
+            return error.objectHasIssue(a.objectID, identifier: "syntax_error")
         }
     }
     
@@ -342,7 +326,7 @@ extension TransientFrame {
                 Issue.record("Expected issues, got internal error: \(error)")
                 return false
             }
-            return issues.objectIssues.count == 2
+            return issues.count == 2
         }
 
     }

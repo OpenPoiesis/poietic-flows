@@ -128,7 +128,7 @@ public struct SimulationObject: CustomStringConvertible {
     public let name: String
     
     public var description: String {
-        "var(\(name), id:\(objectID), idx:\(variableIndex))"
+        "simob(\(name), id:\(objectID), idx:\(variableIndex), role: \(role))"
     }
 }
 

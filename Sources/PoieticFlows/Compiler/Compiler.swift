@@ -44,7 +44,6 @@ public struct CompilationIssueCollection: Sendable {
         return result
     }
 }
-
 /// Error thrown by the compiler during compilation.
 ///
 /// The only relevant case is ``hasIssues``, any other case means a programming error.
@@ -53,21 +52,16 @@ public struct CompilationIssueCollection: Sendable {
 /// the compiler and propagate them to the user.
 ///
 public enum CompilerError: Error {
-    /// Object has issues, they were added to the list of issues.
-    ///
-    /// This error means that the input frame has user issues. The caller should
-    /// get the issues from the compiler.
-    ///
-    /// This is the only error that is relevant. Any other error means
-    /// that something failed internally.
-    ///
-    case issues(CompilationIssueCollection)
+    case issues([ObjectID:[Issue]])
     
     /// Error caused by some internal functioning. This error typically means something was not
     /// correctly validated either within the library or by an application. The internal error
     /// is not caused by the user.
     case internalError(InternalCompilerError)
+    
 }
+
+
 
 /// Error caused by some compiler internals, not by the user.
 ///
@@ -96,6 +90,9 @@ public enum InternalCompilerError: Error, Equatable {
     case objectNotFound(ObjectID)
 }
 
+#if false // Disabled during refactoring.
+
+
 /// An object that compiles the model into an internal representation called Compiled Model.
 ///
 /// The design represents an idea or a creation of a user in a form that
@@ -107,7 +104,7 @@ public enum InternalCompilerError: Error, Equatable {
 ///
 /// - SeeAlso: ``compile()``, ``SimulationPlan``
 ///
-public class Compiler {
+public class OLD_Compiler {
     /// The frame containing the design to be compiled.
     ///
     /// The frame must be valid according to the ``FlowsMetamodel``.
@@ -542,3 +539,5 @@ public class Compiler {
                                    context: context)
     }
 }
+
+#endif

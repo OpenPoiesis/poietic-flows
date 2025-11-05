@@ -58,6 +58,7 @@ struct StockDependencySystem: System {
         var outflowStocks: [ObjectID:[ObjectID]] = [:] // [drained stock:[to filling stock]]
 
         for flow in frame.filter(type: .FlowRate) {
+            debugPrint("--- flow: \(flow.objectID) \(flow.name ?? "unnamed")")
             guard let component: FlowRateComponent = frame.component(for: flow.objectID) else {
                 continue
             }
@@ -76,6 +77,8 @@ struct StockDependencySystem: System {
         }
         
         for stock in frame.filter(type: .Stock) {
+            debugPrint("--- stock: \(stock.objectID) \(stock.name ?? "unnamed")")
+
             let component = StockDependencyComponent(
                 inflowRates: filledByRate[stock.objectID] ?? [],
                 outflowRates: drainedByRate[stock.objectID] ?? [],

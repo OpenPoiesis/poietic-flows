@@ -5,8 +5,9 @@
 //  Created by Stefan Urbanek on 18/04/2025.
 //
 import PoieticCore
+#if false // Disabled during refactoring.
 
-extension Compiler {
+extension OLD_Compiler {
     func compileFlow(_ flow: ObjectSnapshot, name: String, valueType: ValueType, context: CompilationContext) throws (InternalCompilerError) -> BoundFlow {
         let drains = context.view.drains(flow.objectID)
         let fills = context.view.fills(flow.objectID)
@@ -69,3 +70,4 @@ extension Compiler {
     
 
 }
+#endif

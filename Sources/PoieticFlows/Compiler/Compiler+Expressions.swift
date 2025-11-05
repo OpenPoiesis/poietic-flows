@@ -6,8 +6,9 @@
 //
 
 import PoieticCore
+#if false // Disabled during refactoring.
 
-extension Compiler {
+extension OLD_Compiler {
     func parseExpressions(_ context: CompilationContext) throws (InternalCompilerError) {
         context.parsedExpressions = [:]
         
@@ -82,3 +83,4 @@ extension Compiler {
         return .formula(boundExpression)
     }
 }
+#endif

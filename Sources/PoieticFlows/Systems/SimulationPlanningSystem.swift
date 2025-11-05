@@ -41,10 +41,22 @@ struct SimulationOrderDependencySystem: System {
             for edge in cycleEdges {
                 nodes.insert(edge.origin)
                 nodes.insert(edge.target)
-                frame.appendIssue(ObjectIssue.computationCycle, for: edge.key)
+                let issue = Issue(
+                    identifier: "computation_cycle",
+                    severity: .error,
+                    system: self,
+                    error: PlanningError.computationCycle,
+                    )
+                frame.appendIssue(issue, for: edge.key)
             }
             for node in nodes {
-                frame.appendIssue(ObjectIssue.computationCycle, for: node)
+                let issue = Issue(
+                    identifier: "computation_cycle",
+                    severity: .error,
+                    system: self,
+                    error: PlanningError.computationCycle,
+                    )
+                frame.appendIssue(issue, for: node)
             }
             return
         }
@@ -122,7 +134,13 @@ struct NameCollectorSystem: System {
             // Is visually empty?
             // TODO: Bring String.isVisuallyEmpty method from poietic-godot to core
             if name.isEmpty || name.allSatisfy({ $0.isWhitespace}) {
-                frame.appendIssue(ObjectIssue.emptyName, for: object.objectID)
+                let issue = Issue(
+                    identifier: "empty_name",
+                    severity: .error,
+                    system: self,
+                    error: PlanningError.emptyName,
+                    )
+                frame.appendIssue(issue, for: object.objectID)
             }
             namedObjects[name, default: []].append(object.objectID)
             let comp = SimObjectNameComponent(name: name)
@@ -132,7 +150,13 @@ struct NameCollectorSystem: System {
         // 2. Find duplicates
         for (name, ids) in namedObjects where ids.count > 1 {
             guard ids.count == 1 else {
-                let issue = ObjectIssue.duplicateName(name)
+                let issue = Issue(
+                    identifier: "duplicate_name",
+                    severity: .error,
+                    system: self,
+                    error: PlanningError.computationCycle,
+                    )
+                // TODO: Add related nodes
                 for id in ids {
                     frame.appendIssue(issue, for: id)
                 }

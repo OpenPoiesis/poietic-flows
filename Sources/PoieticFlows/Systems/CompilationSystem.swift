@@ -70,6 +70,8 @@ struct SimulationCompilerSystem: System {
         /// problem specific.
         case objectIssue
         
+        case corruptedState
+        
         case corruptedComponent(String)
         case missingComponent(String)
         case missingAttribute(String)
@@ -118,9 +120,12 @@ struct SimulationCompilerSystem: System {
             let rep: ComputationalRepresentation
 
             do {
+                debugPrint("--> compiling \(object.objectID) '\(object.name ?? "unnamed")' type: \(object.type.name) ")
                 rep = try compileObject(object, frame: frame, variables: variables)
+                debugPrint("<-- got rep: \(rep)")
             }
             catch .objectIssue {
+                debugPrint("!-- no rep (has issues)")
                 hasError = true
                 continue
             }
@@ -151,16 +156,24 @@ struct SimulationCompilerSystem: System {
             }
         }
 
-        guard simOrder.objects.count == simulationObjects.count else {
-            throw InternalSystemError(self, message: "Unprocessed simulation objects")
-        }
-
         // If we have errors, finish early without creating the final plan. We are not throwing
         // here, because we did not fail, just the user content is not good for simulation.
         guard !hasError else { return }
 
+        print("--- Has errors? \(hasError ? "yes" : "no")")
+        guard simOrder.objects.count == simulationObjects.count else {
+            throw InternalSystemError(self,
+                                      message: "Unprocessed simulation objects. Expected \(simOrder.objects.count), got \(simulationObjects.count)")
+        }
+
         let boundFlows = try bindFlows(flows, frame: frame, variables: variables)
-        let boundStocks = try bindStocks(stocks, variables: variables, frame: frame)
+
+        var flowIndices: [ObjectID:Int] = [:]
+        for (index, flow) in boundFlows.enumerated() {
+            flowIndices[flow.objectID] = index
+        }
+        
+        let boundStocks = try bindStocks(stocks, flowIndices: flowIndices, frame: frame)
         
         // Simulation parameters
         
@@ -216,8 +229,7 @@ struct SimulationCompilerSystem: System {
             rep = try compileFormulaObject(object, frame: frame, variables: variables)
         }
         else if object.type.hasTrait(Trait.GraphicalFunction) {
-            throw .notImplemented
-            //            rep = try compileGraphicalFunctionNode(object, context: context)
+            rep = try compileGraphicalFunctionNode(object, frame: frame, variables: variables)
         }
         else if object.type.hasTrait(Trait.Delay) {
             throw .notImplemented
@@ -251,22 +263,82 @@ struct SimulationCompilerSystem: System {
         guard let component: ParsedExpressionComponent = frame.component(for: object.objectID) else {
             throw .missingComponent("ParsedExpressionComponent")
         }
+        guard let expression = component.expression else {
+            // Since the expression parsing failed, we already have an error stored in the
+            // issue list.
+            throw .objectIssue
+        }
         
         // Finally bind the expression.
         //
         let boundExpression: BoundExpression
         do {
-            boundExpression = try bindExpression(component.expression,
+            boundExpression = try bindExpression(expression,
                                                  variables: variables,
                                                  functions: self.builtinFunctions)
         }
         catch /* ExpressionError */ {
-            frame.appendIssue(ObjectIssue.expressionError(error), for: object.objectID)
+            let issue = Issue(
+                identifier: "expression_error",
+                severity: .error,
+                system: self,
+                error: error,
+                details: [
+                    "attribute": "formula",
+                    "underlying_error": Variant(error.description),
+                ]
+            )
+
+            frame.appendIssue(issue, for: object.objectID)
             throw .objectIssue
         }
         
         return .formula(boundExpression)
     }
+    
+    /// Compiles a graphical function.
+    ///
+    /// This method creates a ``/PoieticCore/Function`` object with a single argument and a
+    /// numeric return value. The function will compute the output based on the
+    /// input parameter and on specifics of the graphical function points
+    /// interpolation.
+    ///
+    /// - Requires: node
+    /// - Throws: ``NodeIssue`` if the function parameter is not connected.
+    ///
+    /// - SeeAlso: ``CompiledGraphicalFunction``, ``Solver/evaluate(objectAt:with:)``
+    ///
+    func compileGraphicalFunctionNode(_ object: ObjectSnapshot,
+                                      frame: RuntimeFrame,
+                                      variables: StateVariableTable)
+    throws (CompilationError) -> ComputationalRepresentation {
+        let points:[Point] = object["graphical_function_points", default: []]
+        let methodName: String = object["interpolation_method",
+                                        default: GraphicalFunction.InterpolationMethod.defaultMethod.rawValue]
+            
+        let method = GraphicalFunction.InterpolationMethod(rawValue: methodName)
+                        ?? GraphicalFunction.InterpolationMethod.defaultMethod
+
+        let function = GraphicalFunction(points: points, method: method)
+        
+        guard let paramComp: ResolvedParametersComponent = frame.component(for: object.objectID),
+              paramComp.connectedUnnamed.count == 1,
+              let parameterID = paramComp.connectedUnnamed.first
+        else {
+            throw .objectIssue
+        }
+
+        guard let paramIndex = variables.index(parameterID) else {
+            debugPrint("--- No variable with index: \(parameterID)")
+            debugPrint("--- Vars: ", variables.objectIndex)
+            throw .corruptedState
+        }
+        
+        let boundFunc = BoundGraphicalFunction(function: function, parameterIndex: paramIndex)
+        return .graphicalFunction(boundFunc)
+    }
+    
+
     // MARK: - Flow
     
     func bindFlows(_ flows: [SimulationObject], frame: RuntimeFrame, variables: StateVariableTable)
@@ -274,6 +346,7 @@ struct SimulationCompilerSystem: System {
         var boundFlows: [BoundFlow] = []
         
         for flow in flows {
+            debugPrint("--- binding flow \(flow)")
             let boundFlow: BoundFlow
             boundFlow = try bindFlow(flow.objectID,
                                      name: flow.name,
@@ -314,7 +387,9 @@ struct SimulationCompilerSystem: System {
         return boundFlow
     }
     
-    func bindStocks(_ stocks: [SimulationObject], variables: StateVariableTable, frame: RuntimeFrame)
+    func bindStocks(_ stocks: [SimulationObject],
+                    flowIndices: [ObjectID:Int], // Index into list of flows
+                    frame: RuntimeFrame)
     throws (InternalSystemError) -> [BoundStock] {
         var result: [BoundStock] = []
         
@@ -322,7 +397,7 @@ struct SimulationCompilerSystem: System {
             let boundStock: BoundStock
             boundStock = try bindStock(stock.objectID,
                                        variableIndex: stock.variableIndex,
-                                       variables: variables,
+                                       flowIndices: flowIndices,
                                        frame: frame)
             result.append(boundStock)
         }
@@ -331,17 +406,17 @@ struct SimulationCompilerSystem: System {
     
     func bindStock(_ objectID: ObjectID,
                    variableIndex: Int,
-                   variables: StateVariableTable,
+                   flowIndices: [ObjectID:Int], // Index into list of flows
                    frame: RuntimeFrame)
     throws (InternalSystemError) -> BoundStock {
-        guard let comp = frame.frameComponent(StockDependencyComponent.self) else {
+        guard let comp: StockDependencyComponent = frame.component(for: objectID) else {
             throw InternalSystemError(self,
                                       message: "Missing component",
                                       context: .frameComponent("StockDependencyComponent"))
         }
 
-        let inflowIndices = comp.inflowRates.compactMap { variables.index($0) }
-        let outflowIndices = comp.outflowRates.compactMap { variables.index($0) }
+        let inflowIndices = comp.inflowRates.compactMap { flowIndices[$0] }
+        let outflowIndices = comp.outflowRates.compactMap { flowIndices[$0] }
 
         guard inflowIndices.count == comp.inflowRates.count &&
                 outflowIndices.count == comp.outflowRates.count

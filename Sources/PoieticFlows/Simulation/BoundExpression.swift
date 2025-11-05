@@ -51,6 +51,12 @@ public enum ExpressionError: Error, CustomStringConvertible, Equatable {
     }
 }
 
+extension ExpressionError: IssueProtocol {
+    public var message: String { "Formula error: " + description }
+    public var hints: [String] { ["Check the variables, types and functions in the formula and consult the manual for list of available variables and functions."] }
+    
+}
+
 /// Bind an expression to concrete variable references.
 ///
 /// - Parameters:
