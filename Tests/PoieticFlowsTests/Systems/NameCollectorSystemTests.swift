@@ -19,9 +19,8 @@ import Testing
     }
     
     func accept(_ frame: TransientFrame) throws -> RuntimeFrame {
-        let stable = try design.accept(frame)
-        let validated = try design.validate(stable)
-        let runtime = RuntimeFrame(validated)
+        let accepted = try design.accept(frame)
+        let runtime = RuntimeFrame(accepted)
         
         let system = ComputationOrderSystem()
         try system.update(runtime)

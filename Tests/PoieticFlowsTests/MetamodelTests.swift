@@ -52,7 +52,7 @@ import Testing
         let b = frame.createNode(.Stock, name: "b", attributes: ["formula": "0"])
         frame.createEdge(.Flow, origin: a, target: flow)
         frame.createEdge(.Flow, origin: flow, target: b)
-        try checker.check(frame)
+        try checker.validate(frame)
     }
     @Test func constraintStockFlowRateFlowFlow() throws {
         let a = frame.createNode(.Stock, name: "a", attributes: ["formula": "0"])
@@ -61,26 +61,14 @@ import Testing
         let e1 = frame.createEdge(.Flow, origin: a, target: b)
         let e2 = frame.createEdge(.Flow, origin: flow, target: flow)
         // frame.createEdge(.Flow, origin: flow, target: b)
-        #expect {
-            try checker.check(frame)
-        } throws: {
-            guard let error = $0 as? FrameValidationError else {
-                Issue.record("Unexpected error: \($0)")
-                return false
-            }
-            guard error.edgeRuleViolations.count == 2 else {
-                return false
-            }
-            guard let e1 = error.edgeRuleViolations[e1.objectID]?.first else {
-                return false
-            }
-            guard let e2 = error.edgeRuleViolations[e2.objectID]?.first else {
-                return false
-            }
-            switch (e1, e2) {
-            case (.noRuleSatisfied, .noRuleSatisfied): return true
-            default: return false
-            }
+        let result = checker.diagnose(frame)
+        #expect(result.edgeRuleViolations.count == 2)
+        let err1 = try #require(result.edgeRuleViolations[e1.objectID]?.first)
+        let err2 = try #require(result.edgeRuleViolations[e2.objectID]?.first)
+        // NOTE: error cases are not comparable here
+        switch (err1, err2) {
+        case (.noRuleSatisfied, .noRuleSatisfied): #expect(true)
+        default: #expect(false)
         }
     }
 }

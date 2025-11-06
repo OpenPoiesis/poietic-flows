@@ -20,8 +20,7 @@ import Testing
 
     func accept(_ frame: TransientFrame) throws -> RuntimeFrame {
         let stable = try design.accept(frame)
-        let validated = try design.validate(stable)
-        return RuntimeFrame(validated)
+        return RuntimeFrame(stable)
     }
 
     // MARK: - Basic Sanity Tests
@@ -132,8 +131,7 @@ import Testing
     
     func accept(_ frame: TransientFrame) throws -> RuntimeFrame {
         let stable = try design.accept(frame)
-        let validated = try design.validate(stable)
-        let runtime = RuntimeFrame(validated)
+        let runtime = RuntimeFrame(stable)
         let flowSystem = FlowCollectorSystem()
         try flowSystem.update(runtime)
         return runtime

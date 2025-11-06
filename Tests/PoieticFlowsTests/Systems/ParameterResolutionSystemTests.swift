@@ -19,9 +19,8 @@ import Testing
     }
 
     func accept(_ frame: TransientFrame) throws -> RuntimeFrame {
-        let stable = try design.accept(frame)
-        let validated = try design.validate(stable)
-        return RuntimeFrame(validated)
+        let accepted = try design.accept(frame)
+        return RuntimeFrame(accepted)
     }
 
     // MARK: - Basic Sanity Tests

@@ -90,7 +90,7 @@ public class Compiler {
     public let frame: RuntimeFrame
 
     @available(*, deprecated, message: "Moving towards Systems")
-    public init(frame: ValidatedFrame) {
+    public init(frame: DesignFrame) {
         self.frame = RuntimeFrame(frame)
     }
 

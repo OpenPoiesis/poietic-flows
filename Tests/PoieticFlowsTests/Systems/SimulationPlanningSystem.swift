@@ -27,8 +27,7 @@ import Testing
     
     func accept(_ frame: TransientFrame) throws -> RuntimeFrame {
         let stable = try design.accept(frame)
-        let validated = try design.validate(stable)
-        return RuntimeFrame(validated)
+        return RuntimeFrame(stable)
     }
    
     // TEST: Failed expression -> tries to compile
