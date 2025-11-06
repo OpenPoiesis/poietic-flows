@@ -56,6 +56,9 @@ public struct ParameterResolutionSystem: System {
     nonisolated(unsafe) public static let dependencies: [SystemDependency] = [
         .after(ExpressionParserSystem.self), // We need variable names
     ]
+
+    public init() {}
+
     public func update(_ frame: RuntimeFrame) throws (InternalSystemError) {
         try resolveFormulas(frame)
         try resolveAuxiliaries(frame, type: .GraphicalFunction)

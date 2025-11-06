@@ -47,10 +47,10 @@ public struct SimulationOrderComponent: Component {
 /// - **Produced by:** ``SimulationOrderDependencySystem``
 ///
 public struct SimulationRoleComponent: Component {
-    var role: SimulationObject.Role
+    public var role: SimulationObject.Role
 }
 public struct SimulationNameLookupComponent: Component {
-    let namedObjects: [String:ObjectID]
+    public let namedObjects: [String:ObjectID]
 }
 
 /// Name of an object by which the object can be referred to within the simulation.
@@ -58,7 +58,7 @@ public struct SimulationNameLookupComponent: Component {
 /// Only objects where the name is relevant to the simulation have this component.
 ///
 public struct SimulationObjectNameComponent: Component {
-    let name: String
+    public let name: String
 }
 
 

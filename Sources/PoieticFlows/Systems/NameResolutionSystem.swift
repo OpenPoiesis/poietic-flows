@@ -16,15 +16,15 @@ import PoieticCore
 ///   name, but can by other means, such as an edge.
 /// - **Issues collected:** Objects with duplicate name.
 ///
-struct NameResolutionSystem: System {
+public struct NameResolutionSystem: System {
     // Note: In the future this system might be doing fully qualified name resolution, once we get
     //       nested simulation blocks.
-    
+    public init() {}
     nonisolated(unsafe) public static let dependencies: [SystemDependency] = [
         .after(ComputationOrderSystem.self),
     ]
 
-    func update(_ frame: RuntimeFrame) throws (InternalSystemError) {
+    public func update(_ frame: RuntimeFrame) throws (InternalSystemError) {
         guard let order = frame.frameComponent(SimulationOrderComponent.self) else {
             return
         }

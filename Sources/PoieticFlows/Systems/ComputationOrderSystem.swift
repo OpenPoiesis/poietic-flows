@@ -17,8 +17,9 @@ import PoieticCore
 ///     - Role associated with each object in ``SimulationRoleComponent``.
 /// - **Forgiveness:** ...
 ///
-struct ComputationOrderSystem: System {
-    func update(_ frame: RuntimeFrame) throws (InternalSystemError) {
+public struct ComputationOrderSystem: System {
+    public init() {}
+    public func update(_ frame: RuntimeFrame) throws (InternalSystemError) {
         // TODO: Replace with SimulationObject trait once we have it (there are practical reasons we don't yet)
         // TODO: Should we use Trait.Stock? (also below)
         // Note: See roles below

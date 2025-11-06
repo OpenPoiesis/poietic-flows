@@ -15,6 +15,9 @@ import PoieticCore
 /// - **Forgiveness:** If multiple ``ObjectType/Flow`` edges exist, only one is picked arbitrarily.
 ///
 public struct FlowCollectorSystem: System {
+
+    public init() {}
+
     public func update(_ frame: RuntimeFrame) throws (InternalSystemError) {
         for flow in frame.filter(type: .FlowRate) {
             // We assume the frame edge reqThank uirements were satisfied, therefore there is most one edge of each

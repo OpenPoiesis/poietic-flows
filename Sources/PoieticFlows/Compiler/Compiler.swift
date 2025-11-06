@@ -25,8 +25,6 @@ public enum CompilerError: Error {
     
 }
 
-
-
 /// Error caused by some compiler internals, not by the user.
 ///
 /// This error should not be displayed to the user fully, only as a debug information or as an
@@ -54,8 +52,25 @@ public enum InternalCompilerError: Error, Equatable {
     case objectNotFound(ObjectID)
 }
 
+nonisolated(unsafe) public let SimulationPlanningSystemGroup: [System.Type] = [
+    ExpressionParserSystem.self,
+    ParameterResolutionSystem.self,
+    ComputationOrderSystem.self,
+    NameResolutionSystem.self,
+    FlowCollectorSystem.self,
+    StockDependencySystem.self,
+    SimulationPlanningSystem.self,
+]
 
-
+nonisolated(unsafe) public let StockFlowSystemGroup: [System.Type] = [
+    ExpressionParserSystem.self,
+    ParameterResolutionSystem.self,
+    ComputationOrderSystem.self,
+    NameResolutionSystem.self,
+    FlowCollectorSystem.self,
+    StockDependencySystem.self,
+    SimulationPlanningSystem.self,
+]
 
 /// Legacy wrapper to provide same API. DO NOT USE!
 ///
@@ -81,20 +96,20 @@ public class Compiler {
 
     @available(*, deprecated, message: "Moving towards Systems")
     public func compile() throws (CompilerError) -> SimulationPlan {
-        let scheduler = SystemScheduler()
-        scheduler.register([
-            ExpressionParserSystem(),
-            ParameterResolutionSystem(),
-            ComputationOrderSystem(),
-            NameResolutionSystem(),
-            FlowCollectorSystem(),
-            StockDependencySystem(),
-            SimulationPlanningSystem(),
+        let systems = SystemGroup()
+        systems.register([
+            ExpressionParserSystem.self,
+            ParameterResolutionSystem.self,
+            ComputationOrderSystem.self,
+            NameResolutionSystem.self,
+            FlowCollectorSystem.self,
+            StockDependencySystem.self,
+            SimulationPlanningSystem.self,
         ]
         )
         
         do {
-            try scheduler.execute(frame)
+            try systems.update(frame)
         }
         catch {
             fatalError("Execution failed: \(error)")

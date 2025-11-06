@@ -15,6 +15,9 @@ import PoieticCore
 /// - **Forgiveness:** If multiple ``ObjectType/Flow`` edges exist, only one is picked arbitrarily.
 ///
 public struct ChartResolutionSystem: System {
+    
+    public init() {}
+
     public func update(_ frame: RuntimeFrame) throws (InternalSystemError) {
         let nodes = frame.filter { $0.type === ObjectType.Chart }
         
