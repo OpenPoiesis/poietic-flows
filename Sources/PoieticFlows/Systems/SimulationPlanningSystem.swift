@@ -194,7 +194,7 @@ struct SimulationPlanningSystem: System {
             builtins: builtins,
             stocks: boundStocks,
             flows: boundFlows,
-            charts: [], // FIXME: Relic from the past, remove
+//            charts: [], // FIXME: Relic from the past, remove
             valueBindings: [], // FIXME: Relic from the past, remove
             simulationParameters: params
         )

@@ -42,7 +42,7 @@ public struct SimulationPlan {
                   builtins: BoundBuiltins = BoundBuiltins(),
                   stocks: [BoundStock] = [],
                   flows: [BoundFlow] = [],
-                  charts: [Chart] = [],
+//                  charts: [Chart] = [],
                   valueBindings: [CompiledControlBinding] = [],
                   simulationParameters: SimulationParameters? = nil) {
         self.simulationObjects = simulationObjects
@@ -50,7 +50,7 @@ public struct SimulationPlan {
         self.builtins = builtins
         self.stocks = stocks
         self.flows = flows
-        self.charts = charts
+//        self.charts = charts
         self.valueBindings = valueBindings
         self.simulationParameters = simulationParameters
     }
@@ -123,7 +123,7 @@ public struct SimulationPlan {
     /// This property is not used during computation, it is provided for
     /// consumers of the simulation state or simulation result.
     ///
-    public let charts: [Chart]
+//    public let charts: [Chart]
     
     
     /// Compiled bindings of controls to their value objects.

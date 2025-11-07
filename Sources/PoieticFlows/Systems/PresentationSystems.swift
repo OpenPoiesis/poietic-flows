@@ -19,17 +19,16 @@ public struct ChartResolutionSystem: System {
     public init() {}
 
     public func update(_ frame: RuntimeFrame) throws (InternalSystemError) {
-        let nodes = frame.filter { $0.type === ObjectType.Chart }
-        
-        for node in nodes {
-            let edges = frame.edges.filter {
+        let chartObjects = frame.filter { $0.type === ObjectType.Chart }
+
+        for chartObject in chartObjects {
+            let seriesEdges = frame.outgoing(chartObject.objectID).filter {
                 $0.object.type === ObjectType.ChartSeries
             }
             
-            let series = edges.map { $0.targetObject }
-            let chart = ChartComponent(chartObject: node,
-                                        series: series)
-            frame.setComponent(chart, for: node.objectID)
+            let series = seriesEdges.map { $0.targetObject }
+            let chart = ChartComponent(chartObject: chartObject, series: series)
+            frame.setComponent(chart, for: chartObject.objectID)
         }
     }
     public func makeChart(_ chart: ObjectSnapshot, frame: RuntimeFrame) -> ChartComponent {

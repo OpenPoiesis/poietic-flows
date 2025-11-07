@@ -44,6 +44,7 @@ public struct ChartComponent: Component {
     /// edge origin and the series node is the edge target.
     ///
     public let chartObject: ObjectSnapshot
+    public var name: String? { chartObject.name }
     
 //    let minX: Double?
 //    let maxX: Double?
