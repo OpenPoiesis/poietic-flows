@@ -51,6 +51,7 @@ public struct SimulationRoleComponent: Component {
 }
 public struct SimulationNameLookupComponent: Component {
     public let namedObjects: [String:ObjectID]
+//    public let objectNames: [ObjectID:String]
 }
 
 /// Name of an object by which the object can be referred to within the simulation.

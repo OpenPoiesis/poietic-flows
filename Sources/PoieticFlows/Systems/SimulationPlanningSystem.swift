@@ -330,7 +330,6 @@ struct SimulationPlanningSystem: System {
                                       frame: RuntimeFrame,
                                       variables: StateVariableTable)
     throws (CompilationError) -> ComputationalRepresentation {
-        print("=== Compile graph function")
         let points:[Point] = object["graphical_function_points", default: []]
         let methodName: String = object["interpolation_method",
                                         default: GraphicalFunction.InterpolationMethod.defaultMethod.rawValue]

@@ -52,7 +52,7 @@ public enum InternalCompilerError: Error, Equatable {
     case objectNotFound(ObjectID)
 }
 
-nonisolated(unsafe) public let SimulationPlanningSystemGroup: [System.Type] = [
+nonisolated(unsafe) public let ModelInspectionSystemGroup: [System.Type] = [
     ExpressionParserSystem.self,
     ParameterResolutionSystem.self,
     ComputationOrderSystem.self,
@@ -62,14 +62,14 @@ nonisolated(unsafe) public let SimulationPlanningSystemGroup: [System.Type] = [
     SimulationPlanningSystem.self,
 ]
 
-nonisolated(unsafe) public let StockFlowSystemGroup: [System.Type] = [
-    ExpressionParserSystem.self,
-    ParameterResolutionSystem.self,
-    ComputationOrderSystem.self,
-    NameResolutionSystem.self,
-    FlowCollectorSystem.self,
-    StockDependencySystem.self,
+nonisolated(unsafe) public let SimulationPlanningSystemGroup: [System.Type] =
+ModelInspectionSystemGroup + [
     SimulationPlanningSystem.self,
+]
+
+nonisolated(unsafe) public let SimulationPresentationSystemGroup: [System.Type] =
+SimulationPlanningSystemGroup + [
+    ChartResolutionSystem.self,
 ]
 
 /// Legacy wrapper to provide same API. DO NOT USE!
@@ -96,17 +96,7 @@ public class Compiler {
 
     @available(*, deprecated, message: "Moving towards Systems")
     public func compile() throws (CompilerError) -> SimulationPlan {
-        let systems = SystemGroup()
-        systems.register([
-            ExpressionParserSystem.self,
-            ParameterResolutionSystem.self,
-            ComputationOrderSystem.self,
-            NameResolutionSystem.self,
-            FlowCollectorSystem.self,
-            StockDependencySystem.self,
-            SimulationPlanningSystem.self,
-        ]
-        )
+        let systems = SystemGroup(SimulationPlanningSystemGroup)
         
         do {
             try systems.update(frame)

@@ -31,7 +31,7 @@ public struct NameResolutionSystem: System {
         
         var namedObjects: [String: [ObjectID]] = [:]
         var nameLookup: [String:ObjectID] = [:]
-        
+
         for object in order.objects {
             guard let name = object.name else { continue }
             let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
