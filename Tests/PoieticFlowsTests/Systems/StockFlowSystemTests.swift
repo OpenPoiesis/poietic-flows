@@ -18,9 +18,9 @@ import Testing
         self.frame = design.createFrame()
     }
 
-    func accept(_ frame: TransientFrame) throws -> RuntimeFrame {
+    func accept(_ frame: TransientFrame) throws -> AugmentedFrame {
         let stable = try design.accept(frame)
-        return RuntimeFrame(stable)
+        return AugmentedFrame(stable)
     }
 
     // MARK: - Basic Sanity Tests
@@ -129,9 +129,9 @@ import Testing
         self.frame = design.createFrame()
     }
     
-    func accept(_ frame: TransientFrame) throws -> RuntimeFrame {
+    func accept(_ frame: TransientFrame) throws -> AugmentedFrame {
         let stable = try design.accept(frame)
-        let runtime = RuntimeFrame(stable)
+        let runtime = AugmentedFrame(stable)
         let flowSystem = FlowCollectorSystem()
         try flowSystem.update(runtime)
         return runtime

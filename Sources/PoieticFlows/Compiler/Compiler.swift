@@ -87,11 +87,11 @@ SimulationPlanningSystemGroup + [
 ///
 @available(*, deprecated, message: "Moving towards Systems")
 public class Compiler {
-    public let frame: RuntimeFrame
+    public let frame: AugmentedFrame
 
     @available(*, deprecated, message: "Moving towards Systems")
     public init(frame: DesignFrame) {
-        self.frame = RuntimeFrame(frame)
+        self.frame = AugmentedFrame(frame)
     }
 
     @available(*, deprecated, message: "Moving towards Systems")
@@ -108,7 +108,7 @@ public class Compiler {
         if frame.hasIssues {
             throw .issues(frame.issues)
         }
-        guard let plan = frame.frameComponent(SimulationPlan.self) else {
+        guard let plan: SimulationPlan = frame.component(for: .Frame) else {
             fatalError("Plan was not created")
         }
         return plan

@@ -19,7 +19,7 @@ import PoieticCore
 ///
 public struct ComputationOrderSystem: System {
     public init() {}
-    public func update(_ frame: RuntimeFrame) throws (InternalSystemError) {
+    public func update(_ frame: AugmentedFrame) throws (InternalSystemError) {
         // TODO: Replace with SimulationObject trait once we have it (there are practical reasons we don't yet)
         // TODO: Should we use Trait.Stock? (also below)
         // Note: See roles below
@@ -91,7 +91,7 @@ public struct ComputationOrderSystem: System {
                                           context: .object(object.objectID))
             }
             let comp = SimulationRoleComponent(role: role)
-            frame.setComponent(comp, for: object.objectID)
+            frame.setComponent(comp, for: .object(object.objectID))
         }
         
         let component = SimulationOrderComponent(
@@ -100,7 +100,7 @@ public struct ComputationOrderSystem: System {
             flows: flows
         )
 
-        frame.setFrameComponent(component)
+        frame.setComponent(component, for: .Frame)
     }
 }
 

@@ -68,7 +68,7 @@ import Testing
         // NOTE: error cases are not comparable here
         switch (err1, err2) {
         case (.noRuleSatisfied, .noRuleSatisfied): #expect(true)
-        default: #expect(false)
+        default: Issue.record("Error \(err1) is not equal to expected \(err2)")
         }
     }
 }

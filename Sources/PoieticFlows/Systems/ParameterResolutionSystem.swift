@@ -59,14 +59,14 @@ public struct ParameterResolutionSystem: System {
 
     public init() {}
 
-    public func update(_ frame: RuntimeFrame) throws (InternalSystemError) {
+    public func update(_ frame: AugmentedFrame) throws (InternalSystemError) {
         try resolveFormulas(frame)
         try resolveAuxiliaries(frame, type: .GraphicalFunction)
         try resolveAuxiliaries(frame, type: .Delay)
         try resolveAuxiliaries(frame, type: .Smooth)
     }
 
-    public func resolveFormulas(_ frame: RuntimeFrame) throws (InternalSystemError) {
+    public func resolveFormulas(_ frame: AugmentedFrame) throws (InternalSystemError) {
         let builtinNames = BuiltinVariable.allNames
 
         for (id, exprComponent) in frame.filter(ParsedExpressionComponent.self) {
@@ -124,7 +124,7 @@ public struct ParameterResolutionSystem: System {
                 missing: Array(missing),
                 unused: unused.map { $0.key }
             )
-            frame.setComponent(paramComponent, for: id)
+            frame.setComponent(paramComponent, for: .object(id))
         }
     }
     /// Resolve connections of single-parameter auxiliaries such as graphical function,
@@ -132,7 +132,7 @@ public struct ParameterResolutionSystem: System {
     ///
     /// - Requirement: The auxiliary should have one incoming parameter.
     ///
-    public func resolveAuxiliaries(_ frame: RuntimeFrame, type: ObjectType)
+    public func resolveAuxiliaries(_ frame: AugmentedFrame, type: ObjectType)
     throws (InternalSystemError) {
         for object in frame.filter(type: type) {
             let incomingParams = frame.incoming(object.objectID).filter {
@@ -172,7 +172,7 @@ public struct ParameterResolutionSystem: System {
                 )
             }
 
-            frame.setComponent(component, for: object.objectID)
+            frame.setComponent(component, for: .object(object.objectID))
 
             
         }

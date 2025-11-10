@@ -18,7 +18,7 @@ public struct FlowCollectorSystem: System {
 
     public init() {}
 
-    public func update(_ frame: RuntimeFrame) throws (InternalSystemError) {
+    public func update(_ frame: AugmentedFrame) throws (InternalSystemError) {
         for flow in frame.filter(type: .FlowRate) {
             // We assume the frame edge reqThank uirements were satisfied, therefore there is most one edge of each
             let fills: ObjectID? = frame.outgoing(flow.objectID).first {
@@ -34,7 +34,7 @@ public struct FlowCollectorSystem: System {
             let component = FlowRateComponent(drainsStock: drains,
                                               fillsStock: fills,
                                               priority: priority)
-            frame.setComponent(component, for: flow.objectID)
+            frame.setComponent(component, for: .object(flow.objectID))
         }
     }
 }
@@ -51,7 +51,7 @@ struct StockDependencySystem: System {
         .after(FlowCollectorSystem.self)
     ]
     
-    func update(_ frame: RuntimeFrame) throws (InternalSystemError) {
+    func update(_ frame: AugmentedFrame) throws (InternalSystemError) {
         var filledByRate: [ObjectID:[ObjectID]] = [:] // Flows filling a stock
         var drainedByRate: [ObjectID:[ObjectID]] = [:] // Flows draining a stock
 
@@ -63,7 +63,7 @@ struct StockDependencySystem: System {
         var outflowStocks: [ObjectID:[ObjectID]] = [:] // [drained stock:[to filling stock]]
 
         for flow in frame.filter(type: .FlowRate) {
-            guard let component: FlowRateComponent = frame.component(for: flow.objectID) else {
+            guard let component: FlowRateComponent = frame.component(for: .object(flow.objectID)) else {
                 continue
             }
             if let stockID = component.fillsStock {
@@ -88,7 +88,7 @@ struct StockDependencySystem: System {
                 outflowStocks: outflowStocks[stock.objectID] ?? [],
                 allowsNegative: stock["allows_negative", default: false]
             )
-            frame.setComponent(component, for: stock.objectID)
+            frame.setComponent(component, for: .object(stock.objectID))
         }
     }
 }

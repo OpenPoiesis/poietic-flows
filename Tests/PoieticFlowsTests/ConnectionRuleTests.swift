@@ -106,7 +106,7 @@ import Testing
         let inflow = frame.createNode(.FlowRate)
         let outflow = frame.createNode(.FlowRate)
 
-        let inflow_cloud = frame.createEdge(.Flow, origin: inflow.objectID, target: cloud.objectID)
+        let _ = frame.createEdge(.Flow, origin: inflow.objectID, target: cloud.objectID)
         let cloud_outflow = frame.createEdge(.Flow, origin: cloud.objectID, target: outflow.objectID)
         #expect {
             try checker.validate(edge: frame.edge(cloud_outflow.objectID)!, in: frame)

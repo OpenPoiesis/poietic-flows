@@ -25,9 +25,9 @@ import Testing
         self.frame = design.createFrame()
     }
     
-    func accept(_ frame: TransientFrame) throws -> RuntimeFrame {
+    func accept(_ frame: TransientFrame) throws -> AugmentedFrame {
         let stable = try design.accept(frame)
-        return RuntimeFrame(stable)
+        return AugmentedFrame(stable)
     }
    
     // TEST: Failed expression -> tries to compile

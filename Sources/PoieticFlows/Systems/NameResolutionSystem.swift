@@ -24,8 +24,8 @@ public struct NameResolutionSystem: System {
         .after(ComputationOrderSystem.self),
     ]
 
-    public func update(_ frame: RuntimeFrame) throws (InternalSystemError) {
-        guard let order = frame.frameComponent(SimulationOrderComponent.self) else {
+    public func update(_ frame: AugmentedFrame) throws (InternalSystemError) {
+        guard let order: SimulationOrderComponent = frame.component(for: .Frame) else {
             return
         }
         
@@ -65,12 +65,12 @@ public struct NameResolutionSystem: System {
             }
             nameLookup[name] = ids[0]
             let comp = SimulationObjectNameComponent(name: name)
-            frame.setComponent(comp, for: ids[0])
+            frame.setComponent(comp, for: .object(ids[0]))
         }
 
         let component = SimulationNameLookupComponent(
             namedObjects: nameLookup
         )
-        frame.setFrameComponent(component)
+        frame.setComponent(component, for: .Frame)
     }
 }

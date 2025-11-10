@@ -18,9 +18,9 @@ import Testing
         self.frame = design.createFrame()
     }
     
-    func accept(_ frame: TransientFrame) throws -> RuntimeFrame {
+    func accept(_ frame: TransientFrame) throws -> AugmentedFrame {
         let accepted = try design.accept(frame)
-        let runtime = RuntimeFrame(accepted)
+        let runtime = AugmentedFrame(accepted)
         return runtime
     }
     
@@ -29,7 +29,7 @@ import Testing
         let runtime = try accept(frame)
         let system = ComputationOrderSystem()
         try system.update(runtime)
-        let component = try #require(runtime.frameComponent(SimulationOrderComponent.self))
+        let component: SimulationOrderComponent = try #require(runtime.component(for: .Frame))
         #expect(component.objects.isEmpty)
     }
     
@@ -45,8 +45,8 @@ import Testing
         let runtime = try accept(frame)
         let system = ComputationOrderSystem()
         try system.update(runtime)
-        let component = try #require(runtime.frameComponent(SimulationOrderComponent.self))
-        
+        let component: SimulationOrderComponent = try #require(runtime.component(for: .Frame))
+
         #expect(component.objects.count == 3)
         #expect(component.objects[0].objectID == a.objectID)
         #expect(component.objects[1].objectID == b.objectID)
@@ -62,7 +62,7 @@ import Testing
         let runtime = try accept(frame)
         let system = ComputationOrderSystem()
         try system.update(runtime)
-        let component = runtime.frameComponent(SimulationOrderComponent.self)
+        let component: SimulationOrderComponent? = runtime.component(for: .Frame)
         #expect(component == nil)
         
         #expect(runtime.objectHasError(a.objectID, error: ModelError.computationCycle))
@@ -81,7 +81,7 @@ import Testing
         let system = ComputationOrderSystem()
         try system.update(runtime)
 
-        let component = try #require(runtime.frameComponent(SimulationOrderComponent.self))
+        let component: SimulationOrderComponent = try #require(runtime.component(for: .Frame))
         #expect(component.objects.count == 3)
         #expect(component.objects[0].objectID == param.objectID)
         #expect(component.objects[1].objectID == gf.objectID)
