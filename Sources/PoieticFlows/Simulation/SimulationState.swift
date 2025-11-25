@@ -25,7 +25,7 @@ public struct SimulationState: CustomStringConvertible {
     /// Create a simulation state with all variables set to zero.
     ///
     /// - Parameters:
-    ///     - plan: Simulation plan used to determine the number of variables.
+    ///     - count: Number of state variables.
     ///     - step: Simulation step.
     ///     - time: Simulation time.
     ///     - timeDelta: Simulation time delta.
