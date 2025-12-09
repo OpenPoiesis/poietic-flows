@@ -1,0 +1,65 @@
+//
+//  Chart.swift
+//
+//
+//  Created by Stefan Urbanek on 11/09/2023.
+//
+
+import PoieticCore
+
+/// Object representing a chart.
+///
+@available(*, deprecated, message: "Use ChartComponent")
+public struct Chart {
+    /// Chart-type node.
+    ///
+    /// Series are connected from the node through a `Series` edge, where the chart is the
+    /// edge origin and the series node is the edge target.
+    ///
+    public let node: ObjectSnapshot
+    
+    /// Nodes that represent the chart series.
+    ///
+    /// Series are connected from the node through a `Series` edge, where the chart is the
+    /// edge origin and the series node is the edge target.
+    ///
+    public let series: [ObjectSnapshot]
+    
+    /// Create a chart object.
+    ///
+    public init(node: ObjectSnapshot, series: [ObjectSnapshot]) {
+        self.node = node
+        self.series = series
+    }
+}
+
+public struct ChartComponent: Component {
+    struct Series {
+        var colorName: String?
+    }
+    
+    /// Chart-type node.
+    ///
+    /// Series are connected from the node through a `Series` edge, where the chart is the
+    /// edge origin and the series node is the edge target.
+    ///
+    public let chartObject: ObjectSnapshot
+    public var name: String? { chartObject.name }
+    
+//    let minX: Double?
+//    let maxX: Double?
+//    let minY: Double?
+//    let maxY: Double?
+//    let majorXSteps: Double?
+//    let minorXSteps: Double?
+//    let majorYSteps: Double?
+//    let minorYSteps: Double?
+    
+    /// Nodes that represent the chart series.
+    ///
+    /// Series are connected from the node through a `Series` edge, where the chart is the
+    /// edge origin and the series node is the edge target.
+    ///
+    public let series: [ObjectSnapshot]
+}
+

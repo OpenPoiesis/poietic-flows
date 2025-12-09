@@ -43,14 +43,14 @@ public struct SimulationParameters {
     /// expected attributes can be used.
     ///
     public init(fromObject object: ObjectSnapshot) {
-        self.initialTime = try! object["initial_time"]?.doubleValue() ?? 0.0
-        self.timeDelta = try! object["time_delta"]?.doubleValue() ?? 1.0
+        self.initialTime = object["initial_time", default: 0.0]
+        self.timeDelta = object["time_delta", default: 0.0]
 
-        if let endTime = try! object["end_time"]?.doubleValue() {
+        if let endTime: Double = object["end_time"] {
             self.endTime = endTime
         }
         else {
-            if let steps = try! object["steps"]?.intValue() {
+            if let steps: Int = object["steps"] {
                 self.endTime = initialTime + Double(steps + 1) * timeDelta
             }
             else {

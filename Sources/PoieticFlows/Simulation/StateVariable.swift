@@ -22,7 +22,7 @@ public struct StateVariable: CustomStringConvertible {
     /// Index of the variable's value in a simulation state.
     ///
     public let index: Int
-
+    
     /// Reference to a variable.
     ///
     /// The variable reference is used in arithmetic expressions and might represent
@@ -45,10 +45,10 @@ public struct StateVariable: CustomStringConvertible {
         /// is ID of an object that owns the state.
         ///
         case internalState(ObjectID)
-
+        
         /// Actual or adjusted value of the object after computation
         case adjustedResult(ObjectID)
-
+        
         public static func ==(lhs: Content, rhs: Content) -> Bool {
             switch (lhs, rhs) {
             case let (.object(left), .object(right)): return left == right
@@ -68,11 +68,11 @@ public struct StateVariable: CustomStringConvertible {
             }
         }
     }
-
+    
     /// Content of the state variable - whether it is an object or a builtin.
     ///
     public let content: Content
-
+    
     /// Type of the simulation variable.
     ///
     /// - SeeAlso: ``StateVariable``
@@ -102,7 +102,7 @@ public struct StateVariable: CustomStringConvertible {
     /// Variable value type
     ///
     public let valueType: ValueType
-
+    
     public let name: String
     
     /// ID of a simulation node that the variable represents, if the variable
@@ -121,9 +121,24 @@ public struct StateVariable: CustomStringConvertible {
         case .adjustedResult(let id): id
         }
     }
-
+    
     public var description: String {
         "\(name)@\(index):\(kind):\(valueType)"
     }
+    
+    internal init(index: Int, content: StateVariable.Content, valueType: ValueType, name: String) {
+        self.index = index
+        self.content = content
+        self.valueType = valueType
+        self.name = name
+    }
+    
+    internal init(index: Int, builtin: BuiltinVariable) {
+        self.index = index
+        self.content = .builtin(builtin)
+        self.valueType = builtin.valueType
+        self.name = builtin.name
+    }
+
 }
 

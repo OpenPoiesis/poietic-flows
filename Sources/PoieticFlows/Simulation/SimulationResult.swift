@@ -5,7 +5,9 @@
 //  Created by Stefan Urbanek on 17/03/2025.
 //
 
-public struct SimulationResult {
+import PoieticCore
+
+public struct SimulationResult: Component {
     public let initialTime: Double
     public let timeDelta: Double
     public var states: [SimulationState]

@@ -23,6 +23,10 @@ public enum BuiltinVariable: Equatable, CaseIterable, CustomStringConvertible {
 //    case endTime
     
     public var description: String { self.name }
+    
+    public static var allNames: [String] {
+        self.allCases.map { $0.name }
+    }
 
     public var name: String {
         switch self {

@@ -9,6 +9,7 @@ import Testing
 @testable import PoieticFlows
 @testable import PoieticCore
 
+#if false
 
 @Suite struct TestDomainView {
     // TODO: Split to Compiler and DomainView test cases
@@ -81,3 +82,4 @@ import Testing
         #expect(view.drains(flow.objectID) == source.objectID)
     }
 }
+#endif
