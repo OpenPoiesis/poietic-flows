@@ -25,12 +25,12 @@ public struct ComputationOrderSystem: System {
         // Note: See roles below
         let unordered: [ObjectSnapshot] = frame.filter {
             ($0.type === ObjectType.Stock
-                || $0.type === ObjectType.FlowRate
-                || $0.type.hasTrait(Trait.Auxiliary))
+             || $0.type === ObjectType.FlowRate
+             || $0.type.hasTrait(Trait.Auxiliary))
         }
 
         // 2. Sort nodes based on computation dependency.
-        let parameterEdges:[EdgeObject] = frame.edges.filter {
+        let parameterEdges:[DesignObjectEdge] = frame.edges.filter {
             $0.object.type === ObjectType.Parameter
         }
 
@@ -49,8 +49,8 @@ public struct ComputationOrderSystem: System {
                     severity: .error,
                     system: self,
                     error: ModelError.computationCycle,
-                    )
-                frame.appendIssue(issue, for: edge.key)
+                )
+                frame.appendIssue(issue, for: edge.id)
             }
             for node in nodes {
                 let issue = Issue(

@@ -77,7 +77,7 @@ public struct ParameterResolutionSystem: System {
 
             var connected: [String:ObjectID] = [:]
             var missing: Set<String> = Set(requiredParams)
-            var unused: [EdgeObject] = []
+            var unused: [DesignObjectEdge] = []
             
             for edge in incomingParams {
                 let parameter = edge.originObject
@@ -122,7 +122,7 @@ public struct ParameterResolutionSystem: System {
             let paramComponent = ResolvedParametersComponent(
                 incoming: connected,
                 missing: Array(missing),
-                unused: unused.map { $0.key }
+                unused: unused.map { $0.id }
             )
             frame.setComponent(paramComponent, for: .object(id))
         }
