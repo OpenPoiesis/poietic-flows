@@ -19,14 +19,18 @@ import PoieticCore
 ///
 public struct ComputationOrderSystem: System {
     public init() {}
-    public func update(_ frame: AugmentedFrame) throws (InternalSystemError) {
+    
+    public func update(_ world: World) throws (InternalSystemError) {
+        guard let frame = world.frame
+        else { return }
+        
         // TODO: Replace with SimulationObject trait once we have it (there are practical reasons we don't yet)
         // TODO: Should we use Trait.Stock? (also below)
         // Note: See roles below
         let unordered: [ObjectSnapshot] = frame.filter {
             ($0.type === ObjectType.Stock
-             || $0.type === ObjectType.FlowRate
-             || $0.type.hasTrait(Trait.Auxiliary))
+                || $0.type === ObjectType.FlowRate
+                || $0.type.hasTrait(Trait.Auxiliary))
         }
 
         // 2. Sort nodes based on computation dependency.
@@ -49,8 +53,8 @@ public struct ComputationOrderSystem: System {
                     severity: .error,
                     system: self,
                     error: ModelError.computationCycle,
-                )
-                frame.appendIssue(issue, for: edge.id)
+                    )
+                world.appendIssue(issue, for: edge.id)
             }
             for node in nodes {
                 let issue = Issue(
@@ -59,7 +63,7 @@ public struct ComputationOrderSystem: System {
                     system: self,
                     error: ModelError.computationCycle,
                     )
-                frame.appendIssue(issue, for: node)
+                world.appendIssue(issue, for: node)
             }
             return
         }
@@ -91,16 +95,17 @@ public struct ComputationOrderSystem: System {
                                           context: .object(object.objectID))
             }
             let comp = SimulationRoleComponent(role: role)
-            frame.setComponent(comp, for: .object(object.objectID))
+            world.setComponent(comp, for: object.objectID)
         }
         
-        let component = SimulationOrderComponent(
+        let orderComponent = SimulationOrderComponent(
             objects: snapshots,
             stocks: stocks,
             flows: flows
         )
 
-        frame.setComponent(component, for: .Frame)
+        world.setSingleton(orderComponent)
     }
+
 }
 

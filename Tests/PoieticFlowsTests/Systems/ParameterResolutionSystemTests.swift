@@ -18,9 +18,9 @@ import Testing
         self.frame = design.createFrame()
     }
 
-    func accept(_ frame: TransientFrame) throws -> AugmentedFrame {
+    func accept(_ frame: TransientFrame) throws -> World {
         let accepted = try design.accept(frame)
-        return AugmentedFrame(accepted)
+        return World(frame: accepted)
     }
 
     // MARK: - Basic Sanity Tests
@@ -37,7 +37,7 @@ import Testing
         let system = ParameterResolutionSystem()
         try system.update(runtime)
 
-        let component: ResolvedParametersComponent? = runtime.component(for: .object(info.objectID))
+        let component: ResolvedParametersComponent? = runtime.component(for: info.objectID)
         #expect(component == nil)
     }
 
@@ -56,7 +56,7 @@ import Testing
         let system = ParameterResolutionSystem()
         try system.update(runtime)
 
-        let component: ResolvedParametersComponent? = runtime.component(for: .object(aux.objectID))
+        let component: ResolvedParametersComponent? = runtime.component(for: aux.objectID)
         #expect(component == nil, "No component should be created when no parameters needed")
         #expect(!runtime.objectHasIssues(aux.objectID))
     }
@@ -76,7 +76,7 @@ import Testing
         let system = ParameterResolutionSystem()
         try system.update(runtime)
 
-        let component: ResolvedParametersComponent = try #require(runtime.component(for: .object(aux.objectID)))
+        let component: ResolvedParametersComponent = try #require(runtime.component(for: aux.objectID))
         #expect(component.incoming.count == 1)
         #expect(component.incoming["x"] == aux.objectID)
         #expect(component.missing.isEmpty == true)
@@ -96,7 +96,7 @@ import Testing
         let system = ParameterResolutionSystem()
         try system.update(runtime)
 
-        let component: ResolvedParametersComponent = try #require(runtime.component(for: .object(aux.objectID)))
+        let component: ResolvedParametersComponent = try #require(runtime.component(for: aux.objectID))
         #expect(component.incoming.isEmpty == true)
         #expect(component.missing == ["x"])
         #expect(component.unused.isEmpty == true)
@@ -120,7 +120,7 @@ import Testing
         let system = ParameterResolutionSystem()
         try system.update(runtime)
 
-        let component: ResolvedParametersComponent = try #require(runtime.component(for: .object(aux.objectID)))
+        let component: ResolvedParametersComponent = try #require(runtime.component(for: aux.objectID))
         #expect(component.incoming.count == 1)
         #expect(component.incoming["x"] == aux.objectID)
         #expect(component.missing.isEmpty == true)
@@ -147,7 +147,7 @@ import Testing
         let system = ParameterResolutionSystem()
         try system.update(runtime)
 
-        let component: ResolvedParametersComponent = try #require(runtime.component(for: .object(aux.objectID)))
+        let component: ResolvedParametersComponent = try #require(runtime.component(for: aux.objectID))
         #expect(component.incoming.count == 1)
         #expect(component.incoming["a"] == aux.objectID)
         #expect(component.missing == ["b"])
@@ -168,7 +168,7 @@ import Testing
         let system = ParameterResolutionSystem()
         try system.update(runtime)
 
-        let component: ResolvedParametersComponent? = runtime.component(for: .object(aux.objectID))
+        let component: ResolvedParametersComponent? = runtime.component(for: aux.objectID)
         #expect(component == nil, "No component needed when only builtins used")
         #expect(!runtime.objectHasIssues(aux.objectID))
     }
@@ -192,7 +192,7 @@ import Testing
         let system = ParameterResolutionSystem()
         try system.update(runtime)
 
-        let component: ResolvedParametersComponent = try #require(runtime.component(for: .object(aux.objectID)))
+        let component: ResolvedParametersComponent = try #require(runtime.component(for: aux.objectID))
         #expect(component.incoming.count == 3)
         #expect(component.incoming["x"] == aux.objectID)
         #expect(component.incoming["y"] == aux.objectID)
@@ -216,7 +216,7 @@ import Testing
         let system = ParameterResolutionSystem()
         try system.update(runtime)
 
-        let component: ResolvedParametersComponent = try #require(runtime.component(for: .object(delay.objectID)))
+        let component: ResolvedParametersComponent = try #require(runtime.component(for: delay.objectID))
         #expect(component.connectedUnnamed.isEmpty == true)
         #expect(component.missingUnnamed == 1)
         #expect(runtime.objectHasError(delay.objectID, error: ModelError.missingRequiredParameter))

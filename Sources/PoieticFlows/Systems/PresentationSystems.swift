@@ -18,7 +18,8 @@ public struct ChartResolutionSystem: System {
     
     public init() {}
 
-    public func update(_ frame: AugmentedFrame) throws (InternalSystemError) {
+    public func update(_ world: World) throws (InternalSystemError) {
+        guard let frame = world.frame else { return }
         let chartObjects = frame.filter { $0.type === ObjectType.Chart }
 
         for chartObject in chartObjects {
@@ -28,7 +29,7 @@ public struct ChartResolutionSystem: System {
             
             let series = seriesEdges.map { $0.targetObject }
             let chart = ChartComponent(chartObject: chartObject, series: series)
-            frame.setComponent(chart, for: .object(chartObject.objectID))
+            world.setComponent(chart, for: chartObject.objectID)
         }
     }
     public func makeChart(_ chart: ObjectSnapshot, frame: AugmentedFrame) -> ChartComponent {

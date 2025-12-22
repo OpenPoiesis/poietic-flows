@@ -24,8 +24,8 @@ public struct NameResolutionSystem: System {
         .after(ComputationOrderSystem.self),
     ]
 
-    public func update(_ frame: AugmentedFrame) throws (InternalSystemError) {
-        guard let order: SimulationOrderComponent = frame.component(for: .Frame) else {
+    public func update(_ world: World) throws (InternalSystemError) {
+        guard let order: SimulationOrderComponent = world.singleton() else {
             return
         }
         
@@ -42,7 +42,7 @@ public struct NameResolutionSystem: System {
                     system: self,
                     error: ModelError.emptyName,
                     )
-                frame.appendIssue(issue, for: object.objectID)
+                world.appendIssue(issue, for: object.objectID)
                 continue
             }
             namedObjects[trimmedName, default: []].append(object.objectID)
@@ -59,18 +59,19 @@ public struct NameResolutionSystem: System {
                     )
                 // TODO: Add related nodes
                 for id in ids {
-                    frame.appendIssue(issue, for: id)
+                    world.appendIssue(issue, for: id)
                 }
                 continue
             }
             nameLookup[name] = ids[0]
             let comp = SimulationObjectNameComponent(name: name)
-            frame.setComponent(comp, for: .object(ids[0]))
+            world.setComponent(comp, for: ids[0])
         }
 
         let component = SimulationNameLookupComponent(
             namedObjects: nameLookup
         )
-        frame.setComponent(component, for: .Frame)
+        world.setSingleton(component)
     }
+
 }

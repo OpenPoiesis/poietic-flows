@@ -18,13 +18,13 @@ import Testing
         self.frame = design.createFrame()
     }
     
-    func accept(_ frame: TransientFrame) throws -> AugmentedFrame {
+    func accept(_ frame: TransientFrame) throws -> World {
         let accepted = try design.accept(frame)
-        let runtime = AugmentedFrame(accepted)
+        let world = World(frame: accepted)
         
         let system = ComputationOrderSystem()
-        try system.update(runtime)
-        return runtime
+        try system.update(world)
+        return world
     }
     
     @Test func empty() throws {
@@ -34,10 +34,10 @@ import Testing
         let system = NameResolutionSystem()
         try system.update(runtime)
         
-        let lookup: SimulationNameLookupComponent = try #require(runtime.component(for: .Frame))
+        let lookup: SimulationNameLookupComponent = try #require(runtime.singleton())
         #expect(lookup.namedObjects.isEmpty)
         
-        let component: SimulationObjectNameComponent? = runtime.component(for: .object(object.objectID))
+        let component: SimulationObjectNameComponent? = runtime.component(for: object.objectID)
         #expect(component == nil)
     }
     
@@ -49,15 +49,15 @@ import Testing
         let system = NameResolutionSystem()
         try system.update(runtime)
         
-        let lookup: SimulationNameLookupComponent = try #require(runtime.component(for: .Frame))
+        let lookup: SimulationNameLookupComponent = try #require(runtime.singleton())
         #expect(lookup.namedObjects.isEmpty)
         
         #expect(runtime.objectHasError(empty.objectID, error: ModelError.emptyName))
         #expect(runtime.objectHasError(whitespace.objectID, error: ModelError.emptyName))
         
-        let component1: SimulationObjectNameComponent? = runtime.component(for: .object(empty.objectID))
+        let component1: SimulationObjectNameComponent? = runtime.component(for: empty.objectID)
         #expect(component1 == nil)
-        let component2: SimulationObjectNameComponent? = runtime.component(for: .object(whitespace.objectID))
+        let component2: SimulationObjectNameComponent? = runtime.component(for: whitespace.objectID)
         #expect(component2 == nil)
     }
     
@@ -68,10 +68,10 @@ import Testing
         let system = NameResolutionSystem()
         try system.update(runtime)
         
-        let lookup: SimulationNameLookupComponent = try #require(runtime.component(for: .Frame))
+        let lookup: SimulationNameLookupComponent = try #require(runtime.singleton())
         #expect(lookup.namedObjects["object"] == object.objectID)
 
-        let component: SimulationObjectNameComponent = try #require(runtime.component(for: .object(object.objectID)))
+        let component: SimulationObjectNameComponent = try #require(runtime.component(for: object.objectID))
         #expect(component.name == "object")
     }
     @Test func duplicateName() throws {
@@ -82,9 +82,9 @@ import Testing
         let system = NameResolutionSystem()
         try system.update(runtime)
         
-        let component: SimulationObjectNameComponent? = runtime.component(for: .object(object.objectID))
+        let component: SimulationObjectNameComponent? = runtime.component(for: object.objectID)
         #expect(component == nil)
-        let dupeComponent: SimulationObjectNameComponent? = runtime.component(for: .object(dupe.objectID))
+        let dupeComponent: SimulationObjectNameComponent? = runtime.component(for: dupe.objectID)
         #expect(dupeComponent == nil)
 
         #expect(runtime.objectHasError(object.objectID, error: ModelError.duplicateName("object")))
@@ -99,11 +99,11 @@ import Testing
         let system = NameResolutionSystem()
         try system.update(runtime)
         
-        let component: SimulationObjectNameComponent? = runtime.component(for: .object(object.objectID))
+        let component: SimulationObjectNameComponent? = runtime.component(for: object.objectID)
         #expect(component == nil)
-        let dupeComponent: SimulationObjectNameComponent? = runtime.component(for: .object(dupe.objectID))
+        let dupeComponent: SimulationObjectNameComponent? = runtime.component(for: dupe.objectID)
         #expect(dupeComponent == nil)
-        let singleComponent: SimulationObjectNameComponent? = runtime.component(for: .object(single.objectID))
+        let singleComponent: SimulationObjectNameComponent? = runtime.component(for: single.objectID)
         #expect(singleComponent?.name == "single")
 
         #expect(runtime.objectHasError(object.objectID, error: ModelError.duplicateName("object")))
