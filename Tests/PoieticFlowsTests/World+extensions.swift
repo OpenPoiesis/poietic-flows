@@ -9,6 +9,12 @@
 
 // Testing convenience methods
 extension World {
+    func objectHasIssue(_ objectID: ObjectID, identifier: String) -> Bool {
+        guard let issues = objectIssues(objectID) else { return false }
+        return issues.contains { $0.identifier == identifier }
+    }
+
+
     func objectHasError<T:IssueProtocol>(_ objectID: ObjectID, error: T) -> Bool {
         guard let issues = objectIssues(objectID) else { return false }
 

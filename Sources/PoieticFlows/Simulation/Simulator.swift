@@ -62,6 +62,7 @@ public struct SimulationParameters {
 }
 
 // TODO: Move this class to Core, we are half-way through decoupling.
+// TODO: Change to System and merge with stock-flow simulation
 
 /// Object for controlling a simulation session.
 ///

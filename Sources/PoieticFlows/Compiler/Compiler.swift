@@ -52,7 +52,9 @@ public enum InternalCompilerError: Error, Equatable {
     case objectNotFound(ObjectID)
 }
 
-nonisolated(unsafe) public let ModelInspectionSystemGroup: [System.Type] = [
+/// Systems required to be run for creating a simulation plan.
+///
+nonisolated(unsafe) public let SimulationPlanningSystems: [System.Type] = [
     ExpressionParserSystem.self,
     ParameterResolutionSystem.self,
     ComputationOrderSystem.self,
@@ -62,56 +64,11 @@ nonisolated(unsafe) public let ModelInspectionSystemGroup: [System.Type] = [
     SimulationPlanningSystem.self,
 ]
 
-nonisolated(unsafe) public let SimulationPlanningSystemGroup: [System.Type] =
-ModelInspectionSystemGroup + [
-    SimulationPlanningSystem.self,
-]
-
-nonisolated(unsafe) public let SimulationPresentationSystemGroup: [System.Type] =
-SimulationPlanningSystemGroup + [
+/// Systems used to present the simulation results.
+///
+/// The systems in this collection are expected to be run after ``SimulationPlanningSystems``.
+///
+nonisolated(unsafe) public let SimulationPresentationSystems: [System.Type] = [
     ChartResolutionSystem.self,
 ]
-
-/// Legacy wrapper to provide same API. DO NOT USE!
-///
-/// An object that compiles the model into an internal representation called Compiled Model.
-///
-/// The design represents an idea or a creation of a user in a form that
-/// is closest to the user. To perform a simulation we need a different form
-/// that can be interpreted by a machine.
-///
-/// The purpose of the compiler is to validate the design and
-/// translate it into an internal representation.
-///
-/// - SeeAlso: ``compile()``, ``SimulationPlan``
-///
-@available(*, deprecated, message: "Moving towards Systems")
-public class Compiler {
-    public let frame: AugmentedFrame
-
-    @available(*, deprecated, message: "Moving towards Systems")
-    public init(frame: DesignFrame) {
-        self.frame = AugmentedFrame(frame)
-    }
-
-    @available(*, deprecated, message: "Moving towards Systems")
-    public func compile() throws (CompilerError) -> SimulationPlan {
-        let systems = SystemGroup(SimulationPlanningSystemGroup)
-        
-        do {
-            try systems.update(frame)
-        }
-        catch {
-            fatalError("Execution failed: \(error)")
-        }
-        
-        if frame.hasIssues {
-            throw .issues(frame.issues)
-        }
-        guard let plan: SimulationPlan = frame.component(for: .Frame) else {
-            fatalError("Plan was not created")
-        }
-        return plan
-    }
-}
 

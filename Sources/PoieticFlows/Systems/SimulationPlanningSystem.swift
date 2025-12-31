@@ -486,7 +486,7 @@ struct SimulationPlanningSystem: System {
         guard let component: FlowRateComponent = world.component(for: objectID) else {
             throw InternalSystemError(self,
                                       message: "Missing required component",
-                                      context: .frameComponent("FlowRateComponent"))
+                                      context: .singleton("FlowRateComponent"))
         }
         guard let objectIndex = variables.objectIndex[objectID] else {
             // TODO: Throw corrupted component
@@ -532,7 +532,7 @@ struct SimulationPlanningSystem: System {
         guard let comp: StockComponent = world.component(for: objectID) else {
             throw InternalSystemError(self,
                                       message: "Missing component",
-                                      context: .frameComponent("StockDependencyComponent"))
+                                      context: .singleton("StockDependencyComponent"))
         }
 
         let inflowIndices = comp.inflowRates.compactMap { flowIndices[$0] }
@@ -543,7 +543,7 @@ struct SimulationPlanningSystem: System {
         else {
             throw InternalSystemError(self,
                                       message: "Corrupted component",
-                                      context: .frameComponent("StockDependencyComponent"))
+                                      context: .singleton("StockDependencyComponent"))
         }
         
         let boundStock = BoundStock(
