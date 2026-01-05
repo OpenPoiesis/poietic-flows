@@ -27,14 +27,14 @@ import Testing
         self.design = Design(metamodel: StockFlowMetamodel)
         self.frame = design.createFrame()
         self.world = World(design: design)
-        self.world.setSystems(schedule: FrameChange.self,
+        self.world.setSystems(schedule: FrameChangeSchedule.self,
                               systems: SystemGroup(SimulationPlanningSystems))
     }
     
     func accept() throws -> SimulationPlan {
         let accepted = try design.accept(frame)
         world.setFrame(accepted)
-        try world.run(schedule: FrameChange.self)
+        try world.run(schedule: FrameChangeSchedule.self)
         let plan: SimulationPlan = try #require(world.singleton())
         return plan
     }

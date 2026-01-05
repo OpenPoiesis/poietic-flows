@@ -444,7 +444,7 @@ struct SimulationPlanningSystem: System {
             throw .objectIssue
         }
 
-        // FIXME: [REFACTORING] Require the attribute, do not assume the default here
+        // TODO: Require the attribute, do not assume the default here?
         // This requires attribute error
         let windowTime: Double = object["window_time", default: 1]
         
