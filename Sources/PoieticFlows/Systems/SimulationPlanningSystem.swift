@@ -179,12 +179,12 @@ struct SimulationPlanningSystem: System {
         
         // Simulation parameters
         
-        let params: SimulationParameters
+        let params: SimulationSettings
         if let simInfo = frame.first(trait: Trait.Simulation) {
-            params = SimulationParameters(fromObject: simInfo)
+            params = SimulationSettings(fromObject: simInfo)
         }
         else {
-            params = SimulationParameters()
+            params = SimulationSettings()
         }
 
         

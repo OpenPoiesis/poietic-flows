@@ -7,7 +7,7 @@
 
 import PoieticCore
 
-// TODO: Move this to Core
+// TODO: Deprecate the protocol(?)
 
 public struct SimulationError: Error {
     let objectID: ObjectID
@@ -44,7 +44,7 @@ public protocol Simulation {
     ///
     /// - Returns: Newly initialised simulation state.
     ///
-    func initialize(time: Double, timeDelta: Double, override: [ObjectID:Variant])  throws (SimulationError) -> SimulationState
+    func initialize(time: Double, timeDelta: Double, parameters: [ObjectID:Variant]) throws (SimulationError) -> SimulationState
 
     /// Function that updates a simulation state.
     ///

@@ -39,7 +39,7 @@ public class StockFlowSimulation: Simulation {
         self.solver = solver
         self.flowScaling = flowScaling
     }
-    
+   
     // MARK: - Initialization
     /// Create and initialise a simulation state.
     ///
@@ -57,7 +57,11 @@ public class StockFlowSimulation: Simulation {
     ///
     /// - Returns: Newly initialised simulation state.
     ///
-    public func initialize(time: Double=0, timeDelta: Double=1.0, override: [ObjectID:Variant]=[:])  throws (SimulationError) -> SimulationState {
+    public func initialize(time: Double=0,
+                           timeDelta: Double=1.0,
+                           parameters: [ObjectID:Variant]=[:])
+    throws (SimulationError) -> SimulationState
+    {
         var state = SimulationState(count: plan.stateVariables.count,
                                     step: 0,
                                     time: time,
@@ -65,9 +69,9 @@ public class StockFlowSimulation: Simulation {
 
         setBuiltins(in: &state)
 
-        for (index, obj) in plan.simulationObjects.enumerated() {
-            if let value = override[obj.objectID] {
-                state[obj.variableIndex] = value
+        for (index, simObject) in plan.simulationObjects.enumerated() {
+            if let value = parameters[simObject.objectID] {
+                state[simObject.variableIndex] = value
             }
             else {
                 try initialize(objectAt: index, in: &state)

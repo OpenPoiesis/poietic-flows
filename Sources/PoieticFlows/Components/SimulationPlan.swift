@@ -44,7 +44,7 @@ public struct SimulationPlan {
                   flows: [BoundFlow] = [],
 //                  charts: [Chart] = [],
                   valueBindings: [CompiledControlBinding] = [],
-                  simulationParameters: SimulationParameters? = nil) {
+                  simulationParameters: SimulationSettings? = nil) {
         self.simulationObjects = simulationObjects
         self.stateVariables = stateVariables
         self.builtins = builtins
@@ -134,7 +134,7 @@ public struct SimulationPlan {
     ///
     /// See ``SimulationParameters`` for more information.
     ///
-    public var simulationParameters: SimulationParameters?
+    public var simulationParameters: SimulationSettings?
     
     /// Get index into a list of computed variables for an object with given ID.
     ///

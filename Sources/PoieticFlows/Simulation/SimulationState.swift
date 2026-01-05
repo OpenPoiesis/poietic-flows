@@ -11,7 +11,7 @@ import PoieticCore
 
 /// A collection of simulation state variables.
 ///
-public struct SimulationState: CustomStringConvertible {
+public struct SimulationState: Component, CustomStringConvertible {
     public typealias Index = Int
     
     public let step: Int

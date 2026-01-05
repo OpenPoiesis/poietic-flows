@@ -212,6 +212,10 @@ extension Trait {
                       optional: true,
                       abstract: "Number of steps the simulation is run by default [deprecated]"
                      ),
+            Attribute("solver_type", type: .string,
+                      optional: true,
+                      abstract: "Solver type name"
+                     ),
             // TODO: Add stop_time or final_time
             // TODO: Support date/time
             // TODO: Add Solver type

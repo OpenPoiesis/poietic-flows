@@ -64,6 +64,10 @@ nonisolated(unsafe) public let SimulationPlanningSystems: [System.Type] = [
     SimulationPlanningSystem.self,
 ]
 
+nonisolated(unsafe) public let SimulationRunningSystems: [System.Type] = [
+    StockFlowSimulationSystem.self,
+]
+
 /// Systems used to present the simulation results.
 ///
 /// The systems in this collection are expected to be run after ``SimulationPlanningSystems``.

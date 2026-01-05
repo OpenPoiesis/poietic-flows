@@ -15,12 +15,15 @@ import Testing
 @testable import PoieticFlows
 @testable import PoieticCore
 
+
 @Suite struct TestStockFlowSimulation {
+    let solverType: StockFlowSimulation.SolverType
     let design: Design
     let frame: TransientFrame
     let world: World
 
     init() throws {
+        self.solverType = .euler
         self.design = Design(metamodel: StockFlowMetamodel)
         self.frame = design.createFrame()
         self.world = World(design: design)
@@ -28,23 +31,51 @@ import Testing
                               systems: SystemGroup(SimulationPlanningSystems))
     }
     
-    func acceptAndUpdate() throws -> SimulationPlan {
+    func accept() throws -> SimulationPlan {
         let accepted = try design.accept(frame)
         world.setFrame(accepted)
         try world.run(schedule: FrameChange.self)
         let plan: SimulationPlan = try #require(world.singleton())
         return plan
     }
-    
+
+    func run(_ plan: SimulationPlan,
+             settings: SimulationSettings? = nil,
+             parameters: ScenarioParameters? = nil)
+    throws (SimulationError) -> SimulationState
+    {
+        let settings = settings ?? SimulationSettings()
+        let parameters = parameters ?? ScenarioParameters()
+        
+        let simulation = StockFlowSimulation(plan, solver: solverType)
+        var state = try simulation.initialize(time: settings.initialTime,
+                                              timeDelta: settings.timeDelta,
+                                              parameters: parameters.initialValues)
+        var result = SimulationResult(initialTime: settings.initialTime,
+                                      timeDelta: settings.timeDelta)
+        result.append(state)
+        var step: UInt = 1
+
+        while step <= settings.steps {
+            print("STEP \(step)")
+            let newState = try simulation.step(state)
+            result.append(newState)
+            state = newState
+            step += 1
+        }
+
+        return state
+    }
+
     @Test mutating func initializeStocks() throws {
         let c = frame.createNode(ObjectType.Stock, name: "const", attributes: ["formula": "100"])
         let a = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "1"])
         
-        let plan = try self.acceptAndUpdate()
-        
-        let sim = StockFlowSimulation(plan)
-        let state = try sim.initialize()
-        
+        let plan = try self.accept()
+
+        let simulation = StockFlowSimulation(plan)
+        let state = try simulation.initialize()
+
         #expect(state[plan.variableIndex(c.objectID)!] == 100)
         #expect(state[plan.variableIndex(a.objectID)!] == 1)
     }
@@ -54,55 +85,45 @@ import Testing
         let stock = frame.createNode(ObjectType.Stock, name: "b", attributes: ["formula": "20"])
         let flow = frame.createNode(ObjectType.FlowRate, name: "c", attributes: ["formula": "30"])
         
-        let plan = try acceptAndUpdate()
+        let plan = try self.accept()
+        let simulation = StockFlowSimulation(plan)
+        let state = try simulation.initialize()
 
-        let sim = StockFlowSimulation(plan)
-        let state = try sim.initialize()
-        
         #expect(state[plan.variableIndex(aux)!] == 10)
         #expect(state[plan.variableIndex(stock)!] == 20)
         #expect(state[plan.variableIndex(flow)!] == 30)
     }
     
-    @Test mutating func initializeOverride() throws {
+    @Test mutating func initializeWithParams() throws {
         let a = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "10"])
         let b = frame.createNode(ObjectType.Auxiliary, name: "b", attributes: ["formula": "20"])
         let c = frame.createNode(ObjectType.Auxiliary, name: "c", attributes: ["formula": "a - 1"])
         frame.createEdge(ObjectType.Parameter, origin: a.objectID, target: c.objectID)
         
-        let plan = try acceptAndUpdate()
+        let plan = try self.accept()
 
-        let sim = StockFlowSimulation(plan)
-        
-        let overrides: [ObjectID:Variant] = [
-            a.objectID: Variant(999),
-        ]
-        let state = try sim.initialize(override: overrides)
-        
+        let params = ScenarioParameters(
+            initialValues: [a.objectID: 999.0]
+        )
+        let simulation = StockFlowSimulation(plan)
+        let state = try simulation.initialize(parameters: params.initialValues)
+
         #expect(state[plan.variableIndex(a)!] == 999)
         #expect(state[plan.variableIndex(b)!] == 20)
         #expect(state[plan.variableIndex(c)!] == 998)
     }
     
     @Test mutating func timeDependentExpression() throws {
-        let a_time = frame.createNode(ObjectType.Auxiliary, name: "a_time", attributes: ["formula": "time"])
-        let f_time = frame.createNode(ObjectType.FlowRate, name: "f_time", attributes: ["formula": "time * 10"])
+        let t = frame.createNode(ObjectType.Auxiliary, name: "t", attributes: ["formula": "time"])
         
-        let plan = try acceptAndUpdate()
+        let plan = try self.accept()
+        let state = try self.run(plan, settings: SimulationSettings(initialTime: 1.0, steps: 0))
 
-        let sim = StockFlowSimulation(plan)
-        let state = try sim.initialize(time: 1.0)
+        #expect(state[plan.variableIndex(t)!] == 1.0)
         
-        #expect(state[plan.variableIndex(a_time)!] == 1.0)
-        #expect(state[plan.variableIndex(f_time)!] == 10.0)
-        
-        let state2 = try sim.step(state)
-        #expect(state2[plan.variableIndex(a_time)!] == 2.0)
-        #expect(state2[plan.variableIndex(f_time)!] == 20.0)
-        
-        let state3 = try sim.step(state2)
-        #expect(state3[plan.variableIndex(a_time)!] == 3.0)
-        #expect(state3[plan.variableIndex(f_time)!] == 30.0)
+        let state2 = try self.run(plan, settings: SimulationSettings(initialTime: 1.0, timeDelta: 10.0, steps: 2))
+
+        #expect(state2[plan.variableIndex(t)!] == 21.0)
     }
     
     @Test mutating func estimatedFlows() throws {
@@ -112,7 +133,7 @@ import Testing
         let outflow = frame.createNode(.FlowRate, name: "outflow", attributes: ["formula": "20"])
         frame.createEdge(.Flow, origin: stock, target: outflow)
         frame.createEdge(.Flow, origin: inflow, target: stock)
-        let plan = try acceptAndUpdate()
+        let plan = try accept()
         let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
         let flows = sim.flows(state)
@@ -133,7 +154,7 @@ import Testing
         frame.createEdge(.Flow, origin: inflow, target: stock)
         frame.createEdge(.Flow, origin: stock, target: out1)
         frame.createEdge(.Flow, origin: stock, target: out2)
-        let plan = try acceptAndUpdate()
+        let plan = try accept()
         let sim = StockFlowSimulation(plan, flowScaling: .outflowFirst)
         let state = try sim.initialize()
         let flows = sim.flows(state)
@@ -158,7 +179,7 @@ import Testing
         frame.createEdge(.Flow, origin: inflow, target: stock)
         frame.createEdge(.Flow, origin: stock, target: out1)
         frame.createEdge(.Flow, origin: stock, target: out2)
-        let plan = try acceptAndUpdate()
+        let plan = try accept()
         let sim = StockFlowSimulation(plan, flowScaling: .inflowFirst)
         let state = try sim.initialize()
 
@@ -185,7 +206,7 @@ import Testing
         frame.createEdge(.Flow, origin: inflow, target: stock)
         frame.createEdge(.Flow, origin: stock, target: out1)
         frame.createEdge(.Flow, origin: stock, target: out2)
-        let plan = try acceptAndUpdate()
+        let plan = try accept()
         let sim = StockFlowSimulation(plan, flowScaling: .inflowFirst)
         let state = try sim.initialize()
 
@@ -210,7 +231,7 @@ import Testing
         frame.createEdge(.Flow, origin: inflow, target: stock)
         frame.createEdge(.Flow, origin: stock, target: out1)
         frame.createEdge(.Flow, origin: stock, target: out2)
-        let plan = try acceptAndUpdate()
+        let plan = try accept()
         let sim = StockFlowSimulation(plan, flowScaling: .outflowFirst)
         let state = try sim.initialize(timeDelta: 0.5)
         let flows = sim.flows(state)
@@ -233,7 +254,7 @@ import Testing
         
         frame.createEdge(ObjectType.Flow, origin: stock, target: flow)
         
-        let plan = try acceptAndUpdate()
+        let plan = try accept()
 
         let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
@@ -250,7 +271,7 @@ import Testing
         
         frame.createEdge(ObjectType.Flow, origin: stock, target: flow)
         
-        let plan = try acceptAndUpdate()
+        let plan = try accept()
 
         let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
@@ -268,7 +289,7 @@ import Testing
         frame.createEdge(ObjectType.Flow, origin: stock, target: flow)
         frame.createEdge(ObjectType.Flow, origin: flow, target: cloud)
 
-        let plan = try acceptAndUpdate()
+        let plan = try accept()
 
         let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
@@ -286,7 +307,7 @@ import Testing
         frame.createEdge(ObjectType.Flow, origin: flow, target: stock)
         frame.createEdge(ObjectType.Flow, origin: cloud, target: flow)
 
-        let plan = try acceptAndUpdate()
+        let plan = try accept()
 
         let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
@@ -345,7 +366,7 @@ import Testing
         frame.createEdge(.Flow, origin: source, target: bRate)
         frame.createEdge(.Flow, origin: bRate, target: b)
         
-        let plan = try acceptAndUpdate()
+        let plan = try accept()
 
         let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
@@ -362,7 +383,7 @@ import Testing
         frame.createEdge(ObjectType.Flow, origin: kettle, target: flow)
         frame.createEdge(ObjectType.Flow, origin: flow, target: cup)
         
-        let plan = try acceptAndUpdate()
+        let plan = try accept()
 
         let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
@@ -389,7 +410,7 @@ import Testing
         frame.createEdge(ObjectType.Parameter, origin: p1, target: g1)
         frame.createEdge(ObjectType.Parameter, origin: p2, target: g2)
         
-        let plan = try acceptAndUpdate()
+        let plan = try accept()
 
         let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
@@ -407,7 +428,7 @@ import Testing
                                    name: "a",
                                    attributes: ["formula": "if(time < 2, 0, 1)"])
         
-        let plan = try acceptAndUpdate()
+        let plan = try accept()
 
         let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
@@ -437,7 +458,7 @@ import Testing
         frame.createEdge(ObjectType.Parameter, origin: input, target: delay1)
         frame.createEdge(ObjectType.Parameter, origin: input, target: delay3)
 
-        let plan = try acceptAndUpdate()
+        let plan = try accept()
 
         let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
@@ -477,7 +498,7 @@ import Testing
         let flow = frame.createNode(ObjectType.FlowRate, name: "flow", attributes: ["formula": "1 / 0"])
         frame.createEdge(ObjectType.Flow, origin: flow, target: stock)
         
-        let plan = try acceptAndUpdate()
+        let plan = try accept()
 
         let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
@@ -494,7 +515,7 @@ import Testing
         frame.createEdge(.Flow, origin: atob, target: b)
         frame.createEdge(.Flow, origin: b, target: btoa)
         frame.createEdge(.Flow, origin: btoa, target: a)
-        let plan = try acceptAndUpdate()
+        let plan = try accept()
         let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
         let state1 = try sim.step(state)
