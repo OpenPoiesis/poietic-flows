@@ -101,7 +101,21 @@ public struct SimulationSettings: Component {
     }
 }
 
-
+extension SimulationSettings: InspectableComponent {
+    public static let attributeKeys: [String] = [
+        "initial_time", "time_delta", "end_time", "steps", "solver_type",
+    ]
+    public func attribute(forKey key: String) -> Variant? {
+        switch key {
+        case "initial_time": Variant(self.initialTime)
+        case "time_delta": Variant(self.timeDelta)
+        case "ent_time": Variant(self.endTime)
+        case "steps": Variant(Int(exactly: self.steps) ?? 0)
+        case "solver_type": Variant(self.solverType)
+        default: nil
+        }
+    }
+}
 /// Initial values of simulation variables.
 ///
 /// - SeeAlso: ``SimulationSettings``.

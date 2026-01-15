@@ -16,7 +16,7 @@ import PoieticCore
 ///
 public struct ChartResolutionSystem: System {
     
-    public init() {}
+    public init(_ world: World) { }
 
     public func update(_ world: World) throws (InternalSystemError) {
         guard let frame = world.frame else { return }
@@ -31,14 +31,5 @@ public struct ChartResolutionSystem: System {
             let chart = ChartComponent(chartObject: chartObject, series: series)
             world.setComponent(chart, for: chartObject.objectID)
         }
-    }
-    public func makeChart(_ chart: ObjectSnapshot, frame: AugmentedFrame) -> ChartComponent {
-        let edges = frame.outgoing(chart.objectID).filter {
-            $0.object.type === ObjectType.ChartSeries
-        }
-        let series = edges.map { $0.targetObject }
-        // Check that:
-        // - target is numeric value component (can be presented)
-        return ChartComponent(chartObject: chart, series: series)
     }
 }

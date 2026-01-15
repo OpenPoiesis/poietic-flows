@@ -26,10 +26,10 @@ import Testing
     
     @Test
     func empty() throws {
-        let runtime = try accept(frame)
-        let system = ComputationOrderSystem()
-        try system.update(runtime)
-        let component: SimulationOrderComponent = try #require(runtime.singleton())
+        let world = try accept(frame)
+        let system = ComputationOrderSystem(world)
+        try system.update(world)
+        let component: SimulationOrderComponent = try #require(world.singleton())
         #expect(component.objects.isEmpty)
     }
     
@@ -42,10 +42,10 @@ import Testing
         frame.createEdge(ObjectType.Parameter, origin: a, target: b)
         frame.createEdge(ObjectType.Parameter, origin: b, target: c)
         
-        let runtime = try accept(frame)
-        let system = ComputationOrderSystem()
-        try system.update(runtime)
-        let component: SimulationOrderComponent = try #require(runtime.singleton())
+        let world = try accept(frame)
+        let system = ComputationOrderSystem(world)
+        try system.update(world)
+        let component: SimulationOrderComponent = try #require(world.singleton())
 
         #expect(component.objects.count == 3)
         #expect(component.objects[0].objectID == a.objectID)
@@ -59,14 +59,14 @@ import Testing
         frame.createEdge(ObjectType.Parameter, origin: a, target: b)
         frame.createEdge(ObjectType.Parameter, origin: b, target: a)
 
-        let runtime = try accept(frame)
-        let system = ComputationOrderSystem()
-        try system.update(runtime)
-        let component: SimulationOrderComponent? = runtime.singleton()
+        let world = try accept(frame)
+        let system = ComputationOrderSystem(world)
+        try system.update(world)
+        let component: SimulationOrderComponent? = world.singleton()
         #expect(component == nil)
         
-        #expect(runtime.objectHasError(a.objectID, error: ModelError.computationCycle))
-        #expect(runtime.objectHasError(b.objectID, error: ModelError.computationCycle))
+        #expect(world.objectHasError(a.objectID, error: ModelError.computationCycle))
+        #expect(world.objectHasError(b.objectID, error: ModelError.computationCycle))
     }
     @Test func orderWithSpecialAuxiliary() throws {
         // p:Aux -> g:GF -> a:Aux
@@ -77,11 +77,11 @@ import Testing
         frame.createEdge(ObjectType.Parameter, origin: param, target: gf)
         frame.createEdge(ObjectType.Parameter, origin: gf, target: aux)
 
-        let runtime = try accept(frame)
-        let system = ComputationOrderSystem()
-        try system.update(runtime)
+        let world = try accept(frame)
+        let system = ComputationOrderSystem(world)
+        try system.update(world)
 
-        let component: SimulationOrderComponent = try #require(runtime.singleton())
+        let component: SimulationOrderComponent = try #require(world.singleton())
         #expect(component.objects.count == 3)
         #expect(component.objects[0].objectID == param.objectID)
         #expect(component.objects[1].objectID == gf.objectID)

@@ -57,7 +57,7 @@ public struct ParameterResolutionSystem: System {
         .after(ExpressionParserSystem.self), // We need variable names
     ]
 
-    public init() {}
+    public init(_ world: World) { }
 
     public func update(_ world: World) throws (InternalSystemError) {
         guard let frame = world.frame else { return }

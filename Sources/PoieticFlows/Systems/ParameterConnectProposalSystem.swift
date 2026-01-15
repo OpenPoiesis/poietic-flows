@@ -60,12 +60,12 @@ public struct ParameterProposal: Component {
 /// }
 /// ```
 
-public class ParameterConnectionProposalSystem: System {
+public struct ParameterConnectionProposalSystem: System {
     nonisolated(unsafe) public static let dependencies: [SystemDependency] = [
         .after(NameResolutionSystem.self),
         .after(ParameterResolutionSystem.self), // We need variable names
     ]
-    public required init() {}
+    public init(_ world: World) { }
     public func update(_ world: World) throws (InternalSystemError) {
         guard let lookup: SimulationNameLookupComponent = world.singleton()
         else { return }

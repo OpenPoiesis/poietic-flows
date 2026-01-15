@@ -60,8 +60,10 @@ extension TransientFrame {
         self.design = Design(metamodel: StockFlowMetamodel)
         self.frame = design.createFrame()
         self.world = World(design: design)
-        self.world.setSystems(schedule: FrameChangeSchedule.self,
-                              systems: SystemGroup(SimulationPlanningSystems))
+        self.world.addSchedule(Schedule(
+            label: FrameChangeSchedule.self,
+            systems: SimulationPlanningSystems
+        ))
     }
    
     func acceptAndUpdate() throws {

@@ -19,7 +19,7 @@ import PoieticCore
 public struct NameResolutionSystem: System {
     // Note: In the future this system might be doing fully qualified name resolution, once we get
     //       nested simulation blocks.
-    public init() {}
+    public init(_ world: World) { }
     nonisolated(unsafe) public static let dependencies: [SystemDependency] = [
         .after(ComputationOrderSystem.self),
     ]

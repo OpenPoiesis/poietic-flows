@@ -28,11 +28,11 @@ import Testing
     @Test func isolatedFlowRate() throws {
         let flowRate = frame.createNode(.FlowRate, name: "isolated")
 
-        let runtime = try accept(frame)
-        let system = FlowCollectorSystem()
-        try system.update(runtime)
+        let world = try accept(frame)
+        let system = FlowCollectorSystem(world)
+        try system.update(world)
 
-        let component: FlowRateComponent = try #require(runtime.component(for: flowRate.objectID))
+        let component: FlowRateComponent = try #require(world.component(for: flowRate.objectID))
         #expect(component.drainsStock == nil)
         #expect(component.fillsStock == nil)
         #expect(component.priority == 0)
@@ -45,11 +45,11 @@ import Testing
         let flowRate = frame.createNode(.FlowRate, name: "drain")
         frame.createEdge(.Flow, origin: stock, target: flowRate)
 
-        let runtime = try accept(frame)
-        let system = FlowCollectorSystem()
-        try system.update(runtime)
+        let world = try accept(frame)
+        let system = FlowCollectorSystem(world)
+        try system.update(world)
 
-        let component: FlowRateComponent = try #require(runtime.component(for: flowRate.objectID))
+        let component: FlowRateComponent = try #require(world.component(for: flowRate.objectID))
         #expect(component.drainsStock == stock.objectID)
         #expect(component.fillsStock == nil)
         #expect(component.priority == 0)
@@ -60,11 +60,11 @@ import Testing
         let stock = frame.createNode(.Stock, name: "stock")
         frame.createEdge(.Flow, origin: flowRate, target: stock)
 
-        let runtime = try accept(frame)
-        let system = FlowCollectorSystem()
-        try system.update(runtime)
+        let world = try accept(frame)
+        let system = FlowCollectorSystem(world)
+        try system.update(world)
 
-        let component: FlowRateComponent = try #require(runtime.component(for: flowRate.objectID))
+        let component: FlowRateComponent = try #require(world.component(for: flowRate.objectID))
         #expect(component.drainsStock == nil)
         #expect(component.fillsStock == stock.objectID)
         #expect(component.priority == 0)
@@ -78,11 +78,11 @@ import Testing
         frame.createEdge(.Flow, origin: source, target: flowRate)
         frame.createEdge(.Flow, origin: flowRate, target: target)
 
-        let runtime = try accept(frame)
-        let system = FlowCollectorSystem()
-        try system.update(runtime)
+        let world = try accept(frame)
+        let system = FlowCollectorSystem(world)
+        try system.update(world)
 
-        let component: FlowRateComponent = try #require(runtime.component(for: flowRate.objectID))
+        let component: FlowRateComponent = try #require(world.component(for: flowRate.objectID))
         #expect(component.drainsStock == source.objectID)
         #expect(component.fillsStock == target.objectID)
         #expect(component.priority == 0)
@@ -96,11 +96,11 @@ import Testing
         frame.createEdge(.Flow, origin: source, target: flowRate)
         frame.createEdge(.Flow, origin: flowRate, target: target)
 
-        let runtime = try accept(frame)
-        let system = FlowCollectorSystem()
-        try system.update(runtime)
+        let world = try accept(frame)
+        let system = FlowCollectorSystem(world)
+        try system.update(world)
 
-        let component: FlowRateComponent = try #require(runtime.component(for: flowRate.objectID))
+        let component: FlowRateComponent = try #require(world.component(for: flowRate.objectID))
         #expect(component.drainsStock == source.objectID)
         #expect(component.fillsStock == target.objectID)
         #expect(component.priority == 0)
@@ -111,11 +111,11 @@ import Testing
     @Test func flowRateWithExplicitPriority() throws {
         let flowRate = frame.createNode(.FlowRate, name: "priority_flow", attributes: ["priority": 5])
 
-        let runtime = try accept(frame)
-        let system = FlowCollectorSystem()
-        try system.update(runtime)
+        let world = try accept(frame)
+        let system = FlowCollectorSystem(world)
+        try system.update(world)
 
-        let component: FlowRateComponent = try #require(runtime.component(for: flowRate.objectID))
+        let component: FlowRateComponent = try #require(world.component(for: flowRate.objectID))
         #expect(component.priority == 5)
     }
 }
@@ -132,7 +132,7 @@ import Testing
     func accept(_ frame: TransientFrame) throws -> World {
         let stable = try design.accept(frame)
         let world = World(frame: stable)
-        let flowSystem = FlowCollectorSystem()
+        let flowSystem = FlowCollectorSystem(world)
         try flowSystem.update(world)
         return world
     }
@@ -142,12 +142,12 @@ import Testing
     @Test func isolatedStock() throws {
         let stock = frame.createNode(.Stock, name: "isolated")
         
-        let runtime = try accept(frame)
+        let world = try accept(frame)
         
-        let system = StockDependencySystem()
-        try system.update(runtime)
+        let system = StockDependencySystem(world)
+        try system.update(world)
         
-        let component: StockComponent = try #require(runtime.component(for: stock.objectID))
+        let component: StockComponent = try #require(world.component(for: stock.objectID))
         #expect(component.inflowRates.isEmpty)
         #expect(component.outflowRates.isEmpty)
         #expect(component.inflowStocks.isEmpty)
@@ -162,12 +162,12 @@ import Testing
         let stock = frame.createNode(.Stock, name: "stock")
         frame.createEdge(.Flow, origin: flowRate, target: stock)
         
-        let runtime = try accept(frame)
+        let world = try accept(frame)
         
-        let system = StockDependencySystem()
-        try system.update(runtime)
+        let system = StockDependencySystem(world)
+        try system.update(world)
         
-        let component: StockComponent = try #require(runtime.component(for: stock.objectID))
+        let component: StockComponent = try #require(world.component(for: stock.objectID))
         #expect(component.inflowRates == [flowRate.objectID])
         #expect(component.outflowRates.isEmpty)
         #expect(component.inflowStocks.isEmpty)
@@ -179,12 +179,12 @@ import Testing
         let flowRate = frame.createNode(.FlowRate, name: "outflow")
         frame.createEdge(.Flow, origin: stock, target: flowRate)
         
-        let runtime = try accept(frame)
+        let world = try accept(frame)
         
-        let system = StockDependencySystem()
-        try system.update(runtime)
+        let system = StockDependencySystem(world)
+        try system.update(world)
         
-        let component: StockComponent = try #require(runtime.component(for: stock.objectID))
+        let component: StockComponent = try #require(world.component(for: stock.objectID))
         #expect(component.inflowRates.isEmpty)
         #expect(component.outflowRates == [flowRate.objectID])
         #expect(component.inflowStocks.isEmpty)
@@ -199,12 +199,12 @@ import Testing
         frame.createEdge(.Flow, origin: inflow, target: stock)
         frame.createEdge(.Flow, origin: stock, target: outflow)
         
-        let runtime = try accept(frame)
+        let world = try accept(frame)
         
-        let system = StockDependencySystem()
-        try system.update(runtime)
+        let system = StockDependencySystem(world)
+        try system.update(world)
         
-        let component: StockComponent = try #require(runtime.component(for: stock.objectID))
+        let component: StockComponent = try #require(world.component(for: stock.objectID))
         #expect(component.inflowRates == [inflow.objectID])
         #expect(component.outflowRates == [outflow.objectID])
         #expect(component.inflowStocks.isEmpty)
@@ -225,12 +225,12 @@ import Testing
         frame.createEdge(.Flow, origin: stock, target: outflow1)
         frame.createEdge(.Flow, origin: stock, target: outflow2)
         
-        let runtime = try accept(frame)
+        let world = try accept(frame)
         
-        let system = StockDependencySystem()
-        try system.update(runtime)
+        let system = StockDependencySystem(world)
+        try system.update(world)
         
-        let component: StockComponent = try #require(runtime.component(for: stock.objectID))
+        let component: StockComponent = try #require(world.component(for: stock.objectID))
         #expect(component.inflowRates.count == 2)
         #expect(component.inflowRates.contains(inflow1.objectID))
         #expect(component.inflowRates.contains(inflow2.objectID))
@@ -249,17 +249,17 @@ import Testing
         frame.createEdge(.Flow, origin: stockA, target: flowRate)
         frame.createEdge(.Flow, origin: flowRate, target: stockB)
         
-        let runtime = try accept(frame)
+        let world = try accept(frame)
         
-        let system = StockDependencySystem()
-        try system.update(runtime)
+        let system = StockDependencySystem(world)
+        try system.update(world)
         
-        let compA: StockComponent = try #require(runtime.component(for: stockA.objectID))
+        let compA: StockComponent = try #require(world.component(for: stockA.objectID))
         #expect(compA.outflowRates == [flowRate.objectID])
         #expect(compA.outflowStocks == [stockB.objectID])
         #expect(compA.inflowStocks.isEmpty)
         
-        let compB: StockComponent = try #require(runtime.component(for: stockB.objectID))
+        let compB: StockComponent = try #require(world.component(for: stockB.objectID))
         #expect(compB.inflowRates == [flowRate.objectID])
         #expect(compB.inflowStocks == [stockA.objectID])
         #expect(compB.outflowStocks.isEmpty)
@@ -278,23 +278,23 @@ import Testing
         frame.createEdge(.Flow, origin: stockB, target: flowBC)
         frame.createEdge(.Flow, origin: flowBC, target: stockC)
         
-        let runtime = try accept(frame)
+        let world = try accept(frame)
         
-        let flowSystem = FlowCollectorSystem()
-        try flowSystem.update(runtime)
+        let flowSystem = FlowCollectorSystem(world)
+        try flowSystem.update(world)
         
-        let system = StockDependencySystem()
-        try system.update(runtime)
+        let system = StockDependencySystem(world)
+        try system.update(world)
         
-        let compA: StockComponent = try #require(runtime.component(for: stockA.objectID))
+        let compA: StockComponent = try #require(world.component(for: stockA.objectID))
         #expect(compA.inflowStocks.isEmpty)
         #expect(compA.outflowStocks == [stockB.objectID])
         
-        let compB: StockComponent = try #require(runtime.component(for: stockB.objectID))
+        let compB: StockComponent = try #require(world.component(for: stockB.objectID))
         #expect(compB.inflowStocks == [stockA.objectID])
         #expect(compB.outflowStocks == [stockC.objectID])
         
-        let compC: StockComponent = try #require(runtime.component(for: stockC.objectID))
+        let compC: StockComponent = try #require(world.component(for: stockC.objectID))
         #expect(compC.inflowStocks == [stockB.objectID])
         #expect(compC.outflowStocks.isEmpty)
     }
@@ -310,18 +310,18 @@ import Testing
         frame.createEdge(.Flow, origin: stockB, target: rateBA)
         frame.createEdge(.Flow, origin: rateBA, target: stockA)
         
-        let runtime = try accept(frame)
+        let world = try accept(frame)
         
-        let system = StockDependencySystem()
-        try system.update(runtime)
+        let system = StockDependencySystem(world)
+        try system.update(world)
         
-        let compA: StockComponent = try #require(runtime.component(for: stockA.objectID))
+        let compA: StockComponent = try #require(world.component(for: stockA.objectID))
         #expect(compA.outflowRates == [rateAB.objectID])
         #expect(compA.outflowStocks == [stockB.objectID])
         #expect(compA.inflowRates == [rateBA.objectID])
         #expect(compA.inflowStocks == [stockB.objectID])
         
-        let compB: StockComponent = try #require(runtime.component(for: stockB.objectID))
+        let compB: StockComponent = try #require(world.component(for: stockB.objectID))
         #expect(compB.inflowRates == [rateAB.objectID])
         #expect(compB.inflowStocks == [stockA.objectID])
         #expect(compB.outflowRates == [rateBA.objectID])
@@ -334,14 +334,14 @@ import Testing
         let stockNeg = frame.createNode(.Stock, name: "stock1", attributes: ["allows_negative": true])
         let stockNotNeg = frame.createNode(.Stock, name: "stock2", attributes: ["allows_negative": false])
         
-        let runtime = try accept(frame)
+        let world = try accept(frame)
         
-        let system = StockDependencySystem()
-        try system.update(runtime)
+        let system = StockDependencySystem(world)
+        try system.update(world)
         
-        let component1: StockComponent = try #require(runtime.component(for: stockNeg.objectID))
+        let component1: StockComponent = try #require(world.component(for: stockNeg.objectID))
         #expect(component1.allowsNegative == true)
-        let component2: StockComponent = try #require(runtime.component(for: stockNotNeg.objectID))
+        let component2: StockComponent = try #require(world.component(for: stockNotNeg.objectID))
         #expect(component2.allowsNegative == false)
     }
 }

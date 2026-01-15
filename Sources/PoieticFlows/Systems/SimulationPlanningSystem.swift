@@ -94,7 +94,7 @@ struct SimulationPlanningSystem: System {
     
     let builtinFunctions: [String:Function]
     
-    init() {
+    public init(_ world: World) {
         var builtinFunctions: [String:Function] = [:]
         for function in Function.AllBuiltinFunctions {
             builtinFunctions[function.name] = function

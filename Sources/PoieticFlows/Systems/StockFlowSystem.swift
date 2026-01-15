@@ -16,7 +16,7 @@ import PoieticCore
 ///
 public struct FlowCollectorSystem: System {
 
-    public init() {}
+    public init(_ world: World) { }
 
     public func update(_ world: World) throws (InternalSystemError) {
         guard let frame = world.frame else { return }
@@ -49,6 +49,8 @@ public struct FlowCollectorSystem: System {
 /// - **Forgiveness:** Flow rates without computed component are ignored.
 ///
 struct StockDependencySystem: System {
+    public init(_ world: World) { }
+
     nonisolated(unsafe) public static let dependencies: [SystemDependency] = [
         .after(FlowCollectorSystem.self)
     ]

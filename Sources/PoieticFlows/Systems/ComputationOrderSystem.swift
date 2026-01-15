@@ -18,8 +18,8 @@ import PoieticCore
 /// - **Forgiveness:** ...
 ///
 public struct ComputationOrderSystem: System {
-    public init() {}
-    
+    public init(_ world: World) { }
+
     public func update(_ world: World) throws (InternalSystemError) {
         guard let frame = world.frame
         else { return }

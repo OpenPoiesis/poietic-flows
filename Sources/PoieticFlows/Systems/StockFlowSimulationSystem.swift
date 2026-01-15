@@ -23,16 +23,19 @@ import PoieticCore
 ///
 /// - **Input:** ``SimulationPlan`` singleton – required. Optional ``SimulationSettings``
 ///             singleton and ``ScenarioParameters`` singleton.
-/// - **Output:** ``SimulationResult`` singleton.
-/// - **Forgiveness:** Nothing is proposed if the plan is missing.
+/// - **Output:** ``SimulationResult`` singleton is set when simulation was finished successfully,
+///   otherwise the simulation result will be removed or not set.
+/// - **Forgiveness:** No forgiveness.
 /// - **Issues:** No issues created.
 ///
-public class StockFlowSimulationSystem: System {
+public struct StockFlowSimulationSystem: System {
     nonisolated(unsafe) public static let dependencies: [SystemDependency] = [
         .after(SimulationPlanningSystem.self),
     ]
-    public required init() {}
+    public init(_ world: World) { }
     public func update(_ world: World) throws (InternalSystemError) {
+        world.removeSingleton(SimulationResult.self)
+
         guard let plan: SimulationPlan = world.singleton() else { return }
         let settings: SimulationSettings = world.singleton() ?? SimulationSettings()
         let params: ScenarioParameters = world.singleton() ?? ScenarioParameters()
@@ -49,9 +52,7 @@ public class StockFlowSimulationSystem: System {
                                           plan: plan,
                                           settings: settings,
                                           parameters: params)
-        // TODO: Trigger event "simulation initialised"
         result.append(currentState)
-        
         var currentTime = settings.initialTime
         var step: UInt = 1
 
@@ -62,8 +63,6 @@ public class StockFlowSimulationSystem: System {
             currentTime += settings.timeDelta
             step += 1
         }
-
-        // TODO: Trigger event "simulation finished"
 
         world.setSingleton(result)
     }
