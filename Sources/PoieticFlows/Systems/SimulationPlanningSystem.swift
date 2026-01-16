@@ -72,7 +72,27 @@ class StateVariableTable {
 
 }
 
-struct SimulationPlanningSystem: System {
+/// System that creates the final simulation plan.
+///
+/// - **Dependency:**
+///     - Must run after `ExpressionParserSystem` to parse expressions and get variable names.
+///     - Must run after ``ComputationOrderSystem`` to get the simulation order, which is one of the
+///       key simulation information.
+///     - Must run after ``NameResolutionSystem``.
+///     - Must run after ``FlowCollectorSystem`` and ``StockDependencySystem`` to collect stocks
+///       and flows.
+/// - **Input:**
+///     - ``SimulationOrderComponent``: singleton, required.
+///     - ``SimulationObjectNameComponent``: required for simulation objects, otherwise no plan is created.
+///     - ``SimulationRoleComponent``: required for simulation objects, otherwise no plan is created.
+///     - `ParsedExpressionComponent`: semantically required by formula objects.
+///     - ``ResolvedParametersComponent``: semantically required – registers an object issue if missing.
+///     - ``FlowRateComponent``: required for flow nodes.
+///     - ``StockComponent``: required for stock nodes.
+/// - **Output:** ``SimulationPlan`` singleton if there were no issues, otherwise sets object issues.
+/// - **Forgiveness:** The system is forgiving in a way that it does not fail on semantic errors.
+///
+public struct SimulationPlanningSystem: System {
     /// Error thrown during the planning process
     internal enum CompilationError: Error, Equatable {
         /// Issue with object has been detected, appended to the list of issues. The caller might
@@ -102,7 +122,7 @@ struct SimulationPlanningSystem: System {
         self.builtinFunctions = builtinFunctions
     }
     
-    func update(_ world: World) throws (InternalSystemError) {
+    public func update(_ world: World) throws (InternalSystemError) {
         guard let frame = world.frame,
               let simOrder: SimulationOrderComponent = world.singleton()
         else { return }
@@ -351,7 +371,7 @@ struct SimulationPlanningSystem: System {
         return .graphicalFunction(boundFunc)
     }
    
-    public func compileDelayNode(_ object: ObjectSnapshot,
+    func compileDelayNode(_ object: ObjectSnapshot,
                                  world: World,
                                  variables: StateVariableTable)
     throws (CompilationError) -> ComputationalRepresentation {
@@ -409,7 +429,7 @@ struct SimulationPlanningSystem: System {
         
         return .delay(compiled)
     }
-    public func compileSmoothNode(_ object: ObjectSnapshot,
+    func compileSmoothNode(_ object: ObjectSnapshot,
                                  world: World,
                                  variables: StateVariableTable)
     throws (CompilationError) -> ComputationalRepresentation {

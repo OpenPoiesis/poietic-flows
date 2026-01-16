@@ -44,16 +44,16 @@ public class StockFlowSimulation: Simulation {
     /// Create and initialise a simulation state.
     ///
     /// - Parameters:
-    ///     - step: The initial step number of the simulation.
     ///     - time: Initial time.
     ///     - timeDelta: Time delta between simulation steps.
-    ///     - override: Dictionary of values to override during initialisation.
+    ///     - parameters: Dictionary of values to override during initialisation.
     ///
     /// This function creates and computes the initial state of the computation by
-    /// evaluating all the nodes in the order of their dependency by parameter.
+    /// evaluating all the nodes in the order of their dependency by parameter. The order is provided
+    /// by the ``SimulationPlan/simulationObjects``.
     ///
-    /// When the ``override`` parameter is specified, then values for objects with given
-    /// ID will be used from the dictionary instead of being computed.
+    /// When the parameters dictionary is provided, then initial values for specified object IDs will
+    /// be taken from the dictionary instead of being computed.
     ///
     /// - Returns: Newly initialised simulation state.
     ///
@@ -223,7 +223,7 @@ public class StockFlowSimulation: Simulation {
     /// well.
     ///
     /// - Parameters:
-    ///     - index: Index of the object to be evaluated.
+    ///     - object: Object to be evaluated.
     ///     - state: simulation state within which the expression is evaluated
     ///
     /// - Throws: ``SimulationError``
@@ -329,8 +329,8 @@ public class StockFlowSimulation: Simulation {
 
     /// Evaluate graphical function
     ///
-    /// - Throws: ``SimulationError/functionError(_:_:)`` if the parameter is no convertible to
-    /// a numeric type.
+    /// - Throws: ``EvaluationError/valueError(_:)`` if the parameter is no convertible to
+    ///   a numeric type.
     ///
     public func evaluate(graphicalFunction function: BoundGraphicalFunction, with state: SimulationState) throws (EvaluationError) -> Variant {
         let parameter: Double

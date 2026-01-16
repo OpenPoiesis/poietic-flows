@@ -7,34 +7,25 @@
 
 import PoieticCore
 
-/// Core structure describing the simulation.
+/// Structure according to which a simulation is performed.
 ///
-/// Simulation plan describes how the simulation is computed, how does the simulation state look
-/// like, what is the order in which the objects are being computed.
+/// The design describes the model from user's perspective. The content and data structures needed
+/// for the modelling process – for the editing – are different than the data used by the machine to
+/// perform the simulation. Simulation plan is contains validated and derived information from the
+/// design.
 ///
-/// The main content of the simulation plan is a list of computed objects in order of computational
-/// dependency ``simulationObjects`` and a list of simulation state variables ``stateVariables``.
+/// The simulation plan is created by the ``SimulationPlanningSystems`` and typically used by the
+/// ``StockFlowSimulationSystem``. It can be also used to explain the simulation process (loosely
+/// analogous to a SQL explain plan).
 ///
-/// ## Uses by Applications
+/// The primary content of the simulation plan is:
 ///
-/// Applications running simulations can use the simulation plan to fetch various
-/// information that is to be presented to the user or that can be expected
-/// from the user as an input or as a configuration. For example:
+/// - List of simulation objects ``SimulationObject`` in order of their computational dependency: ``simulationObjects``.
+/// - Structure of the simulation state, list of state variables ``StateVariable``: ``stateVariables``.
+/// - List of stocks with inflows and outflows resolved (``BoundStock``).
+/// - List of flows with resolved stocks that the flow drains and fills (``BoundFlow``).
 ///
-/// - ``charts`` to get a list of charts that are specified in the design
-///   that the designer considers relevant to be displayed to the user.
-/// - ``valueBindings`` to get a list of controls and their targets to generate
-///   user interface for changing initial values of model-specific objects.
-/// - ``stateVariables`` and their stored property ``StateVariable/name`` to
-///   get a list of variables that can be observed.
-/// - ``variable(named:)`` to fetch detailed information about a specific
-///   variable.
-/// - ``builtins`` to get indices of builtin variables like time.
-/// - ``simulationDefaults`` for simulation run configuration.
-///
-/// - Note: The simulation plan is loosely analogous to a SQL execution plan.
-///
-/// - SeeAlso: ``Compiler/compile()``, ``StockFlowSimulation``,
+/// - SeeAlso: ``StockFlowSimulationSystem``, ``SimulationPlanningSystems``.
 ///
 public struct SimulationPlan {
     internal init(simulationObjects: [SimulationObject] = [],
@@ -52,7 +43,7 @@ public struct SimulationPlan {
         self.flows = flows
 //        self.charts = charts
         self.valueBindings = valueBindings
-        self.simulationParameters = simulationParameters
+        self.simulationSettings = simulationParameters
     }
     
     /// List of objects that are considered in the computation computed, ordered by computational
@@ -66,28 +57,24 @@ public struct SimulationPlan {
     /// Computing objects in this order assures that we have all the parameters computed when
     /// they are needed.
     ///
-    /// - SeeAlso: ``variableIndex(of:)``
+    /// The order is computed by the ``ComputationOrderSystem`` and then filled with details in the
+    /// ``SimulationPlanningSystem``.
+    ///
+    /// - SeeAlso: ``variableIndex(_:)``
     ///
     public let simulationObjects: [SimulationObject]
     
     /// List of simulation state variables.
     ///
-    /// The list of state variables contain values of builtins, values of
-    /// nodes and values of internal states.
+    /// The list of state variables contain values of simulation objects (usually nodes) their
+    /// internal states (for example previous values for delay) and built-ins.
     ///
-    /// Each node is typically assigned one state variable which represents
-    /// the node's value at given state. Some nodes might contain internal
-    /// state that might be present in multiple state variables.
+    /// Simulation object's state might be contained in multiple state variables. For example, delay
+    /// uses two state variables: list of double values for the queue and an initial value.
     ///
-    /// The internal state is typically not user-presentable and is a state
-    /// associated with stateful functions or other computation objects.
+    /// The internal state is typically not to be presented to the user.
     ///
-    /// A state of a variable is computed in the simulator with
-    /// ``StockFlowSimulation/update(_:)``.
-    ///
-    /// - SeeAlso: ``StockFlowSimulation/initialize(_:)``,
-    ///     ``StockFlowSimulation/update(objectAt:in:)``,
-    ///      ``Compiler/stateVariables``
+    /// - SeeAlso: ``SimulationPlanningSystem``.
     ///
     public let stateVariables: [StateVariable]
     
@@ -96,45 +83,30 @@ public struct SimulationPlan {
     /// The compiled builtin variable references a state variable that holds
     /// the value for the builtin variable and a kind of the builtin variable.
     ///
-    /// - SeeAlso: ``stateVariables``, ``CompiledBuiltin``, ``/PoieticCore/Variable``,
-    ///   ``FlowsMetamodel``
-    ///
     public let builtins: BoundBuiltins
     
     
-    /// Stocks ordered by the computation (parameter) dependency.
+    /// Stocks with resolved inflows and outflows, ordered by the computation dependency.
     ///
-    /// This list contains all stocks used in the simulation and adds
-    /// derived information to each stock such as its inflows and outflows.
-    ///
-    /// This property is used in computation.
-    ///
-    /// See ``SimulatedStock`` for more information.
-    ///
-    /// - SeeAlso: ``StockFlowSimulation/computeStockDelta(_:in:)``,
-    /// ``StockFlowSimulation/stockDifference(state:time:)``
+    /// - SeeAlso: ``BoundStock``, ``StockFlowSimulationSystem``.
     ///
     public let stocks: [BoundStock]
     
+    /// Flows with resolved stocks the flow drains and fills.
+    ///
+    /// - SeeAlso: ``BoundFlow``, ``StockFlowSimulationSystem``.
+    ///
     public let flows: [BoundFlow]
-    
-    /// List of charts.
-    ///
-    /// This property is not used during computation, it is provided for
-    /// consumers of the simulation state or simulation result.
-    ///
-//    public let charts: [Chart]
-    
     
     /// Compiled bindings of controls to their value objects.
     ///
     public let valueBindings: [CompiledControlBinding]
     
-    /// Collection of default values for running a simulation.
+    /// Time range, time delta and other settings to control the simulation.
     ///
-    /// See ``SimulationParameters`` for more information.
+    /// See ``SimulationSettings`` for more information.
     ///
-    public var simulationParameters: SimulationSettings?
+    public let simulationSettings: SimulationSettings?
     
     /// Get index into a list of computed variables for an object with given ID.
     ///
@@ -158,10 +130,8 @@ public struct SimulationPlan {
     /// This function is not used during computation, it is provided for
     /// consumers of the simulation state or simulation result.
     ///
-    /// The objects are computed with ``StockFlowSimulation/update(objectAt:in:)``.
-    ///
     /// - Complexity: O(n)
-    /// - SeeAlso: ``simulationObjects``, ``variableIndex(of:)``
+    /// - SeeAlso: ``simulationObjects``, ``variableIndex(_:)``
     ///
     public func simulationObject(_ id: ObjectID) -> SimulationObject? {
         return simulationObjects.first { $0.objectID == id }

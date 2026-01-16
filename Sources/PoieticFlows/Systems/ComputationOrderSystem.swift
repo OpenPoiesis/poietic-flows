@@ -9,7 +9,7 @@ import PoieticCore
 
 /// System that collects objects for computation and orders them by computational dependency.
 ///
-/// The computational dependency is determined by edges of type ``ObjectType/Parameter``.
+/// The computational dependency is determined by edges of type ``/PoieticCore/ObjectType/Parameter``.
 ///
 /// - **Input:** Simulation objects (is `Stock` || is `FlowRate` || has trait `Auxiliary`)
 /// - **Output:**

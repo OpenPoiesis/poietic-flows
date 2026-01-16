@@ -10,7 +10,7 @@ import PoieticCore
 /// System that collects object names and creates a name lookup.
 ///
 /// - **Input:** Ordered simulation objects in frame component ``SimulationOrderComponent``.
-/// - **Output:** ``NamedObjectComponent`` for objects where the name is present and not visually
+/// - **Output:** ``SimulationObjectNameComponent`` for objects where the name is present and not visually
 ///               empty; ``SimulationNameLookupComponent`` for the frame.
 /// - **Forgiveness:** Objects without name attribute set - assumed they can't be referred to by
 ///   name, but can by other means, such as an edge.

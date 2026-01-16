@@ -35,9 +35,9 @@ public protocol Simulation {
     /// Create and initialise a simulation state.
     ///
     /// - Parameters:
-    ///     - step: The initial step number of the simulation.
     ///     - time: Initial time.
     ///     - timeDelta: Time delta between simulation steps.
+    ///     - parameters: Initial parameters that override computed values.
     ///
     /// This function creates and computes the initial state of the computation by
     /// evaluating all the nodes in the order of their dependency by parameter.
