@@ -9,31 +9,6 @@ import Testing
 @testable import PoieticFlows
 @testable import PoieticCore
 
-extension CompilerError {
-    func objectHasIssue(_ objectID: ObjectID, identifier: String) -> Bool {
-        guard let issues = objectIssues(objectID) else { return false }
-        return issues.contains { $0.identifier == identifier }
-    }
-
-    func objectHasError<T:IssueProtocol>(_ objectID: ObjectID, error: T) -> Bool {
-        guard let issues = objectIssues(objectID) else { return false }
-        for issue in issues {
-            if let objectError = issue.error as? T {
-                return objectError == error
-            }
-        }
-        return false
-    }
-
-    func objectIssues(_ objectID: ObjectID) -> [PoieticCore.Issue]? {
-        switch self {
-        case .internalError(_): return nil
-        case .issues(let issues): return issues[objectID]
-        }
-        
-    }
-}
-
 extension TransientFrame {
     @discardableResult
     public func createEdge(_ type: ObjectType,

@@ -44,18 +44,18 @@ public struct FlowCollectorSystem: System {
 /// System that collects all stocks and determines their dependent relationships.
 ///
 /// - **Dependency:** Must run after ``FlowCollectorSystem`` to get the ``FlowRateComponent``.
-/// - **Input:** Nodes of type ``ObjectType/Stock``, Flow rates with ``FlowRateComponent``.
-/// - **Output:** ``StockDependencyComponent`` set to each stock.
+/// - **Input:** Nodes of type ``/PoieticCore/ObjectType/Stock``, Flow rates with ``FlowRateComponent``.
+/// - **Output:** ``StockComponent`` set to each stock.
 /// - **Forgiveness:** Flow rates without computed component are ignored.
 ///
-struct StockDependencySystem: System {
+public struct StockDependencySystem: System {
     public init(_ world: World) { }
 
     nonisolated(unsafe) public static let dependencies: [SystemDependency] = [
         .after(FlowCollectorSystem.self)
     ]
     
-    func update(_ world: World) throws (InternalSystemError) {
+    public func update(_ world: World) throws (InternalSystemError) {
         guard let frame = world.frame else { return }
 
         var filledByRate: [ObjectID:[ObjectID]] = [:] // Flows filling a stock

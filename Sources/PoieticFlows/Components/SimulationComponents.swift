@@ -44,7 +44,7 @@ public struct SimulationOrderComponent: Component {
 /// can incorporate variety of object types into the simulation. However, computational perspective
 /// we recognise only three roles of nodes: stocks, flows and auxiliaries.
 ///
-/// - **Produced by:** ``SimulationOrderDependencySystem``
+/// - **Produced by:** ``ComputationOrderSystem``
 ///
 public struct SimulationRoleComponent: Component {
     public var role: SimulationObject.Role
@@ -69,10 +69,10 @@ public struct SimulationObjectNameComponent: Component {
 /// - SeeAlso: ``StockDependencySystem``, ``FlowCollectorSystem``.
 ///
 public struct StockComponent: Component {
-    /// List of ``ObjectType/FlowRate`` nodes that fill the stock.
+    /// List of ``/PoieticCore/ObjectType/FlowRate`` nodes that fill the stock.
     public let inflowRates: [ObjectID]
 
-    /// List of ``ObjectType/FlowRate`` nodes that drain the stock.
+    /// List of ``/PoieticCore/ObjectType/FlowRate`` nodes that drain the stock.
     public let outflowRates: [ObjectID]
 
     /// List of stocks that are drained.
