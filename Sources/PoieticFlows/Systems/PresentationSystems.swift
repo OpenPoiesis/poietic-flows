@@ -10,9 +10,9 @@ import PoieticCore
 
 /// System that collects all flow rates and determines their inflows and outflows.
 ///
-/// - **Input:** Nodes of type ``ObjectType/Chart``,
-/// - **Output:** Set ``ChartsComponent`` for each chart node.
-/// - **Forgiveness:** If multiple ``ObjectType/Flow`` edges exist, only one is picked arbitrarily.
+/// - **Input:** Nodes of type ``/PoieticCore/ObjectType/Chart``,
+/// - **Output:** Set ``ChartComponent`` for each chart node.
+/// - **Forgiveness:** If multiple ``/PoieticCore/ObjectType/Flow`` edges exist, only one is picked arbitrarily.
 ///
 public struct ChartResolutionSystem: System {
     

@@ -11,7 +11,7 @@ import PoieticCore
 ///
 /// The computational dependency is determined by flow and parameters edges in the design graph.
 ///
-/// - **Produced by:** ``SimulationOrderDependencySystem``
+/// - **Produced by:** ``ComputationOrderSystem``
 ///
 public struct SimulationOrderComponent: Component {
     internal init(objects: [ObjectSnapshot] = [], stocks: [ObjectID] = [], flows: [ObjectID] = []) {

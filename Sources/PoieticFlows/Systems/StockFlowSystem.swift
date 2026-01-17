@@ -10,9 +10,9 @@ import PoieticCore
 
 /// System that collects all flow rates and determines their inflows and outflows.
 ///
-/// - **Input:** Nodes of type ``ObjectType/FlowRate``,
+/// - **Input:** Nodes of type ``/PoieticCore/ObjectType/FlowRate``,
 /// - **Output:** Set ``FlowRateComponent`` for each flow rate node.
-/// - **Forgiveness:** If multiple ``ObjectType/Flow`` edges exist, only one is picked arbitrarily.
+/// - **Forgiveness:** If multiple ``/PoieticCore/ObjectType/Flow`` edges exist, only one is picked arbitrarily.
 ///
 public struct FlowCollectorSystem: System {
 

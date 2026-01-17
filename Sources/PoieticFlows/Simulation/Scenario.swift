@@ -37,6 +37,7 @@ public struct SimulationSettings: Component {
     ///     - initialTime: Time of the initialisation state of the simulation.
     ///     - timeDelta: Advancement of time for each simulation step.
     ///     - steps: Number of steps to run.
+    ///     - solverType: Name of a solver to be used.
     ///
     public init(initialTime: Double = 0.0,
                 timeDelta: Double = 1.0,

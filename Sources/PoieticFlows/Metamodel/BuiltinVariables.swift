@@ -7,13 +7,9 @@
 
 import PoieticCore
 
-
 /// Builtin variables for the Stock and Flow simulation.
 ///
 /// The enum is used during computation to set value of a builtin variable.
-///
-/// - SeeAlso: ``CompiledBuiltinState``,
-/// ``StockFlowSimulation/initialize(_:)``,
 ///
 public enum BuiltinVariable: Equatable, CaseIterable, CustomStringConvertible {
     case time
@@ -51,7 +47,6 @@ public enum BuiltinVariable: Equatable, CaseIterable, CustomStringConvertible {
         case .step: Variable.SimulationStepVariable
         }
     }
-    
 }
 
 extension Variable {
