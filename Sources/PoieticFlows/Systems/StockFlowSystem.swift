@@ -10,15 +10,17 @@ import PoieticCore
 
 /// System that collects all flow rates and determines their inflows and outflows.
 ///
-/// - **Input:** Nodes of type ``ObjectType/FlowRate``,
+/// - **Input:** Nodes of type ``/PoieticCore/ObjectType/FlowRate``,
 /// - **Output:** Set ``FlowRateComponent`` for each flow rate node.
-/// - **Forgiveness:** If multiple ``ObjectType/Flow`` edges exist, only one is picked arbitrarily.
+/// - **Forgiveness:** If multiple ``/PoieticCore/ObjectType/Flow`` edges exist, only one is picked arbitrarily.
 ///
 public struct FlowCollectorSystem: System {
 
-    public init() {}
+    public init(_ world: World) { }
 
-    public func update(_ frame: AugmentedFrame) throws (InternalSystemError) {
+    public func update(_ world: World) throws (InternalSystemError) {
+        guard let frame = world.frame else { return }
+        
         for flow in frame.filter(type: .FlowRate) {
             // We assume the frame edge reqThank uirements were satisfied, therefore there is most one edge of each
             let fills: ObjectID? = frame.outgoing(flow.objectID).first {
@@ -34,7 +36,7 @@ public struct FlowCollectorSystem: System {
             let component = FlowRateComponent(drainsStock: drains,
                                               fillsStock: fills,
                                               priority: priority)
-            frame.setComponent(component, for: .object(flow.objectID))
+            world.setComponent(component, for: flow.objectID)
         }
     }
 }
@@ -42,16 +44,20 @@ public struct FlowCollectorSystem: System {
 /// System that collects all stocks and determines their dependent relationships.
 ///
 /// - **Dependency:** Must run after ``FlowCollectorSystem`` to get the ``FlowRateComponent``.
-/// - **Input:** Nodes of type ``ObjectType/Stock``, Flow rates with ``FlowRateComponent``.
-/// - **Output:** ``StockDependencyComponent`` set to each stock.
+/// - **Input:** Nodes of type ``/PoieticCore/ObjectType/Stock``, Flow rates with ``FlowRateComponent``.
+/// - **Output:** ``StockComponent`` set to each stock.
 /// - **Forgiveness:** Flow rates without computed component are ignored.
 ///
-struct StockDependencySystem: System {
+public struct StockDependencySystem: System {
+    public init(_ world: World) { }
+
     nonisolated(unsafe) public static let dependencies: [SystemDependency] = [
         .after(FlowCollectorSystem.self)
     ]
     
-    func update(_ frame: AugmentedFrame) throws (InternalSystemError) {
+    public func update(_ world: World) throws (InternalSystemError) {
+        guard let frame = world.frame else { return }
+
         var filledByRate: [ObjectID:[ObjectID]] = [:] // Flows filling a stock
         var drainedByRate: [ObjectID:[ObjectID]] = [:] // Flows draining a stock
 
@@ -63,7 +69,7 @@ struct StockDependencySystem: System {
         var outflowStocks: [ObjectID:[ObjectID]] = [:] // [drained stock:[to filling stock]]
 
         for flow in frame.filter(type: .FlowRate) {
-            guard let component: FlowRateComponent = frame.component(for: .object(flow.objectID)) else {
+            guard let component: FlowRateComponent = world.component(for: flow.objectID) else {
                 continue
             }
             if let stockID = component.fillsStock {
@@ -88,7 +94,7 @@ struct StockDependencySystem: System {
                 outflowStocks: outflowStocks[stock.objectID] ?? [],
                 allowsNegative: stock["allows_negative", default: false]
             )
-            frame.setComponent(component, for: .object(stock.objectID))
+            world.setComponent(component, for: stock.objectID)
         }
     }
 }

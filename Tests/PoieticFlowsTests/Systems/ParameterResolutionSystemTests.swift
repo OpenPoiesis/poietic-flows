@@ -18,9 +18,9 @@ import Testing
         self.frame = design.createFrame()
     }
 
-    func accept(_ frame: TransientFrame) throws -> AugmentedFrame {
+    func accept(_ frame: TransientFrame) throws -> World {
         let accepted = try design.accept(frame)
-        return AugmentedFrame(accepted)
+        return World(frame: accepted)
     }
 
     // MARK: - Basic Sanity Tests
@@ -29,15 +29,15 @@ import Testing
         // DesignInfo has no formula, so no ResolvedParametersComponent should be created
         let info = frame.create(.DesignInfo, structure: .unstructured)
 
-        let runtime = try accept(frame)
+        let world = try accept(frame)
 
-        let parser = ExpressionParserSystem()
-        parser.update(runtime)
+        let parser = ExpressionParserSystem(world)
+        parser.update(world)
 
-        let system = ParameterResolutionSystem()
-        try system.update(runtime)
+        let system = ParameterResolutionSystem(world)
+        try system.update(world)
 
-        let component: ResolvedParametersComponent? = runtime.component(for: .object(info.objectID))
+        let component: ResolvedParametersComponent? = world.component(for: info.objectID)
         #expect(component == nil)
     }
 
@@ -48,17 +48,17 @@ import Testing
         let aux = frame.createNode(ObjectType.Auxiliary,
                                    name: "aux", attributes: ["formula": "1 + 1"])
 
-        let runtime = try accept(frame)
+        let world = try accept(frame)
 
-        let parser = ExpressionParserSystem()
-        parser.update(runtime)
+        let parser = ExpressionParserSystem(world)
+        parser.update(world)
 
-        let system = ParameterResolutionSystem()
-        try system.update(runtime)
+        let system = ParameterResolutionSystem(world)
+        try system.update(world)
 
-        let component: ResolvedParametersComponent? = runtime.component(for: .object(aux.objectID))
+        let component: ResolvedParametersComponent? = world.component(for: aux.objectID)
         #expect(component == nil, "No component should be created when no parameters needed")
-        #expect(!runtime.objectHasIssues(aux.objectID))
+        #expect(!world.objectHasIssues(aux.objectID))
     }
 
     @Test func formulaWithCorrectParameter() throws {
@@ -68,39 +68,39 @@ import Testing
 
         frame.createEdge(.Parameter, origin: x, target: aux)
 
-        let runtime = try accept(frame)
+        let world = try accept(frame)
 
-        let parser = ExpressionParserSystem()
-        parser.update(runtime)
+        let parser = ExpressionParserSystem(world)
+        parser.update(world)
 
-        let system = ParameterResolutionSystem()
-        try system.update(runtime)
+        let system = ParameterResolutionSystem(world)
+        try system.update(world)
 
-        let component: ResolvedParametersComponent = try #require(runtime.component(for: .object(aux.objectID)))
+        let component: ResolvedParametersComponent = try #require(world.component(for: aux.objectID))
         #expect(component.incoming.count == 1)
         #expect(component.incoming["x"] == aux.objectID)
         #expect(component.missing.isEmpty == true)
         #expect(component.unused.isEmpty == true)
-        #expect(!runtime.objectHasIssues(aux.objectID))
+        #expect(!world.objectHasIssues(aux.objectID))
     }
 
     @Test func formulaWithMissingParameter() throws {
         // Formula "x" without parameter connection
         let aux = frame.createNode(ObjectType.Auxiliary, name: "consumer", attributes: ["formula": "x"])
 
-        let runtime = try accept(frame)
+        let world = try accept(frame)
 
-        let parser = ExpressionParserSystem()
-        parser.update(runtime)
+        let parser = ExpressionParserSystem(world)
+        parser.update(world)
 
-        let system = ParameterResolutionSystem()
-        try system.update(runtime)
+        let system = ParameterResolutionSystem(world)
+        try system.update(world)
 
-        let component: ResolvedParametersComponent = try #require(runtime.component(for: .object(aux.objectID)))
+        let component: ResolvedParametersComponent = try #require(world.component(for: aux.objectID))
         #expect(component.incoming.isEmpty == true)
         #expect(component.missing == ["x"])
         #expect(component.unused.isEmpty == true)
-        #expect(runtime.objectHasError(aux.objectID, error: ModelError.unknownParameter("x")))
+        #expect(world.objectHasError(aux.objectID, error: ModelError.unknownParameter("x")))
     }
 
     @Test func formulaWithUnusedParameter() throws {
@@ -112,20 +112,20 @@ import Testing
         frame.createEdge(.Parameter, origin: x, target: aux)
         frame.createEdge(.Parameter, origin: y, target: aux)
 
-        let runtime = try accept(frame)
+        let world = try accept(frame)
 
-        let parser = ExpressionParserSystem()
-        parser.update(runtime)
+        let parser = ExpressionParserSystem(world)
+        parser.update(world)
 
-        let system = ParameterResolutionSystem()
-        try system.update(runtime)
+        let system = ParameterResolutionSystem(world)
+        try system.update(world)
 
-        let component: ResolvedParametersComponent = try #require(runtime.component(for: .object(aux.objectID)))
+        let component: ResolvedParametersComponent = try #require(world.component(for: aux.objectID))
         #expect(component.incoming.count == 1)
         #expect(component.incoming["x"] == aux.objectID)
         #expect(component.missing.isEmpty == true)
         #expect(component.unused.count == 1)
-        #expect(runtime.objectHasError(aux.objectID, error: ModelError.unusedInput("y")))
+        #expect(world.objectHasError(aux.objectID, error: ModelError.unusedInput("y")))
     }
 
     @Test func formulaWithMixedParameters() throws {
@@ -139,38 +139,38 @@ import Testing
         frame.createEdge(.Parameter, origin: c, target: aux)
         // Note: b is created but not connected
 
-        let runtime = try accept(frame)
+        let world = try accept(frame)
 
-        let parser = ExpressionParserSystem()
-        parser.update(runtime)
+        let parser = ExpressionParserSystem(world)
+        parser.update(world)
 
-        let system = ParameterResolutionSystem()
-        try system.update(runtime)
+        let system = ParameterResolutionSystem(world)
+        try system.update(world)
 
-        let component: ResolvedParametersComponent = try #require(runtime.component(for: .object(aux.objectID)))
+        let component: ResolvedParametersComponent = try #require(world.component(for: aux.objectID))
         #expect(component.incoming.count == 1)
         #expect(component.incoming["a"] == aux.objectID)
         #expect(component.missing == ["b"])
         #expect(component.unused.count == 1)
-        #expect(runtime.objectHasError(aux.objectID, error: ModelError.unknownParameter("b")))
-        #expect(runtime.objectHasError(aux.objectID, error: ModelError.unusedInput("c")))
+        #expect(world.objectHasError(aux.objectID, error: ModelError.unknownParameter("b")))
+        #expect(world.objectHasError(aux.objectID, error: ModelError.unusedInput("c")))
     }
 
     @Test func formulaWithBuiltinVariable() throws {
         // Formula using "time" builtin - should not require connection
         let aux = frame.createNode(.Auxiliary, name: "timer", attributes: ["formula": "time * 2"])
 
-        let runtime = try accept(frame)
+        let world = try accept(frame)
 
-        let parser = ExpressionParserSystem()
-        parser.update(runtime)
+        let parser = ExpressionParserSystem(world)
+        parser.update(world)
 
-        let system = ParameterResolutionSystem()
-        try system.update(runtime)
+        let system = ParameterResolutionSystem(world)
+        try system.update(world)
 
-        let component: ResolvedParametersComponent? = runtime.component(for: .object(aux.objectID))
+        let component: ResolvedParametersComponent? = world.component(for: aux.objectID)
         #expect(component == nil, "No component needed when only builtins used")
-        #expect(!runtime.objectHasIssues(aux.objectID))
+        #expect(!world.objectHasIssues(aux.objectID))
     }
 
     @Test func formulaWithMultipleCorrectParameters() throws {
@@ -184,22 +184,22 @@ import Testing
         frame.createEdge(.Parameter, origin: y, target: aux)
         frame.createEdge(.Parameter, origin: z, target: aux)
 
-        let runtime = try accept(frame)
+        let world = try accept(frame)
 
-        let parser = ExpressionParserSystem()
-        parser.update(runtime)
+        let parser = ExpressionParserSystem(world)
+        parser.update(world)
 
-        let system = ParameterResolutionSystem()
-        try system.update(runtime)
+        let system = ParameterResolutionSystem(world)
+        try system.update(world)
 
-        let component: ResolvedParametersComponent = try #require(runtime.component(for: .object(aux.objectID)))
+        let component: ResolvedParametersComponent = try #require(world.component(for: aux.objectID))
         #expect(component.incoming.count == 3)
         #expect(component.incoming["x"] == aux.objectID)
         #expect(component.incoming["y"] == aux.objectID)
         #expect(component.incoming["z"] == aux.objectID)
         #expect(component.missing.isEmpty == true)
         #expect(component.unused.isEmpty == true)
-        #expect(!runtime.objectHasIssues(aux.objectID))
+        #expect(!world.objectHasIssues(aux.objectID))
     }
 
     // MARK: - Delay Tests
@@ -208,18 +208,18 @@ import Testing
         // Delay node with no parameter - should error
         let delay = frame.createNode(.Delay, name: "delayed", attributes: ["delay_duration": 5])
 
-        let runtime = try accept(frame)
+        let world = try accept(frame)
 
-        let parser = ExpressionParserSystem()
-        parser.update(runtime)
+        let parser = ExpressionParserSystem(world)
+        parser.update(world)
 
-        let system = ParameterResolutionSystem()
-        try system.update(runtime)
+        let system = ParameterResolutionSystem(world)
+        try system.update(world)
 
-        let component: ResolvedParametersComponent = try #require(runtime.component(for: .object(delay.objectID)))
+        let component: ResolvedParametersComponent = try #require(world.component(for: delay.objectID))
         #expect(component.connectedUnnamed.isEmpty == true)
         #expect(component.missingUnnamed == 1)
-        #expect(runtime.objectHasError(delay.objectID, error: ModelError.missingRequiredParameter))
+        #expect(world.objectHasError(delay.objectID, error: ModelError.missingRequiredParameter))
     }
 
     @Test func delayWithOneParameter() throws {
@@ -228,19 +228,19 @@ import Testing
         let delay = frame.createNode(.Delay, name: "delayed", attributes: ["delay_duration": 5])
         frame.createEdge(.Parameter, origin: source, target: delay)
 
-        let runtime = try accept(frame)
+        let world = try accept(frame)
 
-        let parser = ExpressionParserSystem()
-        parser.update(runtime)
+        let parser = ExpressionParserSystem(world)
+        parser.update(world)
 
-        let system = ParameterResolutionSystem()
-        try system.update(runtime)
+        let system = ParameterResolutionSystem(world)
+        try system.update(world)
 
-        let component: ResolvedParametersComponent = try #require(runtime.component(for: delay.objectID))
+        let component: ResolvedParametersComponent = try #require(world.component(for: delay.objectID))
         #expect(component.connectedUnnamed == [source.objectID])
         #expect(component.missingUnnamed == 0)
         #expect(component.unused.isEmpty == true)
-        #expect(!runtime.objectHasIssues(delay.objectID))
+        #expect(!world.objectHasIssues(delay.objectID))
     }
 
     @Test func delayWithTwoParameters() throws {
@@ -250,17 +250,18 @@ import Testing
         frame.createEdge(.Parameter, origin: source1, target: delay)
         frame.createEdge(.Parameter, origin: source2, target: delay)
 
-        let runtime = try accept(frame)
+        let world = try accept(frame)
 
-        let parser = ExpressionParserSystem()
-        parser.update(runtime)
+        let parser = ExpressionParserSystem(world)
+        parser.update(world)
 
-        let system = ParameterResolutionSystem()
-        try system.update(runtime)
+        let system = ParameterResolutionSystem(world)
+        try system.update(world)
+        try system.update(world)
 
-        let component: ResolvedParametersComponent = try #require(runtime.component(for: delay.objectID))
+        let component: ResolvedParametersComponent = try #require(world.component(for: delay.objectID))
         #expect(component.unused.count == 2)
-        #expect(runtime.objectHasError(delay.objectID, error: ModelError.tooManyParameters))
+        #expect(world.objectHasError(delay.objectID, error: ModelError.tooManyParameters))
     }
 
     // MARK: - Other auxiliaries
@@ -275,22 +276,22 @@ import Testing
         frame.createEdge(.Parameter, origin: source, target: delay)
         frame.createEdge(.Parameter, origin: source, target: smooth)
 
-        let runtime = try accept(frame)
+        let world = try accept(frame)
 
-        let parser = ExpressionParserSystem()
-        parser.update(runtime)
+        let parser = ExpressionParserSystem(world)
+        parser.update(world)
 
-        let system = ParameterResolutionSystem()
-        try system.update(runtime)
+        let system = ParameterResolutionSystem(world)
+        try system.update(world)
 
-        let gfComp: ResolvedParametersComponent = try #require(runtime.component(for: gf.objectID))
-        let delayComp: ResolvedParametersComponent = try #require(runtime.component(for: delay.objectID))
-        let smoothComp: ResolvedParametersComponent = try #require(runtime.component(for: smooth.objectID))
+        let gfComp: ResolvedParametersComponent = try #require(world.component(for: gf.objectID))
+        let delayComp: ResolvedParametersComponent = try #require(world.component(for: delay.objectID))
+        let smoothComp: ResolvedParametersComponent = try #require(world.component(for: smooth.objectID))
         #expect(gfComp.connectedUnnamed == [source.objectID])
         #expect(delayComp.connectedUnnamed == [source.objectID])
         #expect(smoothComp.connectedUnnamed == [source.objectID])
-        #expect(!runtime.objectHasIssues(gf.objectID))
-        #expect(!runtime.objectHasIssues(delay.objectID))
-        #expect(!runtime.objectHasIssues(smooth.objectID))
+        #expect(!world.objectHasIssues(gf.objectID))
+        #expect(!world.objectHasIssues(delay.objectID))
+        #expect(!world.objectHasIssues(smooth.objectID))
     }
 }

@@ -7,7 +7,7 @@
 
 import PoieticCore
 
-// TODO: Move this to Core
+// TODO: Deprecate the protocol(?)
 
 public struct SimulationError: Error {
     let objectID: ObjectID
@@ -35,16 +35,16 @@ public protocol Simulation {
     /// Create and initialise a simulation state.
     ///
     /// - Parameters:
-    ///     - step: The initial step number of the simulation.
     ///     - time: Initial time.
     ///     - timeDelta: Time delta between simulation steps.
+    ///     - parameters: Initial parameters that override computed values.
     ///
     /// This function creates and computes the initial state of the computation by
     /// evaluating all the nodes in the order of their dependency by parameter.
     ///
     /// - Returns: Newly initialised simulation state.
     ///
-    func initialize(time: Double, timeDelta: Double, override: [ObjectID:Variant])  throws (SimulationError) -> SimulationState
+    func initialize(time: Double, timeDelta: Double, parameters: [ObjectID:Variant]) throws (SimulationError) -> SimulationState
 
     /// Function that updates a simulation state.
     ///

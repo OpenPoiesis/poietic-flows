@@ -72,7 +72,27 @@ class StateVariableTable {
 
 }
 
-struct SimulationPlanningSystem: System {
+/// System that creates the final simulation plan.
+///
+/// - **Dependency:**
+///     - Must run after `ExpressionParserSystem` to parse expressions and get variable names.
+///     - Must run after ``ComputationOrderSystem`` to get the simulation order, which is one of the
+///       key simulation information.
+///     - Must run after ``NameResolutionSystem``.
+///     - Must run after ``FlowCollectorSystem`` and ``StockDependencySystem`` to collect stocks
+///       and flows.
+/// - **Input:**
+///     - ``SimulationOrderComponent``: singleton, required.
+///     - ``SimulationObjectNameComponent``: required for simulation objects, otherwise no plan is created.
+///     - ``SimulationRoleComponent``: required for simulation objects, otherwise no plan is created.
+///     - `ParsedExpressionComponent`: semantically required by formula objects.
+///     - ``ResolvedParametersComponent``: semantically required – registers an object issue if missing.
+///     - ``FlowRateComponent``: required for flow nodes.
+///     - ``StockComponent``: required for stock nodes.
+/// - **Output:** ``SimulationPlan`` singleton if there were no issues, otherwise sets object issues.
+/// - **Forgiveness:** The system is forgiving in a way that it does not fail on semantic errors.
+///
+public struct SimulationPlanningSystem: System {
     /// Error thrown during the planning process
     internal enum CompilationError: Error, Equatable {
         /// Issue with object has been detected, appended to the list of issues. The caller might
@@ -94,7 +114,7 @@ struct SimulationPlanningSystem: System {
     
     let builtinFunctions: [String:Function]
     
-    init() {
+    public init(_ world: World) {
         var builtinFunctions: [String:Function] = [:]
         for function in Function.AllBuiltinFunctions {
             builtinFunctions[function.name] = function
@@ -102,10 +122,10 @@ struct SimulationPlanningSystem: System {
         self.builtinFunctions = builtinFunctions
     }
     
-    func update(_ frame: AugmentedFrame) throws (InternalSystemError) {
-        guard let simOrder: SimulationOrderComponent = frame.component(for: .Frame) else {
-            return
-        }
+    public func update(_ world: World) throws (InternalSystemError) {
+        guard let frame = world.frame,
+              let simOrder: SimulationOrderComponent = world.singleton()
+        else { return }
         
         var hasError: Bool = false
         let variables = StateVariableTable()
@@ -116,8 +136,8 @@ struct SimulationPlanningSystem: System {
         let builtins = prepareBuiltins(variables: variables)
 
         for object in simOrder.objects {
-            guard let nameComp: SimulationObjectNameComponent = frame.component(for: .object(object.objectID)),
-                  let roleComp: SimulationRoleComponent = frame.component(for: .object(object.objectID))
+            guard let nameComp: SimulationObjectNameComponent = world.component(for: object.objectID),
+                  let roleComp: SimulationRoleComponent = world.component(for: object.objectID)
             else {
                 hasError = true
                 continue
@@ -126,7 +146,7 @@ struct SimulationPlanningSystem: System {
             let rep: ComputationalRepresentation
 
             do {
-                rep = try compileObject(object, frame: frame, variables: variables)
+                rep = try compileObject(object, world: world, variables: variables)
             }
             catch .objectIssue {
                 hasError = true
@@ -168,23 +188,23 @@ struct SimulationPlanningSystem: System {
                                       message: "Unprocessed simulation objects. Expected \(simOrder.objects.count), got \(simulationObjects.count)")
         }
 
-        let boundFlows = try bindFlows(flows, frame: frame, variables: variables)
+        let boundFlows = try bindFlows(flows, world: world, variables: variables)
 
         var flowIndices: [ObjectID:Int] = [:]
         for (index, flow) in boundFlows.enumerated() {
             flowIndices[flow.objectID] = index
         }
         
-        let boundStocks = try bindStocks(stocks, flowIndices: flowIndices, frame: frame)
+        let boundStocks = try bindStocks(stocks, flowIndices: flowIndices, world: world)
         
         // Simulation parameters
         
-        let params: SimulationParameters
+        let params: SimulationSettings
         if let simInfo = frame.first(trait: Trait.Simulation) {
-            params = SimulationParameters(fromObject: simInfo)
+            params = SimulationSettings(fromObject: simInfo)
         }
         else {
-            params = SimulationParameters()
+            params = SimulationSettings()
         }
 
         
@@ -199,7 +219,7 @@ struct SimulationPlanningSystem: System {
             simulationParameters: params
         )
         
-        frame.setComponent(plan, for: .Frame)
+        world.setSingleton(plan)
     }
     
     func prepareBuiltins(variables: StateVariableTable) -> BoundBuiltins {
@@ -223,22 +243,22 @@ struct SimulationPlanningSystem: System {
     /// - missing required attribute
     ///
     func compileObject(_ object: ObjectSnapshot,
-                       frame: AugmentedFrame,
+                       world: World,
                        variables: StateVariableTable)
     throws (CompilationError) -> ComputationalRepresentation {
         // FIXME: Precompute representation type (and add rep.type type) in sim ordering
         let rep: ComputationalRepresentation
         if object.type.hasTrait(Trait.Formula) {
-            rep = try compileFormulaObject(object, frame: frame, variables: variables)
+            rep = try compileFormulaObject(object, world: world, variables: variables)
         }
         else if object.type.hasTrait(Trait.GraphicalFunction) {
-            rep = try compileGraphicalFunctionNode(object, frame: frame, variables: variables)
+            rep = try compileGraphicalFunctionNode(object, world: world, variables: variables)
         }
         else if object.type.hasTrait(Trait.Delay) {
-            rep = try compileDelayNode(object, frame: frame, variables: variables)
+            rep = try compileDelayNode(object, world: world, variables: variables)
         }
         else if object.type.hasTrait(Trait.Smooth) {
-            rep = try compileSmoothNode(object, frame: frame, variables: variables)
+            rep = try compileSmoothNode(object, world: world, variables: variables)
         }
         else {
             // Hint: If this error happens, then check one of the the following:
@@ -273,19 +293,16 @@ struct SimulationPlanningSystem: System {
     /// - Throws: ``NodeIssueError`` if there is an issue with parameters,
     ///   function names or other variable names in the expression.
     ///
-    func compileFormulaObject(_ object: ObjectSnapshot, frame: AugmentedFrame,
+    func compileFormulaObject(_ object: ObjectSnapshot,
+                              world: World,
                               variables: StateVariableTable)
     throws (CompilationError) -> ComputationalRepresentation
     
     {
-        guard let component: ParsedExpressionComponent = frame.component(for: .object(object.objectID)) else {
+        guard let component: ParsedExpressionComponent = world.component(for: object.objectID) else {
             throw .missingComponent("ParsedExpressionComponent")
         }
-        guard let expression = component.expression else {
-            // Since the expression parsing failed, we already have an error stored in the
-            // issue list.
-            throw .objectIssue
-        }
+        let expression = component.expression
         
         // Finally bind the expression.
         //
@@ -307,7 +324,7 @@ struct SimulationPlanningSystem: System {
                 ]
             )
 
-            frame.appendIssue(issue, for: object.objectID)
+            world.appendIssue(issue, for: object.objectID)
             throw .objectIssue
         }
         
@@ -327,7 +344,7 @@ struct SimulationPlanningSystem: System {
     /// - SeeAlso: ``CompiledGraphicalFunction``, ``Solver/evaluate(objectAt:with:)``
     ///
     func compileGraphicalFunctionNode(_ object: ObjectSnapshot,
-                                      frame: AugmentedFrame,
+                                      world: World,
                                       variables: StateVariableTable)
     throws (CompilationError) -> ComputationalRepresentation {
         let points:[Point] = object["graphical_function_points", default: []]
@@ -339,7 +356,7 @@ struct SimulationPlanningSystem: System {
 
         let function = GraphicalFunction(points: points, method: method)
         
-        guard let paramComp: ResolvedParametersComponent = frame.component(for: .object(object.objectID)),
+        guard let paramComp: ResolvedParametersComponent = world.component(for: object.objectID),
               paramComp.connectedUnnamed.count == 1,
               let parameterID = paramComp.connectedUnnamed.first
         else {
@@ -354,8 +371,8 @@ struct SimulationPlanningSystem: System {
         return .graphicalFunction(boundFunc)
     }
    
-    public func compileDelayNode(_ object: ObjectSnapshot,
-                                 frame: AugmentedFrame,
+    func compileDelayNode(_ object: ObjectSnapshot,
+                                 world: World,
                                  variables: StateVariableTable)
     throws (CompilationError) -> ComputationalRepresentation {
 
@@ -372,7 +389,7 @@ struct SimulationPlanningSystem: System {
             name: "delay_init_\(object.objectID)"
         )
 
-        guard let paramComp: ResolvedParametersComponent = frame.component(for: .object(object.objectID)),
+        guard let paramComp: ResolvedParametersComponent = world.component(for: object.objectID),
               paramComp.connectedUnnamed.count == 1,
               let parameterID = paramComp.connectedUnnamed.first
         else {
@@ -396,7 +413,7 @@ struct SimulationPlanningSystem: System {
                 error: ModelError.invalidParameterType,
                 relatedObjects: [parameterID]
                 )
-            frame.appendIssue(issue, for: object.objectID)
+            world.appendIssue(issue, for: object.objectID)
             throw .objectIssue
         }
         
@@ -412,8 +429,8 @@ struct SimulationPlanningSystem: System {
         
         return .delay(compiled)
     }
-    public func compileSmoothNode(_ object: ObjectSnapshot,
-                                 frame: AugmentedFrame,
+    func compileSmoothNode(_ object: ObjectSnapshot,
+                                 world: World,
                                  variables: StateVariableTable)
     throws (CompilationError) -> ComputationalRepresentation {
         let smoothValueIndex = variables.allocate(
@@ -422,7 +439,7 @@ struct SimulationPlanningSystem: System {
             name: "smooth_value_\(object.objectID)"
         )
         
-        guard let paramComp: ResolvedParametersComponent = frame.component(for: .object(object.objectID)),
+        guard let paramComp: ResolvedParametersComponent = world.component(for: object.objectID),
               paramComp.connectedUnnamed.count == 1,
               let parameterID = paramComp.connectedUnnamed.first
         else {
@@ -443,11 +460,11 @@ struct SimulationPlanningSystem: System {
                 error: ModelError.invalidParameterType,
                 relatedObjects: [parameterID]
                 )
-            frame.appendIssue(issue, for: object.objectID)
+            world.appendIssue(issue, for: object.objectID)
             throw .objectIssue
         }
 
-        // FIXME: [REFACTORING] Require the attribute, do not assume the default here
+        // TODO: Require the attribute, do not assume the default here?
         // This requires attribute error
         let windowTime: Double = object["window_time", default: 1]
         
@@ -463,7 +480,7 @@ struct SimulationPlanningSystem: System {
 
     // MARK: - Flow
     
-    func bindFlows(_ flows: [SimulationObject], frame: AugmentedFrame, variables: StateVariableTable)
+    func bindFlows(_ flows: [SimulationObject], world: World, variables: StateVariableTable)
     throws (InternalSystemError) -> [BoundFlow] {
         var boundFlows: [BoundFlow] = []
         
@@ -473,7 +490,7 @@ struct SimulationPlanningSystem: System {
                                      name: flow.name,
                                      valueType: flow.valueType,
                                      variables: variables,
-                                     frame: frame)
+                                     world: world)
             boundFlows.append(boundFlow)
         }
         return boundFlows
@@ -484,12 +501,12 @@ struct SimulationPlanningSystem: System {
                   name: String,
                   valueType: ValueType, // rep.valueType
                   variables: StateVariableTable,
-                  frame: AugmentedFrame)
+                  world: World)
     throws (InternalSystemError) -> BoundFlow {
-        guard let component: FlowRateComponent = frame.component(for: .object(objectID)) else {
+        guard let component: FlowRateComponent = world.component(for: objectID) else {
             throw InternalSystemError(self,
                                       message: "Missing required component",
-                                      context: .frameComponent("FlowRateComponent"))
+                                      context: .singleton("FlowRateComponent"))
         }
         guard let objectIndex = variables.objectIndex[objectID] else {
             // TODO: Throw corrupted component
@@ -512,7 +529,7 @@ struct SimulationPlanningSystem: System {
     ///
     func bindStocks(_ stocks: [SimulationObject],
                     flowIndices: [ObjectID:Int], // Index into list of flows
-                    frame: AugmentedFrame)
+                    world: World)
     throws (InternalSystemError) -> [BoundStock] {
         var result: [BoundStock] = []
         
@@ -521,7 +538,7 @@ struct SimulationPlanningSystem: System {
             boundStock = try bindStock(stock.objectID,
                                        variableIndex: stock.variableIndex,
                                        flowIndices: flowIndices,
-                                       frame: frame)
+                                       world: world)
             result.append(boundStock)
         }
         return result
@@ -530,12 +547,12 @@ struct SimulationPlanningSystem: System {
     func bindStock(_ objectID: ObjectID,
                    variableIndex: Int,
                    flowIndices: [ObjectID:Int], // Index into list of flows
-                   frame: AugmentedFrame)
+                   world: World)
     throws (InternalSystemError) -> BoundStock {
-        guard let comp: StockComponent = frame.component(for: .object(objectID)) else {
+        guard let comp: StockComponent = world.component(for: objectID) else {
             throw InternalSystemError(self,
                                       message: "Missing component",
-                                      context: .frameComponent("StockDependencyComponent"))
+                                      context: .singleton("StockDependencyComponent"))
         }
 
         let inflowIndices = comp.inflowRates.compactMap { flowIndices[$0] }
@@ -546,7 +563,7 @@ struct SimulationPlanningSystem: System {
         else {
             throw InternalSystemError(self,
                                       message: "Corrupted component",
-                                      context: .frameComponent("StockDependencyComponent"))
+                                      context: .singleton("StockDependencyComponent"))
         }
         
         let boundStock = BoundStock(

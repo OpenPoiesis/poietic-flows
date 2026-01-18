@@ -9,31 +9,6 @@ import Testing
 @testable import PoieticFlows
 @testable import PoieticCore
 
-extension CompilerError {
-    func objectHasIssue(_ objectID: ObjectID, identifier: String) -> Bool {
-        guard let issues = objectIssues(objectID) else { return false }
-        return issues.contains { $0.identifier == identifier }
-    }
-
-    func objectHasError<T:IssueProtocol>(_ objectID: ObjectID, error: T) -> Bool {
-        guard let issues = objectIssues(objectID) else { return false }
-        for issue in issues {
-            if let objectError = issue.error as? T {
-                return objectError == error
-            }
-        }
-        return false
-    }
-
-    func objectIssues(_ objectID: ObjectID) -> [PoieticCore.Issue]? {
-        switch self {
-        case .internalError(_): return nil
-        case .issues(let issues): return issues[objectID]
-        }
-        
-    }
-}
-
 extension TransientFrame {
     @discardableResult
     public func createEdge(_ type: ObjectType,
@@ -54,15 +29,27 @@ extension TransientFrame {
 @Suite struct CompilerTest {
     let design: Design
     let frame: TransientFrame
+    let world: World
     
     init() throws {
         self.design = Design(metamodel: StockFlowMetamodel)
         self.frame = design.createFrame()
+        self.world = World(design: design)
+        self.world.addSchedule(Schedule(
+            label: FrameChangeSchedule.self,
+            systems: SimulationPlanningSystems
+        ))
+    }
+   
+    func acceptAndUpdate() throws {
+        let accepted = try design.accept(frame)
+        world.setFrame(accepted)
+        try world.run(schedule: FrameChangeSchedule.self)
     }
     
     @Test func noComputedVariables() throws {
-        let compiler = Compiler(frame: try design.accept(frame))
-        let plan = try compiler.compile()
+        try acceptAndUpdate()
+        let plan: SimulationPlan = try #require(world.singleton())
         
         #expect(plan.simulationObjects.count == 0)
         #expect(plan.stateVariables.count == BuiltinVariable.allCases.count)
@@ -74,8 +61,8 @@ extension TransientFrame {
         frame.createNode(ObjectType.Stock, name: "c", attributes: ["formula": "0"])
         frame.createNode(ObjectType.Note, name: "note")
         
-        let compiler = Compiler(frame: try design.accept(frame))
-        let plan = try compiler.compile()
+        try acceptAndUpdate()
+        let plan: SimulationPlan = try #require(world.singleton())
         let names = plan.simulationObjects.map { $0.name } .sorted()
         
         #expect(names == ["a", "b", "c"])
@@ -85,25 +72,19 @@ extension TransientFrame {
     @Test func badFunctionName() throws {
         let aux = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "nonexistent(10)"])
         
-        let compiler = Compiler(frame: try design.accept(frame))
-        #expect {
-            try compiler.compile()
-        } throws: {
-            guard let error = $0 as? CompilerError else {
-                Issue.record("Unexpected error: \($0)")
-                return false
-            }
-            return error.objectHasError(aux.objectID,
-                                        error: ExpressionError.unknownFunction("nonexistent"))
-        }
+        try acceptAndUpdate()
+        let plan: SimulationPlan? = world.singleton()
+        #expect(plan == nil)
+        #expect(world.objectHasError(aux.objectID,
+                                     error: ExpressionError.unknownFunction("nonexistent")))
     }
 
     @Test func singleComputedVariable() throws {
         let _ = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "if(time < 2, 0, 1)"])
         
-        let compiler = Compiler(frame: try design.accept(frame))
-        let compiled = try compiler.compile()
-        let names = compiled.simulationObjects.map { $0.name }.sorted()
+        try acceptAndUpdate()
+        let plan: SimulationPlan = try #require(world.singleton())
+        let names = plan.simulationObjects.map { $0.name }.sorted()
         
         #expect(names == ["a"])
     }
@@ -116,37 +97,30 @@ extension TransientFrame {
         frame.createEdge(ObjectType.Flow, origin: a, target: flow)
         frame.createEdge(ObjectType.Flow, origin: flow, target: b)
         
-        let compiler = Compiler(frame: try design.accept(frame))
-        let compiled = try compiler.compile()
-        
-        let aIndex = try #require(compiled.stocks.firstIndex { $0.objectID == a.objectID })
-        let bIndex = try #require(compiled.stocks.firstIndex { $0.objectID == b.objectID })
+        try acceptAndUpdate()
+        let plan: SimulationPlan = try #require(world.singleton())
 
-        #expect(compiled.stocks.count == 2)
-        #expect(compiled.stocks[aIndex].objectID == a.objectID)
-        #expect(compiled.stocks[aIndex].inflows == [])
-        #expect(compiled.stocks[aIndex].outflows == [compiled.flowIndex(flow.objectID)])
+        let aIndex = try #require(plan.stocks.firstIndex { $0.objectID == a.objectID })
+        let bIndex = try #require(plan.stocks.firstIndex { $0.objectID == b.objectID })
 
-        #expect(compiled.stocks[bIndex].objectID == b.objectID)
-        #expect(compiled.stocks[bIndex].inflows == [compiled.flowIndex(flow.objectID)])
-        #expect(compiled.stocks[bIndex].outflows == [])
+        #expect(plan.stocks.count == 2)
+        #expect(plan.stocks[aIndex].objectID == a.objectID)
+        #expect(plan.stocks[aIndex].inflows == [])
+        #expect(plan.stocks[aIndex].outflows == [plan.flowIndex(flow.objectID)])
+
+        #expect(plan.stocks[bIndex].objectID == b.objectID)
+        #expect(plan.stocks[bIndex].inflows == [plan.flowIndex(flow.objectID)])
+        #expect(plan.stocks[bIndex].outflows == [])
     }
     
     @Test func disconnectedGraphicalFunction() throws {
         let gf = frame.createNode(ObjectType.GraphicalFunction,
                                   name: "g")
 
-        let compiler = Compiler(frame: try design.accept(frame))
-        #expect {
-            try compiler.compile()
-        } throws: {
-            guard let error = $0 as? CompilerError else {
-                Issue.record("Unexpected error: \($0)")
-                return false
-            }
-
-            return error.objectHasIssue(gf.objectID, identifier: "missing_required_parameter")
-        }
+        try acceptAndUpdate()
+        let plan: SimulationPlan? = world.singleton()
+        #expect(plan == nil)
+        #expect(world.objectHasIssue(gf.objectID, identifier: "missing_required_parameter"))
     }
 
     @Test func graphicalFunctionComputation() throws {
@@ -160,9 +134,9 @@ extension TransientFrame {
         frame.createEdge(ObjectType.Parameter, origin: p, target: gf)
         frame.createEdge(ObjectType.Parameter, origin: gf, target: aux)
 
-        let compiler = Compiler(frame: try design.accept(frame))
-        let compiled = try compiler.compile()
-        let object = try #require(compiled.simulationObject(gf.objectID),
+        try acceptAndUpdate()
+        let plan: SimulationPlan = try #require(world.singleton())
+        let object = try #require(plan.simulationObject(gf.objectID),
                                   "No compiled variable for the graphical function")
 
         switch object.computation {
@@ -170,22 +144,6 @@ extension TransientFrame {
             #expect(fn.function.points == points)
         default:
             Issue.record("Graphical function compiled as: \(object.computation)")
-        }
-    }
-
-    @Test func syntaxErrorIsNotInternalError() throws {
-        let a = frame.createNode(ObjectType.Auxiliary,
-                                 name:"a",
-                                 attributes: ["formula": "10 + "])
-        let compiler = Compiler(frame: try design.accept(frame))
-        #expect {
-            try compiler.compile()
-        } throws: {
-            guard let error = $0 as? CompilerError else {
-                Issue.record("Unexpected error: \($0)")
-                return false
-            }
-            return error.objectHasIssue(a.objectID, identifier: "syntax_error")
         }
     }
 }

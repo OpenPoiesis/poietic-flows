@@ -9,7 +9,7 @@ import PoieticCore
 
 /// System that collects objects for computation and orders them by computational dependency.
 ///
-/// The computational dependency is determined by edges of type ``ObjectType/Parameter``.
+/// The computational dependency is determined by edges of type ``/PoieticCore/ObjectType/Parameter``.
 ///
 /// - **Input:** Simulation objects (is `Stock` || is `FlowRate` || has trait `Auxiliary`)
 /// - **Output:**
@@ -18,8 +18,12 @@ import PoieticCore
 /// - **Forgiveness:** ...
 ///
 public struct ComputationOrderSystem: System {
-    public init() {}
-    public func update(_ frame: AugmentedFrame) throws (InternalSystemError) {
+    public init(_ world: World) { }
+
+    public func update(_ world: World) throws (InternalSystemError) {
+        guard let frame = world.frame
+        else { return }
+        
         // TODO: Replace with SimulationObject trait once we have it (there are practical reasons we don't yet)
         // TODO: Should we use Trait.Stock? (also below)
         // Note: See roles below
@@ -30,7 +34,7 @@ public struct ComputationOrderSystem: System {
         }
 
         // 2. Sort nodes based on computation dependency.
-        let parameterEdges:[EdgeObject] = frame.edges.filter {
+        let parameterEdges:[DesignObjectEdge] = frame.edges.filter {
             $0.object.type === ObjectType.Parameter
         }
 
@@ -50,7 +54,7 @@ public struct ComputationOrderSystem: System {
                     system: self,
                     error: ModelError.computationCycle,
                     )
-                frame.appendIssue(issue, for: edge.key)
+                world.appendIssue(issue, for: edge.id)
             }
             for node in nodes {
                 let issue = Issue(
@@ -59,7 +63,7 @@ public struct ComputationOrderSystem: System {
                     system: self,
                     error: ModelError.computationCycle,
                     )
-                frame.appendIssue(issue, for: node)
+                world.appendIssue(issue, for: node)
             }
             return
         }
@@ -91,16 +95,17 @@ public struct ComputationOrderSystem: System {
                                           context: .object(object.objectID))
             }
             let comp = SimulationRoleComponent(role: role)
-            frame.setComponent(comp, for: .object(object.objectID))
+            world.setComponent(comp, for: object.objectID)
         }
         
-        let component = SimulationOrderComponent(
+        let orderComponent = SimulationOrderComponent(
             objects: snapshots,
             stocks: stocks,
             flows: flows
         )
 
-        frame.setComponent(component, for: .Frame)
+        world.setSingleton(orderComponent)
     }
+
 }
 

@@ -57,27 +57,29 @@ public struct ParameterResolutionSystem: System {
         .after(ExpressionParserSystem.self), // We need variable names
     ]
 
-    public init() {}
+    public init(_ world: World) { }
 
-    public func update(_ frame: AugmentedFrame) throws (InternalSystemError) {
-        try resolveFormulas(frame)
-        try resolveAuxiliaries(frame, type: .GraphicalFunction)
-        try resolveAuxiliaries(frame, type: .Delay)
-        try resolveAuxiliaries(frame, type: .Smooth)
+    public func update(_ world: World) throws (InternalSystemError) {
+        guard let frame = world.frame else { return }
+        try resolveFormulas(world, frame: frame)
+        try resolveAuxiliaries(world, frame: frame, type: .GraphicalFunction)
+        try resolveAuxiliaries(world, frame: frame, type: .Delay)
+        try resolveAuxiliaries(world, frame: frame, type: .Smooth)
     }
 
-    public func resolveFormulas(_ frame: AugmentedFrame) throws (InternalSystemError) {
+    public func resolveFormulas(_ world: World, frame: DesignFrame) throws (InternalSystemError) {
         let builtinNames = BuiltinVariable.allNames
 
-        for (id, exprComponent) in frame.filter(ParsedExpressionComponent.self) {
+        for (entityID, exprComponent) in world.query(ParsedExpressionComponent.self) {
+            guard let objectID = world.entityToObject(entityID) else { continue }
             let requiredParams = exprComponent.variables.subtracting(builtinNames)
-            let incomingParams = frame.incoming(id).filter {
+            let incomingParams = frame.incoming(objectID).filter {
                 $0.object.type === ObjectType.Parameter
             }
 
             var connected: [String:ObjectID] = [:]
             var missing: Set<String> = Set(requiredParams)
-            var unused: [EdgeObject] = []
+            var unused: [DesignObjectEdge] = []
             
             for edge in incomingParams {
                 let parameter = edge.originObject
@@ -104,7 +106,7 @@ public struct ParameterResolutionSystem: System {
                     error: ModelError.unknownParameter(name),
                     details: ["name": Variant(name)]
                     )
-                frame.appendIssue(issue, for: id)
+                world.appendIssue(issue, for: objectID)
             }
 
             for edge in unused {
@@ -116,15 +118,15 @@ public struct ParameterResolutionSystem: System {
                     error: ModelError.unusedInput(name),
                     details: ["name": Variant(name)]
                     )
-                frame.appendIssue(issue, for: id)
+                world.appendIssue(issue, for: objectID)
             }
 
             let paramComponent = ResolvedParametersComponent(
                 incoming: connected,
                 missing: Array(missing),
-                unused: unused.map { $0.key }
+                unused: unused.map { $0.id }
             )
-            frame.setComponent(paramComponent, for: .object(id))
+            world.setComponent(paramComponent, for: entityID)
         }
     }
     /// Resolve connections of single-parameter auxiliaries such as graphical function,
@@ -132,7 +134,7 @@ public struct ParameterResolutionSystem: System {
     ///
     /// - Requirement: The auxiliary should have one incoming parameter.
     ///
-    public func resolveAuxiliaries(_ frame: AugmentedFrame, type: ObjectType)
+    public func resolveAuxiliaries(_ world: World, frame: DesignFrame, type: ObjectType)
     throws (InternalSystemError) {
         for object in frame.filter(type: type) {
             let incomingParams = frame.incoming(object.objectID).filter {
@@ -147,7 +149,7 @@ public struct ParameterResolutionSystem: System {
                     system: self,
                     error: ModelError.missingRequiredParameter,
                 )
-                frame.appendIssue(issue, for: object.objectID)
+                world.appendIssue(issue, for: object.objectID)
 
                 component = ResolvedParametersComponent(
                     missingUnnamed: 1
@@ -160,7 +162,7 @@ public struct ParameterResolutionSystem: System {
                     system: self,
                     error: ModelError.tooManyParameters,
                 )
-                frame.appendIssue(issue, for: object.objectID)
+                world.appendIssue(issue, for: object.objectID)
 
                 component = ResolvedParametersComponent(
                     unused: incomingParams.map { $0.origin }
@@ -172,7 +174,7 @@ public struct ParameterResolutionSystem: System {
                 )
             }
 
-            frame.setComponent(component, for: .object(object.objectID))
+            world.setComponent(component, for: object.objectID)
 
             
         }

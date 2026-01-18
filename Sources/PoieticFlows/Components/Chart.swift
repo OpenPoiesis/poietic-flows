@@ -63,3 +63,20 @@ public struct ChartComponent: Component {
     public let series: [ObjectSnapshot]
 }
 
+extension ChartComponent: InspectableComponent {
+    public static let attributeKeys: [String] = ["name"]
+    public func attribute(forKey key: String) -> Variant? {
+        switch key {
+        case "name": name.map { Variant($0) }
+        default: nil
+        }
+    }
+    
+    public static let toManyDesignReferenceKeys: [String] = ["series"]
+    public func designReferences(forKey key: String) -> [DesignEntityID] {
+        switch key {
+        case "series": series.map {$0.objectID}
+        default: []
+        }
+    }
+}

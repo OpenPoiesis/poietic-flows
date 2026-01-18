@@ -10,7 +10,7 @@ import PoieticCore
 /// System that collects object names and creates a name lookup.
 ///
 /// - **Input:** Ordered simulation objects in frame component ``SimulationOrderComponent``.
-/// - **Output:** ``NamedObjectComponent`` for objects where the name is present and not visually
+/// - **Output:** ``SimulationObjectNameComponent`` for objects where the name is present and not visually
 ///               empty; ``SimulationNameLookupComponent`` for the frame.
 /// - **Forgiveness:** Objects without name attribute set - assumed they can't be referred to by
 ///   name, but can by other means, such as an edge.
@@ -19,13 +19,13 @@ import PoieticCore
 public struct NameResolutionSystem: System {
     // Note: In the future this system might be doing fully qualified name resolution, once we get
     //       nested simulation blocks.
-    public init() {}
+    public init(_ world: World) { }
     nonisolated(unsafe) public static let dependencies: [SystemDependency] = [
         .after(ComputationOrderSystem.self),
     ]
 
-    public func update(_ frame: AugmentedFrame) throws (InternalSystemError) {
-        guard let order: SimulationOrderComponent = frame.component(for: .Frame) else {
+    public func update(_ world: World) throws (InternalSystemError) {
+        guard let order: SimulationOrderComponent = world.singleton() else {
             return
         }
         
@@ -42,7 +42,7 @@ public struct NameResolutionSystem: System {
                     system: self,
                     error: ModelError.emptyName,
                     )
-                frame.appendIssue(issue, for: object.objectID)
+                world.appendIssue(issue, for: object.objectID)
                 continue
             }
             namedObjects[trimmedName, default: []].append(object.objectID)
@@ -59,18 +59,19 @@ public struct NameResolutionSystem: System {
                     )
                 // TODO: Add related nodes
                 for id in ids {
-                    frame.appendIssue(issue, for: id)
+                    world.appendIssue(issue, for: id)
                 }
                 continue
             }
             nameLookup[name] = ids[0]
             let comp = SimulationObjectNameComponent(name: name)
-            frame.setComponent(comp, for: .object(ids[0]))
+            world.setComponent(comp, for: ids[0])
         }
 
         let component = SimulationNameLookupComponent(
             namedObjects: nameLookup
         )
-        frame.setComponent(component, for: .Frame)
+        world.setSingleton(component)
     }
+
 }
