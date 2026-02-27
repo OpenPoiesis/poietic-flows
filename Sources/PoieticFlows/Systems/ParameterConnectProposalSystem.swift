@@ -75,8 +75,8 @@ public struct ParameterConnectionProposalSystem: System {
         var toRemove: [ObjectID] = []
         var toAdd: [ParameterProposal.EdgeProposal] = []
         
-        for (entityID, resolution) in world.query(ResolvedParametersComponent.self) {
-            guard let objectID = world.entityToObject(entityID)
+        for (entity, resolution) in world.query(ResolvedParametersComponent.self) {
+            guard let objectID = entity.objectID
             else { continue }
             if let selection, !selection.contains(objectID) { continue }
 

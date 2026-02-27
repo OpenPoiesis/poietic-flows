@@ -24,57 +24,17 @@ public struct ComputationOrderSystem: System {
         guard let frame = world.frame
         else { return }
         
-        // TODO: Replace with SimulationObject trait once we have it (there are practical reasons we don't yet)
-        // TODO: Should we use Trait.Stock? (also below)
-        // Note: See roles below
-        let unordered: [ObjectSnapshot] = frame.filter {
-            ($0.type === ObjectType.Stock
-                || $0.type === ObjectType.FlowRate
-                || $0.type.hasTrait(Trait.Auxiliary))
-        }
-
-        // 2. Sort nodes based on computation dependency.
-        let parameterEdges:[DesignObjectEdge] = frame.edges.filter {
-            $0.object.type === ObjectType.Parameter
-        }
-
-        let parameterDependency = Graph(nodes: unordered.map { $0.objectID },
-                                        edges: parameterEdges)
-        
-        guard let ordered = parameterDependency.topologicalSort() else {
-            let cycleEdges = parameterDependency.cycles()
-            var nodes: Set<ObjectID> = Set()
-            
-            for edge in cycleEdges {
-                nodes.insert(edge.origin)
-                nodes.insert(edge.target)
-                let issue = Issue(
-                    identifier: "computation_cycle",
-                    severity: .error,
-                    system: self,
-                    error: ModelError.computationCycle,
-                    )
-                world.appendIssue(issue, for: edge.id)
-            }
-            for node in nodes {
-                let issue = Issue(
-                    identifier: "computation_cycle",
-                    severity: .error,
-                    system: self,
-                    error: ModelError.computationCycle,
-                    )
-                world.appendIssue(issue, for: node)
-            }
+        guard let snapshots = orderedSnapshots(world: world, frame: frame) else {
             return
         }
-        let snapshots = ordered.compactMap { frame[$0] }
 
         var stocks: [ObjectID] = []
         var flows: [ObjectID] = []
         
         // Determine simulation role: stock, flow, aux
-        // Note: See filter at the beginning of the method
+        // Note: See also filter in orderedSnapshots
         for object in snapshots {
+            guard let entity = world.entity(object.objectID) else { continue  /* Error? */ }
             let role: SimulationObject.Role
 
             // TODO: Should we use Trait.Stock?
@@ -95,7 +55,7 @@ public struct ComputationOrderSystem: System {
                                           context: .object(object.objectID))
             }
             let comp = SimulationRoleComponent(role: role)
-            world.setComponent(comp, for: object.objectID)
+            entity.setComponent(comp)
         }
         
         let orderComponent = SimulationOrderComponent(
@@ -105,6 +65,57 @@ public struct ComputationOrderSystem: System {
         )
 
         world.setSingleton(orderComponent)
+    }
+    
+    func orderedSnapshots(world: World, frame: DesignFrame) -> [ObjectSnapshot]? {
+        // TODO: Replace with SimulationObject trait once we have it (there are practical reasons we don't yet)
+        // TODO: Should we use Trait.Stock?
+        // Note: See also roles in update() method
+        let unordered: [ObjectSnapshot] = frame.filter {
+            ($0.type === ObjectType.Stock
+                || $0.type === ObjectType.FlowRate
+                || $0.type.hasTrait(Trait.Auxiliary))
+        }
+
+        // 2. Sort nodes based on computation dependency.
+        let parameterEdges:[DesignObjectEdge] = frame.edges.filter {
+            $0.object.type === ObjectType.Parameter
+        }
+
+        let parameterDependency = Graph(nodes: unordered.map { $0.objectID },
+                                        edges: parameterEdges)
+        
+        guard let ordered = parameterDependency.topologicalSort() else {
+            let cycleEdges = parameterDependency.cycles()
+            var nodes: Set<ObjectID> = Set()
+            
+            for edge in cycleEdges {
+                guard let entity = world.entity(edge.id) else { continue }
+                nodes.insert(edge.origin)
+                nodes.insert(edge.target)
+                let issue = Issue(
+                    identifier: "computation_cycle",
+                    severity: .error,
+                    system: self,
+                    error: ModelError.computationCycle,
+                    )
+                entity.appendIssue(issue)
+            }
+            for node in nodes {
+                guard let entity = world.entity(node) else { continue }
+                let issue = Issue(
+                    identifier: "computation_cycle",
+                    severity: .error,
+                    system: self,
+                    error: ModelError.computationCycle,
+                    )
+                entity.appendIssue(issue)
+            }
+            return nil
+        }
+
+        let snapshots = ordered.compactMap { frame[$0] }
+        return snapshots
     }
 
 }

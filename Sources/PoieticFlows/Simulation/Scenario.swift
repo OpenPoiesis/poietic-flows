@@ -79,16 +79,16 @@ public struct SimulationSettings: Component {
         let timeDelta = object["time_delta", default: 0.0]
         let solverType = object["solver_type", default: "euler"]
 
-        if let endTime: Double = object["end_time"] {
-            self.init(initialTime: initialTime,
-                      timeDelta: timeDelta,
-                      endTime: endTime,
-                      solverType: solverType)
-        }
-        else if let steps: Int = object["steps"], steps >= 0 {
+        if let steps: Int = object["steps"], steps >= 0 {
             self.init(initialTime: initialTime,
                       timeDelta: timeDelta,
                       steps: UInt(steps),
+                      solverType: solverType)
+        }
+        else if let endTime: Double = object["end_time"] {
+            self.init(initialTime: initialTime,
+                      timeDelta: timeDelta,
+                      endTime: endTime,
                       solverType: solverType)
         }
         else {

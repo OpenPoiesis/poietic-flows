@@ -71,3 +71,23 @@ public class RegularTimeSeries: Component /*: Sequence, RandomAccessCollection? 
         return result
     }
 }
+
+extension RegularTimeSeries: InspectableComponent {
+    public static let attributeKeys: [String] = [
+        "time_start", "time_end", "time_delta", "data_min", "data_max",
+        "values", "points", "count"
+    ]
+    public func attribute(forKey key: String) -> Variant? {
+        switch key {
+        case "time_start": Variant(self.startTime)
+        case "time_end": Variant(self.endTime)
+        case "time_delta": Variant(self.timeDelta)
+        case "data_min": Variant(self.dataMin)
+        case "data_max": Variant(self.dataMax)
+        case "values": Variant(self.data)
+        case "points": Variant(self.points())
+        case "count": Variant(self.data.count)
+        default: nil
+        }
+    }
+}

@@ -33,7 +33,9 @@ public struct NameResolutionSystem: System {
         var nameLookup: [String:ObjectID] = [:]
 
         for object in order.objects {
-            guard let name = object.name else { continue }
+            guard let name = object.name,
+                  let entity = world.entity(object.objectID)
+            else { continue }
             let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
             if trimmedName.isEmpty {
                 let issue = Issue(
@@ -42,15 +44,22 @@ public struct NameResolutionSystem: System {
                     system: self,
                     error: ModelError.emptyName,
                     )
-                world.appendIssue(issue, for: object.objectID)
+                entity.appendIssue(issue)
                 continue
             }
             namedObjects[trimmedName, default: []].append(object.objectID)
         }
-        
+       
         // 2. Find duplicates
-        for (name, ids) in namedObjects where ids.count >= 1 {
-            guard ids.count == 1 else {
+        for (name, ids) in namedObjects {
+            if ids.count == 1 {
+                let onlyID = ids[0]
+                nameLookup[name] = onlyID
+                guard let entity = world.entity(onlyID) else { continue }
+                let comp = SimulationObjectNameComponent(name: name)
+                entity.setComponent(comp)
+            }
+            else if ids.count > 1 {
                 let issue = Issue(
                     identifier: "duplicate_name",
                     severity: .error,
@@ -58,20 +67,12 @@ public struct NameResolutionSystem: System {
                     error: ModelError.duplicateName(name),
                     )
                 // TODO: Add related nodes
-                for id in ids {
-                    world.appendIssue(issue, for: id)
+                for entity in world.query(ids) {
+                    entity.appendIssue(issue)
                 }
-                continue
             }
-            nameLookup[name] = ids[0]
-            let comp = SimulationObjectNameComponent(name: name)
-            world.setComponent(comp, for: ids[0])
         }
-
-        let component = SimulationNameLookupComponent(
-            namedObjects: nameLookup
-        )
+        let component = SimulationNameLookupComponent(namedObjects: nameLookup)
         world.setSingleton(component)
     }
-
 }

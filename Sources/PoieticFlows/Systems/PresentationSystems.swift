@@ -23,13 +23,14 @@ public struct ChartResolutionSystem: System {
         let chartObjects = frame.filter { $0.type === ObjectType.Chart }
 
         for chartObject in chartObjects {
+            guard let entity = world.entity(chartObject.objectID) else { continue }
             let seriesEdges = frame.outgoing(chartObject.objectID).filter {
                 $0.object.type === ObjectType.ChartSeries
             }
             
             let series = seriesEdges.map { $0.targetObject }
             let chart = ChartComponent(chartObject: chartObject, series: series)
-            world.setComponent(chart, for: chartObject.objectID)
+            entity.setComponent(chart)
         }
     }
 }

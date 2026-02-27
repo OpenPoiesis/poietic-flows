@@ -20,14 +20,11 @@ class StateVariableTable {
         let index = self.allocate(content: .builtin(builtin),
                                   valueType: builtin.valueType,
                                   name: builtin.name)
-        
         return index
     }
 
     @discardableResult
-    func allocate(content: StateVariable.Content,
-                                  valueType: ValueType,
-                                  name: String) -> Int
+    func allocate(content: StateVariable.Content, valueType: ValueType, name: String) -> Int
     {
         let index = variables.count
         let variable = StateVariable(index: index,
@@ -136,8 +133,9 @@ public struct SimulationPlanningSystem: System {
         let builtins = prepareBuiltins(variables: variables)
 
         for object in simOrder.objects {
-            guard let nameComp: SimulationObjectNameComponent = world.component(for: object.objectID),
-                  let roleComp: SimulationRoleComponent = world.component(for: object.objectID)
+            guard let entity = world.entity(object.objectID),
+                  let nameComp: SimulationObjectNameComponent = entity.component(),
+                  let roleComp: SimulationRoleComponent = entity.component()
             else {
                 hasError = true
                 continue
@@ -146,7 +144,7 @@ public struct SimulationPlanningSystem: System {
             let rep: ComputationalRepresentation
 
             do {
-                rep = try compileObject(object, world: world, variables: variables)
+                rep = try compileObject(object, entity: entity, variables: variables)
             }
             catch .objectIssue {
                 hasError = true
@@ -169,7 +167,6 @@ public struct SimulationPlanningSystem: System {
                                        valueType: rep.valueType,
                                        name: nameComp.name)
        
-            
             simulationObjects.append(sim)
             
             switch roleComp.role {
@@ -198,7 +195,6 @@ public struct SimulationPlanningSystem: System {
         let boundStocks = try bindStocks(stocks, flowIndices: flowIndices, world: world)
         
         // Simulation parameters
-        
         let params: SimulationSettings
         if let simInfo = frame.first(trait: Trait.Simulation) {
             params = SimulationSettings(fromObject: simInfo)
@@ -214,7 +210,6 @@ public struct SimulationPlanningSystem: System {
             builtins: builtins,
             stocks: boundStocks,
             flows: boundFlows,
-//            charts: [], // FIXME: Relic from the past, remove
             valueBindings: [], // FIXME: Relic from the past, remove
             simulationParameters: params
         )
@@ -223,7 +218,6 @@ public struct SimulationPlanningSystem: System {
     }
     
     func prepareBuiltins(variables: StateVariableTable) -> BoundBuiltins {
-        // 1. Builtins
         let builtins = BoundBuiltins(
             step: variables.allocate(builtin: .step),
             time: variables.allocate(builtin: .time),
@@ -235,38 +229,33 @@ public struct SimulationPlanningSystem: System {
     
     /// Compile an object into its computational representation.
     ///
-    /// - Returns: Computational representation of the object or `nil`.
-    ///
-    /// nil result if:
-    ///
-    /// - missing required component
-    /// - missing required attribute
+    /// - Returns: Computational representation of the object.
+    /// - Throws: ``CompilationError`` when missing required component or an attribute.
     ///
     func compileObject(_ object: ObjectSnapshot,
-                       world: World,
+                       entity: RuntimeEntity,
                        variables: StateVariableTable)
     throws (CompilationError) -> ComputationalRepresentation {
         // FIXME: Precompute representation type (and add rep.type type) in sim ordering
         let rep: ComputationalRepresentation
         if object.type.hasTrait(Trait.Formula) {
-            rep = try compileFormulaObject(object, world: world, variables: variables)
+            rep = try compileFormulaObject(object, entity: entity, variables: variables)
         }
         else if object.type.hasTrait(Trait.GraphicalFunction) {
-            rep = try compileGraphicalFunctionNode(object, world: world, variables: variables)
+            rep = try compileGraphicalFunctionNode(object, entity: entity, variables: variables)
         }
         else if object.type.hasTrait(Trait.Delay) {
-            rep = try compileDelayNode(object, world: world, variables: variables)
+            rep = try compileDelayNode(object, entity: entity, variables: variables)
         }
         else if object.type.hasTrait(Trait.Smooth) {
-            rep = try compileSmoothNode(object, world: world, variables: variables)
+            rep = try compileSmoothNode(object, entity: entity, variables: variables)
         }
         else {
-            // Hint: If this error happens, then check one of the the following:
-            // - the condition in the stock-flows view method returning
-            //   simulation nodes
-            // - whether the object design constraints work properly
-            // - whether the object design metamodel is stock-flows metamodel
-            //   and that it has necessary components
+            // HINT: If this error happens, then check one of the the following:
+            // - ComputationOrderSystem and SimulationOrderComponent
+            // - whether the design object constraints work properly
+            // - whether the design metamodel is stock-flows metamodel
+            //   and that it has necessary traits
             //
             fatalError("Unknown simulation object type \(object.type.name), object: \(object.objectID)")
         }
@@ -294,12 +283,11 @@ public struct SimulationPlanningSystem: System {
     ///   function names or other variable names in the expression.
     ///
     func compileFormulaObject(_ object: ObjectSnapshot,
-                              world: World,
+                              entity: RuntimeEntity,
                               variables: StateVariableTable)
     throws (CompilationError) -> ComputationalRepresentation
-    
     {
-        guard let component: ParsedExpressionComponent = world.component(for: object.objectID) else {
+        guard let component: ParsedExpressionComponent = entity.component() else {
             throw .missingComponent("ParsedExpressionComponent")
         }
         let expression = component.expression
@@ -324,7 +312,7 @@ public struct SimulationPlanningSystem: System {
                 ]
             )
 
-            world.appendIssue(issue, for: object.objectID)
+            entity.appendIssue(issue)
             throw .objectIssue
         }
         
@@ -344,7 +332,7 @@ public struct SimulationPlanningSystem: System {
     /// - SeeAlso: ``CompiledGraphicalFunction``, ``Solver/evaluate(objectAt:with:)``
     ///
     func compileGraphicalFunctionNode(_ object: ObjectSnapshot,
-                                      world: World,
+                                      entity: RuntimeEntity,
                                       variables: StateVariableTable)
     throws (CompilationError) -> ComputationalRepresentation {
         let points:[Point] = object["graphical_function_points", default: []]
@@ -356,12 +344,10 @@ public struct SimulationPlanningSystem: System {
 
         let function = GraphicalFunction(points: points, method: method)
         
-        guard let paramComp: ResolvedParametersComponent = world.component(for: object.objectID),
+        guard let paramComp: ResolvedParametersComponent = entity.component(),
               paramComp.connectedUnnamed.count == 1,
               let parameterID = paramComp.connectedUnnamed.first
-        else {
-            throw .objectIssue
-        }
+        else { throw .objectIssue }
 
         guard let paramIndex = variables.index(parameterID) else {
             throw .corruptedState("Invalid variable index)")
@@ -372,8 +358,8 @@ public struct SimulationPlanningSystem: System {
     }
    
     func compileDelayNode(_ object: ObjectSnapshot,
-                                 world: World,
-                                 variables: StateVariableTable)
+                          entity: RuntimeEntity,
+                          variables: StateVariableTable)
     throws (CompilationError) -> ComputationalRepresentation {
 
         // TODO: What to do if the input is not numeric or not an atom?
@@ -389,12 +375,10 @@ public struct SimulationPlanningSystem: System {
             name: "delay_init_\(object.objectID)"
         )
 
-        guard let paramComp: ResolvedParametersComponent = world.component(for: object.objectID),
+        guard let paramComp: ResolvedParametersComponent = entity.component(),
               paramComp.connectedUnnamed.count == 1,
               let parameterID = paramComp.connectedUnnamed.first
-        else {
-            throw .objectIssue
-        }
+        else { throw .objectIssue }
 
         guard let parameterIndex = variables.index(parameterID) else {
             throw .corruptedState("Invalid variable index)")
@@ -413,7 +397,7 @@ public struct SimulationPlanningSystem: System {
                 error: ModelError.invalidParameterType,
                 relatedObjects: [parameterID]
                 )
-            world.appendIssue(issue, for: object.objectID)
+            entity.appendIssue(issue)
             throw .objectIssue
         }
         
@@ -430,8 +414,8 @@ public struct SimulationPlanningSystem: System {
         return .delay(compiled)
     }
     func compileSmoothNode(_ object: ObjectSnapshot,
-                                 world: World,
-                                 variables: StateVariableTable)
+                           entity: RuntimeEntity,
+                           variables: StateVariableTable)
     throws (CompilationError) -> ComputationalRepresentation {
         let smoothValueIndex = variables.allocate(
             content: .internalState(object.objectID),
@@ -439,12 +423,10 @@ public struct SimulationPlanningSystem: System {
             name: "smooth_value_\(object.objectID)"
         )
         
-        guard let paramComp: ResolvedParametersComponent = world.component(for: object.objectID),
+        guard let paramComp: ResolvedParametersComponent = entity.component(),
               paramComp.connectedUnnamed.count == 1,
               let parameterID = paramComp.connectedUnnamed.first
-        else {
-            throw .objectIssue
-        }
+        else { throw .objectIssue }
 
         guard let parameterIndex = variables.index(parameterID) else {
             throw .corruptedState("Invalid variable index)")
@@ -460,7 +442,7 @@ public struct SimulationPlanningSystem: System {
                 error: ModelError.invalidParameterType,
                 relatedObjects: [parameterID]
                 )
-            world.appendIssue(issue, for: object.objectID)
+            entity.appendIssue(issue)
             throw .objectIssue
         }
 
@@ -485,44 +467,32 @@ public struct SimulationPlanningSystem: System {
         var boundFlows: [BoundFlow] = []
         
         for flow in flows {
-            let boundFlow: BoundFlow
-            boundFlow = try bindFlow(flow.objectID,
-                                     name: flow.name,
-                                     valueType: flow.valueType,
-                                     variables: variables,
-                                     world: world)
+            guard let entity = world.entity(flow.objectID),
+                  let component: FlowRateComponent = entity.component()
+            else {
+                throw InternalSystemError(self,
+                                          message: "Malformed flow rate simulation object",
+                                          context: .singleton("FlowRateComponent"))
+            }
+            guard let objectIndex = variables.objectIndex[flow.objectID] else {
+                // TODO: Throw corrupted component
+                preconditionFailure()
+            }
+            let actualIndex = variables.allocate(content: .adjustedResult(flow.objectID),
+                                                 valueType: flow.valueType,
+                                                 name:  flow.name)
+
+            let boundFlow = BoundFlow(objectID: flow.objectID,
+                                      estimatedValueIndex: objectIndex,
+                                      adjustedValueIndex: actualIndex,
+                                      priority: component.priority,
+                                      drains: component.drainsStock,
+                                      fills: component.fillsStock)
+
             boundFlows.append(boundFlow)
         }
         return boundFlows
 
-    }
-    
-    func bindFlow(_ objectID: ObjectID,
-                  name: String,
-                  valueType: ValueType, // rep.valueType
-                  variables: StateVariableTable,
-                  world: World)
-    throws (InternalSystemError) -> BoundFlow {
-        guard let component: FlowRateComponent = world.component(for: objectID) else {
-            throw InternalSystemError(self,
-                                      message: "Missing required component",
-                                      context: .singleton("FlowRateComponent"))
-        }
-        guard let objectIndex = variables.objectIndex[objectID] else {
-            // TODO: Throw corrupted component
-            preconditionFailure()
-        }
-        let actualIndex = variables.allocate(content: .adjustedResult(objectID),
-                                              valueType: valueType,
-                                              name:  name)
-        let boundFlow = BoundFlow(objectID: objectID,
-                                  estimatedValueIndex: objectIndex,
-                                  adjustedValueIndex: actualIndex,
-                                  priority: component.priority,
-                                  drains: component.drainsStock,
-                                  fills: component.fillsStock)
-
-        return boundFlow
     }
     
     /// Bind stocks with their variables.
@@ -534,48 +504,36 @@ public struct SimulationPlanningSystem: System {
         var result: [BoundStock] = []
         
         for stock in stocks {
-            let boundStock: BoundStock
-            boundStock = try bindStock(stock.objectID,
-                                       variableIndex: stock.variableIndex,
-                                       flowIndices: flowIndices,
-                                       world: world)
+            guard let entity = world.entity(stock.objectID),
+                  let component: StockComponent = entity.component()
+            else {
+                throw InternalSystemError(self,
+                                          message: "Malformed stock simulation object",
+                                          context: .singleton("FlowRateComponent"))
+            }
+
+            let inflowIndices = component.inflowRates.compactMap { flowIndices[$0] }
+            let outflowIndices = component.outflowRates.compactMap { flowIndices[$0] }
+
+            guard inflowIndices.count == component.inflowRates.count &&
+                    outflowIndices.count == component.outflowRates.count
+            else {
+                throw InternalSystemError(self,
+                                          message: "Corrupted component",
+                                          context: .singleton("StockDependencyComponent"))
+            }
+            
+            let boundStock = BoundStock(
+                objectID: stock.objectID,
+                variableIndex: stock.variableIndex,
+                allowsNegative: component.allowsNegative,
+                inflows: inflowIndices,
+                outflows: outflowIndices
+            )
+
             result.append(boundStock)
         }
         return result
-    }
-    
-    func bindStock(_ objectID: ObjectID,
-                   variableIndex: Int,
-                   flowIndices: [ObjectID:Int], // Index into list of flows
-                   world: World)
-    throws (InternalSystemError) -> BoundStock {
-        guard let comp: StockComponent = world.component(for: objectID) else {
-            throw InternalSystemError(self,
-                                      message: "Missing component",
-                                      context: .singleton("StockDependencyComponent"))
-        }
-
-        let inflowIndices = comp.inflowRates.compactMap { flowIndices[$0] }
-        let outflowIndices = comp.outflowRates.compactMap { flowIndices[$0] }
-
-        guard inflowIndices.count == comp.inflowRates.count &&
-                outflowIndices.count == comp.outflowRates.count
-        else {
-            throw InternalSystemError(self,
-                                      message: "Corrupted component",
-                                      context: .singleton("StockDependencyComponent"))
-        }
-        
-        let boundStock = BoundStock(
-            objectID: objectID,
-            variableIndex: variableIndex,
-            allowsNegative: comp.allowsNegative,
-            inflows: inflowIndices,
-            outflows: outflowIndices
-        )
-        
-        return boundStock
-
     }
 }
 
