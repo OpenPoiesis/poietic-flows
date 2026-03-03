@@ -37,7 +37,7 @@ public struct StockFlowSimulationSystem: System {
         world.removeSingleton(SimulationResult.self)
 
         guard let plan: SimulationPlan = world.singleton() else { return }
-        let settings: SimulationSettings = world.singleton() ?? SimulationSettings()
+        let settings: SimulationSettings = world.singleton() ?? plan.simulationSettings
         let params: ScenarioParameters = world.singleton() ?? ScenarioParameters()
         guard let solverType = StockFlowSimulation.SolverType(rawValue: settings.solverType) else {
             throw InternalSystemError(self, message: "Unknown solver type: \(settings.solverType)")

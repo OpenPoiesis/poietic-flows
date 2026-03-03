@@ -195,12 +195,12 @@ public struct SimulationPlanningSystem: System {
         let boundStocks = try bindStocks(stocks, flowIndices: flowIndices, world: world)
         
         // Simulation parameters
-        let params: SimulationSettings
+        let settings: SimulationSettings
         if let simInfo = frame.first(trait: Trait.Simulation) {
-            params = SimulationSettings(fromObject: simInfo)
+            settings = SimulationSettings(fromObject: simInfo)
         }
         else {
-            params = SimulationSettings()
+            settings = SimulationSettings()
         }
 
         
@@ -211,7 +211,7 @@ public struct SimulationPlanningSystem: System {
             stocks: boundStocks,
             flows: boundFlows,
             valueBindings: [], // FIXME: Relic from the past, remove
-            simulationParameters: params
+            settings: settings
         )
         
         world.setSingleton(plan)

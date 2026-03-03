@@ -39,6 +39,7 @@ public struct SimulationResult: Component {
         self.states.append(state)
     }
     
+#if false // This was used for Godot backend
     /// Get numeric time series for a state variable at given index.
     ///
     /// - Precondition: Variable at given index in all states is convertible to a float.
@@ -60,5 +61,5 @@ public struct SimulationResult: Component {
 
     // func numericTimeSeries(index:Int, convert: (Int, Variant) -> Double) -> RegularTimeSeries
     // func numericTimeSeries(index:Int, notConvertibleDefault: Double) -> RegularTimeSeries
-
+#endif // false
 }
