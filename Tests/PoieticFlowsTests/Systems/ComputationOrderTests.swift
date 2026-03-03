@@ -65,8 +65,10 @@ import Testing
         let component: SimulationOrderComponent? = world.singleton()
         #expect(component == nil)
         
-        #expect(world.objectHasError(a.objectID, error: ModelError.computationCycle))
-        #expect(world.objectHasError(b.objectID, error: ModelError.computationCycle))
+        let aEnt = try #require(world.entity(a.objectID))
+        #expect(aEnt.hasError(ModelError.computationCycle))
+        let bEnt = try #require(world.entity(a.objectID))
+        #expect(bEnt.hasError(ModelError.computationCycle))
     }
     @Test func orderWithSpecialAuxiliary() throws {
         // p:Aux -> g:GF -> a:Aux

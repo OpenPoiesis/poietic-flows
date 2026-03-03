@@ -35,7 +35,7 @@ public struct SimulationPlan {
                   flows: [BoundFlow] = [],
 //                  charts: [Chart] = [],
                   valueBindings: [CompiledControlBinding] = [],
-                  simulationParameters: SimulationSettings? = nil) {
+                  settings: SimulationSettings) {
         self.simulationObjects = simulationObjects
         self.stateVariables = stateVariables
         self.builtins = builtins
@@ -43,7 +43,7 @@ public struct SimulationPlan {
         self.flows = flows
 //        self.charts = charts
         self.valueBindings = valueBindings
-        self.simulationSettings = simulationParameters
+        self.simulationSettings = settings
     }
     
     /// List of objects that are considered in the computation computed, ordered by computational
@@ -106,7 +106,7 @@ public struct SimulationPlan {
     ///
     /// See ``SimulationSettings`` for more information.
     ///
-    public let simulationSettings: SimulationSettings?
+    public let simulationSettings: SimulationSettings
     
     /// Get index into a list of computed variables for an object with given ID.
     ///

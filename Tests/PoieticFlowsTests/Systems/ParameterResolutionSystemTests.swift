@@ -37,7 +37,8 @@ import Testing
         let system = ParameterResolutionSystem(world)
         try system.update(world)
 
-        let component: ResolvedParametersComponent? = world.component(for: info.objectID)
+        let entity = try #require(world.entity(info.objectID))
+        let component: ResolvedParametersComponent? = entity.component()
         #expect(component == nil)
     }
 
@@ -56,9 +57,10 @@ import Testing
         let system = ParameterResolutionSystem(world)
         try system.update(world)
 
-        let component: ResolvedParametersComponent? = world.component(for: aux.objectID)
+        let entity = try #require(world.entity(aux.objectID))
+        let component: ResolvedParametersComponent? = entity.component()
         #expect(component == nil, "No component should be created when no parameters needed")
-        #expect(!world.objectHasIssues(aux.objectID))
+        #expect(!entity.hasIssues)
     }
 
     @Test func formulaWithCorrectParameter() throws {
@@ -76,12 +78,13 @@ import Testing
         let system = ParameterResolutionSystem(world)
         try system.update(world)
 
-        let component: ResolvedParametersComponent = try #require(world.component(for: aux.objectID))
+        let entity = try #require(world.entity(aux.objectID))
+        let component: ResolvedParametersComponent = try #require(entity.component())
         #expect(component.incoming.count == 1)
         #expect(component.incoming["x"] == aux.objectID)
         #expect(component.missing.isEmpty == true)
         #expect(component.unused.isEmpty == true)
-        #expect(!world.objectHasIssues(aux.objectID))
+        #expect(!entity.hasIssues)
     }
 
     @Test func formulaWithMissingParameter() throws {
@@ -96,11 +99,13 @@ import Testing
         let system = ParameterResolutionSystem(world)
         try system.update(world)
 
-        let component: ResolvedParametersComponent = try #require(world.component(for: aux.objectID))
+        
+        let entity = try #require(world.entity(aux.objectID))
+        let component: ResolvedParametersComponent = try #require(entity.component())
         #expect(component.incoming.isEmpty == true)
         #expect(component.missing == ["x"])
         #expect(component.unused.isEmpty == true)
-        #expect(world.objectHasError(aux.objectID, error: ModelError.unknownParameter("x")))
+        #expect(entity.hasError(ModelError.unknownParameter("x")))
     }
 
     @Test func formulaWithUnusedParameter() throws {
@@ -120,12 +125,13 @@ import Testing
         let system = ParameterResolutionSystem(world)
         try system.update(world)
 
-        let component: ResolvedParametersComponent = try #require(world.component(for: aux.objectID))
+        let entity = try #require(world.entity(aux.objectID))
+        let component: ResolvedParametersComponent = try #require(entity.component())
         #expect(component.incoming.count == 1)
         #expect(component.incoming["x"] == aux.objectID)
         #expect(component.missing.isEmpty == true)
         #expect(component.unused.count == 1)
-        #expect(world.objectHasError(aux.objectID, error: ModelError.unusedInput("y")))
+        #expect(entity.hasError(ModelError.unusedInput("y")))
     }
 
     @Test func formulaWithMixedParameters() throws {
@@ -147,13 +153,14 @@ import Testing
         let system = ParameterResolutionSystem(world)
         try system.update(world)
 
-        let component: ResolvedParametersComponent = try #require(world.component(for: aux.objectID))
+        let entity = try #require(world.entity(aux.objectID))
+        let component: ResolvedParametersComponent = try #require(entity.component())
         #expect(component.incoming.count == 1)
         #expect(component.incoming["a"] == aux.objectID)
         #expect(component.missing == ["b"])
         #expect(component.unused.count == 1)
-        #expect(world.objectHasError(aux.objectID, error: ModelError.unknownParameter("b")))
-        #expect(world.objectHasError(aux.objectID, error: ModelError.unusedInput("c")))
+        #expect(entity.hasError(ModelError.unknownParameter("b")))
+        #expect(entity.hasError(ModelError.unusedInput("c")))
     }
 
     @Test func formulaWithBuiltinVariable() throws {
@@ -168,9 +175,10 @@ import Testing
         let system = ParameterResolutionSystem(world)
         try system.update(world)
 
-        let component: ResolvedParametersComponent? = world.component(for: aux.objectID)
+        let entity = try #require(world.entity(aux.objectID))
+        let component: ResolvedParametersComponent? = entity.component()
         #expect(component == nil, "No component needed when only builtins used")
-        #expect(!world.objectHasIssues(aux.objectID))
+        #expect(!entity.hasIssues)
     }
 
     @Test func formulaWithMultipleCorrectParameters() throws {
@@ -192,14 +200,15 @@ import Testing
         let system = ParameterResolutionSystem(world)
         try system.update(world)
 
-        let component: ResolvedParametersComponent = try #require(world.component(for: aux.objectID))
+        let entity = try #require(world.entity(aux.objectID))
+        let component: ResolvedParametersComponent = try #require(entity.component())
         #expect(component.incoming.count == 3)
         #expect(component.incoming["x"] == aux.objectID)
         #expect(component.incoming["y"] == aux.objectID)
         #expect(component.incoming["z"] == aux.objectID)
         #expect(component.missing.isEmpty == true)
         #expect(component.unused.isEmpty == true)
-        #expect(!world.objectHasIssues(aux.objectID))
+        #expect(!entity.hasIssues)
     }
 
     // MARK: - Delay Tests
@@ -216,10 +225,11 @@ import Testing
         let system = ParameterResolutionSystem(world)
         try system.update(world)
 
-        let component: ResolvedParametersComponent = try #require(world.component(for: delay.objectID))
+        let entity = try #require(world.entity(delay.objectID))
+        let component: ResolvedParametersComponent = try #require(entity.component())
         #expect(component.connectedUnnamed.isEmpty == true)
         #expect(component.missingUnnamed == 1)
-        #expect(world.objectHasError(delay.objectID, error: ModelError.missingRequiredParameter))
+        #expect(entity.hasError(ModelError.missingRequiredParameter))
     }
 
     @Test func delayWithOneParameter() throws {
@@ -236,11 +246,12 @@ import Testing
         let system = ParameterResolutionSystem(world)
         try system.update(world)
 
-        let component: ResolvedParametersComponent = try #require(world.component(for: delay.objectID))
+        let entity = try #require(world.entity(delay.objectID))
+        let component: ResolvedParametersComponent = try #require(entity.component())
         #expect(component.connectedUnnamed == [source.objectID])
         #expect(component.missingUnnamed == 0)
         #expect(component.unused.isEmpty == true)
-        #expect(!world.objectHasIssues(delay.objectID))
+        #expect(!entity.hasIssues)
     }
 
     @Test func delayWithTwoParameters() throws {
@@ -259,9 +270,10 @@ import Testing
         try system.update(world)
         try system.update(world)
 
-        let component: ResolvedParametersComponent = try #require(world.component(for: delay.objectID))
+        let entity = try #require(world.entity(delay.objectID))
+        let component: ResolvedParametersComponent = try #require(entity.component())
         #expect(component.unused.count == 2)
-        #expect(world.objectHasError(delay.objectID, error: ModelError.tooManyParameters))
+        #expect(entity.hasError(ModelError.tooManyParameters))
     }
 
     // MARK: - Other auxiliaries
@@ -284,14 +296,19 @@ import Testing
         let system = ParameterResolutionSystem(world)
         try system.update(world)
 
-        let gfComp: ResolvedParametersComponent = try #require(world.component(for: gf.objectID))
-        let delayComp: ResolvedParametersComponent = try #require(world.component(for: delay.objectID))
-        let smoothComp: ResolvedParametersComponent = try #require(world.component(for: smooth.objectID))
+        let gfEnt = try #require(world.entity(gf.objectID))
+        let gfComp: ResolvedParametersComponent = try #require(gfEnt.component())
         #expect(gfComp.connectedUnnamed == [source.objectID])
+        #expect(!gfEnt.hasIssues)
+        
+        let delayEnt = try #require(world.entity(delay.objectID))
+        let delayComp: ResolvedParametersComponent = try #require(delayEnt.component())
         #expect(delayComp.connectedUnnamed == [source.objectID])
+        #expect(!delayEnt.hasIssues)
+
+        let smoothEnt = try #require(world.entity(smooth.objectID))
+        let smoothComp: ResolvedParametersComponent = try #require(smoothEnt.component())
         #expect(smoothComp.connectedUnnamed == [source.objectID])
-        #expect(!world.objectHasIssues(gf.objectID))
-        #expect(!world.objectHasIssues(delay.objectID))
-        #expect(!world.objectHasIssues(smooth.objectID))
+        #expect(!smoothEnt.hasIssues)
     }
 }

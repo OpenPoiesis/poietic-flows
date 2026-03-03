@@ -22,6 +22,8 @@ public struct FlowCollectorSystem: System {
         guard let frame = world.frame else { return }
         
         for flow in frame.filter(type: .FlowRate) {
+            let entity = world.entity(flow.objectID)!
+            
             // We assume the frame edge reqThank uirements were satisfied, therefore there is most one edge of each
             let fills: ObjectID? = frame.outgoing(flow.objectID).first {
                 $0.object.type === ObjectType.Flow
@@ -36,7 +38,7 @@ public struct FlowCollectorSystem: System {
             let component = FlowRateComponent(drainsStock: drains,
                                               fillsStock: fills,
                                               priority: priority)
-            world.setComponent(component, for: flow.objectID)
+            entity.setComponent(component)
         }
     }
 }
@@ -69,7 +71,8 @@ public struct StockDependencySystem: System {
         var outflowStocks: [ObjectID:[ObjectID]] = [:] // [drained stock:[to filling stock]]
 
         for flow in frame.filter(type: .FlowRate) {
-            guard let component: FlowRateComponent = world.component(for: flow.objectID) else {
+            let entity = world.entity(flow.objectID)!
+            guard let component: FlowRateComponent = entity.component() else {
                 continue
             }
             if let stockID = component.fillsStock {
@@ -87,6 +90,7 @@ public struct StockDependencySystem: System {
         }
         
         for stock in frame.filter(type: .Stock) {
+            let entity = world.entity(stock.objectID)!
             let component = StockComponent(
                 inflowRates: filledByRate[stock.objectID] ?? [],
                 outflowRates: drainedByRate[stock.objectID] ?? [],
@@ -94,7 +98,7 @@ public struct StockDependencySystem: System {
                 outflowStocks: outflowStocks[stock.objectID] ?? [],
                 allowsNegative: stock["allows_negative", default: false]
             )
-            world.setComponent(component, for: stock.objectID)
+            entity.setComponent(component)
         }
     }
 }

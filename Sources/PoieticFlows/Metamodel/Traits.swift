@@ -216,7 +216,6 @@ extension Trait {
                       optional: true,
                       abstract: "Solver type name"
                      ),
-            // TODO: Add stop_time or final_time
             // TODO: Support date/time
             // TODO: Add Solver type
         ]

@@ -75,8 +75,9 @@ extension TransientFrame {
         try acceptAndUpdate()
         let plan: SimulationPlan? = world.singleton()
         #expect(plan == nil)
-        #expect(world.objectHasError(aux.objectID,
-                                     error: ExpressionError.unknownFunction("nonexistent")))
+
+        let entity = try #require(world.entity(aux.objectID))
+        #expect(entity.hasError(ExpressionError.unknownFunction("nonexistent")))
     }
 
     @Test func singleComputedVariable() throws {
@@ -120,7 +121,8 @@ extension TransientFrame {
         try acceptAndUpdate()
         let plan: SimulationPlan? = world.singleton()
         #expect(plan == nil)
-        #expect(world.objectHasIssue(gf.objectID, identifier: "missing_required_parameter"))
+        let entity = try #require(world.entity(gf.objectID))
+        #expect(entity.hasIssue(identifier: "missing_required_parameter"))
     }
 
     @Test func graphicalFunctionComputation() throws {

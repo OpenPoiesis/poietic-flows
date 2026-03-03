@@ -79,16 +79,16 @@ public struct SimulationSettings: Component {
         let timeDelta = object["time_delta", default: 0.0]
         let solverType = object["solver_type", default: "euler"]
 
-        if let endTime: Double = object["end_time"] {
-            self.init(initialTime: initialTime,
-                      timeDelta: timeDelta,
-                      endTime: endTime,
-                      solverType: solverType)
-        }
-        else if let steps: Int = object["steps"], steps >= 0 {
+        if let steps: Int = object["steps"], steps >= 0 {
             self.init(initialTime: initialTime,
                       timeDelta: timeDelta,
                       steps: UInt(steps),
+                      solverType: solverType)
+        }
+        else if let endTime: Double = object["end_time"] {
+            self.init(initialTime: initialTime,
+                      timeDelta: timeDelta,
+                      endTime: endTime,
                       solverType: solverType)
         }
         else {
@@ -102,21 +102,6 @@ public struct SimulationSettings: Component {
     }
 }
 
-extension SimulationSettings: InspectableComponent {
-    public static let attributeKeys: [String] = [
-        "initial_time", "time_delta", "end_time", "steps", "solver_type",
-    ]
-    public func attribute(forKey key: String) -> Variant? {
-        switch key {
-        case "initial_time": Variant(self.initialTime)
-        case "time_delta": Variant(self.timeDelta)
-        case "ent_time": Variant(self.endTime)
-        case "steps": Variant(Int(exactly: self.steps) ?? 0)
-        case "solver_type": Variant(self.solverType)
-        default: nil
-        }
-    }
-}
 /// Initial values of simulation variables.
 ///
 /// - SeeAlso: ``SimulationSettings``.

@@ -70,8 +70,8 @@ public struct ParameterResolutionSystem: System {
     public func resolveFormulas(_ world: World, frame: DesignFrame) throws (InternalSystemError) {
         let builtinNames = BuiltinVariable.allNames
 
-        for (entityID, exprComponent) in world.query(ParsedExpressionComponent.self) {
-            guard let objectID = world.entityToObject(entityID) else { continue }
+        for (entity, exprComponent) in world.query(ParsedExpressionComponent.self) {
+            guard let objectID = entity.objectID else { continue }
             let requiredParams = exprComponent.variables.subtracting(builtinNames)
             let incomingParams = frame.incoming(objectID).filter {
                 $0.object.type === ObjectType.Parameter
@@ -106,7 +106,7 @@ public struct ParameterResolutionSystem: System {
                     error: ModelError.unknownParameter(name),
                     details: ["name": Variant(name)]
                     )
-                world.appendIssue(issue, for: objectID)
+                entity.appendIssue(issue)
             }
 
             for edge in unused {
@@ -118,7 +118,7 @@ public struct ParameterResolutionSystem: System {
                     error: ModelError.unusedInput(name),
                     details: ["name": Variant(name)]
                     )
-                world.appendIssue(issue, for: objectID)
+                entity.appendIssue(issue)
             }
 
             let paramComponent = ResolvedParametersComponent(
@@ -126,7 +126,7 @@ public struct ParameterResolutionSystem: System {
                 missing: Array(missing),
                 unused: unused.map { $0.id }
             )
-            world.setComponent(paramComponent, for: entityID)
+            entity.setComponent(paramComponent)
         }
     }
     /// Resolve connections of single-parameter auxiliaries such as graphical function,
@@ -137,6 +137,8 @@ public struct ParameterResolutionSystem: System {
     public func resolveAuxiliaries(_ world: World, frame: DesignFrame, type: ObjectType)
     throws (InternalSystemError) {
         for object in frame.filter(type: type) {
+            guard let entity = world.entity(object.objectID) else { continue }
+            
             let incomingParams = frame.incoming(object.objectID).filter {
                 $0.object.type === ObjectType.Parameter
             }
@@ -149,7 +151,7 @@ public struct ParameterResolutionSystem: System {
                     system: self,
                     error: ModelError.missingRequiredParameter,
                 )
-                world.appendIssue(issue, for: object.objectID)
+                entity.appendIssue(issue)
 
                 component = ResolvedParametersComponent(
                     missingUnnamed: 1
@@ -162,7 +164,7 @@ public struct ParameterResolutionSystem: System {
                     system: self,
                     error: ModelError.tooManyParameters,
                 )
-                world.appendIssue(issue, for: object.objectID)
+                entity.appendIssue(issue)
 
                 component = ResolvedParametersComponent(
                     unused: incomingParams.map { $0.origin }
@@ -174,7 +176,7 @@ public struct ParameterResolutionSystem: System {
                 )
             }
 
-            world.setComponent(component, for: object.objectID)
+            entity.setComponent(component)
 
             
         }

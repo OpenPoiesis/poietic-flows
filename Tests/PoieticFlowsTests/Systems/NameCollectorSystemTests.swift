@@ -37,7 +37,7 @@ import Testing
         let lookup: SimulationNameLookupComponent = try #require(world.singleton())
         #expect(lookup.namedObjects.isEmpty)
         
-        let component: SimulationObjectNameComponent? = world.component(for: object.objectID)
+        let component: SimulationObjectNameComponent? = world.entity(object.objectID)?.component()
         #expect(component == nil)
     }
     
@@ -52,12 +52,14 @@ import Testing
         let lookup: SimulationNameLookupComponent = try #require(world.singleton())
         #expect(lookup.namedObjects.isEmpty)
         
-        #expect(world.objectHasError(empty.objectID, error: ModelError.emptyName))
-        #expect(world.objectHasError(whitespace.objectID, error: ModelError.emptyName))
+        let emptyEnt = try #require(world.entity(empty.objectID))
+        #expect(emptyEnt.hasError(ModelError.emptyName))
+        let wsEnt = try #require(world.entity(whitespace.objectID))
+        #expect(wsEnt.hasError(ModelError.emptyName))
         
-        let component1: SimulationObjectNameComponent? = world.component(for: empty.objectID)
+        let component1: SimulationObjectNameComponent? = world.entity(empty.objectID)?.component()
         #expect(component1 == nil)
-        let component2: SimulationObjectNameComponent? = world.component(for: whitespace.objectID)
+        let component2: SimulationObjectNameComponent? = world.entity(whitespace.objectID)?.component()
         #expect(component2 == nil)
     }
     
@@ -71,7 +73,7 @@ import Testing
         let lookup: SimulationNameLookupComponent = try #require(world.singleton())
         #expect(lookup.namedObjects["object"] == object.objectID)
 
-        let component: SimulationObjectNameComponent = try #require(world.component(for: object.objectID))
+        let component: SimulationObjectNameComponent = try #require(world.entity(object.objectID)?.component())
         #expect(component.name == "object")
     }
     @Test func duplicateName() throws {
@@ -82,13 +84,15 @@ import Testing
         let system = NameResolutionSystem(world)
         try system.update(world)
         
-        let component: SimulationObjectNameComponent? = world.component(for: object.objectID)
+        let objEnt = try #require(world.entity(object.objectID))
+        let component: SimulationObjectNameComponent? = objEnt.component()
         #expect(component == nil)
-        let dupeComponent: SimulationObjectNameComponent? = world.component(for: dupe.objectID)
-        #expect(dupeComponent == nil)
+        #expect(objEnt.hasError(ModelError.duplicateName("object")))
 
-        #expect(world.objectHasError(object.objectID, error: ModelError.duplicateName("object")))
-        #expect(world.objectHasError(dupe.objectID, error: ModelError.duplicateName("object")))
+        let dupeEnt = try #require(world.entity(dupe.objectID))
+        let dupeComponent: SimulationObjectNameComponent? = dupeEnt.component()
+        #expect(dupeComponent == nil)
+        #expect(dupeEnt.hasError(ModelError.duplicateName("object")))
     }
     @Test func validAndDuplicateMix() throws {
         let object = frame.createNode(.Auxiliary, name: "object")
@@ -99,15 +103,19 @@ import Testing
         let system = NameResolutionSystem(world)
         try system.update(world)
         
-        let component: SimulationObjectNameComponent? = world.component(for: object.objectID)
+        let objEnt = try #require(world.entity(object.objectID))
+        let component: SimulationObjectNameComponent? = objEnt.component()
         #expect(component == nil)
-        let dupeComponent: SimulationObjectNameComponent? = world.component(for: dupe.objectID)
-        #expect(dupeComponent == nil)
-        let singleComponent: SimulationObjectNameComponent? = world.component(for: single.objectID)
-        #expect(singleComponent?.name == "single")
+        #expect(objEnt.hasError(ModelError.duplicateName("object")))
 
-        #expect(world.objectHasError(object.objectID, error: ModelError.duplicateName("object")))
-        #expect(world.objectHasError(dupe.objectID, error: ModelError.duplicateName("object")))
-        #expect(!world.objectHasIssues(single.objectID))
+        let dupeEnt = try #require(world.entity(dupe.objectID))
+        let dupeComponent: SimulationObjectNameComponent? = dupeEnt.component()
+        #expect(dupeComponent == nil)
+        #expect(dupeEnt.hasError(ModelError.duplicateName("object")))
+
+        let singleEnt = try #require(world.entity(single.objectID))
+        let singleComponent: SimulationObjectNameComponent? = singleEnt.component()
+        #expect(singleComponent?.name == "single")
+        #expect(!singleEnt.hasIssues)
     }
 }
