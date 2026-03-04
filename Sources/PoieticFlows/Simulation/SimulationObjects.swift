@@ -83,6 +83,7 @@ public enum ComputationalRepresentation: CustomStringConvertible {
 ///   ``StockFlowSimulation/evaluate(expression:with:)``
 ///
 public struct SimulationObject: CustomStringConvertible {
+    // TODO: [ECS] Turn this into a component
     /// ID of the object, usually a node, that is being represented.
     ///
     public let objectID: ObjectID

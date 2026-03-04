@@ -7,7 +7,6 @@
 
 import PoieticCore
 
-
 /// System that collects all flow rates and determines their inflows and outflows.
 ///
 /// - **Input:** Nodes of type ``/PoieticCore/ObjectType/Chart``,
@@ -15,6 +14,34 @@ import PoieticCore
 /// - **Forgiveness:** If multiple ``/PoieticCore/ObjectType/Flow`` edges exist, only one is picked arbitrarily.
 ///
 public struct ChartResolutionSystem: System {
+    
+    public init(_ world: World) { }
+
+    public func update(_ world: World) throws (InternalSystemError) {
+        guard let frame = world.frame else { return }
+        let chartObjects = frame.filter { $0.type === ObjectType.Chart }
+
+        for chartObject in chartObjects {
+            guard let entity = world.entity(chartObject.objectID) else { continue }
+            let seriesEdges = frame.outgoing(chartObject.objectID).filter {
+                $0.object.type === ObjectType.ChartSeries
+            }
+            
+            let series = seriesEdges.map { $0.targetObject }
+            let chart = ChartComponent(chartObject: chartObject, series: series)
+            entity.setComponent(chart)
+        }
+    }
+}
+
+/// System that collects metadata used for display and indicators.
+///
+/// - **Input:** Nodes with trait ``/PoieticCore/Trait/NumericIndicator``,
+/// - **Output:** Convert the trait to ``DisplayValueBounds`` component.
+/// - **Forgiveness:** Nothing to be forgiven.
+///
+public struct DisplayMetadataProcessingSystem: System {
+    // TODO: Find a better name, I came up with this in a hurry
     
     public init(_ world: World) { }
 

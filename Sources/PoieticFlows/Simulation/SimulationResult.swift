@@ -7,6 +7,11 @@
 
 import PoieticCore
 
+// TODO: Rethink this structure, it is impractical for analysis (which is the whole point if the toolkit)
+/// Makeshift simulation result container.
+///
+/// Contains all simulation states.
+///
 public struct SimulationResult: Component {
     public let initialTime: Double
     public let timeDelta: Double
@@ -39,21 +44,13 @@ public struct SimulationResult: Component {
         self.states.append(state)
     }
     
-#if false // This was used for Godot backend
-    /// Get numeric time series for a state variable at given index.
-    ///
-    /// - Precondition: Variable at given index in all states is convertible to a float.
-    ///
-    public func unsafeFloatValueTimeSeries(at index: Int) -> [Double] {
-        return states.map { try! $0[index].doubleValue() }
-    }
-    
     /// Return numeric time series for given object.
     ///
     /// - Precondition: Variable at given index in all states is convertible to a float.
     ///
     public func unsafeTimeSeries(at index: Int) -> RegularTimeSeries {
-        let values: [Double] = unsafeFloatValueTimeSeries(at: index)
+        // TODO: Reconsider this function, this is a remnant from Godot backed playground
+        let values: [Double] = states.map { try! $0[index].doubleValue() }
         
         let series = RegularTimeSeries(data: values, startTime: initialTime, timeDelta: timeDelta)
         return series
@@ -61,5 +58,4 @@ public struct SimulationResult: Component {
 
     // func numericTimeSeries(index:Int, convert: (Int, Variant) -> Double) -> RegularTimeSeries
     // func numericTimeSeries(index:Int, notConvertibleDefault: Double) -> RegularTimeSeries
-#endif // false
 }

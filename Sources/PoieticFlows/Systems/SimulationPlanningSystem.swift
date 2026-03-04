@@ -90,6 +90,7 @@ class StateVariableTable {
 /// - **Forgiveness:** The system is forgiving in a way that it does not fail on semantic errors.
 ///
 public struct SimulationPlanningSystem: System {
+    // TODO: [IMPORTANT] Break this down. Requires verification mechanism that all has been considered (no intermediate forgiveness)
     /// Error thrown during the planning process
     internal enum CompilationError: Error, Equatable {
         /// Issue with object has been detected, appended to the list of issues. The caller might
