@@ -34,6 +34,23 @@ public struct DisplayValueBounds: Component {
         }
         self.baseline = baseline ?? min
     }
+    
+    /// Create display value bounds from object attributes.
+    ///
+    public init(from object: ObjectSnapshot) {
+        let autoscale: Bool? = object["display_value_auto_scale"]
+        
+        if autoscale == true {
+            self.min = nil
+            self.max = nil
+            self.baseline = nil
+        }
+        else {
+            self.min = object["indicator_min_value"]
+            self.max = object["indicator_max_value"]
+            self.baseline = object["indicator_baseline_value"]
+        }
+    }
 }
 
 
