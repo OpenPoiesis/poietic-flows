@@ -77,6 +77,7 @@ public struct NewChartResolutionSystem: System {
                   let chartEntity = world.entity(originID)
             else { continue }
 
+            // FIXME: Use bounds from series object first.
             let bounds = DisplayValueBounds(from: targetObject)
             let color: String? = targetObject["color"]
             let colorKey: AdaptableColorKey?

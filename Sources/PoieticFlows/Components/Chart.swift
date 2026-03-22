@@ -19,10 +19,27 @@ public struct Chart: Component {
         public let displayBounds: DisplayValueBounds
         public let majorSteps: Double?
         public let minorSteps: Double?
+        
+        public init(displayBounds: DisplayValueBounds, majorSteps: Double? = nil, minorSteps: Double? = nil) {
+            self.displayBounds = displayBounds
+            self.majorSteps = majorSteps
+            self.minorSteps = minorSteps
+        }
+        
+        public init() {
+            self.displayBounds = DisplayValueBounds()
+            self.majorSteps = nil
+            self.minorSteps = nil
+        }
     }
     
     public let xAxis: Axis
     public let yAxis: Axis
+    
+    public init() {
+        self.xAxis = Axis()
+        self.yAxis = Axis()
+    }
     
     public init(from object: ObjectSnapshot) {
         xAxis = Axis(
@@ -65,7 +82,10 @@ public struct ChartSeries: Relationship {
     /// Display value bounds pulled from the target object.
     public var displayBounds: DisplayValueBounds
 
-    public init(target: RuntimeID, colorKey: AdaptableColorKey? = nil, displayBounds: DisplayValueBounds) {
+    public init(target: RuntimeID,
+                colorKey: AdaptableColorKey? = nil,
+                displayBounds: DisplayValueBounds)
+    {
         self.target = target
         self.colorKey = colorKey
         self.displayBounds = displayBounds

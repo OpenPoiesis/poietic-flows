@@ -26,7 +26,7 @@ public struct DisplayValueBounds: Component {
     public let baseline: Double?
     
     /// - Precondition: If both `min` and `max` are not-nil, then `min` must be less or equal `max`.
-    public init(min: Double?, max: Double?, baseline: Double?) {
+    public init(min: Double? = nil, max: Double? = nil, baseline: Double? = nil) {
         self.min = min
         self.max = max
         if let min, let max {
@@ -144,6 +144,13 @@ public struct ValueBounds {
     public func normalized(_ value: Double) -> Double {
         let clipped = self.clamp(value)
         return (clipped - min) / (max - min)
+    }
+    
+    /// Create an union with other value bounds. Keep the baseline of the receiver.
+    public func union(_ other: ValueBounds) -> ValueBounds {
+        return ValueBounds(min: Swift.min(self.min, other.min),
+                           max: Swift.max(self.max, other.max),
+                           baseline: self.baseline)
     }
     
 //    /// Returns the relative position of a value along the domain,
