@@ -33,8 +33,8 @@ public struct ParameterProposal: Component {
 /// - **Input:** Singleton ``SimulationNameLookupComponent``
 ///   and objects with ``ResolvedParametersComponent``.
 ///
-///   If a singleton ``Selection`` is present, then only relevant objects in the selection are
-///   considered.
+///   If a singleton ``Selection`` is present and is not empty, then only objects in the selection
+///   are considered.
 ///
 /// - **Output:** ``ParameterProposal`` singleton.
 /// - **Forgiveness:** Nothing is proposed if the singleton is missing.
@@ -70,7 +70,15 @@ public struct ParameterConnectionProposalSystem: System {
         guard let lookup: SimulationNameLookupComponent = world.singleton()
         else { return }
         
-        let selection: Selection? = world.singleton()
+        let contained: Set<ObjectID>
+        if let selection: Selection = world.singleton(),
+           let frame = world.frame
+        {
+            contained = Set(frame.contained(selection))
+        }
+        else {
+            contained = Set()
+        }
         
         var toRemove: [ObjectID] = []
         var toAdd: [ParameterProposal.EdgeProposal] = []
@@ -78,8 +86,11 @@ public struct ParameterConnectionProposalSystem: System {
         for (entity, resolution) in world.query(ResolvedParametersComponent.self) {
             guard let objectID = entity.objectID
             else { continue }
-            if let selection, !selection.contains(objectID) { continue }
 
+            guard contained.isEmpty || contained.contains(objectID) else {
+                continue
+            }
+            
             toRemove += resolution.unused
             
             for name in resolution.missing {

@@ -177,8 +177,6 @@ public struct ParameterResolutionSystem: System {
             }
 
             entity.setComponent(component)
-
-            
         }
     }
 }
