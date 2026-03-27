@@ -29,7 +29,6 @@ nonisolated(unsafe) public let SimulationRunningSystems: [System.Type] = [
 /// The systems in this collection are expected to be run after ``SimulationPlanningSystems``.
 ///
 nonisolated(unsafe) public let SimulationPresentationSystems: [System.Type] = [
-    DisplayMetadataProcessingSystem.self,
     ChartResolutionSystem.self,
 ]
 

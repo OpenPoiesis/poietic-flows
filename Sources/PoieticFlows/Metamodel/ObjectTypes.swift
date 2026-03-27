@@ -27,7 +27,7 @@ extension ObjectType {
             Trait.Stock,
             Trait.Reservoir,
             Trait.ComputedValue,
-            Trait.NumericIndicator,
+            Trait.NumericValue,
             Trait.DiagramBlock,
         ],
         secondaryLabelAttribute: "formula"
@@ -59,10 +59,8 @@ extension ObjectType {
             Trait.Formula,
             Trait.FlowRate,
             Trait.ComputedValue,
-            Trait.NumericIndicator,
+            Trait.NumericValue,
             Trait.DiagramBlock,
-            // DescriptionComponent.self,
-            // ErrorComponent.self,
         ],
         secondaryLabelAttribute: "formula"
     )
@@ -78,10 +76,8 @@ extension ObjectType {
             Trait.Color,
             Trait.Formula,
             Trait.ComputedValue,
-            Trait.NumericIndicator,
+            Trait.NumericValue,
             Trait.DiagramBlock,
-            // DescriptionComponent.self,
-            // ErrorComponent.self,
         ],
         secondaryLabelAttribute: "formula"
     )
@@ -94,7 +90,6 @@ extension ObjectType {
         name: "Cloud",
         structuralType: .node,
         traits: [
-//            Trait.Name,
             Trait.Stock,
             Trait.DiagramBlock,
         ],
@@ -115,10 +110,7 @@ extension ObjectType {
             Trait.DiagramBlock,
             Trait.GraphicalFunction,
             Trait.ComputedValue,
-            Trait.NumericIndicator
-            // DescriptionComponent.self,
-            // ErrorComponent.self,
-            // TODO: IMPORTANT: Make sure we do not have formula component here or handle the type
+            Trait.NumericValue
         ]
     )
 
@@ -133,10 +125,8 @@ extension ObjectType {
             Trait.Name,
             Trait.DiagramBlock,
             Trait.ComputedValue,
-            Trait.NumericIndicator,
+            Trait.NumericValue,
             Trait.Delay,
-            // DescriptionComponent.self,
-            // ErrorComponent.self,
         ],
         secondaryLabelAttribute: "delay_duration",
     )
@@ -152,10 +142,8 @@ extension ObjectType {
             Trait.Auxiliary,
             Trait.Name,
             Trait.DiagramBlock,
-            Trait.NumericIndicator,
+            Trait.NumericValue,
             Trait.Smooth,
-            // DescriptionComponent.self,
-            // ErrorComponent.self,
         ],
         secondaryLabelAttribute: "window_time",
     )

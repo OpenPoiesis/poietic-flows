@@ -15,25 +15,6 @@ extension Trait {
         abstract: "Trait for nodes that have a computed value"
     )
 
-    // TODO: Rename to display_value_* pattern and then min/max/baseline
-    // TODO: Consider renaming to "TimeSeries" or just "NumericValue"
-    
-    public static let NumericIndicator = Trait(
-        name: "NumericIndicator",
-        attributes: [
-            Attribute("indicator_min_value", type: .double, optional: true,
-                      abstract: "Typically expected minimum value"),
-            Attribute("indicator_max_value", type: .double, optional: true,
-                      abstract: "Typically expected maxim value"),
-            Attribute("indicator_mid_value", type: .double, optional: true,
-                      abstract: "Typically expected middle value for differentiating positive and negative relative to the mid-value"),
-            Attribute("display_value_auto_scale", type: .bool, optional: true,
-                      abstract: "Scale the min/max display value bounds based on the data"),
-        ],
-        abstract: "Trait for objects that might have a visual numeric indicator"
-    )
-
-
     public static let Auxiliary = Trait(
         name: "Auxiliary",
         attributes: [],

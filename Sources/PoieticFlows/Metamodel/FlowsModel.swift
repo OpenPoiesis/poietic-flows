@@ -28,14 +28,13 @@ extension Metamodel {
         traits: [
             Trait.Name,
 
-            // Abstract
+            // Tags
             Trait.ComputedValue,
-            Trait.DiagramBlock,
-            Trait.DiagramConnector,
-            Trait.NumericIndicator,
+            Trait.NumericValue,
 
             // Visual
             Trait.DiagramBlock,
+            Trait.DiagramConnector,
             Trait.Color,
 
             // Basic Stock-Flow nodes
