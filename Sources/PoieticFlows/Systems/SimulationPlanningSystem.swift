@@ -169,6 +169,7 @@ public struct SimulationPlanningSystem: System {
                                        name: nameComp.name)
        
             simulationObjects.append(sim)
+            entity.setComponent(HasNumericIndicator())
             
             switch roleComp.role {
             case .flow: flows.append(sim)
