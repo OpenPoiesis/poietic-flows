@@ -7,34 +7,6 @@
 
 import PoieticCore
 
-/// System that collects all charts.
-///
-/// - **Input:** Nodes of type ``/PoieticCore/ObjectType/Chart``,
-/// - **Output:** Set ``ChartComponent`` for each chart node.
-/// - **Forgiveness:** Nothing to be forgiven.
-///
-@available(*, deprecated, message: "boo!")
-public struct ChartResolutionSystem: System {
-    
-    public init(_ world: World) { }
-
-    public func update(_ world: World) throws (InternalSystemError) {
-        guard let frame = world.frame else { return }
-        let chartObjects = frame.filter { $0.type === ObjectType.Chart }
-
-        for chartObject in chartObjects {
-            guard let entity = world.entity(chartObject.objectID) else { continue }
-            let seriesEdges = frame.outgoing(chartObject.objectID).filter {
-                $0.object.type === ObjectType.ChartSeries
-            }
-            
-            let series = seriesEdges.map { $0.targetObject }
-            let chart = ChartComponent(chartObject: chartObject, series: series)
-            entity.setComponent(chart)
-        }
-    }
-}
-
 
 // TODO: Move to Core/Presentation, with all related structures
 
@@ -89,7 +61,7 @@ public struct NewChartResolutionSystem: System {
                 displayBounds: bounds
             )
             seriesEntity.setComponent(series)
-            seriesEntity.setComponent(ChildOf(chartEntity.runtimeID))
+            seriesEntity.relate(ChildOf(), to: chartEntity.runtimeID)
         }
     }
 }

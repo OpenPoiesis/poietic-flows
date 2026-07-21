@@ -69,14 +69,14 @@ public struct Chart: Component {
 /// (edges) of type `ChartSeries`.
 ///
 public struct ChartSeries: Relationship {
-    public static var removalPolicy: RemovalPolicy { .removeSelf }
+    public static var targetRemovalPolicy: RelationshipRemovalPolicy { .despawn }
     
     /// Value representable object that the series represent. Should be a simulation object.
     ///
-    /// If the chart series is created from a design object - edge, then the target property
+    /// If the chart series is created from a design object - edge, then the other property
     /// is the the edge's target.
     ///
-    public var target: RuntimeID
+    public var other: RuntimeID
     public var colorKey: AdaptableColorKey?
 
     /// Display value bounds pulled from the target object.
@@ -86,7 +86,7 @@ public struct ChartSeries: Relationship {
                 colorKey: AdaptableColorKey? = nil,
                 displayBounds: DisplayValueBounds)
     {
-        self.target = target
+        self.other = target
         self.colorKey = colorKey
         self.displayBounds = displayBounds
     }
