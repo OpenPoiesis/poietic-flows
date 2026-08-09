@@ -71,6 +71,7 @@ public struct Chart: Component {
 public struct ChartSeries: Relationship {
     public static var targetRemovalPolicy: RelationshipRemovalPolicy { .despawn }
     
+    // TODO: [IMPORTANT] Validate how the `other` is used, might be remnant from pre-relationships
     /// Value representable object that the series represent. Should be a simulation object.
     ///
     /// If the chart series is created from a design object - edge, then the other property

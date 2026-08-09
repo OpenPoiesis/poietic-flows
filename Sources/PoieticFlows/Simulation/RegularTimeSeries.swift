@@ -9,8 +9,7 @@ import PoieticCore
 
 /// Structure representing numeric time series with regular time intervals.
 ///
-public class RegularTimeSeries: Component /*: Sequence, RandomAccessCollection? */ {
-    
+public final class RegularTimeSeries: Component /*: Sequence, RandomAccessCollection? */ {
     /// Time of the first data sample.
     public let startTime: Double
     /// Time interval between samples.

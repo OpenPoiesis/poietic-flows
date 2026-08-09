@@ -33,7 +33,7 @@ public struct ParameterProposal: Component {
 /// - **Input:** Singleton ``SimulationNameLookupComponent``
 ///   and objects with ``ResolvedParametersComponent``.
 ///
-///   If a singleton ``Selection`` is present and is not empty, then only objects in the selection
+///   If a singleton `Selection` is present and is not empty, then only objects in the selection
 ///   are considered.
 ///
 /// - **Output:** ``ParameterProposal`` singleton.

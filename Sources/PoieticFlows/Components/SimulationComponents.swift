@@ -69,10 +69,10 @@ public struct SimulationObjectNameComponent: Component {
 /// - SeeAlso: ``StockDependencySystem``, ``FlowCollectorSystem``.
 ///
 public struct StockComponent: Component {
-    /// List of ``/PoieticCore/ObjectType/FlowRate`` nodes that fill the stock.
+    /// List of `FlowRate` nodes that fill the stock.
     public let inflowRates: [ObjectID]
 
-    /// List of ``/PoieticCore/ObjectType/FlowRate`` nodes that drain the stock.
+    /// List of `FlowRate` nodes that drain the stock.
     public let outflowRates: [ObjectID]
 
     /// List of stocks that are drained.

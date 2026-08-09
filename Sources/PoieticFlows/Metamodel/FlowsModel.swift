@@ -112,28 +112,28 @@ extension Metamodel {
         ///
         edgeRules: [
             EdgeRule(type: .Flow,
-                     origin: IsTypePredicate(.FlowRate),
+                     origin: .isType(.FlowRate),
                      outgoing: .one,
-                     target: HasTraitPredicate(.Stock)),
+                     target: .hasTrait(.Stock)),
             EdgeRule(type: .Flow,
-                     origin: HasTraitPredicate(.Stock),
-                     target: IsTypePredicate(.FlowRate),
+                     origin: .hasTrait(.Stock),
+                     target: .isType(.FlowRate),
                      incoming: .one),
             EdgeRule(type: .Parameter,
-                     origin: HasTraitPredicate(.Auxiliary)
-                                .or(IsTypePredicate(.Stock))
-                                .or(IsTypePredicate(.FlowRate)),
+                     origin: .hasTrait(.Auxiliary)
+                                .or(.isType(.Stock))
+                                .or(.isType(.FlowRate)),
                      outgoing: .many,
-                     target: IsTypePredicate(.GraphicalFunction),
+                     target: .isType(.GraphicalFunction),
                      incoming: .one),
             EdgeRule(type: .Parameter,
-                     origin: HasTraitPredicate(.Auxiliary)
-                                .or(IsTypePredicate(.Stock))
-                                .or(IsTypePredicate(.FlowRate)),
+                     origin: .hasTrait(.Auxiliary)
+                                .or(.isType(.Stock))
+                                .or(.isType(.FlowRate)),
                      outgoing: .many,
-                     target: HasTraitPredicate(.Auxiliary)
-                                .or(IsTypePredicate(.Stock))
-                                .or(IsTypePredicate(.FlowRate)),
+                     target: .hasTrait(.Auxiliary)
+                                .or(.isType(.Stock))
+                                .or(.isType(.FlowRate)),
                      incoming: .many),
             EdgeRule(type: .Comment,
                      outgoing: .many,
@@ -141,13 +141,13 @@ extension Metamodel {
 
             // Control
             EdgeRule(type: .ValueBinding,
-                     origin: IsTypePredicate(.Control),
-                     target: HasTraitPredicate(.Formula)),
+                     origin: .isType(.Control),
+                     target: .hasTrait(.Formula)),
 
             // Charts
             EdgeRule(type: .ChartSeries,
-                     origin: IsTypePredicate(.Chart),
-                     target: HasTraitPredicate(.ComputedValue)),
+                     origin: .isType(.Chart),
+                     target: .hasTrait(.ComputedValue)),
         ]
     )
 }

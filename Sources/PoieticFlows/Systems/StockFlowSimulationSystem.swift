@@ -29,6 +29,7 @@ import PoieticCore
 /// - **Issues:** No issues created.
 ///
 public struct StockFlowSimulationSystem: System {
+    // TODO: [IMPORTANT] Break it down. This is a port from original non-ECS simulation compiler, still uses the original large object pattern.
     nonisolated(unsafe) public static let dependencies: [SystemDependency] = [
         .after(SimulationPlanningSystem.self),
     ]
