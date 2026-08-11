@@ -69,6 +69,15 @@ class StateVariableTable {
 
 }
 
+extension StateVariableTable: VariableNameLookup {
+    typealias Variable = BoundVariable
+    func variable(named name: String) -> Variable? {
+        guard let variable = self[name] else { return nil }
+        return BoundVariable(index: variable.index, valueType: variable.valueType)
+    }
+
+}
+
 /// System that creates the final simulation plan.
 ///
 /// - **Dependency:**
@@ -110,14 +119,8 @@ public struct SimulationPlanningSystem: System {
         .after(StockDependencySystem.self),
     ]
     
-    let builtinFunctions: [String:Function]
-    
     public init(_ world: World) {
-        var builtinFunctions: [String:Function] = [:]
-        for function in Function.AllBuiltinFunctions {
-            builtinFunctions[function.name] = function
-        }
-        self.builtinFunctions = builtinFunctions
+        // Nothing any more
     }
     
     public func update(_ world: World) throws (InternalSystemError) {
@@ -298,9 +301,7 @@ public struct SimulationPlanningSystem: System {
         //
         let boundExpression: BoundExpression
         do {
-            boundExpression = try bindExpression(expression,
-                                                 variables: variables,
-                                                 functions: self.builtinFunctions)
+            boundExpression = try Evaluator.bind(expression, variables: variables)
         }
         catch /* ExpressionError */ {
             let issue = Issue(
@@ -323,7 +324,7 @@ public struct SimulationPlanningSystem: System {
     
     /// Compiles a graphical function.
     ///
-    /// This method creates a ``/PoieticCore/Function`` object with a single argument and a
+    /// This method creates a bound graphical function object with a single argument and a
     /// numeric return value. The function will compute the output based on the
     /// input parameter and on specifics of the graphical function points
     /// interpolation.
@@ -331,7 +332,7 @@ public struct SimulationPlanningSystem: System {
     /// - Requires: node
     /// - Throws: ``NodeIssue`` if the function parameter is not connected.
     ///
-    /// - SeeAlso: ``CompiledGraphicalFunction``, ``Solver/evaluate(objectAt:with:)``
+    /// - SeeAlso: ``BoundGraphicalFunction``, ``Solver/evaluate(objectAt:with:)``
     ///
     func compileGraphicalFunctionNode(_ object: ObjectSnapshot,
                                       entity: RuntimeEntity,

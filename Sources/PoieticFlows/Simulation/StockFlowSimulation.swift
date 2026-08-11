@@ -10,6 +10,14 @@
 
 import PoieticCore
 
+// for evaluation
+extension SimulationState: VariableValueLookup {
+    public typealias Variable = BoundVariable
+    public func value(for variable: Variable) -> Variant {
+        return self[variable.index]
+    }
+}
+
 /// Stock-Flow simulation specific computation and logic.
 ///
 public class StockFlowSimulation: Simulation {
@@ -104,7 +112,7 @@ public class StockFlowSimulation: Simulation {
         do {
             switch object.computation {
             case let .formula(expression):
-                result = try evaluate(expression: expression, with: state)
+                result = try Evaluator.evaluate(expression: expression, lookup: state)
             case let .graphicalFunction(function):
                 result = try evaluate(graphicalFunction: function, with: state)
             case let .delay(delay):
@@ -236,7 +244,7 @@ public class StockFlowSimulation: Simulation {
             switch object.computation {
                 
             case let .formula(expression):
-                result = try evaluate(expression: expression, with: state)
+                result = try Evaluator.evaluate(expression: expression, lookup: state)
                 
             case let .graphicalFunction(function):
                 result = try evaluate(graphicalFunction: function, with: state)

@@ -14,14 +14,6 @@ public struct SimulationError: Error {
     let error: any Error
 }
 
-/// Error raised during simulation.
-///
-public enum EvaluationError: Error {
-    case invalidNumber
-    case valueError(ValueError)
-    case functionError(String, FunctionError)
-}
-
 /// Protocol for different kinds of simulations.
 ///
 /// Objects conforming to this protocol can be used with the ``Simulator`` to
@@ -55,50 +47,3 @@ public protocol Simulation {
 
 }
 
-extension Simulation {
-    /// Evaluates an arithmetic expression within a simulation state.
-    ///
-    /// - Returns: Result of the evaluation.
-    ///
-    public func evaluate(expression: BoundExpression,
-                         with state: SimulationState) throws (EvaluationError) -> Variant {
-        switch expression {
-        case let .value(value):
-            return value
-            
-        case let .binary(op, left, right):
-            let leftValue = try evaluate(expression: left, with: state)
-            let rightValue = try evaluate(expression: right, with: state)
-            
-            do {
-                return try op.apply([leftValue, rightValue])
-            }
-            catch {
-                throw .functionError(op.name, error)
-            }
-            
-        case let .unary(op, operand):
-            let opValue = try evaluate(expression: operand, with: state)
-            do {
-                return try op.apply([opValue])
-            }
-            catch {
-                throw .functionError(op.name, error)
-            }
-        
-        case let .function(function, arguments):
-            let argValues = try arguments.map { expr throws (EvaluationError) in
-                try evaluate(expression: expr, with: state)
-            }
-            do {
-                return try function.apply(argValues)
-            }
-            catch {
-                throw .functionError(function.name, error)
-            }
-            
-        case let .variable(variable):
-            return state[variable.index]
-        }
-    }
-}
