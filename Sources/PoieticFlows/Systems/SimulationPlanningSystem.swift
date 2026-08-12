@@ -124,7 +124,7 @@ public struct SimulationPlanningSystem: System {
     }
     
     public func update(_ world: World) throws (InternalSystemError) {
-        guard let frame = world.frame,
+        guard let frame = world.plane,
               let simOrder: SimulationOrderComponent = world.singleton()
         else { return }
         

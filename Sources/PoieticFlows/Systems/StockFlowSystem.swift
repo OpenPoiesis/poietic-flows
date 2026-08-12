@@ -19,7 +19,7 @@ public struct FlowCollectorSystem: System {
     public init(_ world: World) { }
 
     public func update(_ world: World) throws (InternalSystemError) {
-        guard let frame = world.frame else { return }
+        guard let frame = world.plane else { return }
         
         for flow in frame.filter(type: .FlowRate) {
             let entity = world.entity(flow.objectID)!
@@ -58,7 +58,7 @@ public struct StockDependencySystem: System {
     ]
     
     public func update(_ world: World) throws (InternalSystemError) {
-        guard let frame = world.frame else { return }
+        guard let frame = world.plane else { return }
 
         var filledByRate: [ObjectID:[ObjectID]] = [:] // Flows filling a stock
         var drainedByRate: [ObjectID:[ObjectID]] = [:] // Flows draining a stock

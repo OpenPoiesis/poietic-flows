@@ -60,7 +60,7 @@ public struct ParameterResolutionSystem: System {
     public init(_ world: World) { }
 
     public func update(_ world: World) throws (InternalSystemError) {
-        guard let frame = world.frame else { return }
+        guard let frame = world.plane else { return }
         try resolveFormulas(world, frame: frame)
         try resolveAuxiliaries(world, frame: frame, type: .GraphicalFunction)
         try resolveAuxiliaries(world, frame: frame, type: .Delay)

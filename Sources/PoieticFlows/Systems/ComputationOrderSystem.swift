@@ -21,7 +21,7 @@ public struct ComputationOrderSystem: System {
     public init(_ world: World) { }
 
     public func update(_ world: World) throws (InternalSystemError) {
-        guard let frame = world.frame
+        guard let frame = world.plane
         else { return }
         
         guard let snapshots = orderedSnapshots(world: world, frame: frame) else {

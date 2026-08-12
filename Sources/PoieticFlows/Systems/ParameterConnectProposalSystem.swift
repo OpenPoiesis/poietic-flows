@@ -72,7 +72,7 @@ public struct ParameterConnectionProposalSystem: System {
         
         let contained: Set<ObjectID>
         if let selection: Selection = world.singleton(),
-           let frame = world.frame
+           let frame = world.plane
         {
             contained = Set(frame.contained(selection))
         }

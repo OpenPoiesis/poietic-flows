@@ -43,7 +43,7 @@ extension TransientPlane {
    
     func acceptAndUpdate() throws {
         let accepted = try design.accept(frame)
-        world.setFrame(accepted)
+        world.setPlane(accepted)
         try world.run(schedule: PlaneChangeSchedule.self)
     }
     

@@ -24,7 +24,7 @@ public struct NewChartResolutionSystem: System {
     public init(_ world: World) { }
 
     public func update(_ world: World) throws (InternalSystemError) {
-        guard let frame = world.frame else { return }
+        guard let frame = world.plane else { return }
 
         processCharts(world, frame: frame)
         processSeries(world, frame: frame)

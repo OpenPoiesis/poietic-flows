@@ -20,7 +20,7 @@ import Testing
     
     func accept(_ frame: TransientPlane) throws -> World {
         let accepted = try design.accept(frame)
-        let world = World(frame: accepted)
+        let world = World(plane: accepted)
         return world
     }
     

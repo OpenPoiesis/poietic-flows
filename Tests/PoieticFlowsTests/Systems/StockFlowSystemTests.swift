@@ -20,7 +20,7 @@ import Testing
 
     func accept(_ frame: TransientPlane) throws -> World {
         let stable = try design.accept(frame)
-        return World(frame: stable)
+        return World(plane: stable)
     }
 
     // MARK: - Basic Sanity Tests
@@ -131,7 +131,7 @@ import Testing
     
     func accept(_ frame: TransientPlane) throws -> World {
         let stable = try design.accept(frame)
-        let world = World(frame: stable)
+        let world = World(plane: stable)
         let flowSystem = FlowCollectorSystem(world)
         try flowSystem.update(world)
         return world

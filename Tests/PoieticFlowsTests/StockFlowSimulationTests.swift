@@ -35,7 +35,7 @@ import Testing
     
     func accept() throws -> SimulationPlan {
         let accepted = try design.accept(frame)
-        world.setFrame(accepted)
+        world.setPlane(accepted)
         try world.run(schedule: PlaneChangeSchedule.self)
         let plan: SimulationPlan = try #require(world.singleton())
         return plan
