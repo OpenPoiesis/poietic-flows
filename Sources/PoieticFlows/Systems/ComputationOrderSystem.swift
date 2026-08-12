@@ -67,7 +67,7 @@ public struct ComputationOrderSystem: System {
         world.setSingleton(orderComponent)
     }
     
-    func orderedSnapshots(world: World, frame: DesignFrame) -> [ObjectSnapshot]? {
+    func orderedSnapshots(world: World, frame: DesignPlane) -> [ObjectSnapshot]? {
         // TODO: Replace with SimulationObject trait once we have it (there are practical reasons we don't yet)
         // TODO: Should we use Trait.Stock?
         // Note: See also roles in update() method

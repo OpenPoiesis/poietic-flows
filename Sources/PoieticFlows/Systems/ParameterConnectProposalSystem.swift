@@ -46,7 +46,7 @@ public struct ParameterProposal: Component {
 /// ```swift
 /// // Assume the world and trans are given as:
 /// let world: World
-/// let trans: TransientFrame
+/// let trans: TransientPlane
 ///
 /// let proposal: ParameterProposal = world.singleton()!
 ///

@@ -24,7 +24,7 @@ public struct FlowCollectorSystem: System {
         for flow in frame.filter(type: .FlowRate) {
             let entity = world.entity(flow.objectID)!
             
-            // We assume the frame edge reqThank uirements were satisfied, therefore there is most one edge of each
+            // We assume the plane edge reqThank uirements were satisfied, therefore there is most one edge of each
             let fills: ObjectID? = frame.outgoing(flow.objectID).first {
                 $0.object.type === ObjectType.Flow
             }?.target

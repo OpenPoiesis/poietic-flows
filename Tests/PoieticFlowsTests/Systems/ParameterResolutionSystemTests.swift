@@ -11,14 +11,14 @@ import Testing
 
 @Suite struct ParameterResolutionSystemTests {
     let design: Design
-    let frame: TransientFrame
+    let frame: TransientPlane
 
     init() throws {
         self.design = Design(metamodel: StockFlowMetamodel)
-        self.frame = design.createFrame()
+        self.frame = design.createPlane()
     }
 
-    func accept(_ frame: TransientFrame) throws -> World {
+    func accept(_ frame: TransientPlane) throws -> World {
         let accepted = try design.accept(frame)
         return World(frame: accepted)
     }

@@ -12,12 +12,12 @@ import Testing
 
 @Suite struct FlowsMetamodelTest {
     let design: Design
-    let frame: TransientFrame
+    let frame: TransientPlane
     let checker: ConstraintChecker
 
     init() throws {
         self.design = Design(metamodel: StockFlowMetamodel)
-        self.frame = design.createFrame()
+        self.frame = design.createPlane()
         self.checker = ConstraintChecker(design.metamodel)
     }
     
@@ -60,7 +60,7 @@ import Testing
         let b = frame.createNode(.Stock, name: "b", attributes: ["formula": "0"])
         let e1 = frame.createEdge(.Flow, origin: a, target: b)
         let e2 = frame.createEdge(.Flow, origin: flow, target: flow)
-        // frame.createEdge(.Flow, origin: flow, target: b)
+        // plane.createEdge(.Flow, origin: flow, target: b)
         let result = checker.diagnose(frame)
         #expect(result.edgeRuleViolations.count == 2)
         let err1 = try #require(result.edgeRuleViolations[e1.objectID]?.first)

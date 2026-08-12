@@ -23,7 +23,7 @@ final class TestControls: XCTestCase {
     
     func compile() throws {
         guard let frame else {
-            XCTFail("No frame to compile")
+            XCTFail("No plane to compile")
             return
         }
         let compiler = Compiler(frame: try design.validate(try design.accept(frame)))

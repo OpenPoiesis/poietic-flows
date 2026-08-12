@@ -9,7 +9,7 @@ import Testing
 @testable import PoieticFlows
 @testable import PoieticCore
 
-extension TransientFrame {
+extension TransientPlane {
     @discardableResult
     public func createEdge(_ type: ObjectType,
                            origin: TransientObject,
@@ -28,15 +28,15 @@ extension TransientFrame {
 
 @Suite struct CompilerTest {
     let design: Design
-    let frame: TransientFrame
+    let frame: TransientPlane
     let world: World
     
     init() throws {
         self.design = Design(metamodel: StockFlowMetamodel)
-        self.frame = design.createFrame()
+        self.frame = design.createPlane()
         self.world = World(design: design)
         self.world.addSchedule(Schedule(
-            label: FrameChangeSchedule.self,
+            label: PlaneChangeSchedule.self,
             systems: SimulationPlanningSystems
         ))
     }
@@ -44,7 +44,7 @@ extension TransientFrame {
     func acceptAndUpdate() throws {
         let accepted = try design.accept(frame)
         world.setFrame(accepted)
-        try world.run(schedule: FrameChangeSchedule.self)
+        try world.run(schedule: PlaneChangeSchedule.self)
     }
     
     @Test func noComputedVariables() throws {

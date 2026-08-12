@@ -72,8 +72,8 @@ extension MutableGraph {
 /// ```
 ///
 /// The created model is accepted into the design and is available
-/// as the last frame in the design frame history, also known as the
-/// "current frame".
+/// as the last plane in the design plane history, also known as the
+/// "current plane".
 ///
 public func CreatePredatorPreyDemo(in design: Design) throws {
     let frame = design.deriveFrame()

@@ -20,7 +20,7 @@ import Testing
     }
     
     @Test func validParameterEdges() async throws {
-        let frame = design.createFrame()
+        let frame = design.createPlane()
         let stock = frame.createNode(.Stock)
         let aux = frame.createNode(.Auxiliary)
         let flow = frame.createNode(.FlowRate)
@@ -45,7 +45,7 @@ import Testing
     }
     
     @Test func validateFlowEdges() async throws {
-        let frame = design.createFrame()
+        let frame = design.createPlane()
         let stock = frame.createNode(.Stock)
         let inflow = frame.createNode(.FlowRate)
         let outflow = frame.createNode(.FlowRate)
@@ -86,7 +86,7 @@ import Testing
 
     }
     @Test func cloud() async throws {
-        let frame = design.createFrame()
+        let frame = design.createPlane()
         let cloud1 = frame.createNode(.Cloud)
         let cloud2 = frame.createNode(.Cloud)
         let inflow = frame.createNode(.FlowRate)
@@ -101,7 +101,7 @@ import Testing
 
 //    @Test
     func inOutCloud() async throws {
-        let frame = design.createFrame()
+        let frame = design.createPlane()
         let cloud = frame.createNode(.Cloud)
         let inflow = frame.createNode(.FlowRate)
         let outflow = frame.createNode(.FlowRate)
@@ -124,30 +124,30 @@ import Testing
 
 
 //    @Test func invalidParameterEdges() async throws {
-//        let frame = design.createFrame()
-//        let stock = frame.createNode(.Stock)
-//        let aux = frame.createNode(.Auxiliary)
-//        let flow = frame.createNode(.FlowRate)
+//        let plane = design.createFrame()
+//        let stock = plane.createNode(.Stock)
+//        let aux = plane.createNode(.Auxiliary)
+//        let flow = plane.createNode(.FlowRate)
 //        
-//        let aux_stock = frame.createEdge(.Parameter, origin: aux.id, target: stock.id)
+//        let aux_stock = plane.createEdge(.Parameter, origin: aux.id, target: stock.id)
 //        #expect(throws: EdgeRuleViolation.noSatisfiedRule(.Parameter)) {
-//            try checker.validate(edge: frame.edge(aux_stock.id), in: frame)
+//            try checker.validate(edge: plane.edge(aux_stock.id), in: plane)
 //        }
 //        
 //        
-//        let stock_stock = frame.createEdge(.Parameter, origin: stock.id, target: stock.id)
+//        let stock_stock = plane.createEdge(.Parameter, origin: stock.id, target: stock.id)
 //        #expect(throws: EdgeRuleViolation.noSatisfiedRule(.Parameter)) {
-//            try checker.validate(edge: frame.edge(stock_stock.id), in: frame)
+//            try checker.validate(edge: plane.edge(stock_stock.id), in: plane)
 //        }
 //        
-//        let flow_stock = frame.createEdge(.Parameter, origin: flow.id, target: stock.id)
+//        let flow_stock = plane.createEdge(.Parameter, origin: flow.id, target: stock.id)
 //        #expect(throws: EdgeRuleViolation.noSatisfiedRule(.Parameter)) {
-//            try checker.validate(edge: frame.edge(flow_stock.id), in: frame)
+//            try checker.validate(edge: plane.edge(flow_stock.id), in: plane)
 //        }
 //    }
     
     @Test func graphicalFunctionOneParameter() async throws {
-        let frame = design.createFrame()
+        let frame = design.createPlane()
         let gf = frame.createNode(.GraphicalFunction)
         let aux = frame.createNode(.Auxiliary)
 

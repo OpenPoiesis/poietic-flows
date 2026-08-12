@@ -30,7 +30,7 @@ public struct NewChartResolutionSystem: System {
         processSeries(world, frame: frame)
     }
 
-    func processCharts(_ world: World, frame: DesignFrame) {
+    func processCharts(_ world: World, frame: DesignPlane) {
         for chartObject in frame.filter(type: .Chart) {
             guard let chartEntity = world.entity(chartObject.objectID)
             else { continue }
@@ -39,7 +39,7 @@ public struct NewChartResolutionSystem: System {
         }
     }
     
-    func processSeries(_ world: World, frame: DesignFrame) {
+    func processSeries(_ world: World, frame: DesignPlane) {
 
         for seriesEdge in frame.filter(type: .ChartSeries) {
             guard let seriesEntity = world.entity(seriesEdge.objectID),
