@@ -19,7 +19,7 @@ extension ObjectType {
     public static let Stock = ObjectType(
         // FIXME: Rename to "Reservoir" and make it conform to "Stock"
         name: "Stock",
-        structuralType: .node,
+        topologyType: .node,
         traits: [
             Trait.Name,
             Trait.Color,
@@ -52,7 +52,7 @@ extension ObjectType {
     ///
     public static let FlowRate = ObjectType(
         name: "FlowRate",
-        structuralType: .node,
+        topologyType: .node,
         traits: [
             Trait.Name,
             Trait.Color,
@@ -69,7 +69,7 @@ extension ObjectType {
     ///
     public static let Auxiliary = ObjectType(
         name: "Auxiliary",
-        structuralType: .node,
+        topologyType: .node,
         traits: [
             Trait.Auxiliary,
             Trait.Name,
@@ -88,7 +88,7 @@ extension ObjectType {
     ///
     public static let Cloud = ObjectType(
         name: "Cloud",
-        structuralType: .node,
+        topologyType: .node,
         traits: [
             Trait.Stock,
             Trait.DiagramBlock,
@@ -102,7 +102,7 @@ extension ObjectType {
     ///
     public static let GraphicalFunction = ObjectType(
         name: "GraphicalFunction",
-        structuralType: .node,
+        topologyType: .node,
         traits: [
             Trait.Auxiliary,
             Trait.Color,
@@ -118,7 +118,7 @@ extension ObjectType {
     ///
     public static let Delay = ObjectType(
         name: "Delay",
-        structuralType: .node,
+        topologyType: .node,
         traits: [
             Trait.Auxiliary,
             Trait.Color,
@@ -135,7 +135,7 @@ extension ObjectType {
     ///
     public static let Smooth = ObjectType(
         name: "Smooth",
-        structuralType: .node,
+        topologyType: .node,
         traits: [
             Trait.Color,
             Trait.ComputedValue,
@@ -156,7 +156,7 @@ extension ObjectType {
     ///
     public static let Control = ObjectType(
         name: "Control",
-        structuralType: .node,
+        topologyType: .node,
         traits: [
             Trait.Name,
             Trait.Control,
@@ -171,7 +171,7 @@ extension ObjectType {
     ///
     public static let Chart = ObjectType(
         name: "Chart",
-        structuralType: .node,
+        topologyType: .node,
         traits: [
             Trait.Orderable,
             Trait.Chart,
@@ -185,7 +185,7 @@ extension ObjectType {
     ///
     public static let Note = ObjectType(
         name: "Note",
-        structuralType: .node,
+        topologyType: .node,
         traits: [
             .DiagramBlock,
             .Note,
@@ -194,7 +194,7 @@ extension ObjectType {
 
     public static let Comment = ObjectType(
         name: "Comment",
-        structuralType: .edge,
+        topologyType: .edge,
         traits: [
             .DiagramConnector
         ]
@@ -209,7 +209,7 @@ extension ObjectType {
     ///
     public static let Flow = ObjectType(
         name: "Flow",
-        structuralType: .edge,
+        topologyType: .edge,
         traits: [
             .DiagramConnector
         ],
@@ -223,7 +223,7 @@ extension ObjectType {
     ///
     public static let Parameter = ObjectType(
         name: "Parameter",
-        structuralType: .edge,
+        topologyType: .edge,
         traits: [
             .DiagramConnector
         ]
@@ -236,7 +236,7 @@ extension ObjectType {
     ///
     public static let ValueBinding = ObjectType(
         name: "ValueBinding",
-        structuralType: .edge,
+        topologyType: .edge,
         traits: [
             // None for now
         ],
@@ -251,7 +251,7 @@ extension ObjectType {
     ///
     public static let ChartSeries = ObjectType(
         name: "ChartSeries",
-        structuralType: .edge,
+        topologyType: .edge,
         traits: [
             Trait.Orderable,
             Trait.ChartSeries,
@@ -264,7 +264,7 @@ extension ObjectType {
     
     public static let Scenario = ObjectType(
         name: "Scenario",
-        structuralType: .node,
+        topologyType: .node,
         traits: [
             Trait.Name,
             Trait.Documentation,
@@ -276,7 +276,7 @@ extension ObjectType {
     
     public static let Simulation = ObjectType (
         name: "Simulation",
-        structuralType: .unstructured,
+        topologyType: .unstructured,
         traits: [
             Trait.Simulation,
         ]

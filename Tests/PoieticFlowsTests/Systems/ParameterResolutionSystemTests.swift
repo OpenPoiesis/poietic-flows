@@ -27,7 +27,7 @@ import Testing
 
     @Test func noComponentForNonFormulaNode() throws {
         // DesignInfo has no formula, so no ResolvedParametersComponent should be created
-        let info = plane.create(.DesignInfo, structure: .unstructured)
+        let info = plane.create(.DesignInfo, topology: .unstructured)
 
         let world = try accept(plane)
 

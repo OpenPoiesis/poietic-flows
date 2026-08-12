@@ -15,11 +15,11 @@ extension TransientPlane {
                            origin: TransientObject,
                            target: TransientObject,
                            attributes: [String:Variant] = [:]) -> TransientObject {
-        precondition(type.structuralType == .edge, "Structural type mismatch")
+        precondition(type.topologyType == .edge, "Structural type mismatch")
         precondition(contains(origin.objectID), "Missing edge origin")
         precondition(contains(target.objectID), "Missing edge target")
 
-        let snapshot = create(type, structure: .edge(origin.objectID, target.objectID), attributes: attributes)
+        let snapshot = create(type, topology: .edge(origin.objectID, target.objectID), attributes: attributes)
         
         return snapshot
     }

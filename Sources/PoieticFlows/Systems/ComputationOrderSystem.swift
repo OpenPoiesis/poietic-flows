@@ -21,10 +21,10 @@ public struct ComputationOrderSystem: System {
     public init(_ world: World) { }
 
     public func update(_ world: World) throws (InternalSystemError) {
-        guard let frame = world.plane
+        guard let plane = world.plane
         else { return }
         
-        guard let snapshots = orderedSnapshots(world: world, frame: frame) else {
+        guard let snapshots = orderedSnapshots(world: world, plane: plane) else {
             return
         }
 
@@ -67,18 +67,18 @@ public struct ComputationOrderSystem: System {
         world.setSingleton(orderComponent)
     }
     
-    func orderedSnapshots(world: World, frame: DesignPlane) -> [ObjectSnapshot]? {
+    func orderedSnapshots(world: World, plane: DesignPlane) -> [ObjectSnapshot]? {
         // TODO: Replace with SimulationObject trait once we have it (there are practical reasons we don't yet)
         // TODO: Should we use Trait.Stock?
         // Note: See also roles in update() method
-        let unordered: [ObjectSnapshot] = frame.filter {
+        let unordered: [ObjectSnapshot] = plane.filter {
             ($0.type === ObjectType.Stock
                 || $0.type === ObjectType.FlowRate
                 || $0.type.hasTrait(Trait.Auxiliary))
         }
 
         // 2. Sort nodes based on computation dependency.
-        let parameterEdges:[DesignObjectEdge] = frame.edges.filter {
+        let parameterEdges:[DesignObjectEdge] = plane.edges.filter {
             $0.object.type === ObjectType.Parameter
         }
 
@@ -114,7 +114,7 @@ public struct ComputationOrderSystem: System {
             return nil
         }
 
-        let snapshots = ordered.compactMap { frame[$0] }
+        let snapshots = ordered.compactMap { plane[$0] }
         return snapshots
     }
 

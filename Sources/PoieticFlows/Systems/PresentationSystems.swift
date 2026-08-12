@@ -43,7 +43,7 @@ public struct NewChartResolutionSystem: System {
 
         for seriesEdge in frame.filter(type: .ChartSeries) {
             guard let seriesEntity = world.entity(seriesEdge.objectID),
-                  case .edge(let originID, let targetID) = seriesEdge.structure,
+                  case .edge(let originID, let targetID) = seriesEdge.topology,
                   let targetObject = frame[targetID],
                   let targetEntity = world.entity(targetID),
                   let chartEntity = world.entity(originID)
