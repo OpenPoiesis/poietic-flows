@@ -11,16 +11,16 @@ import Testing
 
 @Suite struct NameResolutionSystemTests {
     let design: Design
-    let frame: TransientFrame
+    let frame: TransientPlane
     
     init() throws {
         self.design = Design(metamodel: StockFlowMetamodel)
-        self.frame = design.createFrame()
+        self.frame = design.createPlane()
     }
     
-    func accept(_ frame: TransientFrame) throws -> World {
+    func accept(_ frame: TransientPlane) throws -> World {
         let accepted = try design.accept(frame)
-        let world = World(frame: accepted)
+        let world = World(plane: accepted)
         
         let system = ComputationOrderSystem(world)
         try system.update(world)

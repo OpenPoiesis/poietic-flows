@@ -60,14 +60,14 @@ public struct ParameterResolutionSystem: System {
     public init(_ world: World) { }
 
     public func update(_ world: World) throws (InternalSystemError) {
-        guard let frame = world.frame else { return }
+        guard let frame = world.plane else { return }
         try resolveFormulas(world, frame: frame)
         try resolveAuxiliaries(world, frame: frame, type: .GraphicalFunction)
         try resolveAuxiliaries(world, frame: frame, type: .Delay)
         try resolveAuxiliaries(world, frame: frame, type: .Smooth)
     }
 
-    public func resolveFormulas(_ world: World, frame: DesignFrame) throws (InternalSystemError) {
+    public func resolveFormulas(_ world: World, frame: DesignPlane) throws (InternalSystemError) {
         let builtinNames = BuiltinVariable.allNames
 
         for (entity, exprComponent) in world.query(ParsedExpressionComponent.self) {
@@ -134,7 +134,7 @@ public struct ParameterResolutionSystem: System {
     ///
     /// - Requirement: The auxiliary should have one incoming parameter.
     ///
-    public func resolveAuxiliaries(_ world: World, frame: DesignFrame, type: ObjectType)
+    public func resolveAuxiliaries(_ world: World, frame: DesignPlane, type: ObjectType)
     throws (InternalSystemError) {
         for object in frame.filter(type: type) {
             guard let entity = world.entity(object.objectID) else { continue }

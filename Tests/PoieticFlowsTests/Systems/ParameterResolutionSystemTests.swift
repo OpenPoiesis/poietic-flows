@@ -11,25 +11,25 @@ import Testing
 
 @Suite struct ParameterResolutionSystemTests {
     let design: Design
-    let frame: TransientFrame
+    let plane: TransientPlane
 
     init() throws {
         self.design = Design(metamodel: StockFlowMetamodel)
-        self.frame = design.createFrame()
+        self.plane = design.createPlane()
     }
 
-    func accept(_ frame: TransientFrame) throws -> World {
-        let accepted = try design.accept(frame)
-        return World(frame: accepted)
+    func accept(_ plane: TransientPlane) throws -> World {
+        let accepted = try design.accept(plane)
+        return World(plane: accepted)
     }
 
     // MARK: - Basic Sanity Tests
 
     @Test func noComponentForNonFormulaNode() throws {
         // DesignInfo has no formula, so no ResolvedParametersComponent should be created
-        let info = frame.create(.DesignInfo, structure: .unstructured)
+        let info = plane.create(.DesignInfo, topology: .unstructured)
 
-        let world = try accept(frame)
+        let world = try accept(plane)
 
         let parser = ExpressionParserSystem(world)
         parser.update(world)
@@ -46,10 +46,10 @@ import Testing
 
     @Test func formulaWithoutParameters() throws {
         // Formula "1 + 1" requires no parameters
-        let aux = frame.createNode(ObjectType.Auxiliary,
+        let aux = plane.createNode(ObjectType.Auxiliary,
                                    name: "aux", attributes: ["formula": "1 + 1"])
 
-        let world = try accept(frame)
+        let world = try accept(plane)
 
         let parser = ExpressionParserSystem(world)
         parser.update(world)
@@ -65,12 +65,12 @@ import Testing
 
     @Test func formulaWithCorrectParameter() throws {
         // Formula "x" with parameter x connected
-        let x = frame.createNode(ObjectType.Auxiliary, name: "x", attributes: ["formula": "10"])
-        let aux = frame.createNode(ObjectType.Auxiliary, name: "consumer", attributes: ["formula": "x"])
+        let x = plane.createNode(ObjectType.Auxiliary, name: "x", attributes: ["formula": "10"])
+        let aux = plane.createNode(ObjectType.Auxiliary, name: "consumer", attributes: ["formula": "x"])
 
-        frame.createEdge(.Parameter, origin: x, target: aux)
+        plane.createEdge(.Parameter, origin: x, target: aux)
 
-        let world = try accept(frame)
+        let world = try accept(plane)
 
         let parser = ExpressionParserSystem(world)
         parser.update(world)
@@ -89,9 +89,9 @@ import Testing
 
     @Test func formulaWithMissingParameter() throws {
         // Formula "x" without parameter connection
-        let aux = frame.createNode(ObjectType.Auxiliary, name: "consumer", attributes: ["formula": "x"])
+        let aux = plane.createNode(ObjectType.Auxiliary, name: "consumer", attributes: ["formula": "x"])
 
-        let world = try accept(frame)
+        let world = try accept(plane)
 
         let parser = ExpressionParserSystem(world)
         parser.update(world)
@@ -110,14 +110,14 @@ import Testing
 
     @Test func formulaWithUnusedParameter() throws {
         // Formula "x" with unused parameter "y" connected
-        let x = frame.createNode(.Auxiliary, name: "x", attributes: ["formula": "10"])
-        let y = frame.createNode(.Auxiliary, name: "y", attributes: ["formula": "20"])
-        let aux = frame.createNode(.Auxiliary, name: "consumer", attributes: ["formula": "x"])
+        let x = plane.createNode(.Auxiliary, name: "x", attributes: ["formula": "10"])
+        let y = plane.createNode(.Auxiliary, name: "y", attributes: ["formula": "20"])
+        let aux = plane.createNode(.Auxiliary, name: "consumer", attributes: ["formula": "x"])
 
-        frame.createEdge(.Parameter, origin: x, target: aux)
-        frame.createEdge(.Parameter, origin: y, target: aux)
+        plane.createEdge(.Parameter, origin: x, target: aux)
+        plane.createEdge(.Parameter, origin: y, target: aux)
 
-        let world = try accept(frame)
+        let world = try accept(plane)
 
         let parser = ExpressionParserSystem(world)
         parser.update(world)
@@ -136,16 +136,16 @@ import Testing
 
     @Test func formulaWithMixedParameters() throws {
         // Formula "a + b" with: a correct, c unused, b missing
-        let a = frame.createNode(.Auxiliary, name: "a", attributes: ["formula": "10"])
-        let _ = frame.createNode(.Auxiliary, name: "b", attributes: ["formula": "20"])
-        let c = frame.createNode(.Auxiliary, name: "c", attributes: ["formula": "30"])
-        let aux = frame.createNode(.Auxiliary, name: "consumer", attributes: ["formula": "a + b"])
+        let a = plane.createNode(.Auxiliary, name: "a", attributes: ["formula": "10"])
+        let _ = plane.createNode(.Auxiliary, name: "b", attributes: ["formula": "20"])
+        let c = plane.createNode(.Auxiliary, name: "c", attributes: ["formula": "30"])
+        let aux = plane.createNode(.Auxiliary, name: "consumer", attributes: ["formula": "a + b"])
 
-        frame.createEdge(.Parameter, origin: a, target: aux)
-        frame.createEdge(.Parameter, origin: c, target: aux)
+        plane.createEdge(.Parameter, origin: a, target: aux)
+        plane.createEdge(.Parameter, origin: c, target: aux)
         // Note: b is created but not connected
 
-        let world = try accept(frame)
+        let world = try accept(plane)
 
         let parser = ExpressionParserSystem(world)
         parser.update(world)
@@ -165,9 +165,9 @@ import Testing
 
     @Test func formulaWithBuiltinVariable() throws {
         // Formula using "time" builtin - should not require connection
-        let aux = frame.createNode(.Auxiliary, name: "timer", attributes: ["formula": "time * 2"])
+        let aux = plane.createNode(.Auxiliary, name: "timer", attributes: ["formula": "time * 2"])
 
-        let world = try accept(frame)
+        let world = try accept(plane)
 
         let parser = ExpressionParserSystem(world)
         parser.update(world)
@@ -183,16 +183,16 @@ import Testing
 
     @Test func formulaWithMultipleCorrectParameters() throws {
         // Formula "x + y + z" with all parameters connected
-        let x = frame.createNode(.Auxiliary, name: "x", attributes: ["formula": "1"])
-        let y = frame.createNode(.Auxiliary, name: "y", attributes: ["formula": "2"])
-        let z = frame.createNode(.Auxiliary, name: "z", attributes: ["formula": "3"])
-        let aux = frame.createNode(.Auxiliary, name: "sum", attributes: ["formula": "x + y + z"])
+        let x = plane.createNode(.Auxiliary, name: "x", attributes: ["formula": "1"])
+        let y = plane.createNode(.Auxiliary, name: "y", attributes: ["formula": "2"])
+        let z = plane.createNode(.Auxiliary, name: "z", attributes: ["formula": "3"])
+        let aux = plane.createNode(.Auxiliary, name: "sum", attributes: ["formula": "x + y + z"])
 
-        frame.createEdge(.Parameter, origin: x, target: aux)
-        frame.createEdge(.Parameter, origin: y, target: aux)
-        frame.createEdge(.Parameter, origin: z, target: aux)
+        plane.createEdge(.Parameter, origin: x, target: aux)
+        plane.createEdge(.Parameter, origin: y, target: aux)
+        plane.createEdge(.Parameter, origin: z, target: aux)
 
-        let world = try accept(frame)
+        let world = try accept(plane)
 
         let parser = ExpressionParserSystem(world)
         parser.update(world)
@@ -215,9 +215,9 @@ import Testing
 
     @Test func delayWithoutParameter() throws {
         // Delay node with no parameter - should error
-        let delay = frame.createNode(.Delay, name: "delayed", attributes: ["delay_duration": 5])
+        let delay = plane.createNode(.Delay, name: "delayed", attributes: ["delay_duration": 5])
 
-        let world = try accept(frame)
+        let world = try accept(plane)
 
         let parser = ExpressionParserSystem(world)
         parser.update(world)
@@ -234,11 +234,11 @@ import Testing
 
     @Test func delayWithOneParameter() throws {
         // Delay node with one parameter - correct
-        let source = frame.createNode(.Auxiliary, name: "source", attributes: ["formula": "100"])
-        let delay = frame.createNode(.Delay, name: "delayed", attributes: ["delay_duration": 5])
-        frame.createEdge(.Parameter, origin: source, target: delay)
+        let source = plane.createNode(.Auxiliary, name: "source", attributes: ["formula": "100"])
+        let delay = plane.createNode(.Delay, name: "delayed", attributes: ["delay_duration": 5])
+        plane.createEdge(.Parameter, origin: source, target: delay)
 
-        let world = try accept(frame)
+        let world = try accept(plane)
 
         let parser = ExpressionParserSystem(world)
         parser.update(world)
@@ -255,13 +255,13 @@ import Testing
     }
 
     @Test func delayWithTwoParameters() throws {
-        let source1 = frame.createNode(.Auxiliary, name: "source1", attributes: ["formula": "100"])
-        let source2 = frame.createNode(.Auxiliary, name: "source2", attributes: ["formula": "100"])
-        let delay = frame.createNode(.Delay, name: "delayed", attributes: ["delay_duration": 5])
-        frame.createEdge(.Parameter, origin: source1, target: delay)
-        frame.createEdge(.Parameter, origin: source2, target: delay)
+        let source1 = plane.createNode(.Auxiliary, name: "source1", attributes: ["formula": "100"])
+        let source2 = plane.createNode(.Auxiliary, name: "source2", attributes: ["formula": "100"])
+        let delay = plane.createNode(.Delay, name: "delayed", attributes: ["delay_duration": 5])
+        plane.createEdge(.Parameter, origin: source1, target: delay)
+        plane.createEdge(.Parameter, origin: source2, target: delay)
 
-        let world = try accept(frame)
+        let world = try accept(plane)
 
         let parser = ExpressionParserSystem(world)
         parser.update(world)
@@ -279,16 +279,16 @@ import Testing
     // MARK: - Other auxiliaries
 
     @Test func correctOneParameterAuxiliaries() throws {
-        let source = frame.createNode(.Auxiliary, name: "source", attributes: ["formula": "100"])
-        let gf = frame.createNode(.GraphicalFunction, name: "lookup")
-        let delay = frame.createNode(.Delay, name: "delayed", attributes: ["delay_duration": 5])
-        let smooth = frame.createNode(.Smooth, name: "smoothed", attributes: ["window_time": 5])
+        let source = plane.createNode(.Auxiliary, name: "source", attributes: ["formula": "100"])
+        let gf = plane.createNode(.GraphicalFunction, name: "lookup")
+        let delay = plane.createNode(.Delay, name: "delayed", attributes: ["delay_duration": 5])
+        let smooth = plane.createNode(.Smooth, name: "smoothed", attributes: ["window_time": 5])
 
-        frame.createEdge(.Parameter, origin: source, target: gf)
-        frame.createEdge(.Parameter, origin: source, target: delay)
-        frame.createEdge(.Parameter, origin: source, target: smooth)
+        plane.createEdge(.Parameter, origin: source, target: gf)
+        plane.createEdge(.Parameter, origin: source, target: delay)
+        plane.createEdge(.Parameter, origin: source, target: smooth)
 
-        let world = try accept(frame)
+        let world = try accept(plane)
 
         let parser = ExpressionParserSystem(world)
         parser.update(world)

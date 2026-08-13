@@ -9,17 +9,17 @@ import Testing
 @testable import PoieticFlows
 @testable import PoieticCore
 
-extension TransientFrame {
+extension TransientPlane {
     @discardableResult
     public func createEdge(_ type: ObjectType,
                            origin: TransientObject,
                            target: TransientObject,
                            attributes: [String:Variant] = [:]) -> TransientObject {
-        precondition(type.structuralType == .edge, "Structural type mismatch")
+        precondition(type.topologyType == .edge, "Structural type mismatch")
         precondition(contains(origin.objectID), "Missing edge origin")
         precondition(contains(target.objectID), "Missing edge target")
 
-        let snapshot = create(type, structure: .edge(origin.objectID, target.objectID), attributes: attributes)
+        let snapshot = create(type, topology: .edge(origin.objectID, target.objectID), attributes: attributes)
         
         return snapshot
     }
@@ -28,23 +28,23 @@ extension TransientFrame {
 
 @Suite struct CompilerTest {
     let design: Design
-    let frame: TransientFrame
+    let frame: TransientPlane
     let world: World
     
     init() throws {
         self.design = Design(metamodel: StockFlowMetamodel)
-        self.frame = design.createFrame()
+        self.frame = design.createPlane()
         self.world = World(design: design)
         self.world.addSchedule(Schedule(
-            label: FrameChangeSchedule.self,
+            label: PlaneChangeSchedule.self,
             systems: SimulationPlanningSystems
         ))
     }
    
     func acceptAndUpdate() throws {
         let accepted = try design.accept(frame)
-        world.setFrame(accepted)
-        try world.run(schedule: FrameChangeSchedule.self)
+        world.setPlane(accepted)
+        try world.run(schedule: PlaneChangeSchedule.self)
     }
     
     @Test func noComputedVariables() throws {

@@ -46,7 +46,7 @@ public struct ParameterProposal: Component {
 /// ```swift
 /// // Assume the world and trans are given as:
 /// let world: World
-/// let trans: TransientFrame
+/// let trans: TransientPlane
 ///
 /// let proposal: ParameterProposal = world.singleton()!
 ///
@@ -72,7 +72,7 @@ public struct ParameterConnectionProposalSystem: System {
         
         let contained: Set<ObjectID>
         if let selection: Selection = world.singleton(),
-           let frame = world.frame
+           let frame = world.plane
         {
             contained = Set(frame.contained(selection))
         }

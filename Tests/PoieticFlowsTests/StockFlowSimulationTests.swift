@@ -19,24 +19,24 @@ import Testing
 @Suite struct TestStockFlowSimulation {
     let solverType: StockFlowSimulation.SolverType
     let design: Design
-    let frame: TransientFrame
+    let frame: TransientPlane
     let world: World
 
     init() throws {
         self.solverType = .euler
         self.design = Design(metamodel: StockFlowMetamodel)
-        self.frame = design.createFrame()
+        self.frame = design.createPlane()
         self.world = World(design: design)
         self.world.addSchedule(Schedule(
-            label: FrameChangeSchedule.self,
+            label: PlaneChangeSchedule.self,
             systems: SimulationPlanningSystems
         ))
     }
     
     func accept() throws -> SimulationPlan {
         let accepted = try design.accept(frame)
-        world.setFrame(accepted)
-        try world.run(schedule: FrameChangeSchedule.self)
+        world.setPlane(accepted)
+        try world.run(schedule: PlaneChangeSchedule.self)
         let plan: SimulationPlan = try #require(world.singleton())
         return plan
     }
@@ -321,11 +321,11 @@ import Testing
 
     // TODO: Negative flow is allowed only in bi-directional flow
 //    @Test mutating func nonNegativeStockNegativeInflow() throws {
-//        let stock = frame.createNode(ObjectType.Stock, name: "stock",
+//        let stock = plane.createNode(ObjectType.Stock, name: "stock",
 //                                     attributes: ["formula": "5", "allows_negative": false])
-//        let flow = frame.createNode(ObjectType.FlowRate, name: "flow", attributes: ["formula": "0 - 10"])
+//        let flow = plane.createNode(ObjectType.FlowRate, name: "flow", attributes: ["formula": "0 - 10"])
 //        
-//        frame.createEdge(ObjectType.Flow, origin: flow, target: stock)
+//        plane.createEdge(ObjectType.Flow, origin: flow, target: stock)
 //        
 //        try compile()
 //        
@@ -338,11 +338,11 @@ import Testing
 //    }
 //    
 //    @Test mutating func stockNegativeOutflow() throws {
-//        let stock = frame.createNode(ObjectType.Stock, name: "stock",
+//        let stock = plane.createNode(ObjectType.Stock, name: "stock",
 //                                     attributes: ["formula": "5", "allows_negative": false])
-//        let flow = frame.createNode(ObjectType.FlowRate, name: "flow", attributes: ["formula": "-10"])
+//        let flow = plane.createNode(ObjectType.FlowRate, name: "flow", attributes: ["formula": "-10"])
 //        
-//        frame.createEdge(ObjectType.Flow, origin: stock, target: flow)
+//        plane.createEdge(ObjectType.Flow, origin: stock, target: flow)
 //        
 //        try compile()
 //        
