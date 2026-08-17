@@ -29,7 +29,7 @@ import Testing
         let world = try accept(frame)
         let system = ComputationOrderSystem(world)
         try system.update(world)
-        let component: SimulationOrderComponent = try #require(world.singleton())
+        let component: SimulationOrder = try #require(world.singleton())
         #expect(component.objects.isEmpty)
     }
     
@@ -45,7 +45,7 @@ import Testing
         let world = try accept(frame)
         let system = ComputationOrderSystem(world)
         try system.update(world)
-        let component: SimulationOrderComponent = try #require(world.singleton())
+        let component: SimulationOrder = try #require(world.singleton())
 
         #expect(component.objects.count == 3)
         #expect(component.objects[0].objectID == a.objectID)
@@ -62,7 +62,7 @@ import Testing
         let world = try accept(frame)
         let system = ComputationOrderSystem(world)
         try system.update(world)
-        let component: SimulationOrderComponent? = world.singleton()
+        let component: SimulationOrder? = world.singleton()
         #expect(component == nil)
         
         let aEnt = try #require(world.entity(a.objectID))
@@ -83,7 +83,7 @@ import Testing
         let system = ComputationOrderSystem(world)
         try system.update(world)
 
-        let component: SimulationOrderComponent = try #require(world.singleton())
+        let component: SimulationOrder = try #require(world.singleton())
         #expect(component.objects.count == 3)
         #expect(component.objects[0].objectID == param.objectID)
         #expect(component.objects[1].objectID == gf.objectID)

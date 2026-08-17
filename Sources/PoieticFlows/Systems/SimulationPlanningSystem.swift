@@ -125,7 +125,7 @@ public struct SimulationPlanningSystem: System {
     
     public func update(_ world: World) throws (InternalSystemError) {
         guard let frame = world.plane,
-              let simOrder: SimulationOrderComponent = world.singleton()
+              let simOrder: SimulationOrder = world.singleton()
         else { return }
         
         var hasError: Bool = false
@@ -138,8 +138,8 @@ public struct SimulationPlanningSystem: System {
 
         for object in simOrder.objects {
             guard let entity = world.entity(object.objectID),
-                  let nameComp: SimulationObjectNameComponent = entity.component(),
-                  let roleComp: SimulationRoleComponent = entity.component()
+                  let nameComp: SimulationName = entity.component(),
+                  let role: SimulationRole = entity.component()
             else {
                 hasError = true
                 continue
@@ -167,14 +167,14 @@ public struct SimulationPlanningSystem: System {
             let sim = SimulationObject(objectID: object.objectID,
                                        computation: rep,
                                        variableIndex: index,
-                                       role: roleComp.role,
+                                       role: role,
                                        valueType: rep.valueType,
                                        name: nameComp.name)
        
             simulationObjects.append(sim)
             entity.setComponent(HasNumericIndicator())
             
-            switch roleComp.role {
+            switch role {
             case .flow: flows.append(sim)
             case .stock: stocks.append(sim)
             default: break

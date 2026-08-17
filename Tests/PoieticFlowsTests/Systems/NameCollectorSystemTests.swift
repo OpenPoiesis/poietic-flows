@@ -34,10 +34,10 @@ import Testing
         let system = NameResolutionSystem(world)
         try system.update(world)
         
-        let lookup: SimulationNameLookupComponent = try #require(world.singleton())
+        let lookup: SimulationNameLookup = try #require(world.singleton())
         #expect(lookup.namedObjects.isEmpty)
         
-        let component: SimulationObjectNameComponent? = world.entity(object.objectID)?.component()
+        let component: SimulationName? = world.entity(object.objectID)?.component()
         #expect(component == nil)
     }
     
@@ -49,7 +49,7 @@ import Testing
         let system = NameResolutionSystem(world)
         try system.update(world)
         
-        let lookup: SimulationNameLookupComponent = try #require(world.singleton())
+        let lookup: SimulationNameLookup = try #require(world.singleton())
         #expect(lookup.namedObjects.isEmpty)
         
         let emptyEnt = try #require(world.entity(empty.objectID))
@@ -57,9 +57,9 @@ import Testing
         let wsEnt = try #require(world.entity(whitespace.objectID))
         #expect(wsEnt.hasError(ModelError.emptyName))
         
-        let component1: SimulationObjectNameComponent? = world.entity(empty.objectID)?.component()
+        let component1: SimulationName? = world.entity(empty.objectID)?.component()
         #expect(component1 == nil)
-        let component2: SimulationObjectNameComponent? = world.entity(whitespace.objectID)?.component()
+        let component2: SimulationName? = world.entity(whitespace.objectID)?.component()
         #expect(component2 == nil)
     }
     
@@ -70,10 +70,10 @@ import Testing
         let system = NameResolutionSystem(world)
         try system.update(world)
         
-        let lookup: SimulationNameLookupComponent = try #require(world.singleton())
+        let lookup: SimulationNameLookup = try #require(world.singleton())
         #expect(lookup.namedObjects["object"] == object.objectID)
 
-        let component: SimulationObjectNameComponent = try #require(world.entity(object.objectID)?.component())
+        let component: SimulationName = try #require(world.entity(object.objectID)?.component())
         #expect(component.name == "object")
     }
     @Test func duplicateName() throws {
@@ -85,12 +85,12 @@ import Testing
         try system.update(world)
         
         let objEnt = try #require(world.entity(object.objectID))
-        let component: SimulationObjectNameComponent? = objEnt.component()
+        let component: SimulationName? = objEnt.component()
         #expect(component == nil)
         #expect(objEnt.hasError(ModelError.duplicateName("object")))
 
         let dupeEnt = try #require(world.entity(dupe.objectID))
-        let dupeComponent: SimulationObjectNameComponent? = dupeEnt.component()
+        let dupeComponent: SimulationName? = dupeEnt.component()
         #expect(dupeComponent == nil)
         #expect(dupeEnt.hasError(ModelError.duplicateName("object")))
     }
@@ -104,17 +104,17 @@ import Testing
         try system.update(world)
         
         let objEnt = try #require(world.entity(object.objectID))
-        let component: SimulationObjectNameComponent? = objEnt.component()
+        let component: SimulationName? = objEnt.component()
         #expect(component == nil)
         #expect(objEnt.hasError(ModelError.duplicateName("object")))
 
         let dupeEnt = try #require(world.entity(dupe.objectID))
-        let dupeComponent: SimulationObjectNameComponent? = dupeEnt.component()
+        let dupeComponent: SimulationName? = dupeEnt.component()
         #expect(dupeComponent == nil)
         #expect(dupeEnt.hasError(ModelError.duplicateName("object")))
 
         let singleEnt = try #require(world.entity(single.objectID))
-        let singleComponent: SimulationObjectNameComponent? = singleEnt.component()
+        let singleComponent: SimulationName? = singleEnt.component()
         #expect(singleComponent?.name == "single")
         #expect(!singleEnt.hasIssues)
     }

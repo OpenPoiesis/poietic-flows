@@ -35,7 +35,7 @@ public struct ComputationOrderSystem: System {
         // Note: See also filter in orderedSnapshots
         for object in snapshots {
             guard let entity = world.entity(object.objectID) else { continue  /* Error? */ }
-            let role: SimulationObject.Role
+            let role: SimulationRole
 
             // TODO: Should we use Trait.Stock?
             if object.type === ObjectType.Stock {
@@ -54,11 +54,10 @@ public struct ComputationOrderSystem: System {
                                           message: "Unknown simulation object role for object type: \(object.type.name)",
                                           context: .object(object.objectID))
             }
-            let comp = SimulationRoleComponent(role: role)
-            entity.setComponent(comp)
+            entity.setComponent(role)
         }
         
-        let orderComponent = SimulationOrderComponent(
+        let orderComponent = SimulationOrder(
             objects: snapshots,
             stocks: stocks,
             flows: flows

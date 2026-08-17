@@ -7,63 +7,50 @@
 
 import PoieticCore
 
-/// Component with a list of simulation objects in order of their computational dependency.
+
+/// Role in the Stock-Flow simulation.
 ///
-/// The computational dependency is determined by flow and parameters edges in the design graph.
+/// Role determines when and how the simulation object is being computed.
+///
+/// - `stock` – computation defined through formula is done only during initialisation phase
+/// - `flow` – computation is performed during initialisation and after stock integration
+/// - `auxiliary` – same rule as flow applies
 ///
 /// - **Produced by:** ``ComputationOrderSystem``
+/// - **Used by:** ``SimulationPlanningSystem``
 ///
-public struct SimulationOrderComponent: Component {
-    internal init(objects: [ObjectSnapshot] = [], stocks: [ObjectID] = [], flows: [ObjectID] = []) {
-        self.objects = objects
-        self.stocks = stocks
-        self.flows = flows
-    }
-    
-    // TODO: Rename to orderedObjects
-    /// List of simulation objects in order of their computational dependency.
-    ///
-    let objects: [ObjectSnapshot]
-    // TODO: Documentation
-    // Used also for verification whether we got all right
-    /// List of object IDs representing stocks, in order of computational dependency within the
-    /// whole graph.
-    let stocks: [ObjectID]
-
-    /// List of object IDs representing flows, in order of computational dependency within the
-    /// whole graph.
-    let flows: [ObjectID]
+public enum SimulationRole: Component, Codable {
+    // TODO: Alternative names: Computation Role/Computation Group
+    /// Computation defined through formula is done only during initialisation phase.
+    case stock
+    /// Computation is performed during initialisation and after stock integration,
+    /// same as auxiliary.
+    case flow
+    /// Computation is performed during initialisation and after stock integration,
+    /// same as flow.
+    case auxiliary
 }
 
-/// Component containing derived details required for Stock and Flow simulation.
-///
-/// Objects that have no role component are not considered for simulation.
-///
-/// Why the role is not part of the metamodel: The design object model is generic, not
-/// stock-and-flow specific. There might be components deciding and deriving information that
-/// can incorporate variety of object types into the simulation. However, computational perspective
-/// we recognise only three roles of nodes: stocks, flows and auxiliaries.
-///
-/// - **Produced by:** ``ComputationOrderSystem``
-///
-public struct SimulationRoleComponent: Component {
-    public var role: SimulationObject.Role
-}
-public struct SimulationNameLookupComponent: Component {
+
+public struct SimulationNameLookup: Component, _SystemResult {
     public let namedObjects: [String:ObjectID]
 //    public let objectNames: [ObjectID:String]
 }
 
-/// Name of an object by which the object can be referred to within the simulation.
+/// Simulation-facing name of the entity.
 ///
-/// Only objects where the name is relevant to the simulation have this component.
+/// Presence of this component states that the simulation name is valid, unique and non-empty.
+/// Source for the simulation object name is usually `name` property of a design object.
 ///
-public struct SimulationObjectNameComponent: Component {
+/// - **Created By**: ``NameResolutionSystem``
+///
+public struct SimulationName: Component {
+    // TODO: Move to Core (start building simulation core)
+    // Note: This is a place to keep fully qualified names in the future, for example when we allow model module nesting.
     public let name: String
 }
 
 
-// TODO: Rename to just StockComponent
 /// Component describing dependencies between stocks and flow rates.
 ///
 /// - SeeAlso: ``StockDependencySystem``, ``FlowCollectorSystem``.
@@ -121,7 +108,4 @@ public struct FlowRateComponent: Component {
 
     /// Priority when sorting flow rates.
     public let priority: Int
-}
-
-extension SimulationPlan: Component {
 }

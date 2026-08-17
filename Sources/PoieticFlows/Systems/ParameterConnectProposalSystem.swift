@@ -67,7 +67,7 @@ public struct ParameterConnectionProposalSystem: System {
     ]
     public init(_ world: World) { }
     public func update(_ world: World) throws (InternalSystemError) {
-        guard let lookup: SimulationNameLookupComponent = world.singleton()
+        guard let lookup: SimulationNameLookup = world.singleton()
         else { return }
         
         let contained: Set<ObjectID>

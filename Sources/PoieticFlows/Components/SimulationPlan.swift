@@ -27,7 +27,7 @@ import PoieticCore
 ///
 /// - SeeAlso: ``StockFlowSimulationSystem``, ``SimulationPlanningSystems``.
 ///
-public struct SimulationPlan {
+public struct SimulationPlan: Component {
     internal init(simulationObjects: [SimulationObject] = [],
                   stateVariables: [StateVariable] = [],
                   builtins: BoundBuiltins = BoundBuiltins(),

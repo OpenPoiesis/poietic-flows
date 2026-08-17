@@ -25,7 +25,7 @@ public struct NameResolutionSystem: System {
     ]
 
     public func update(_ world: World) throws (InternalSystemError) {
-        guard let order: SimulationOrderComponent = world.singleton() else {
+        guard let order: SimulationOrder = world.singleton() else {
             return
         }
         
@@ -56,7 +56,7 @@ public struct NameResolutionSystem: System {
                 let onlyID = ids[0]
                 nameLookup[name] = onlyID
                 guard let entity = world.entity(onlyID) else { continue }
-                let comp = SimulationObjectNameComponent(name: name)
+                let comp = SimulationName(name: name)
                 entity.setComponent(comp)
             }
             else if ids.count > 1 {
@@ -72,7 +72,7 @@ public struct NameResolutionSystem: System {
                 }
             }
         }
-        let component = SimulationNameLookupComponent(namedObjects: nameLookup)
+        let component = SimulationNameLookup(namedObjects: nameLookup)
         world.setSingleton(component)
     }
 }
