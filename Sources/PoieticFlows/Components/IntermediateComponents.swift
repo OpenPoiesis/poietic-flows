@@ -20,7 +20,6 @@ public struct SimulationOrder: Component, _SystemResult {
         self.flows = flows
     }
     
-    // TODO: Rename to orderedObjects
     /// List of simulation objects in order of their computational dependency.
     ///
     let objects: [ObjectSnapshot]

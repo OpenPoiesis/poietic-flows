@@ -13,8 +13,8 @@ import PoieticCore
 ///
 /// - **Input:** Simulation objects (is `Stock` || is `FlowRate` || has trait `Auxiliary`)
 /// - **Output:**
-///     - Ordered list of objects in ``SimulationOrderComponent``.
-///     - Role associated with each object in ``SimulationRoleComponent``.
+///     - Ordered list of objects in ``SimulationOrder``.
+///     - Role associated with each object in ``SimulationRole``.
 /// - **Forgiveness:** ...
 ///
 public struct ComputationOrderSystem: System {
@@ -31,34 +31,20 @@ public struct ComputationOrderSystem: System {
         var stocks: [ObjectID] = []
         var flows: [ObjectID] = []
         
-        // Determine simulation role: stock, flow, aux
-        // Note: See also filter in orderedSnapshots
-        for object in snapshots {
+        for (object, role) in snapshots {
             guard let entity = world.entity(object.objectID) else { continue  /* Error? */ }
-            let role: SimulationRole
 
-            // TODO: Should we use Trait.Stock?
-            if object.type === ObjectType.Stock {
-                role = .stock
-                stocks.append(object.objectID)
-            }
-            else if object.type === ObjectType.FlowRate {
-                role = .flow
-                flows.append(object.objectID)
-            }
-            else if object.type.hasTrait(Trait.Auxiliary) {
-                role = .auxiliary
-            }
-            else {
-                throw InternalSystemError(self,
-                                          message: "Unknown simulation object role for object type: \(object.type.name)",
-                                          context: .object(object.objectID))
+            switch role {
+            case .stock: stocks.append(object.objectID)
+            case .flow: flows.append(object.objectID)
+            case .auxiliary: break
+                
             }
             entity.setComponent(role)
         }
         
         let orderComponent = SimulationOrder(
-            objects: snapshots,
+            objects: snapshots.map { $0.object },
             stocks: stocks,
             flows: flows
         )
@@ -66,25 +52,42 @@ public struct ComputationOrderSystem: System {
         world.setSingleton(orderComponent)
     }
     
-    func orderedSnapshots(world: World, plane: DesignPlane) -> [ObjectSnapshot]? {
+    func filterSimulationObjects(plane: DesignPlane) -> [ObjectID:SimulationRole] {
+        var result: [ObjectID:SimulationRole] = [:]
+        for object in plane.snapshots {
+            let role: SimulationRole
+
+            // TODO: Should we use Trait.Stock?
+            if object.type === ObjectType.Stock {
+                role = .stock
+            }
+            else if object.type === ObjectType.FlowRate {
+                role = .flow
+            }
+            else if object.type.hasTrait(Trait.Auxiliary) {
+                role = .auxiliary
+            }
+            else { // Not a simulation object
+                continue
+            }
+            result[object.objectID] = role
+        }
+        return result
+    }
+    
+    func orderedSnapshots(world: World, plane: DesignPlane) -> [(object: ObjectSnapshot, role: SimulationRole)]? {
         // TODO: Replace with SimulationObject trait once we have it (there are practical reasons we don't yet)
         // TODO: Should we use Trait.Stock?
-        // Note: See also roles in update() method
-        let unordered: [ObjectSnapshot] = plane.filter {
-            ($0.type === ObjectType.Stock
-                || $0.type === ObjectType.FlowRate
-                || $0.type.hasTrait(Trait.Auxiliary))
-        }
+        let unordered = filterSimulationObjects(plane: plane)
 
-        // 2. Sort nodes based on computation dependency.
         let parameterEdges:[DesignObjectEdge] = plane.edges.filter {
             $0.object.type === ObjectType.Parameter
         }
 
-        let parameterDependency = Graph(nodes: unordered.map { $0.objectID },
+        let parameterDependency = Graph(nodes: Array(unordered.keys),
                                         edges: parameterEdges)
         
-        guard let ordered = parameterDependency.topologicalSort() else {
+        guard let ordered:[ObjectID] = parameterDependency.topologicalSort() else {
             let cycleEdges = parameterDependency.cycles()
             var nodes: Set<ObjectID> = Set()
             
@@ -113,9 +116,13 @@ public struct ComputationOrderSystem: System {
             return nil
         }
 
-        let snapshots = ordered.compactMap { plane[$0] }
-        return snapshots
+        let result: [(object: ObjectSnapshot, role: SimulationRole)] = ordered.compactMap {
+            guard let snapshot = plane[$0],
+                  let role = unordered[$0]
+            else { return nil }
+            return (object: snapshot, role: role)
+        }
+        return result
     }
-
 }
 
