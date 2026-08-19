@@ -215,7 +215,6 @@ public struct SimulationPlanningSystem: System {
             builtins: builtins,
             stocks: boundStocks,
             flows: boundFlows,
-            valueBindings: [], // FIXME: Relic from the past, remove
             settings: settings
         )
         

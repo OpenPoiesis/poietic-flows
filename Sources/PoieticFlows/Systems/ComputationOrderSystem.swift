@@ -43,12 +43,9 @@ public struct ComputationOrderSystem: System {
             entity.setComponent(role)
         }
         
-        let orderComponent = SimulationOrder(
-            objects: snapshots.map { $0.object },
-            stocks: stocks,
-            flows: flows
-        )
-
+        let objects = snapshots.map { $0.object }
+        let orderComponent = SimulationOrder( objects: objects )
+        
         world.setSingleton(orderComponent)
     }
     

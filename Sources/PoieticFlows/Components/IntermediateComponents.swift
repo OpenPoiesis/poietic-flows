@@ -14,22 +14,11 @@ import PoieticCore
 /// - **Produced by:** ``ComputationOrderSystem``
 ///
 public struct SimulationOrder: IntermediateSingleton {
-    internal init(objects: [ObjectSnapshot] = [], stocks: [ObjectID] = [], flows: [ObjectID] = []) {
+    internal init(objects: [ObjectSnapshot] = []) {
         self.objects = objects
-        self.stocks = stocks
-        self.flows = flows
     }
     
     /// List of simulation objects in order of their computational dependency.
     ///
     let objects: [ObjectSnapshot]
-    // TODO: Documentation
-    // Used also for verification whether we got all right
-    /// List of object IDs representing stocks, in order of computational dependency within the
-    /// whole graph.
-    let stocks: [ObjectID]
-
-    /// List of object IDs representing flows, in order of computational dependency within the
-    /// whole graph.
-    let flows: [ObjectID]
 }
