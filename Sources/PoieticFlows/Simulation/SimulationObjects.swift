@@ -116,7 +116,7 @@ public struct SimulationObject: CustomStringConvertible {
 
 /// Indices of built-in variables bound to a simulation plan.
 ///
-/// - SeeAlso: ``BuiltinVariable``
+/// - SeeAlso: ``BuiltinVariable``, ``SimulationPlan``
 ///
 public struct BoundBuiltins {
     // NOTE: Synchronise with ``StockFlowSimulation/setBuiltins``
@@ -131,12 +131,11 @@ public struct BoundBuiltins {
         self.time = time
         self.timeDelta = timeDelta
     }
-    
 }
 
 /// Stock bound to a simulation plan and a simulation state.
 ///
-/// This structure is used during computation.
+/// Bound stock defines integration target.
 ///
 /// - SeeAlso: ``StockFlowSimulation/computeStockDelta(_:in:)``
 ///
@@ -223,20 +222,6 @@ public struct BoundGraphicalFunction {
     
     /// ID of a node that is a parameter for the function.
     public let parameterIndex: SimulationState.Index
-}
-
-/// Structure representing compiled control-to-value binding.
-///
-/// - SeeAlso: ``PoieticCore/ObjectType/Control``, ``PoieticCore/ObjectType/ValueBinding``
-///
-public struct CompiledControlBinding {
-    /// ID of a control node.
-    ///
-    /// - SeeAlso: ``PoieticCore/ObjectType/Control``
-    public let control: ObjectID
-    
-    /// Index of the simulation variable that the control controls.
-    public let variableIndex: SimulationState.Index
 }
 
 /// Compiled delay node.

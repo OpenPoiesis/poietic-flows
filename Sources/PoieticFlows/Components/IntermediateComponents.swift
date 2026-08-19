@@ -13,7 +13,7 @@ import PoieticCore
 ///
 /// - **Produced by:** ``ComputationOrderSystem``
 ///
-public struct SimulationOrder: Component, _SystemResult {
+public struct SimulationOrder: IntermediateSingleton {
     internal init(objects: [ObjectSnapshot] = [], stocks: [ObjectID] = [], flows: [ObjectID] = []) {
         self.objects = objects
         self.stocks = stocks

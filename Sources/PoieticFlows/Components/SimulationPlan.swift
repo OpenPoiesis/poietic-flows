@@ -33,16 +33,12 @@ public struct SimulationPlan: Component {
                   builtins: BoundBuiltins = BoundBuiltins(),
                   stocks: [BoundStock] = [],
                   flows: [BoundFlow] = [],
-//                  charts: [Chart] = [],
-                  valueBindings: [CompiledControlBinding] = [],
                   settings: SimulationSettings) {
         self.simulationObjects = simulationObjects
         self.stateVariables = stateVariables
         self.builtins = builtins
         self.stocks = stocks
         self.flows = flows
-//        self.charts = charts
-        self.valueBindings = valueBindings
         self.simulationSettings = settings
     }
     
@@ -66,15 +62,14 @@ public struct SimulationPlan: Component {
     
     /// List of simulation state variables.
     ///
-    /// The list of state variables contain values of simulation objects (usually nodes) their
-    /// internal states (for example previous values for delay) and built-ins.
+    /// The list of state variables defines the state vector layout and content.
     ///
     /// Simulation object's state might be contained in multiple state variables. For example, delay
     /// uses two state variables: list of double values for the queue and an initial value.
     ///
     /// The internal state is typically not to be presented to the user.
     ///
-    /// - SeeAlso: ``SimulationPlanningSystem``.
+    /// - SeeAlso: ``StateVariable``, ``SimulationPlanningSystem``.
     ///
     public let stateVariables: [StateVariable]
     
@@ -97,10 +92,6 @@ public struct SimulationPlan: Component {
     /// - SeeAlso: ``BoundFlow``, ``StockFlowSimulationSystem``.
     ///
     public let flows: [BoundFlow]
-    
-    /// Compiled bindings of controls to their value objects.
-    ///
-    public let valueBindings: [CompiledControlBinding]
     
     /// Time range, time delta and other settings to control the simulation.
     ///

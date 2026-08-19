@@ -47,7 +47,6 @@ through multiple steps:
 
 ### Other
 
-- ``CompiledControlBinding``
 - ``BoundDelay``
 - ``BoundSmooth``
 - ``BoundGraphicalFunction``

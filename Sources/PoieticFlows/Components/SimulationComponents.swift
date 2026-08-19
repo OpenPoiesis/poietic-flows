@@ -20,7 +20,6 @@ import PoieticCore
 /// - **Used by:** ``SimulationPlanningSystem``
 ///
 public enum SimulationRole: Component, Codable {
-    // TODO: Alternative names: Computation Role/Computation Group
     /// Computation defined through formula is done only during initialisation phase.
     case stock
     /// Computation is performed during initialisation and after stock integration,
@@ -32,9 +31,13 @@ public enum SimulationRole: Component, Codable {
 }
 
 
-public struct SimulationNameLookup: Component, _SystemResult {
+/// Component with a map from resolved, cleaned and validated names to object IDs.
+///
+/// - **Created by:** ``NameResolutionSystem``.
+/// - **Used by:** ``ParameterConnectionProposalSystem``.
+///
+public struct SimulationNameLookup: Component {
     public let namedObjects: [String:ObjectID]
-//    public let objectNames: [ObjectID:String]
 }
 
 /// Simulation-facing name of the entity.
