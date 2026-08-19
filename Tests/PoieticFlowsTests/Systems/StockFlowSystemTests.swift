@@ -9,7 +9,7 @@ import Testing
 @testable import PoieticFlows
 @testable import PoieticCore
 
-@Suite struct FlowCollectorSystemTests {
+@Suite struct FlowTopologySystemTests {
     let design: Design
     let frame: TransientPlane
 
@@ -29,7 +29,7 @@ import Testing
         let flowRate = frame.createNode(.FlowRate, name: "isolated")
 
         let world = try accept(frame)
-        let system = FlowCollectorSystem(world)
+        let system = StockFlowTopologySystem(world)
         try system.update(world)
 
         let component: FlowRateComponent = try #require(world.entity(flowRate.objectID)?.component())
@@ -46,7 +46,7 @@ import Testing
         frame.createEdge(.Flow, origin: stock, target: flowRate)
 
         let world = try accept(frame)
-        let system = FlowCollectorSystem(world)
+        let system = StockFlowTopologySystem(world)
         try system.update(world)
 
         let component: FlowRateComponent = try #require(world.entity(flowRate.objectID)?.component())
@@ -61,7 +61,7 @@ import Testing
         frame.createEdge(.Flow, origin: flowRate, target: stock)
 
         let world = try accept(frame)
-        let system = FlowCollectorSystem(world)
+        let system = StockFlowTopologySystem(world)
         try system.update(world)
 
         let component: FlowRateComponent = try #require(world.entity(flowRate.objectID)?.component())
@@ -79,7 +79,7 @@ import Testing
         frame.createEdge(.Flow, origin: flowRate, target: target)
 
         let world = try accept(frame)
-        let system = FlowCollectorSystem(world)
+        let system = StockFlowTopologySystem(world)
         try system.update(world)
 
         let component: FlowRateComponent = try #require(world.entity(flowRate.objectID)?.component())
@@ -97,7 +97,7 @@ import Testing
         frame.createEdge(.Flow, origin: flowRate, target: target)
 
         let world = try accept(frame)
-        let system = FlowCollectorSystem(world)
+        let system = StockFlowTopologySystem(world)
         try system.update(world)
 
         let component: FlowRateComponent = try #require(world.entity(flowRate.objectID)?.component())
@@ -112,7 +112,7 @@ import Testing
         let flowRate = frame.createNode(.FlowRate, name: "priority_flow", attributes: ["priority": 5])
 
         let world = try accept(frame)
-        let system = FlowCollectorSystem(world)
+        let system = StockFlowTopologySystem(world)
         try system.update(world)
 
         let component: FlowRateComponent = try #require(world.entity(flowRate.objectID)?.component())
@@ -120,7 +120,7 @@ import Testing
     }
 }
 
-@Suite struct StockDependencySystemTests {
+@Suite struct StockTopologySystemTests {
     let design: Design
     let frame: TransientPlane
     
@@ -132,7 +132,7 @@ import Testing
     func accept(_ frame: TransientPlane) throws -> World {
         let stable = try design.accept(frame)
         let world = World(plane: stable)
-        let flowSystem = FlowCollectorSystem(world)
+        let flowSystem = StockFlowTopologySystem(world)
         try flowSystem.update(world)
         return world
     }
@@ -144,7 +144,7 @@ import Testing
         
         let world = try accept(frame)
         
-        let system = StockDependencySystem(world)
+        let system = StockFlowTopologySystem(world)
         try system.update(world)
         
         let component: StockComponent = try #require(world.entity(stock.objectID)?.component())
@@ -164,7 +164,7 @@ import Testing
         
         let world = try accept(frame)
         
-        let system = StockDependencySystem(world)
+        let system = StockFlowTopologySystem(world)
         try system.update(world)
         
         let component: StockComponent = try #require(world.entity(stock.objectID)?.component())
@@ -181,7 +181,7 @@ import Testing
         
         let world = try accept(frame)
         
-        let system = StockDependencySystem(world)
+        let system = StockFlowTopologySystem(world)
         try system.update(world)
         
         let component: StockComponent = try #require(world.entity(stock.objectID)?.component())
@@ -201,7 +201,7 @@ import Testing
         
         let world = try accept(frame)
         
-        let system = StockDependencySystem(world)
+        let system = StockFlowTopologySystem(world)
         try system.update(world)
         
         let component: StockComponent = try #require(world.entity(stock.objectID)?.component())
@@ -227,7 +227,7 @@ import Testing
         
         let world = try accept(frame)
         
-        let system = StockDependencySystem(world)
+        let system = StockFlowTopologySystem(world)
         try system.update(world)
         
         let component: StockComponent = try #require(world.entity(stock.objectID)?.component())
@@ -251,7 +251,7 @@ import Testing
         
         let world = try accept(frame)
         
-        let system = StockDependencySystem(world)
+        let system = StockFlowTopologySystem(world)
         try system.update(world)
         
         let compA: StockComponent = try #require(world.entity(stockA.objectID)?.component())
@@ -280,10 +280,10 @@ import Testing
         
         let world = try accept(frame)
         
-        let flowSystem = FlowCollectorSystem(world)
+        let flowSystem = StockFlowTopologySystem(world)
         try flowSystem.update(world)
         
-        let system = StockDependencySystem(world)
+        let system = StockFlowTopologySystem(world)
         try system.update(world)
         
         let compA: StockComponent = try #require(world.entity(stockA.objectID)?.component())
@@ -312,7 +312,7 @@ import Testing
         
         let world = try accept(frame)
         
-        let system = StockDependencySystem(world)
+        let system = StockFlowTopologySystem(world)
         try system.update(world)
         
         let compA: StockComponent = try #require(world.entity(stockA.objectID)?.component())
@@ -336,7 +336,7 @@ import Testing
         
         let world = try accept(frame)
         
-        let system = StockDependencySystem(world)
+        let system = StockFlowTopologySystem(world)
         try system.update(world)
         
         let component1: StockComponent = try #require(world.entity(stockNeg.objectID)?.component())
