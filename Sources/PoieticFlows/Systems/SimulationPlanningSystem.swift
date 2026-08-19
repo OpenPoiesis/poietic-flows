@@ -473,7 +473,7 @@ public struct SimulationPlanningSystem: System {
             else {
                 throw InternalSystemError(self,
                                           message: "Malformed flow rate simulation object",
-                                          context: .singleton("FlowRateComponent"))
+                                          context: .component(flow.objectID, "FlowRateComponent"))
             }
             guard let objectIndex = variables.objectIndex[flow.objectID] else {
                 // TODO: Throw corrupted component
@@ -492,9 +492,9 @@ public struct SimulationPlanningSystem: System {
 
             boundFlows.append(boundFlow)
         }
-        return boundFlows
 
-    }
+        return boundFlows
+   }
     
     /// Bind stocks with their variables.
     ///
@@ -510,7 +510,7 @@ public struct SimulationPlanningSystem: System {
             else {
                 throw InternalSystemError(self,
                                           message: "Malformed stock simulation object",
-                                          context: .singleton("FlowRateComponent"))
+                                          context: .component(stock.objectID, "StockComponent"))
             }
 
             let inflowIndices = component.inflowRates.compactMap { flowIndices[$0] }
@@ -521,7 +521,7 @@ public struct SimulationPlanningSystem: System {
             else {
                 throw InternalSystemError(self,
                                           message: "Corrupted component",
-                                          context: .singleton("StockDependencyComponent"))
+                                          context: .component(stock.objectID, "StockComponent"))
             }
             
             let boundStock = BoundStock(
@@ -534,6 +534,7 @@ public struct SimulationPlanningSystem: System {
 
             result.append(boundStock)
         }
+        
         return result
     }
 }
