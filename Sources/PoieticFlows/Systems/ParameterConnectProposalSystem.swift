@@ -72,9 +72,9 @@ public struct ParameterConnectionProposalSystem: System {
         
         let contained: Set<ObjectID>
         if let selection: Selection = world.singleton(),
-           let frame = world.plane
+           let plane = world.plane
         {
-            contained = Set(frame.contained(selection))
+            contained = Set(plane.contained(selection))
         }
         else {
             contained = Set()
@@ -83,7 +83,7 @@ public struct ParameterConnectionProposalSystem: System {
         var toRemove: [ObjectID] = []
         var toAdd: [ParameterProposal.EdgeProposal] = []
         
-        for (entity, resolution) in world.query(ResolvedParametersComponent.self) {
+        for (entity, resolution) in world.query(ResolvedParameters.self) {
             guard let objectID = entity.objectID
             else { continue }
 

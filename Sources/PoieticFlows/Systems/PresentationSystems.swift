@@ -19,19 +19,19 @@ import PoieticCore
 /// - **Forgiveness:** Ignore entities where relationships can not be satisfied (missing objects).
 ///
 
-public struct NewChartResolutionSystem: System {
+public struct ChartResolutionSystem: System {
     
     public init(_ world: World) { }
 
     public func update(_ world: World) throws (InternalSystemError) {
-        guard let frame = world.plane else { return }
+        guard let plane = world.plane else { return }
 
-        processCharts(world, frame: frame)
-        processSeries(world, frame: frame)
+        processCharts(world, plane: plane)
+        processSeries(world, plane: plane)
     }
 
-    func processCharts(_ world: World, frame: DesignPlane) {
-        for chartObject in frame.filter(type: .Chart) {
+    func processCharts(_ world: World, plane: DesignPlane) {
+        for chartObject in plane.filter(type: .Chart) {
             guard let chartEntity = world.entity(chartObject.objectID)
             else { continue }
             let chartComponent = Chart(from: chartObject)
@@ -39,12 +39,12 @@ public struct NewChartResolutionSystem: System {
         }
     }
     
-    func processSeries(_ world: World, frame: DesignPlane) {
+    func processSeries(_ world: World, plane: DesignPlane) {
 
-        for seriesEdge in frame.filter(type: .ChartSeries) {
+        for seriesEdge in plane.filter(type: .ChartSeries) {
             guard let seriesEntity = world.entity(seriesEdge.objectID),
                   case .edge(let originID, let targetID) = seriesEdge.topology,
-                  let targetObject = frame[targetID],
+                  let targetObject = plane[targetID],
                   let targetEntity = world.entity(targetID),
                   let chartEntity = world.entity(originID)
             else { continue }

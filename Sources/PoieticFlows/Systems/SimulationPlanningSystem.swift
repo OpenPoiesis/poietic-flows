@@ -127,8 +127,7 @@ public struct SimulationPlanningSystem: System {
     }
     
     public func update(_ world: World) throws (InternalSystemError) {
-        guard let frame = world.plane,
-              let simOrder: SimulationOrder = world.singleton()
+        guard let simOrder: SimulationOrder = world.singleton()
         else { return }
         
         var hasError: Bool = false
@@ -338,7 +337,7 @@ public struct SimulationPlanningSystem: System {
 
         let function = GraphicalFunction(points: points, method: method)
         
-        guard let paramComp: ResolvedParametersComponent = entity.component(),
+        guard let paramComp: ResolvedParameters = entity.component(),
               paramComp.connectedUnnamed.count == 1,
               let parameterID = paramComp.connectedUnnamed.first
         else { throw .objectIssue }
@@ -369,7 +368,7 @@ public struct SimulationPlanningSystem: System {
             name: "delay_init_\(object.objectID)"
         )
 
-        guard let paramComp: ResolvedParametersComponent = entity.component(),
+        guard let paramComp: ResolvedParameters = entity.component(),
               paramComp.connectedUnnamed.count == 1,
               let parameterID = paramComp.connectedUnnamed.first
         else { throw .objectIssue }
@@ -417,7 +416,7 @@ public struct SimulationPlanningSystem: System {
             name: "smooth_value_\(object.objectID)"
         )
         
-        guard let paramComp: ResolvedParametersComponent = entity.component(),
+        guard let paramComp: ResolvedParameters = entity.component(),
               paramComp.connectedUnnamed.count == 1,
               let parameterID = paramComp.connectedUnnamed.first
         else { throw .objectIssue }

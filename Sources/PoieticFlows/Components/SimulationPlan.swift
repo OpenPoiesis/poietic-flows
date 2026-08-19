@@ -28,6 +28,19 @@ import PoieticCore
 /// - **Produced by:** ``SimulationPlanningSystem``
 /// - **Used by:** ``StockFlowSimulationSystem`` and your application
 ///
+/// ## Plan Integrity
+///
+/// Simulation plan integrity is enforced on multiple levels. Higher levels assume lower
+/// ones held.
+///
+/// - **Level 1: Structural**. Structural integrity and conformance to metamodel assured by
+///   `Design` on acceptance.
+/// - **Level 2: Semantic**. Each system that produces artefacts consumed by the
+///   ``SimulationPlanningSystem`` records user-facing errors.
+/// - **Level 3: Planning**. The planning system refuses to produce a plan if there are semantic
+///   errors (user's responsibility) and throws on internal inconsistencies
+///   (developer's responsibility).
+///
 /// - SeeAlso: ``StockFlowSimulationSystem``, ``SimulationPlanningSystems``.
 ///
 public struct SimulationPlan: Component {

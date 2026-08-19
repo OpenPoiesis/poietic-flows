@@ -12,7 +12,7 @@ import PoieticCore
 /// This component can be used for error reporting or for automatic creation of parameter
 /// connections.
 ///
-public struct ResolvedParametersComponent: Component {
+public struct ResolvedParameters: Component {
     internal init(incoming: [String : ObjectID] = [:],
                   connectedUnnamed: [ObjectID] = [],
                   missing: [String] = [],
@@ -60,20 +60,20 @@ public struct ParameterResolutionSystem: System {
     public init(_ world: World) { }
 
     public func update(_ world: World) throws (InternalSystemError) {
-        guard let frame = world.plane else { return }
-        try resolveFormulas(world, frame: frame)
-        try resolveAuxiliaries(world, frame: frame, type: .GraphicalFunction)
-        try resolveAuxiliaries(world, frame: frame, type: .Delay)
-        try resolveAuxiliaries(world, frame: frame, type: .Smooth)
+        guard let plane = world.plane else { return }
+        try resolveFormulas(world, plane: plane)
+        try resolveAuxiliaries(world, plane: plane, type: .GraphicalFunction)
+        try resolveAuxiliaries(world, plane: plane, type: .Delay)
+        try resolveAuxiliaries(world, plane: plane, type: .Smooth)
     }
 
-    public func resolveFormulas(_ world: World, frame: DesignPlane) throws (InternalSystemError) {
+    public func resolveFormulas(_ world: World, plane: DesignPlane) throws (InternalSystemError) {
         let builtinNames = BuiltinVariable.allNames
 
         for (entity, exprComponent) in world.query(ParsedExpressionComponent.self) {
             guard let objectID = entity.objectID else { continue }
             let requiredParams = exprComponent.variables.subtracting(builtinNames)
-            let incomingParams = frame.incoming(objectID).filter {
+            let incomingParams = plane.incoming(objectID).filter {
                 $0.object.type === ObjectType.Parameter
             }
 
@@ -121,7 +121,7 @@ public struct ParameterResolutionSystem: System {
                 entity.appendIssue(issue)
             }
 
-            let paramComponent = ResolvedParametersComponent(
+            let paramComponent = ResolvedParameters(
                 incoming: connected,
                 missing: Array(missing),
                 unused: unused.map { $0.id }
@@ -134,15 +134,15 @@ public struct ParameterResolutionSystem: System {
     ///
     /// - Requirement: The auxiliary should have one incoming parameter.
     ///
-    public func resolveAuxiliaries(_ world: World, frame: DesignPlane, type: ObjectType)
+    public func resolveAuxiliaries(_ world: World, plane: DesignPlane, type: ObjectType)
     throws (InternalSystemError) {
-        for object in frame.filter(type: type) {
+        for object in plane.filter(type: type) {
             guard let entity = world.entity(object.objectID) else { continue }
             
-            let incomingParams = frame.incoming(object.objectID).filter {
+            let incomingParams = plane.incoming(object.objectID).filter {
                 $0.object.type === ObjectType.Parameter
             }
-            let component: ResolvedParametersComponent
+            let component: ResolvedParameters
             
             if incomingParams.count == 0 {
                 let issue = Issue(
@@ -153,7 +153,7 @@ public struct ParameterResolutionSystem: System {
                 )
                 entity.appendIssue(issue)
 
-                component = ResolvedParametersComponent(
+                component = ResolvedParameters(
                     missingUnnamed: 1
                 )
             }
@@ -166,12 +166,12 @@ public struct ParameterResolutionSystem: System {
                 )
                 entity.appendIssue(issue)
 
-                component = ResolvedParametersComponent(
+                component = ResolvedParameters(
                     unused: incomingParams.map { $0.origin }
                 )
             }
             else { // if incomingParams.count == 1
-                component = ResolvedParametersComponent(
+                component = ResolvedParameters(
                     connectedUnnamed: [incomingParams[0].origin]
                 )
             }
