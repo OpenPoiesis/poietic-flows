@@ -25,6 +25,9 @@ import PoieticCore
 /// - List of stocks with inflows and outflows resolved (``BoundStock``).
 /// - List of flows with resolved stocks that the flow drains and fills (``BoundFlow``).
 ///
+/// - **Produced by:** ``SimulationPlanningSystem``
+/// - **Used by:** ``StockFlowSimulationSystem`` and your application
+///
 /// - SeeAlso: ``StockFlowSimulationSystem``, ``SimulationPlanningSystems``.
 ///
 public struct SimulationPlan: Component {
@@ -32,14 +35,13 @@ public struct SimulationPlan: Component {
                   stateVariables: [StateVariable] = [],
                   builtins: BoundBuiltins = BoundBuiltins(),
                   stocks: [BoundStock] = [],
-                  flows: [BoundFlow] = [],
-                  settings: SimulationSettings) {
+                  flows: [BoundFlow] = [])
+    {
         self.simulationObjects = simulationObjects
         self.stateVariables = stateVariables
         self.builtins = builtins
         self.stocks = stocks
         self.flows = flows
-        self.simulationSettings = settings
     }
     
     /// List of objects that are considered in the computation computed, ordered by computational
@@ -92,12 +94,6 @@ public struct SimulationPlan: Component {
     /// - SeeAlso: ``BoundFlow``, ``StockFlowSimulationSystem``.
     ///
     public let flows: [BoundFlow]
-    
-    /// Time range, time delta and other settings to control the simulation.
-    ///
-    /// See ``SimulationSettings`` for more information.
-    ///
-    public let simulationSettings: SimulationSettings
     
     /// Get index into a list of computed variables for an object with given ID.
     ///

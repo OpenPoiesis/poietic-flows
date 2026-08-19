@@ -98,6 +98,10 @@ extension StateVariableTable: VariableNameLookup {
 /// - **Output:** ``SimulationPlan`` singleton if there were no issues, otherwise sets object issues.
 /// - **Forgiveness:** The system is forgiving in a way that it does not fail on semantic errors.
 ///
+/// - Note: If the simulation plan was not produced by the system, it means that the model contained
+///         issues that make the model non-interpretable. Issues were set on entities which contain
+///         offending data or for an offending structure.
+///
 public struct SimulationPlanningSystem: System {
     // TODO: [IMPORTANT] Break this down. Requires verification mechanism that all has been considered (no intermediate forgiveness)
     /// Error thrown during the planning process
@@ -198,23 +202,12 @@ public struct SimulationPlanningSystem: System {
         
         let boundStocks = try bindStocks(stocks, flowIndices: flowIndices, world: world)
         
-        // Simulation parameters
-        let settings: SimulationSettings
-        if let simInfo = frame.first(trait: Trait.Simulation) {
-            settings = SimulationSettings(fromObject: simInfo)
-        }
-        else {
-            settings = SimulationSettings()
-        }
-
-        
         let plan = SimulationPlan(
             simulationObjects: simulationObjects,
             stateVariables: variables.variables,
             builtins: builtins,
             stocks: boundStocks,
-            flows: boundFlows,
-            settings: settings
+            flows: boundFlows
         )
         
         world.setSingleton(plan)
@@ -539,3 +532,32 @@ public struct SimulationPlanningSystem: System {
     }
 }
 
+/// System that extracts simulation settings from a plane.
+///
+/// - **Dependency:** None.
+/// - **Input:**
+///     - Object with a trait `Simulation`.
+/// - **Output:** ``SimulationSettings`` singleton if the corresponding object exists
+///   in the plane.
+/// - **Forgiveness:** Nothing to be forgiven.
+///
+/// This system should be run after world plane change to get simulation settings defaults.
+/// If the plane does not contain an object with `Simulation` trait, the settings singleton
+/// is removed.
+///
+public struct SimulationSettingsSystem: System {
+    public init(_ world: World) {
+        // Nothing
+    }
+    public func update(_ world: World) throws (InternalSystemError) {
+        guard let plane = world.plane,
+              let object = plane.first(trait: Trait.Simulation)
+        else {
+            world.removeSingleton(SimulationSettings.self)
+            return
+        }
+
+        let settings = SimulationSettings(fromObject: object)
+        world.setSingleton(settings)
+    }
+}

@@ -86,7 +86,7 @@ public struct StockComponent: Component {
 ///     Stock that the flow rate node drains
 ///
 public struct FlowRateComponent: Component {
-    /// ID of a stock that the flow drains. If nil, then infinite stock is assumed.
+    /// ID of a stock that the flow drains. If nil, then infinite stock (cloud) is assumed.
     ///
     /// The situation:
     ///
@@ -97,7 +97,7 @@ public struct FlowRateComponent: Component {
     ///
     public let drainsStock: ObjectID?
     
-    /// ID of a stock that the flow fills. If nil, then infinite stock is assumed.
+    /// ID of a stock that the flow fills. If nil, then infinite stock (cloud) is assumed.
     ///
     /// The situation:
     ///
