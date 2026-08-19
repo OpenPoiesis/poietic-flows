@@ -15,8 +15,7 @@ nonisolated(unsafe) public let SimulationPlanningSystems: [System.Type] = [
     ParameterResolutionSystem.self,
     ComputationOrderSystem.self,
     NameResolutionSystem.self,
-    FlowCollectorSystem.self,
-    StockDependencySystem.self,
+    StockFlowTopologySystem.self,
     SimulationPlanningSystem.self,
 ]
 

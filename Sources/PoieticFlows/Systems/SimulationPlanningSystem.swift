@@ -115,8 +115,7 @@ public struct SimulationPlanningSystem: System {
         .after(ExpressionParserSystem.self), // Gets us UnboundExpression for each node
         .after(ComputationOrderSystem.self), // Gets us SimulationOrderComponent
         .after(NameResolutionSystem.self), // We need name lookup and object names.
-        .after(FlowCollectorSystem.self),
-        .after(StockDependencySystem.self),
+        .after(StockFlowTopologySystem.self),
     ]
     
     public init(_ world: World) {
