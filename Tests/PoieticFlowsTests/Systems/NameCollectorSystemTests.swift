@@ -53,9 +53,9 @@ import Testing
         #expect(lookup.namedObjects.isEmpty)
         
         let emptyEnt = try #require(world.entity(empty.objectID))
-        #expect(emptyEnt.hasError(ModelError.emptyName))
+        #expect(emptyEnt.hasIssue(identifier: IssueIdentifier.emptyName))
         let wsEnt = try #require(world.entity(whitespace.objectID))
-        #expect(wsEnt.hasError(ModelError.emptyName))
+        #expect(wsEnt.hasIssue(identifier: IssueIdentifier.emptyName))
         
         let component1: SimulationName? = world.entity(empty.objectID)?.component()
         #expect(component1 == nil)
@@ -87,12 +87,13 @@ import Testing
         let objEnt = try #require(world.entity(object.objectID))
         let component: SimulationName? = objEnt.component()
         #expect(component == nil)
-        #expect(objEnt.hasError(ModelError.duplicateName("object")))
+        #expect(objEnt.hasIssue(identifier: IssueIdentifier.duplicateName))
+                
 
         let dupeEnt = try #require(world.entity(dupe.objectID))
         let dupeComponent: SimulationName? = dupeEnt.component()
         #expect(dupeComponent == nil)
-        #expect(dupeEnt.hasError(ModelError.duplicateName("object")))
+        #expect(dupeEnt.hasIssue(identifier: IssueIdentifier.duplicateName))
     }
     @Test func validAndDuplicateMix() throws {
         let object = frame.createNode(.Auxiliary, name: "object")
@@ -106,12 +107,12 @@ import Testing
         let objEnt = try #require(world.entity(object.objectID))
         let component: SimulationName? = objEnt.component()
         #expect(component == nil)
-        #expect(objEnt.hasError(ModelError.duplicateName("object")))
+        #expect(objEnt.hasIssue(identifier: IssueIdentifier.duplicateName))
 
         let dupeEnt = try #require(world.entity(dupe.objectID))
         let dupeComponent: SimulationName? = dupeEnt.component()
         #expect(dupeComponent == nil)
-        #expect(dupeEnt.hasError(ModelError.duplicateName("object")))
+        #expect(dupeEnt.hasIssue(identifier: IssueIdentifier.duplicateName))
 
         let singleEnt = try #require(world.entity(single.objectID))
         let singleComponent: SimulationName? = singleEnt.component()

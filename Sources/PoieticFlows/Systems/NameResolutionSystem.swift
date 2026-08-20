@@ -14,9 +14,13 @@ import PoieticCore
 ///               empty; ``SimulationNameLookup`` for the plane.
 /// - **Forgiveness:** Objects without name attribute set - assumed they can't be referred to by
 ///   name, but can by other means, such as an edge.
-/// - **Issues collected:** Objects with duplicate name.
+/// - **Issues collected:**
+///     - `empty_name`: Name is empty (no characters) or visually empty – contains only whitespaces.
+///     - `duplicate_name`: The node has the same name as some other node.
 ///
 public struct NameResolutionSystem: System {
+    public static let IssueSourceName = "NameResolutionSystem"
+
     // Note: In the future this system might be doing fully qualified name resolution, once we get
     //       nested simulation blocks.
     public init(_ world: World) { }
@@ -39,11 +43,12 @@ public struct NameResolutionSystem: System {
             let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
             if trimmedName.isEmpty {
                 let issue = Issue(
-                    identifier: "empty_name",
+                    identifier: IssueIdentifier.emptyName,
                     severity: .error,
-                    system: self,
-                    error: ModelError.emptyName,
-                    )
+                    source: Self.IssueSourceName,
+                    message: "Node name is empty",
+                    hints: [ "Set a node name that is not visually empty" ],
+                )
                 entity.appendIssue(issue)
                 continue
             }
@@ -61,11 +66,12 @@ public struct NameResolutionSystem: System {
             }
             else if ids.count > 1 {
                 let issue = Issue(
-                    identifier: "duplicate_name",
+                    identifier: IssueIdentifier.duplicateName,
                     severity: .error,
-                    system: self,
-                    error: ModelError.duplicateName(name),
-                    )
+                    source: Self.IssueSourceName,
+                    message: "Duplicate node name: '\(name)'",
+                    hints: [ "Rename the node" ],
+                )
                 // TODO: Add related nodes
                 for entity in world.query(ids) {
                     entity.appendIssue(issue)

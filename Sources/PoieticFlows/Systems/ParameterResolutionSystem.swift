@@ -50,9 +50,21 @@ public struct ResolvedParameters: Component {
 /// of auxiliary types: graphical function, smooth or delay.
 /// - **Output:** ``ResolvedParametersComponent`` set of each input component
 /// - **Forgiveness:** Nothing needed.
-/// - **Issues:** Issues added to objects with unknown parameters or unused inputs.
+/// - **Issues Appended:**
+///     - `unknown_parameter`: Parameter in a formula is not connected from a node.
+///     - `unused_input`: Parameter connected to a node is not used in the formula.
+///     - `missing_required_parameter`: Missing a connection from a parameter node to a graphical
+///        function.
+///     - `too_many_parameters`: Too many parameters for a node, usually used with single-parameter
+///        auxiliaries such as graphical function, delay or smooth.
+///
+/// - Note: All parameters in a formula must have a connection from a node that represents the
+///   parameter. This requirement is to make sure that the model is transparent to the human
+///   readers.
 ///
 public struct ParameterResolutionSystem: System {
+    public static let IssueSourceName = "ParameterResolutionSystem"
+
     nonisolated(unsafe) public static let dependencies: [SystemDependency] = [
         .after(ExpressionParserSystem.self), // We need variable names
     ]
@@ -100,11 +112,16 @@ public struct ParameterResolutionSystem: System {
             // Collect issues
             for name in missing {
                 let issue = Issue(
-                    identifier: "unknown_parameter",
+                    identifier: IssueIdentifier.unknownParameter,
                     severity: .error,
-                    system: self,
-                    error: ModelError.unknownParameter(name),
-                    details: ["name": Variant(name)]
+                    source: Self.IssueSourceName,
+                    message: "Parameter '\(name)' is unknown or not connected",
+                    hints: [
+                        "Connect the parameter node '\(name)'",
+                        "Check the formula for typos",
+                        "Remove the parameter from the formula."
+                    ],
+                    details: ["parameter": Variant(name)]
                     )
                 entity.appendIssue(issue)
             }
@@ -112,11 +129,12 @@ public struct ParameterResolutionSystem: System {
             for edge in unused {
                 guard let name = edge.originObject.name else { continue }
                 let issue = Issue(
-                    identifier: "unused_input",
+                    identifier: IssueIdentifier.unusedInput,
                     severity: .error,
-                    system: self,
-                    error: ModelError.unusedInput(name),
-                    details: ["name": Variant(name)]
+                    source: Self.IssueSourceName,
+                    message: "Parameter '\(name)' is connected but not used",
+                    hints: ["Use the connected parameter or disconnect the node '\(name)'"],
+                    details: ["parameter": Variant(name)],
                     )
                 entity.appendIssue(issue)
             }
@@ -146,10 +164,13 @@ public struct ParameterResolutionSystem: System {
             
             if incomingParams.count == 0 {
                 let issue = Issue(
-                    identifier: "missing_required_parameter",
+                    identifier: IssueIdentifier.missingRequiredParameter,
                     severity: .error,
-                    system: self,
-                    error: ModelError.missingRequiredParameter,
+                    source: Self.IssueSourceName,
+                    message: "Missing required parameter connection",
+                    hints: [
+                        "Connect exactly one other node as a parameter. Name does not matter",
+                    ],
                 )
                 entity.appendIssue(issue)
 
@@ -159,10 +180,13 @@ public struct ParameterResolutionSystem: System {
             }
             else if incomingParams.count > 1 {
                 let issue = Issue(
-                    identifier: "too_many_parameters",
+                    identifier: IssueIdentifier.tooManyParameters,
                     severity: .error,
-                    system: self,
-                    error: ModelError.tooManyParameters,
+                    source: Self.IssueSourceName,
+                    message: "Too many parameters connected",
+                    hints: [
+                        "Keep only required parameter(s), disconnect the others",
+                    ]
                 )
                 entity.appendIssue(issue)
 

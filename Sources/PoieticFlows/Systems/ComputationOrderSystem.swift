@@ -15,9 +15,13 @@ import PoieticCore
 /// - **Output:**
 ///     - Ordered list of objects in ``SimulationOrder``.
 ///     - Role associated with each object in ``SimulationRole``.
-/// - **Forgiveness:** ...
+/// - **Forgiveness:** Nothing to be forgiven.
+/// - **Issues Appended:**
+///     - `computation_cycle`: Node is part of a computation cycle.
 ///
 public struct ComputationOrderSystem: System {
+    public static let IssueSourceName = "ComputationOrderSystem"
+    
     public init(_ world: World) { }
 
     public func update(_ world: World) throws (InternalSystemError) {
@@ -93,21 +97,24 @@ public struct ComputationOrderSystem: System {
                 nodes.insert(edge.origin)
                 nodes.insert(edge.target)
                 let issue = Issue(
-                    identifier: "computation_cycle",
+                    identifier: IssueIdentifier.computationCycle,
                     severity: .error,
-                    system: self,
-                    error: ModelError.computationCycle,
-                    )
+                    source: Self.IssueSourceName,
+                    message: "Edge is part of a computation cycle",
+                )
                 entity.appendIssue(issue)
             }
             for node in nodes {
                 guard let entity = world.entity(node) else { continue }
                 let issue = Issue(
-                    identifier: "computation_cycle",
+                    identifier: IssueIdentifier.computationCycle,
                     severity: .error,
-                    system: self,
-                    error: ModelError.computationCycle,
-                    )
+                    source: Self.IssueSourceName,
+                    message: "Node is part of a computation cycle",
+                    hints: [
+                        "Disconnect at least one of the parameter connections that is causing the cycle"
+                    ]
+                )
                 entity.appendIssue(issue)
             }
             return nil

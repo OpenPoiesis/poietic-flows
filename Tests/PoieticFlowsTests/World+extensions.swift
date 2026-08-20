@@ -9,19 +9,13 @@
 
 // Testing convenience methods
 extension RuntimeEntity {
-    func hasIssue(identifier: String) -> Bool {
+    func hasIssue(identifier: String, details: [String:Variant] = [:]) -> Bool {
         guard let issues = self.issues else { return false }
-        return issues.contains { $0.identifier == identifier }
-    }
-
-
-    func hasError<T:IssueProtocol>(_ error: T) -> Bool {
-        guard let issues = self.issues else { return false }
-
-        for issue in issues {
-            if let objectError = issue.error as? T, objectError == error {
-                return true
+        for issue in issues where issue.identifier == identifier {
+            let matches = details.allSatisfy { key, value in
+                issue.details[key] == value
             }
+            if matches { return true }
         }
         return false
     }

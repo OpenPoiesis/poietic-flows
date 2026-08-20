@@ -51,7 +51,7 @@ extension PlanningError {
 /// Object that plans a computation.
 ///
 public class SimulationPlanner {
-    
+    public static let IssueSourceName: String = "SimulationPlanner"
     var variables: StateVariableTable
     
     public init() {
@@ -240,15 +240,15 @@ public class SimulationPlanner {
             boundExpression = try Evaluator.bind(expression, variables: variables)
         }
         catch /* ExpressionError */ {
+            var details = error.details
+            details["attribute"] = "formula"
             let issue = Issue(
-                identifier: "expression_error",
+                identifier: error.issueIdentifier,
                 severity: .error,
-                systemName: "SimulationPlanner",
-                message: error.description,
-                details: [
-                    "attribute": "formula",
-                    "underlying_error": Variant(error.description),
-                ]
+                source: Self.IssueSourceName,
+                message: error.message,
+                hints: error.hints,
+                details: details,
             )
 
             entity.appendIssue(issue)
@@ -329,10 +329,10 @@ public class SimulationPlanner {
             let issue = Issue(
                 identifier: "invalid_parameter_type",
                 severity: .error,
-                systemName: "SimulationPlanner",
+                source: Self.IssueSourceName,
                 message: "Invalid parameter type",
                 relatedObjects: [parameterID]
-                )
+            )
             entity.appendIssue(issue)
             throw .userIssue
         }
@@ -373,10 +373,10 @@ public class SimulationPlanner {
             let issue = Issue(
                 identifier: "invalid_parameter_type",
                 severity: .error,
-                systemName: "SimulationPlanner",
+                source: Self.IssueSourceName,
                 message: "Invalid parameter type",
                 relatedObjects: [parameterID]
-                )
+            )
             entity.appendIssue(issue)
             throw .userIssue
         }

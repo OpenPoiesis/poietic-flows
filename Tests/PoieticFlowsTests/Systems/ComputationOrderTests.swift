@@ -66,9 +66,9 @@ import Testing
         #expect(component == nil)
         
         let aEnt = try #require(world.entity(a.objectID))
-        #expect(aEnt.hasError(ModelError.computationCycle))
-        let bEnt = try #require(world.entity(a.objectID))
-        #expect(bEnt.hasError(ModelError.computationCycle))
+        #expect(aEnt.hasIssue(identifier: IssueIdentifier.computationCycle))
+        let bEnt = try #require(world.entity(b.objectID))
+        #expect(bEnt.hasIssue(identifier: IssueIdentifier.computationCycle))
     }
     @Test func orderWithSpecialAuxiliary() throws {
         // p:Aux -> g:GF -> a:Aux

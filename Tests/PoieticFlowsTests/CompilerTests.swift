@@ -77,7 +77,8 @@ extension TransientPlane {
         #expect(plan == nil)
 
         let entity = try #require(world.entity(aux.objectID))
-        #expect(entity.hasError(ExpressionError.unknownFunction("nonexistent")))
+        #expect(entity.hasIssue(identifier: "expression.unknown_function",
+                                details: ["function": "nonexistent"]))
     }
 
     @Test func singleComputedVariable() throws {

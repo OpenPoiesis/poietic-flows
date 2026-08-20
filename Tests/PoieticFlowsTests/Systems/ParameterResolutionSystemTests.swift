@@ -105,7 +105,8 @@ import Testing
         #expect(component.incoming.isEmpty == true)
         #expect(component.missing == ["x"])
         #expect(component.unused.isEmpty == true)
-        #expect(entity.hasError(ModelError.unknownParameter("x")))
+        #expect(entity.hasIssue(identifier: IssueIdentifier.unknownParameter,
+                                details: ["parameter": "x"]))
     }
 
     @Test func formulaWithUnusedParameter() throws {
@@ -131,7 +132,8 @@ import Testing
         #expect(component.incoming["x"] == aux.objectID)
         #expect(component.missing.isEmpty == true)
         #expect(component.unused.count == 1)
-        #expect(entity.hasError(ModelError.unusedInput("y")))
+        #expect(entity.hasIssue(identifier: IssueIdentifier.unusedInput,
+                                details: ["parameter": "y"]))
     }
 
     @Test func formulaWithMixedParameters() throws {
@@ -159,8 +161,10 @@ import Testing
         #expect(component.incoming["a"] == aux.objectID)
         #expect(component.missing == ["b"])
         #expect(component.unused.count == 1)
-        #expect(entity.hasError(ModelError.unknownParameter("b")))
-        #expect(entity.hasError(ModelError.unusedInput("c")))
+        #expect(entity.hasIssue(identifier: IssueIdentifier.unknownParameter,
+                                details: ["parameter": "b"]))
+        #expect(entity.hasIssue(identifier: IssueIdentifier.unusedInput,
+                                details: ["parameter": "c"]))
     }
 
     @Test func formulaWithBuiltinVariable() throws {
@@ -229,7 +233,7 @@ import Testing
         let component: ResolvedParameters = try #require(entity.component())
         #expect(component.connectedUnnamed.isEmpty == true)
         #expect(component.missingUnnamed == 1)
-        #expect(entity.hasError(ModelError.missingRequiredParameter))
+        #expect(entity.hasIssue(identifier: IssueIdentifier.missingRequiredParameter))
     }
 
     @Test func delayWithOneParameter() throws {
@@ -273,7 +277,7 @@ import Testing
         let entity = try #require(world.entity(delay.objectID))
         let component: ResolvedParameters = try #require(entity.component())
         #expect(component.unused.count == 2)
-        #expect(entity.hasError(ModelError.tooManyParameters))
+        #expect(entity.hasIssue(identifier: IssueIdentifier.tooManyParameters))
     }
 
     // MARK: - Other auxiliaries
