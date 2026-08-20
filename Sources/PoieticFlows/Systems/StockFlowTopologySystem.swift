@@ -46,11 +46,10 @@ public struct StockFlowTopologySystem: System {
                 $0.object.type === ObjectType.Flow
             }?.origin
             
-            let priority: Int = flow["priority", default: 0]
+            // Not used now (it was, and it might be, keeping as a note here)
+            // let priority: Int = flow["priority", default: 0]
             
-            let component = FlowRateComponent(drainsStock: drains,
-                                              fillsStock: fills,
-                                              priority: priority)
+            let component = FlowRateComponent(drainsStock: drains, fillsStock: fills)
             entity.setComponent(component)
         }
     }

@@ -203,8 +203,6 @@ public struct BoundFlow {
     /// This value might be different from expected value if a non-negative stocks are used.
     public let adjustedValueIndex: SimulationState.Index
     
-    public let priority: Int
-    
     /// ID of a stock in bound stocks that the flow drains.
     public let drains: ObjectID?
     

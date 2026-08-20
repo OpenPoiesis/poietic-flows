@@ -35,7 +35,6 @@ import Testing
         let component: FlowRateComponent = try #require(world.entity(flowRate.objectID)?.component())
         #expect(component.drainsStock == nil)
         #expect(component.fillsStock == nil)
-        #expect(component.priority == 0)
     }
 
     // MARK: - Single Connection Scenarios
@@ -52,7 +51,6 @@ import Testing
         let component: FlowRateComponent = try #require(world.entity(flowRate.objectID)?.component())
         #expect(component.drainsStock == stock.objectID)
         #expect(component.fillsStock == nil)
-        #expect(component.priority == 0)
     }
 
     @Test func flowRateFillingStock() throws {
@@ -67,7 +65,6 @@ import Testing
         let component: FlowRateComponent = try #require(world.entity(flowRate.objectID)?.component())
         #expect(component.drainsStock == nil)
         #expect(component.fillsStock == stock.objectID)
-        #expect(component.priority == 0)
     }
 
     @Test func flowRateBetweenStocks() throws {
@@ -85,7 +82,6 @@ import Testing
         let component: FlowRateComponent = try #require(world.entity(flowRate.objectID)?.component())
         #expect(component.drainsStock == source.objectID)
         #expect(component.fillsStock == target.objectID)
-        #expect(component.priority == 0)
     }
 
     @Test func flowRateBetweenClouds() throws {
@@ -103,7 +99,6 @@ import Testing
         let component: FlowRateComponent = try #require(world.entity(flowRate.objectID)?.component())
         #expect(component.drainsStock == source.objectID)
         #expect(component.fillsStock == target.objectID)
-        #expect(component.priority == 0)
     }
 
     // MARK: - Priority Handling
@@ -116,7 +111,6 @@ import Testing
         try system.update(world)
 
         let component: FlowRateComponent = try #require(world.entity(flowRate.objectID)?.component())
-        #expect(component.priority == 5)
     }
 }
 

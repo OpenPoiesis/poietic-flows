@@ -108,8 +108,4 @@ public struct FlowRateComponent: Component {
     ///     Node of interest
     ///
     public let fillsStock: ObjectID?
-
-    // FIXME: This seems to be no longer used, consider removing.
-    /// Priority when sorting flow rates.
-    public let priority: Int
 }

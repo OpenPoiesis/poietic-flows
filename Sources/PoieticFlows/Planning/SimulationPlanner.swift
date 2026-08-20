@@ -422,7 +422,6 @@ public class SimulationPlanner {
             let boundFlow = BoundFlow(objectID: flow.objectID,
                                       estimatedValueIndex: estimatedValueIndex,
                                       adjustedValueIndex: adjustedValueIndex,
-                                      priority: component.priority,
                                       drains: component.drainsStock,
                                       fills: component.fillsStock)
 
