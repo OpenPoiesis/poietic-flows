@@ -83,7 +83,6 @@ public enum ComputationalRepresentation: CustomStringConvertible {
 ///   ``StockFlowSimulation/evaluate(expression:with:)``
 ///
 public struct SimulationObject: CustomStringConvertible {
-    // TODO: [ECS] Turn this into a component
     /// ID of the object, usually a node, that is being represented.
     ///
     public let objectID: ObjectID
@@ -103,7 +102,7 @@ public struct SimulationObject: CustomStringConvertible {
 
     /// Type of the variable value.
     ///
-    public var valueType: ValueType
+    public let valueType: ValueType
     
     /// Name of the object.
     ///
@@ -194,21 +193,22 @@ public struct BoundFlow {
     /// ID of object that represents this flow rate.
     public let objectID: ObjectID
 
-    /// Index of a variable in the state holding value of the flow rate that is expected.
+    /// Index of a variable in the state holding value of the flow rate that is expected –
+    /// as computed by the flow's formula.
     public let estimatedValueIndex: SimulationState.Index
 
     /// Index of a variable in the state holding value of the flow rate that was used in the
-    /// computation.
+    /// computation – rate actually applied after non-negative-stock scaling.
     ///
     /// This value might be different from expected value if a non-negative stocks are used.
     public let adjustedValueIndex: SimulationState.Index
     
     public let priority: Int
     
-    /// Index of a stock in bound stocks that the flow drains.
+    /// ID of a stock in bound stocks that the flow drains.
     public let drains: ObjectID?
     
-    /// Index of a stock in bound stocks that the flow fills.
+    /// ID of a stock in bound stocks that the flow fills.
     public let fills: ObjectID?
 }
 

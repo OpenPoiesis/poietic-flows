@@ -1,10 +1,8 @@
 //
-//  Compiler.swift
+//  FlowsSystemCollections.swift
 //  poietic-flows
 //
 //  Created by Stefan Urbanek on 21/06/2022.
-
-// FIXME: Remove this file once users of this API are happy
 
 import PoieticCore
 
