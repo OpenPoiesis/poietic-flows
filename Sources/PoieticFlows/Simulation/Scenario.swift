@@ -71,7 +71,7 @@ public struct SimulationSettings: Component {
 
     /// Create new simulation settings from an object.
     ///
-    /// The object is expected to be of a ``Trait/Simulation`` type, although any object with
+    /// The object is expected to have the `Simulation` trait, although any object with
     /// expected attributes can be used.
     ///
     public init(fromObject object: ObjectSnapshot) {

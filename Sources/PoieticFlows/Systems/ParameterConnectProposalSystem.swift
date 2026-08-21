@@ -30,8 +30,8 @@ public struct ParameterProposal: Component {
 /// System that proposes parameter edges to be added and to be removed. The proposal is based on
 /// the parameter names used in parsed expressions (typically from `formula` attribute) and
 ///
-/// - **Input:** Singleton ``SimulationNameLookupComponent``
-///   and objects with ``ResolvedParametersComponent``.
+/// - **Input:** Singleton ``SimulationNameLookup``
+///   and objects with ``ResolvedParameters``.
 ///
 ///   If a singleton `Selection` is present and is not empty, then only objects in the selection
 ///   are considered.
@@ -67,14 +67,14 @@ public struct ParameterConnectionProposalSystem: System {
     ]
     public init(_ world: World) { }
     public func update(_ world: World) throws (InternalSystemError) {
-        guard let lookup: SimulationNameLookupComponent = world.singleton()
+        guard let lookup: SimulationNameLookup = world.singleton()
         else { return }
         
         let contained: Set<ObjectID>
         if let selection: Selection = world.singleton(),
-           let frame = world.plane
+           let plane = world.plane
         {
-            contained = Set(frame.contained(selection))
+            contained = Set(plane.contained(selection))
         }
         else {
             contained = Set()
@@ -83,7 +83,7 @@ public struct ParameterConnectionProposalSystem: System {
         var toRemove: [ObjectID] = []
         var toAdd: [ParameterProposal.EdgeProposal] = []
         
-        for (entity, resolution) in world.query(ResolvedParametersComponent.self) {
+        for (entity, resolution) in world.query(ResolvedParameters.self) {
             guard let objectID = entity.objectID
             else { continue }
 

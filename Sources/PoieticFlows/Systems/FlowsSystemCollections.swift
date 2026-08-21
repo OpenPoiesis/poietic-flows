@@ -1,10 +1,8 @@
 //
-//  Compiler.swift
+//  FlowsSystemCollections.swift
 //  poietic-flows
 //
 //  Created by Stefan Urbanek on 21/06/2022.
-
-// FIXME: Remove this file once users of this API are happy
 
 import PoieticCore
 
@@ -15,9 +13,9 @@ nonisolated(unsafe) public let SimulationPlanningSystems: [System.Type] = [
     ParameterResolutionSystem.self,
     ComputationOrderSystem.self,
     NameResolutionSystem.self,
-    FlowCollectorSystem.self,
-    StockDependencySystem.self,
+    StockFlowTopologySystem.self,
     SimulationPlanningSystem.self,
+    SimulationSettingsSystem.self,
 ]
 
 nonisolated(unsafe) public let SimulationRunningSystems: [System.Type] = [

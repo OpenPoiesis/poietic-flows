@@ -9,7 +9,7 @@ import Testing
 @testable import PoieticFlows
 @testable import PoieticCore
 
-@Suite struct FlowCollectorSystemTests {
+@Suite struct FlowTopologySystemTests {
     let design: Design
     let frame: TransientPlane
 
@@ -29,13 +29,12 @@ import Testing
         let flowRate = frame.createNode(.FlowRate, name: "isolated")
 
         let world = try accept(frame)
-        let system = FlowCollectorSystem(world)
+        let system = StockFlowTopologySystem(world)
         try system.update(world)
 
-        let component: FlowRateComponent = try #require(world.entity(flowRate.objectID)?.component())
+        let component: FlowRate = try #require(world.entity(flowRate.objectID)?.component())
         #expect(component.drainsStock == nil)
         #expect(component.fillsStock == nil)
-        #expect(component.priority == 0)
     }
 
     // MARK: - Single Connection Scenarios
@@ -46,13 +45,12 @@ import Testing
         frame.createEdge(.Flow, origin: stock, target: flowRate)
 
         let world = try accept(frame)
-        let system = FlowCollectorSystem(world)
+        let system = StockFlowTopologySystem(world)
         try system.update(world)
 
-        let component: FlowRateComponent = try #require(world.entity(flowRate.objectID)?.component())
+        let component: FlowRate = try #require(world.entity(flowRate.objectID)?.component())
         #expect(component.drainsStock == stock.objectID)
         #expect(component.fillsStock == nil)
-        #expect(component.priority == 0)
     }
 
     @Test func flowRateFillingStock() throws {
@@ -61,13 +59,12 @@ import Testing
         frame.createEdge(.Flow, origin: flowRate, target: stock)
 
         let world = try accept(frame)
-        let system = FlowCollectorSystem(world)
+        let system = StockFlowTopologySystem(world)
         try system.update(world)
 
-        let component: FlowRateComponent = try #require(world.entity(flowRate.objectID)?.component())
+        let component: FlowRate = try #require(world.entity(flowRate.objectID)?.component())
         #expect(component.drainsStock == nil)
         #expect(component.fillsStock == stock.objectID)
-        #expect(component.priority == 0)
     }
 
     @Test func flowRateBetweenStocks() throws {
@@ -79,13 +76,12 @@ import Testing
         frame.createEdge(.Flow, origin: flowRate, target: target)
 
         let world = try accept(frame)
-        let system = FlowCollectorSystem(world)
+        let system = StockFlowTopologySystem(world)
         try system.update(world)
 
-        let component: FlowRateComponent = try #require(world.entity(flowRate.objectID)?.component())
+        let component: FlowRate = try #require(world.entity(flowRate.objectID)?.component())
         #expect(component.drainsStock == source.objectID)
         #expect(component.fillsStock == target.objectID)
-        #expect(component.priority == 0)
     }
 
     @Test func flowRateBetweenClouds() throws {
@@ -97,13 +93,12 @@ import Testing
         frame.createEdge(.Flow, origin: flowRate, target: target)
 
         let world = try accept(frame)
-        let system = FlowCollectorSystem(world)
+        let system = StockFlowTopologySystem(world)
         try system.update(world)
 
-        let component: FlowRateComponent = try #require(world.entity(flowRate.objectID)?.component())
+        let component: FlowRate = try #require(world.entity(flowRate.objectID)?.component())
         #expect(component.drainsStock == source.objectID)
         #expect(component.fillsStock == target.objectID)
-        #expect(component.priority == 0)
     }
 
     // MARK: - Priority Handling
@@ -112,15 +107,14 @@ import Testing
         let flowRate = frame.createNode(.FlowRate, name: "priority_flow", attributes: ["priority": 5])
 
         let world = try accept(frame)
-        let system = FlowCollectorSystem(world)
+        let system = StockFlowTopologySystem(world)
         try system.update(world)
 
-        let component: FlowRateComponent = try #require(world.entity(flowRate.objectID)?.component())
-        #expect(component.priority == 5)
+        let component: FlowRate = try #require(world.entity(flowRate.objectID)?.component())
     }
 }
 
-@Suite struct StockDependencySystemTests {
+@Suite struct StockTopologySystemTests {
     let design: Design
     let frame: TransientPlane
     
@@ -132,7 +126,7 @@ import Testing
     func accept(_ frame: TransientPlane) throws -> World {
         let stable = try design.accept(frame)
         let world = World(plane: stable)
-        let flowSystem = FlowCollectorSystem(world)
+        let flowSystem = StockFlowTopologySystem(world)
         try flowSystem.update(world)
         return world
     }
@@ -144,10 +138,10 @@ import Testing
         
         let world = try accept(frame)
         
-        let system = StockDependencySystem(world)
+        let system = StockFlowTopologySystem(world)
         try system.update(world)
         
-        let component: StockComponent = try #require(world.entity(stock.objectID)?.component())
+        let component: Stock = try #require(world.entity(stock.objectID)?.component())
         #expect(component.inflowRates.isEmpty)
         #expect(component.outflowRates.isEmpty)
         #expect(component.inflowStocks.isEmpty)
@@ -164,10 +158,10 @@ import Testing
         
         let world = try accept(frame)
         
-        let system = StockDependencySystem(world)
+        let system = StockFlowTopologySystem(world)
         try system.update(world)
         
-        let component: StockComponent = try #require(world.entity(stock.objectID)?.component())
+        let component: Stock = try #require(world.entity(stock.objectID)?.component())
         #expect(component.inflowRates == [flowRate.objectID])
         #expect(component.outflowRates.isEmpty)
         #expect(component.inflowStocks.isEmpty)
@@ -181,10 +175,10 @@ import Testing
         
         let world = try accept(frame)
         
-        let system = StockDependencySystem(world)
+        let system = StockFlowTopologySystem(world)
         try system.update(world)
         
-        let component: StockComponent = try #require(world.entity(stock.objectID)?.component())
+        let component: Stock = try #require(world.entity(stock.objectID)?.component())
         #expect(component.inflowRates.isEmpty)
         #expect(component.outflowRates == [flowRate.objectID])
         #expect(component.inflowStocks.isEmpty)
@@ -201,10 +195,10 @@ import Testing
         
         let world = try accept(frame)
         
-        let system = StockDependencySystem(world)
+        let system = StockFlowTopologySystem(world)
         try system.update(world)
         
-        let component: StockComponent = try #require(world.entity(stock.objectID)?.component())
+        let component: Stock = try #require(world.entity(stock.objectID)?.component())
         #expect(component.inflowRates == [inflow.objectID])
         #expect(component.outflowRates == [outflow.objectID])
         #expect(component.inflowStocks.isEmpty)
@@ -227,10 +221,10 @@ import Testing
         
         let world = try accept(frame)
         
-        let system = StockDependencySystem(world)
+        let system = StockFlowTopologySystem(world)
         try system.update(world)
         
-        let component: StockComponent = try #require(world.entity(stock.objectID)?.component())
+        let component: Stock = try #require(world.entity(stock.objectID)?.component())
         #expect(component.inflowRates.count == 2)
         #expect(component.inflowRates.contains(inflow1.objectID))
         #expect(component.inflowRates.contains(inflow2.objectID))
@@ -251,15 +245,15 @@ import Testing
         
         let world = try accept(frame)
         
-        let system = StockDependencySystem(world)
+        let system = StockFlowTopologySystem(world)
         try system.update(world)
         
-        let compA: StockComponent = try #require(world.entity(stockA.objectID)?.component())
+        let compA: Stock = try #require(world.entity(stockA.objectID)?.component())
         #expect(compA.outflowRates == [flowRate.objectID])
         #expect(compA.outflowStocks == [stockB.objectID])
         #expect(compA.inflowStocks.isEmpty)
         
-        let compB: StockComponent = try #require(world.entity(stockB.objectID)?.component())
+        let compB: Stock = try #require(world.entity(stockB.objectID)?.component())
         #expect(compB.inflowRates == [flowRate.objectID])
         #expect(compB.inflowStocks == [stockA.objectID])
         #expect(compB.outflowStocks.isEmpty)
@@ -280,21 +274,21 @@ import Testing
         
         let world = try accept(frame)
         
-        let flowSystem = FlowCollectorSystem(world)
+        let flowSystem = StockFlowTopologySystem(world)
         try flowSystem.update(world)
         
-        let system = StockDependencySystem(world)
+        let system = StockFlowTopologySystem(world)
         try system.update(world)
         
-        let compA: StockComponent = try #require(world.entity(stockA.objectID)?.component())
+        let compA: Stock = try #require(world.entity(stockA.objectID)?.component())
         #expect(compA.inflowStocks.isEmpty)
         #expect(compA.outflowStocks == [stockB.objectID])
         
-        let compB: StockComponent = try #require(world.entity(stockB.objectID)?.component())
+        let compB: Stock = try #require(world.entity(stockB.objectID)?.component())
         #expect(compB.inflowStocks == [stockA.objectID])
         #expect(compB.outflowStocks == [stockC.objectID])
         
-        let compC: StockComponent = try #require(world.entity(stockC.objectID)?.component())
+        let compC: Stock = try #require(world.entity(stockC.objectID)?.component())
         #expect(compC.inflowStocks == [stockB.objectID])
         #expect(compC.outflowStocks.isEmpty)
     }
@@ -312,16 +306,16 @@ import Testing
         
         let world = try accept(frame)
         
-        let system = StockDependencySystem(world)
+        let system = StockFlowTopologySystem(world)
         try system.update(world)
         
-        let compA: StockComponent = try #require(world.entity(stockA.objectID)?.component())
+        let compA: Stock = try #require(world.entity(stockA.objectID)?.component())
         #expect(compA.outflowRates == [rateAB.objectID])
         #expect(compA.outflowStocks == [stockB.objectID])
         #expect(compA.inflowRates == [rateBA.objectID])
         #expect(compA.inflowStocks == [stockB.objectID])
         
-        let compB: StockComponent = try #require(world.entity(stockB.objectID)?.component())
+        let compB: Stock = try #require(world.entity(stockB.objectID)?.component())
         #expect(compB.inflowRates == [rateAB.objectID])
         #expect(compB.inflowStocks == [stockA.objectID])
         #expect(compB.outflowRates == [rateBA.objectID])
@@ -336,12 +330,12 @@ import Testing
         
         let world = try accept(frame)
         
-        let system = StockDependencySystem(world)
+        let system = StockFlowTopologySystem(world)
         try system.update(world)
         
-        let component1: StockComponent = try #require(world.entity(stockNeg.objectID)?.component())
+        let component1: Stock = try #require(world.entity(stockNeg.objectID)?.component())
         #expect(component1.allowsNegative == true)
-        let component2: StockComponent = try #require(world.entity(stockNotNeg.objectID)?.component())
+        let component2: Stock = try #require(world.entity(stockNotNeg.objectID)?.component())
         #expect(component2.allowsNegative == false)
     }
 }

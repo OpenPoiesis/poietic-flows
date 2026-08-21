@@ -48,17 +48,17 @@ create the nodes:
 
 ```swift
 let design = Design(metamodel: Metamodel.StockFlow)
-let frame = design.createFrame()
+let plane = design.createFrame()
 
-let account = frame.createNode(ObjectType.Stock,
+let account = plane.createNode(ObjectType.Stock,
                                name: "account",
                                attributes: ["formula": "100"])
 
-let rate = frame.createNode(ObjectType.Auxiliary,
+let rate = plane.createNode(ObjectType.Auxiliary,
                             name: "rate",
                             attributes: ["formula": "0.02"])
 
-let interest = frame.createNode(ObjectType.Auxiliary,
+let interest = plane.createNode(ObjectType.Auxiliary,
                                 name: "interest",
                                 attributes: ["formula": "account * rate"])
 
@@ -67,9 +67,9 @@ let interest = frame.createNode(ObjectType.Auxiliary,
 The nodes need to be connected:
 
 ```swift
-frame.createEdge(ObjectType.Parameter, origin: rate, target: interest)
-frame.createEdge(ObjectType.Parameter, origin: account, target: interest)
-frame.createEdge(ObjectType.Fills, origin: interest, target: account)
+plane.createEdge(ObjectType.Parameter, origin: rate, target: interest)
+plane.createEdge(ObjectType.Parameter, origin: account, target: interest)
+plane.createEdge(ObjectType.Fills, origin: interest, target: account)
 ```
 
 - Note: Typically you would not be creating detailed models by hand like in the
@@ -113,7 +113,7 @@ The only interpolation method that is currently available is `step`.
 Example:
 ```swift
 let points: [Points] = [ /* list of Points */ ]
-let yield = frame.createNode(ObjectType.Auxiliary,
+let yield = plane.createNode(ObjectType.Auxiliary,
                                 name: "yield",
                                 attributes: [
                                     "graphical_function_points": points

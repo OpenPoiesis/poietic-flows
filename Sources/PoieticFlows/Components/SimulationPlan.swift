@@ -25,25 +25,36 @@ import PoieticCore
 /// - List of stocks with inflows and outflows resolved (``BoundStock``).
 /// - List of flows with resolved stocks that the flow drains and fills (``BoundFlow``).
 ///
+/// - **Produced by:** ``SimulationPlanningSystem``
+/// - **Used by:** ``StockFlowSimulationSystem`` and your application
+///
+/// ## Plan Integrity
+///
+/// Simulation plan integrity is enforced on multiple levels. Higher levels assume lower
+/// ones held.
+///
+/// - **Level 1: Structural**. Structural integrity and conformance to metamodel assured by
+///   `Design` on acceptance.
+/// - **Level 2: Semantic**. Each system that produces artefacts consumed by the
+///   ``SimulationPlanningSystem`` records user-facing errors.
+/// - **Level 3: Planning**. The planning system refuses to produce a plan if there are semantic
+///   errors (user's responsibility) and throws on internal inconsistencies
+///   (developer's responsibility).
+///
 /// - SeeAlso: ``StockFlowSimulationSystem``, ``SimulationPlanningSystems``.
 ///
-public struct SimulationPlan {
+public struct SimulationPlan: Component {
     internal init(simulationObjects: [SimulationObject] = [],
                   stateVariables: [StateVariable] = [],
                   builtins: BoundBuiltins = BoundBuiltins(),
                   stocks: [BoundStock] = [],
-                  flows: [BoundFlow] = [],
-//                  charts: [Chart] = [],
-                  valueBindings: [CompiledControlBinding] = [],
-                  settings: SimulationSettings) {
+                  flows: [BoundFlow] = [])
+    {
         self.simulationObjects = simulationObjects
         self.stateVariables = stateVariables
         self.builtins = builtins
         self.stocks = stocks
         self.flows = flows
-//        self.charts = charts
-        self.valueBindings = valueBindings
-        self.simulationSettings = settings
     }
     
     /// List of objects that are considered in the computation computed, ordered by computational
@@ -66,15 +77,14 @@ public struct SimulationPlan {
     
     /// List of simulation state variables.
     ///
-    /// The list of state variables contain values of simulation objects (usually nodes) their
-    /// internal states (for example previous values for delay) and built-ins.
+    /// The list of state variables defines the state vector layout and content.
     ///
     /// Simulation object's state might be contained in multiple state variables. For example, delay
     /// uses two state variables: list of double values for the queue and an initial value.
     ///
     /// The internal state is typically not to be presented to the user.
     ///
-    /// - SeeAlso: ``SimulationPlanningSystem``.
+    /// - SeeAlso: ``StateVariable``, ``SimulationPlanningSystem``.
     ///
     public let stateVariables: [StateVariable]
     
@@ -97,16 +107,6 @@ public struct SimulationPlan {
     /// - SeeAlso: ``BoundFlow``, ``StockFlowSimulationSystem``.
     ///
     public let flows: [BoundFlow]
-    
-    /// Compiled bindings of controls to their value objects.
-    ///
-    public let valueBindings: [CompiledControlBinding]
-    
-    /// Time range, time delta and other settings to control the simulation.
-    ///
-    /// See ``SimulationSettings`` for more information.
-    ///
-    public let simulationSettings: SimulationSettings
     
     /// Get index into a list of computed variables for an object with given ID.
     ///

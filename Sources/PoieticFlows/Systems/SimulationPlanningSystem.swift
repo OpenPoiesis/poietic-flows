@@ -6,76 +6,25 @@
 //
 import PoieticCore
 
-// TODO: Do state variables need name? Can it be optional?
-
-/// Context used to construct state variables.
-///
-class StateVariableTable {
-    var objectIndex: [ObjectID:Int] = [:]
-    var nameIndex: [String:Int] = [:]
-    var variables: [StateVariable] = []
-    
-    func allocate(builtin: BuiltinVariable) -> Int
-    {
-        let index = self.allocate(content: .builtin(builtin),
-                                  valueType: builtin.valueType,
-                                  name: builtin.name)
-        return index
-    }
-
-    @discardableResult
-    func allocate(content: StateVariable.Content, valueType: ValueType, name: String) -> Int
-    {
-        let index = variables.count
-        let variable = StateVariable(index: index,
-                                     content: content,
-                                     valueType: valueType,
-                                     name: name)
-        variables.append(variable)
-        
-        if case let .object(id) = content {
-            objectIndex[id] = index
+extension PlanningError {
+    func internalSystemErrorContext() -> InternalSystemError.Context {
+        let context: InternalSystemError.Context
+        switch self {
+        case .corruptedComponent(let id, let name):
+            context = .component(id, name)
+        case .corruptedVariableTable:
+            context = .none
+        case .invalidObject(let id, _):
+            context = .object(id)
+        case .missingComponent(let id, let name):
+            context = .component(id, name)
+        case .unprocessedObjects:
+            context = .singleton("SimulationOrder")
+        case .userIssue:
+            context = .none
         }
-        
-        nameIndex[name] = index
-        return index
+        return context
     }
-   
-    func valueType(for objectID: ObjectID) -> ValueType? {
-        guard let index = objectIndex[objectID] else { return nil }
-        return variables[index].valueType
-    }
-    func valueType(at index: Int) -> ValueType? {
-        return variables[index].valueType
-    }
-    
-    /// Get variable index by name.
-    func index(_ name: String) -> Int? {
-        return nameIndex[name]
-    }
-    /// Get variable by name.
-    subscript(name: String) -> StateVariable? {
-        guard let index = nameIndex[name] else { return nil }
-        return variables[index]
-    }
-    func index(_ objectID: ObjectID) -> Int? {
-        return objectIndex[objectID]
-    }
-
-    subscript(objectID: ObjectID) -> StateVariable? {
-        guard let index = objectIndex[objectID] else { return nil }
-        return variables[index]
-    }
-
-}
-
-extension StateVariableTable: VariableNameLookup {
-    typealias Variable = BoundVariable
-    func variable(named name: String) -> Variable? {
-        guard let variable = self[name] else { return nil }
-        return BoundVariable(index: variable.index, valueType: variable.valueType)
-    }
-
 }
 
 /// System that creates the final simulation plan.
@@ -85,21 +34,24 @@ extension StateVariableTable: VariableNameLookup {
 ///     - Must run after ``ComputationOrderSystem`` to get the simulation order, which is one of the
 ///       key simulation information.
 ///     - Must run after ``NameResolutionSystem``.
-///     - Must run after ``FlowCollectorSystem`` and ``StockDependencySystem`` to collect stocks
+///     - Must run after ``StockFlowTopologySystem``to collect stocks
 ///       and flows.
 /// - **Input:**
-///     - ``SimulationOrderComponent``: singleton, required.
-///     - ``SimulationObjectNameComponent``: required for simulation objects, otherwise no plan is created.
-///     - ``SimulationRoleComponent``: required for simulation objects, otherwise no plan is created.
+///     - ``SimulationOrder``: singleton, required.
+///     - ``SimulationName``: required for simulation objects, otherwise no plan is created.
+///     - ``SimulationRole``: required for simulation objects, otherwise no plan is created.
 ///     - `ParsedExpressionComponent`: semantically required by formula objects.
-///     - ``ResolvedParametersComponent``: semantically required – registers an object issue if missing.
-///     - ``FlowRateComponent``: required for flow nodes.
-///     - ``StockComponent``: required for stock nodes.
+///     - ``ResolvedParameters``: semantically required – registers an object issue if missing.
+///     - ``FlowRate``: required for flow nodes.
+///     - ``Stock``: required for stock nodes.
 /// - **Output:** ``SimulationPlan`` singleton if there were no issues, otherwise sets object issues.
 /// - **Forgiveness:** The system is forgiving in a way that it does not fail on semantic errors.
 ///
+/// - Note: If the simulation plan was not produced by the system, it means that the model contained
+///         issues that make the model non-interpretable. Issues were set on entities which contain
+///         offending data or for an offending structure.
+///
 public struct SimulationPlanningSystem: System {
-    // TODO: [IMPORTANT] Break this down. Requires verification mechanism that all has been considered (no intermediate forgiveness)
     /// Error thrown during the planning process
     internal enum CompilationError: Error, Equatable {
         /// Issue with object has been detected, appended to the list of issues. The caller might
@@ -115,428 +67,61 @@ public struct SimulationPlanningSystem: System {
         .after(ExpressionParserSystem.self), // Gets us UnboundExpression for each node
         .after(ComputationOrderSystem.self), // Gets us SimulationOrderComponent
         .after(NameResolutionSystem.self), // We need name lookup and object names.
-        .after(FlowCollectorSystem.self),
-        .after(StockDependencySystem.self),
+        .after(StockFlowTopologySystem.self),
     ]
     
-    public init(_ world: World) {
-        // Nothing any more
-    }
+    public init(_ world: World) { }
     
     public func update(_ world: World) throws (InternalSystemError) {
-        guard let frame = world.plane,
-              let simOrder: SimulationOrderComponent = world.singleton()
+        guard let order: SimulationOrder = world.singleton()
         else { return }
+
+        world.removeSingleton(SimulationPlan.self)
         
-        var hasError: Bool = false
-        let variables = StateVariableTable()
-        var simulationObjects: [SimulationObject] = []
-        var flows: [SimulationObject] = []
-        var stocks: [SimulationObject] = []
+        let planner = SimulationPlanner()
 
-        let builtins = prepareBuiltins(variables: variables)
-
-        for object in simOrder.objects {
-            guard let entity = world.entity(object.objectID),
-                  let nameComp: SimulationObjectNameComponent = entity.component(),
-                  let roleComp: SimulationRoleComponent = entity.component()
-            else {
-                hasError = true
-                continue
-            }
-            
-            let rep: ComputationalRepresentation
-
-            do {
-                rep = try compileObject(object, entity: entity, variables: variables)
-            }
-            catch .objectIssue {
-                hasError = true
-                continue
-            }
-            catch {
-                throw InternalSystemError(self,
-                                          message: "Object compilation failed: \(error)",
-                                          context: .object(object.objectID))
-            }
-
-            let index = variables.allocate(content: .object(object.objectID),
-                                           valueType: rep.valueType,
-                                           name: nameComp.name)
-            
-            let sim = SimulationObject(objectID: object.objectID,
-                                       computation: rep,
-                                       variableIndex: index,
-                                       role: roleComp.role,
-                                       valueType: rep.valueType,
-                                       name: nameComp.name)
-       
-            simulationObjects.append(sim)
-            entity.setComponent(HasNumericIndicator())
-            
-            switch roleComp.role {
-            case .flow: flows.append(sim)
-            case .stock: stocks.append(sim)
-            default: break
-            }
-        }
-
-        // If we have errors, finish early without creating the final plan. We are not throwing
-        // here, because we did not fail, just the user content is not good for simulation.
-        guard !hasError else { return }
-
-        guard simOrder.objects.count == simulationObjects.count else {
-            throw InternalSystemError(self,
-                                      message: "Unprocessed simulation objects. Expected \(simOrder.objects.count), got \(simulationObjects.count)")
-        }
-
-        let boundFlows = try bindFlows(flows, world: world, variables: variables)
-
-        var flowIndices: [ObjectID:Int] = [:]
-        for (index, flow) in boundFlows.enumerated() {
-            flowIndices[flow.objectID] = index
-        }
-        
-        let boundStocks = try bindStocks(stocks, flowIndices: flowIndices, world: world)
-        
-        // Simulation parameters
-        let settings: SimulationSettings
-        if let simInfo = frame.first(trait: Trait.Simulation) {
-            settings = SimulationSettings(fromObject: simInfo)
-        }
-        else {
-            settings = SimulationSettings()
-        }
-
-        
-        let plan = SimulationPlan(
-            simulationObjects: simulationObjects,
-            stateVariables: variables.variables,
-            builtins: builtins,
-            stocks: boundStocks,
-            flows: boundFlows,
-            valueBindings: [], // FIXME: Relic from the past, remove
-            settings: settings
-        )
-        
-        world.setSingleton(plan)
-    }
-    
-    func prepareBuiltins(variables: StateVariableTable) -> BoundBuiltins {
-        let builtins = BoundBuiltins(
-            step: variables.allocate(builtin: .step),
-            time: variables.allocate(builtin: .time),
-            timeDelta: variables.allocate(builtin: .timeDelta)
-        )
-        
-        return builtins
-    }
-    
-    /// Compile an object into its computational representation.
-    ///
-    /// - Returns: Computational representation of the object.
-    /// - Throws: ``CompilationError`` when missing required component or an attribute.
-    ///
-    func compileObject(_ object: ObjectSnapshot,
-                       entity: RuntimeEntity,
-                       variables: StateVariableTable)
-    throws (CompilationError) -> ComputationalRepresentation {
-        // FIXME: Precompute representation type (and add rep.type type) in sim ordering
-        let rep: ComputationalRepresentation
-        if object.type.hasTrait(Trait.Formula) {
-            rep = try compileFormulaObject(object, entity: entity, variables: variables)
-        }
-        else if object.type.hasTrait(Trait.GraphicalFunction) {
-            rep = try compileGraphicalFunctionNode(object, entity: entity, variables: variables)
-        }
-        else if object.type.hasTrait(Trait.Delay) {
-            rep = try compileDelayNode(object, entity: entity, variables: variables)
-        }
-        else if object.type.hasTrait(Trait.Smooth) {
-            rep = try compileSmoothNode(object, entity: entity, variables: variables)
-        }
-        else {
-            // HINT: If this error happens, then check one of the the following:
-            // - ComputationOrderSystem and SimulationOrderComponent
-            // - whether the design object constraints work properly
-            // - whether the design metamodel is stock-flows metamodel
-            //   and that it has necessary traits
-            //
-            fatalError("Unknown simulation object type \(object.type.name), object: \(object.objectID)")
-        }
-        
-        return rep
-    }
-    
-    /// Compile a node containing a formula.
-    ///
-    /// For each node with an arithmetic expression the expression is parsed
-    /// from a text into an internal representation. The variable and function
-    /// names are resolved to point to actual entities and a new bound
-    /// expression is formed.
-    ///
-    /// - Returns: Computational representation wrapping a formula.
-    ///
-    /// - Parameters:
-    ///     - node: node containing already parsed formula in
-    ///       ``ParsedFormulaComponent``.
-    ///
-    /// - Precondition: The node must have ``ParsedFormulaComponent`` associated
-    ///   with it.
-    ///
-    /// - Throws: ``NodeIssueError`` if there is an issue with parameters,
-    ///   function names or other variable names in the expression.
-    ///
-    func compileFormulaObject(_ object: ObjectSnapshot,
-                              entity: RuntimeEntity,
-                              variables: StateVariableTable)
-    throws (CompilationError) -> ComputationalRepresentation
-    {
-        guard let component: ParsedExpressionComponent = entity.component() else {
-            throw .missingComponent("ParsedExpressionComponent")
-        }
-        let expression = component.expression
-        
-        // Finally bind the expression.
-        //
-        let boundExpression: BoundExpression
         do {
-            boundExpression = try Evaluator.bind(expression, variables: variables)
+            let plan = try planner.createPlan(order: order, in: world)
+            world.setSingleton(plan)
         }
-        catch /* ExpressionError */ {
-            let issue = Issue(
-                identifier: "expression_error",
-                severity: .error,
-                system: self,
-                error: error,
-                details: [
-                    "attribute": "formula",
-                    "underlying_error": Variant(error.description),
-                ]
-            )
-
-            entity.appendIssue(issue)
-            throw .objectIssue
+        catch .userIssue {
+            // No plan due to semantic (user) errors, otherwise we are fine.
         }
-        
-        return .formula(boundExpression)
-    }
-    
-    /// Compiles a graphical function.
-    ///
-    /// This method creates a bound graphical function object with a single argument and a
-    /// numeric return value. The function will compute the output based on the
-    /// input parameter and on specifics of the graphical function points
-    /// interpolation.
-    ///
-    /// - Requires: node
-    /// - Throws: ``NodeIssue`` if the function parameter is not connected.
-    ///
-    /// - SeeAlso: ``BoundGraphicalFunction``, ``Solver/evaluate(objectAt:with:)``
-    ///
-    func compileGraphicalFunctionNode(_ object: ObjectSnapshot,
-                                      entity: RuntimeEntity,
-                                      variables: StateVariableTable)
-    throws (CompilationError) -> ComputationalRepresentation {
-        let points:[Point] = object["graphical_function_points", default: []]
-        let methodName: String = object["interpolation_method",
-                                        default: GraphicalFunction.InterpolationMethod.defaultMethod.rawValue]
-            
-        let method = GraphicalFunction.InterpolationMethod(rawValue: methodName)
-                        ?? GraphicalFunction.InterpolationMethod.defaultMethod
-
-        let function = GraphicalFunction(points: points, method: method)
-        
-        guard let paramComp: ResolvedParametersComponent = entity.component(),
-              paramComp.connectedUnnamed.count == 1,
-              let parameterID = paramComp.connectedUnnamed.first
-        else { throw .objectIssue }
-
-        guard let paramIndex = variables.index(parameterID) else {
-            throw .corruptedState("Invalid variable index)")
+        catch {
+            let context = error.internalSystemErrorContext()
+            throw InternalSystemError(self,
+                                      message: "Unable to create simulation plan",
+                                      context: context)
         }
-        
-        let boundFunc = BoundGraphicalFunction(function: function, parameterIndex: paramIndex)
-        return .graphicalFunction(boundFunc)
-    }
-   
-    func compileDelayNode(_ object: ObjectSnapshot,
-                          entity: RuntimeEntity,
-                          variables: StateVariableTable)
-    throws (CompilationError) -> ComputationalRepresentation {
-
-        // TODO: What to do if the input is not numeric or not an atom?
-        let queueIndex = variables.allocate(
-            content: .internalState(object.objectID),
-            valueType: .doubles,
-            name: "delay_queue_\(object.objectID)"
-        )
-        
-        let initialValueIndex = variables.allocate(
-            content: .internalState(object.objectID),
-            valueType: .double,
-            name: "delay_init_\(object.objectID)"
-        )
-
-        guard let paramComp: ResolvedParametersComponent = entity.component(),
-              paramComp.connectedUnnamed.count == 1,
-              let parameterID = paramComp.connectedUnnamed.first
-        else { throw .objectIssue }
-
-        guard let parameterIndex = variables.index(parameterID) else {
-            throw .corruptedState("Invalid variable index)")
-        }
-        // FIXME: Store defaults somewhere. We should have values here anyways.
-        let duration: UInt = object["delay_duration", default: 1]
-        let initialValue: Variant? = object["initial_value"]
-        
-        guard let type = variables.valueType(at: parameterIndex),
-              case let .atom(atomType) = type
-        else {
-            let issue = Issue(
-                identifier: "invalid_parameter_type",
-                severity: .error,
-                system: self,
-                error: ModelError.invalidParameterType,
-                relatedObjects: [parameterID]
-                )
-            entity.appendIssue(issue)
-            throw .objectIssue
-        }
-        
-        // TODO: Check whether the initial value and variable.valueType are the same
-        let compiled = BoundDelay(
-            steps: duration,
-            initialValue: initialValue,
-            valueType: atomType,
-            initialValueIndex: initialValueIndex,
-            queueIndex: queueIndex,
-            inputValueIndex: parameterIndex
-        )
-        
-        return .delay(compiled)
-    }
-    func compileSmoothNode(_ object: ObjectSnapshot,
-                           entity: RuntimeEntity,
-                           variables: StateVariableTable)
-    throws (CompilationError) -> ComputationalRepresentation {
-        let smoothValueIndex = variables.allocate(
-            content: .internalState(object.objectID),
-            valueType: .doubles,
-            name: "smooth_value_\(object.objectID)"
-        )
-        
-        guard let paramComp: ResolvedParametersComponent = entity.component(),
-              paramComp.connectedUnnamed.count == 1,
-              let parameterID = paramComp.connectedUnnamed.first
-        else { throw .objectIssue }
-
-        guard let parameterIndex = variables.index(parameterID) else {
-            throw .corruptedState("Invalid variable index)")
-        }
-        
-        guard let type = variables.valueType(at: parameterIndex),
-              case .atom(_) = type
-        else {
-            let issue = Issue(
-                identifier: "invalid_parameter_type",
-                severity: .error,
-                system: self,
-                error: ModelError.invalidParameterType,
-                relatedObjects: [parameterID]
-                )
-            entity.appendIssue(issue)
-            throw .objectIssue
-        }
-
-        // TODO: Require the attribute, do not assume the default here?
-        // This requires attribute error
-        let windowTime: Double = object["window_time", default: 1]
-        
-        let compiled = BoundSmooth(
-            windowTime: windowTime,
-            smoothValueIndex: smoothValueIndex,
-            inputValueIndex: parameterIndex
-        )
-        
-        return .smooth(compiled)
-    }
-
-
-    // MARK: - Flow
-    
-    func bindFlows(_ flows: [SimulationObject], world: World, variables: StateVariableTable)
-    throws (InternalSystemError) -> [BoundFlow] {
-        var boundFlows: [BoundFlow] = []
-        
-        for flow in flows {
-            guard let entity = world.entity(flow.objectID),
-                  let component: FlowRateComponent = entity.component()
-            else {
-                throw InternalSystemError(self,
-                                          message: "Malformed flow rate simulation object",
-                                          context: .singleton("FlowRateComponent"))
-            }
-            guard let objectIndex = variables.objectIndex[flow.objectID] else {
-                // TODO: Throw corrupted component
-                preconditionFailure()
-            }
-            let actualIndex = variables.allocate(content: .adjustedResult(flow.objectID),
-                                                 valueType: flow.valueType,
-                                                 name:  flow.name)
-
-            let boundFlow = BoundFlow(objectID: flow.objectID,
-                                      estimatedValueIndex: objectIndex,
-                                      adjustedValueIndex: actualIndex,
-                                      priority: component.priority,
-                                      drains: component.drainsStock,
-                                      fills: component.fillsStock)
-
-            boundFlows.append(boundFlow)
-        }
-        return boundFlows
-
-    }
-    
-    /// Bind stocks with their variables.
-    ///
-    func bindStocks(_ stocks: [SimulationObject],
-                    flowIndices: [ObjectID:Int], // Index into list of flows
-                    world: World)
-    throws (InternalSystemError) -> [BoundStock] {
-        var result: [BoundStock] = []
-        
-        for stock in stocks {
-            guard let entity = world.entity(stock.objectID),
-                  let component: StockComponent = entity.component()
-            else {
-                throw InternalSystemError(self,
-                                          message: "Malformed stock simulation object",
-                                          context: .singleton("FlowRateComponent"))
-            }
-
-            let inflowIndices = component.inflowRates.compactMap { flowIndices[$0] }
-            let outflowIndices = component.outflowRates.compactMap { flowIndices[$0] }
-
-            guard inflowIndices.count == component.inflowRates.count &&
-                    outflowIndices.count == component.outflowRates.count
-            else {
-                throw InternalSystemError(self,
-                                          message: "Corrupted component",
-                                          context: .singleton("StockDependencyComponent"))
-            }
-            
-            let boundStock = BoundStock(
-                objectID: stock.objectID,
-                variableIndex: stock.variableIndex,
-                allowsNegative: component.allowsNegative,
-                inflows: inflowIndices,
-                outflows: outflowIndices
-            )
-
-            result.append(boundStock)
-        }
-        return result
     }
 }
 
+/// System that extracts simulation settings from a plane.
+///
+/// - **Dependency:** None.
+/// - **Input:**
+///     - Object with a trait `Simulation`.
+/// - **Output:** ``SimulationSettings`` singleton if the corresponding object exists
+///   in the plane.
+/// - **Forgiveness:** Nothing to be forgiven.
+///
+/// This system should be run after world plane change to get simulation settings defaults.
+/// If the plane does not contain an object with `Simulation` trait, the settings singleton
+/// is removed.
+///
+public struct SimulationSettingsSystem: System {
+    public init(_ world: World) {
+        // Nothing
+    }
+    public func update(_ world: World) throws (InternalSystemError) {
+        guard let plane = world.plane,
+              let object = plane.first(trait: Trait.Simulation)
+        else {
+            world.removeSingleton(SimulationSettings.self)
+            return
+        }
+
+        let settings = SimulationSettings(fromObject: object)
+        world.setSingleton(settings)
+    }
+}

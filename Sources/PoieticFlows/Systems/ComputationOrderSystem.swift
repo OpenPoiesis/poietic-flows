@@ -9,15 +9,19 @@ import PoieticCore
 
 /// System that collects objects for computation and orders them by computational dependency.
 ///
-/// The computational dependency is determined by edges of type ``/PoieticCore/ObjectType/Parameter``.
+/// The computational dependency is determined by edges of type `Parameter`.
 ///
 /// - **Input:** Simulation objects (is `Stock` || is `FlowRate` || has trait `Auxiliary`)
 /// - **Output:**
-///     - Ordered list of objects in ``SimulationOrderComponent``.
-///     - Role associated with each object in ``SimulationRoleComponent``.
-/// - **Forgiveness:** ...
+///     - Ordered list of objects in ``SimulationOrder``.
+///     - Role associated with each object in ``SimulationRole``.
+/// - **Forgiveness:** Nothing to be forgiven.
+/// - **Issues Appended:**
+///     - `computation_cycle`: Node is part of a computation cycle.
 ///
 public struct ComputationOrderSystem: System {
+    public static let IssueSourceName = "ComputationOrderSystem"
+    
     public init(_ world: World) { }
 
     public func update(_ world: World) throws (InternalSystemError) {
@@ -31,61 +35,60 @@ public struct ComputationOrderSystem: System {
         var stocks: [ObjectID] = []
         var flows: [ObjectID] = []
         
-        // Determine simulation role: stock, flow, aux
-        // Note: See also filter in orderedSnapshots
-        for object in snapshots {
+        for (object, role) in snapshots {
             guard let entity = world.entity(object.objectID) else { continue  /* Error? */ }
-            let role: SimulationObject.Role
+
+            switch role {
+            case .stock: stocks.append(object.objectID)
+            case .flow: flows.append(object.objectID)
+            case .auxiliary: break
+                
+            }
+            entity.setComponent(role)
+        }
+        
+        let objects = snapshots.map { $0.object }
+        let orderComponent = SimulationOrder( objects: objects )
+        
+        world.setSingleton(orderComponent)
+    }
+    
+    func filterSimulationObjects(plane: DesignPlane) -> [ObjectID:SimulationRole] {
+        var result: [ObjectID:SimulationRole] = [:]
+        for object in plane.snapshots {
+            let role: SimulationRole
 
             // TODO: Should we use Trait.Stock?
             if object.type === ObjectType.Stock {
                 role = .stock
-                stocks.append(object.objectID)
             }
             else if object.type === ObjectType.FlowRate {
                 role = .flow
-                flows.append(object.objectID)
             }
             else if object.type.hasTrait(Trait.Auxiliary) {
                 role = .auxiliary
             }
-            else {
-                throw InternalSystemError(self,
-                                          message: "Unknown simulation object role for object type: \(object.type.name)",
-                                          context: .object(object.objectID))
+            else { // Not a simulation object
+                continue
             }
-            let comp = SimulationRoleComponent(role: role)
-            entity.setComponent(comp)
+            result[object.objectID] = role
         }
-        
-        let orderComponent = SimulationOrderComponent(
-            objects: snapshots,
-            stocks: stocks,
-            flows: flows
-        )
-
-        world.setSingleton(orderComponent)
+        return result
     }
     
-    func orderedSnapshots(world: World, plane: DesignPlane) -> [ObjectSnapshot]? {
+    func orderedSnapshots(world: World, plane: DesignPlane) -> [(object: ObjectSnapshot, role: SimulationRole)]? {
         // TODO: Replace with SimulationObject trait once we have it (there are practical reasons we don't yet)
         // TODO: Should we use Trait.Stock?
-        // Note: See also roles in update() method
-        let unordered: [ObjectSnapshot] = plane.filter {
-            ($0.type === ObjectType.Stock
-                || $0.type === ObjectType.FlowRate
-                || $0.type.hasTrait(Trait.Auxiliary))
-        }
+        let unordered = filterSimulationObjects(plane: plane)
 
-        // 2. Sort nodes based on computation dependency.
         let parameterEdges:[DesignObjectEdge] = plane.edges.filter {
             $0.object.type === ObjectType.Parameter
         }
 
-        let parameterDependency = Graph(nodes: unordered.map { $0.objectID },
+        let parameterDependency = Graph(nodes: Array(unordered.keys),
                                         edges: parameterEdges)
         
-        guard let ordered = parameterDependency.topologicalSort() else {
+        guard let ordered:[ObjectID] = parameterDependency.topologicalSort() else {
             let cycleEdges = parameterDependency.cycles()
             var nodes: Set<ObjectID> = Set()
             
@@ -94,29 +97,36 @@ public struct ComputationOrderSystem: System {
                 nodes.insert(edge.origin)
                 nodes.insert(edge.target)
                 let issue = Issue(
-                    identifier: "computation_cycle",
+                    identifier: IssueIdentifier.computationCycle,
                     severity: .error,
-                    system: self,
-                    error: ModelError.computationCycle,
-                    )
+                    source: Self.IssueSourceName,
+                    message: "Edge is part of a computation cycle",
+                )
                 entity.appendIssue(issue)
             }
             for node in nodes {
                 guard let entity = world.entity(node) else { continue }
                 let issue = Issue(
-                    identifier: "computation_cycle",
+                    identifier: IssueIdentifier.computationCycle,
                     severity: .error,
-                    system: self,
-                    error: ModelError.computationCycle,
-                    )
+                    source: Self.IssueSourceName,
+                    message: "Node is part of a computation cycle",
+                    hints: [
+                        "Disconnect at least one of the parameter connections that is causing the cycle"
+                    ]
+                )
                 entity.appendIssue(issue)
             }
             return nil
         }
 
-        let snapshots = ordered.compactMap { plane[$0] }
-        return snapshots
+        let result: [(object: ObjectSnapshot, role: SimulationRole)] = ordered.compactMap {
+            guard let snapshot = plane[$0],
+                  let role = unordered[$0]
+            else { return nil }
+            return (object: snapshot, role: role)
+        }
+        return result
     }
-
 }
 

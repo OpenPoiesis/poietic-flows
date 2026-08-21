@@ -21,8 +21,10 @@ import PoieticCore
 /// - The simulation is run as a whole, there are no external events triggered on each step.
 /// - Only the singleton plan is used - only one simulation can be run per world.
 ///
-/// - **Input:** ``SimulationPlan`` singleton – required. Optional ``SimulationSettings``
-///             singleton and ``ScenarioParameters`` singleton.
+/// - **Input:**
+///     - ``SimulationPlan`` singleton, required.
+///     - ``SimulationSettings`` singleton, optional. If not provided then default settings are used.
+///     - ``ScenarioParameters`` singleton, optional.
 /// - **Output:** ``SimulationResult`` singleton is set when simulation was finished successfully,
 ///   otherwise the simulation result will be removed or not set.
 /// - **Forgiveness:** No forgiveness.
@@ -31,15 +33,18 @@ import PoieticCore
 public struct StockFlowSimulationSystem: System {
     // TODO: [IMPORTANT] Break it down. This is a port from original non-ECS simulation compiler, still uses the original large object pattern.
     nonisolated(unsafe) public static let dependencies: [SystemDependency] = [
+        // Soft dependencies - only relevant if the simulation system ends up in the same schedule.
         .after(SimulationPlanningSystem.self),
+        .after(SimulationSettingsSystem.self),
     ]
     public init(_ world: World) { }
     public func update(_ world: World) throws (InternalSystemError) {
         world.removeSingleton(SimulationResult.self)
 
         guard let plan: SimulationPlan = world.singleton() else { return }
-        let settings: SimulationSettings = world.singleton() ?? plan.simulationSettings
+        let settings: SimulationSettings = world.singleton() ?? SimulationSettings()
         let params: ScenarioParameters = world.singleton() ?? ScenarioParameters()
+        
         guard let solverType = StockFlowSimulation.SolverType(rawValue: settings.solverType) else {
             throw InternalSystemError(self, message: "Unknown solver type: \(settings.solverType)")
         }

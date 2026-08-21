@@ -47,8 +47,7 @@ extension ObjectType {
     ///
     /// ```
     ///
-    /// - SeeAlso: ``ObjectType/Stock``, ``ObjectType/Fills``,
-    /// ``ObjectType/Drains``.
+    /// - SeeAlso: Object types ``Stock`` (node), ``Flow`` (edge).
     ///
     public static let FlowRate = ObjectType(
         name: "FlowRate",
@@ -152,7 +151,7 @@ extension ObjectType {
     /// its target node.
     ///
     /// For control node to work, it should be connected to its target node with
-    /// ``/PoieticCore/ObjectType/ValueBinding`` edge.
+    /// `ValueBinding` edge.
     ///
     public static let Control = ObjectType(
         name: "Control",
@@ -166,7 +165,7 @@ extension ObjectType {
     /// A user interface node representing a chart.
     ///
     /// Chart contains series that are connected with the chart using the
-    /// ``/PoieticCore/ObjectType/ChartSeries`` edge where the origin is the chart and
+    /// ``ChartSeries`` edge where the origin is the chart and
     /// the target is a value node.
     ///
     public static let Chart = ObjectType(
@@ -205,7 +204,7 @@ extension ObjectType {
     /// Origin stock of the edge is drained, target stock is being filled. One end
     /// of the edge must be a stock and another edge must be a flow.
     ///
-    /// - SeeAlso: ``/PoieticCore/ObjectType/FlowRate``
+    /// - SeeAlso: ``FlowRate``
     ///
     public static let Flow = ObjectType(
         name: "Flow",
@@ -231,7 +230,7 @@ extension ObjectType {
     
     /// An edge type to connect controls with their targets.
     ///
-    /// The origin of the node is a control – ``/PoieticCore/ObjectType/Control``, the
+    /// The origin of the node is a control – ``Control``, the
     /// target is a node representing a value.
     ///
     public static let ValueBinding = ObjectType(
@@ -246,7 +245,7 @@ extension ObjectType {
     /// An edge type to connect a chart with a series that are included in the
     /// chart.
     ///
-    /// The origin of the node is a chart – ``/PoieticCore/ObjectType/Chart`` and
+    /// The origin of the node is a chart – ``Chart`` and
     /// the target of the node is a node representing a value.
     ///
     public static let ChartSeries = ObjectType(
