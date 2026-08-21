@@ -11,12 +11,10 @@ arithmetic formula. The formula is provided as a string in a node's attribute
 For example an auxiliary node with a formula `account * rate`:
 
 ```swift
-let plane: TransientFrame
-
+let plane: TransientPlane
 let interest = plane.createNode(ObjectType.Auxiliary,
                                 name: "interest",
                                 attributes: ["formula": "account * rate"])
-
 ```
 
 ### Operators
@@ -30,6 +28,7 @@ Binary arithmetic operators:
 | `*` | Multiplication |
 | `/` | Division |
 | `%` | Remainder after division |
+| `^` | Power |
 
 Comparison operators:
 
@@ -53,9 +52,11 @@ Arithmetic functions:
 | `ceiling(x)` | Rounding upwards to the nearest integer |
 | `round(x)` | Rounding to the nearest integer |
 | `power(x,e)` | Power of _x_ to _e_ |
+| `exp(x)` | Natural exponent of _x_ |
+| `sqrt(x)` | Square root of _x_ |
 | `sum(a,...)` | Sum of multiple values |
 | `min(a,b,...)` | Minimum value from a list of values |
-| `min(a,b,...)` | Maximum value from a list of values |
+| `max(a,b,...)` | Maximum value from a list of values |
 
 Logical functions:
 
@@ -66,12 +67,13 @@ Logical functions:
 | `or(a,b,...)` | Returns logical _OR_ of all the arguments – true if at least one is true |
 | `and(a,b,...)` | Returns logical _AND_ of all the arguments – true if all arguments are true |
 
-### Built-in Variables
+### Built-in Simulation Variables
 
 | Name | Description |
 | ---- | ---- |
 | `time` | Current simulation time |
 | `time_delta` | Time delta (as specified during initialisation) |
+| `simulation_step` | Current simulation step |
 
 ## Variables and Nodes
 

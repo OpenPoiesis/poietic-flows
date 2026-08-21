@@ -8,10 +8,14 @@ The Stock and Flow model domain (metamodel) recognises the following node
 types that define the computation:
 
 
+- Note: Users of your application can explore the metamodel using the
+  [command-line tool `poietic`](https://github.com/openpoiesis/poietic-tool) by running
+  the command: `poietic metamodel`
+
 | Type | Represents | Use | 
 |-----|-------------|-----|
 | `Stock` | An amount (of a material) in a container, reservoir, or a pool. | computation | 
-| `Flow` | Rate by which connected container is filled or drained. | computation |
+| `FlowRate` | Rate by which connected container is filled or drained. | computation |
 | `Auxiliary` | Auxiliary computation or a constant | computation | 
 | `GraphicalFunction` | Function defined by a set of points | computation |
 | `Delay` | Delay of a value by a specific number of time units | computation |
@@ -23,22 +27,26 @@ types that define the computation:
 The edges in the domain are:
 
 
-| Type | Represents | Origin | Target |
-| ---- | ---- | ---- | ---- |
-| `Drains` | What a flow drains | Stock | Flow |
-| `Fills` | What a flow fills | Flow | Stock |
-| `Parameter` | Connection between an auxiliary and other computation node | any computed | any computed |
-| `ChartSeries` | Series of a chart | Chart | any computed |
-
-The constraints that need to be satisfied:
-
-| Constraint | Description |
+| Type | Represents |
 | ---- | ---- |
-| `flow_fill_is_stock` | Flow must drain (from) a stock, no other kind of node |
-| `flow_drain_is_stock` | Flow must fill (into) a stock, no other kind of node |
-| `one_parameter_for_graphical_function` | Graphical function must not have more than one incoming parameters |
-| `control_value_binding` | Control binding's origin must be a Control and target must be a formula node | 
-| `chart_series` | Chart series edge must originate in Chart and end in Value node |
+| `Flow` | What a flow drains/fills |
+| `Parameter` | Connection between an auxiliary and other computation node |
+| `ChartSeries` | Series of a chart |
+| `ValueBinding` | Binding between a control and a value |
+
+
+The following table contains edge rules (in the metamodel) that need to be satisfied so that the
+model is valid. For example: _A FlowRate can fill at most one stock and drain at most one stock_.
+
+| Edge | Origin cardinality | Origin | Target cardinality | Target
+| --- | --- | --- | --- | ---
+| Flow | one | FlowRate | many | trait Stock
+| Flow | one | trait Stock | many | FlowRate
+| Parameter | many | Auxiliary or Stock or FlowRate | one | Graphical Function
+| Parameter | many | Auxiliary or Stock or FlowRate | many | Auxiliary or Stock or FlowRate
+| Comment   | many | any   | many | any
+| ValueBinding   | many | Control   |  many | any
+| ChartSeries | many | Chart | many | trait ComputedValue
 
 
 ## Example Model
@@ -47,8 +55,8 @@ The following example shows how to create a simple bank account model. First we
 create the nodes:
 
 ```swift
-let design = Design(metamodel: Metamodel.StockFlow)
-let plane = design.createFrame()
+let design = Design(metamodel: StockFlowMetamodel)
+let plane = design.createPlane()
 
 let account = plane.createNode(ObjectType.Stock,
                                name: "account",
@@ -69,7 +77,7 @@ The nodes need to be connected:
 ```swift
 plane.createEdge(ObjectType.Parameter, origin: rate, target: interest)
 plane.createEdge(ObjectType.Parameter, origin: account, target: interest)
-plane.createEdge(ObjectType.Fills, origin: interest, target: account)
+plane.createEdge(ObjectType.Flow, origin: interest, target: account)
 ```
 
 - Note: Typically you would not be creating detailed models by hand like in the
@@ -87,12 +95,11 @@ plane.createEdge(ObjectType.Fills, origin: interest, target: account)
 | `formula` | string | Initial stock value |
 | `allows_negative` | bool | Flag whether the stock can contain a negative value |
 
-### Flow
+### Flow Rate
 
 | Attribute | Type | Description |
 | ---- | ---- | ---- |
 | `formula` | string | Flow rate computation |
-| `priority` | int | Priority during computation. The flows are considered in the ascending order of priority |
 
 ### Auxiliary
 
@@ -107,7 +114,7 @@ plane.createEdge(ObjectType.Fills, origin: interest, target: account)
 | `interpolation_method` | string | Method of interpolation for values between the points |
 | `graphical_function_points` | array of points | Points of the graphical function |
 
-The only interpolation method that is currently available is `step`.
+Available interpolation methods: `step`, `linear`, `cubic`, `nearest`.
 
 
 Example:
@@ -124,7 +131,7 @@ let yield = plane.createNode(ObjectType.Auxiliary,
 
 | Attribute | Type | Description |
 | ---- | ---- | ---- |
-| `delay_duration` | double | Delay duration in time units. |
+| `delay_duration` | double | Delay duration in steps. |
 
 
 ### Smooth
@@ -166,7 +173,7 @@ Controls types are not currently specified.
 | `min_value` | double | Minimum allowed value of the target variable |
 | `max_value` | double | Maximum allowed value of the target variable |
 | `step_value` | double | Step of a slider control |
-| `value_format` | double | Display format of the value |
+| `value_format` | string | Display format of the value |
 
 
 
@@ -180,8 +187,7 @@ Simulation node is not required to be present, but might be in the future.
 
 | Attribute | Type | Description |
 | ---- | ---- | ---- |
-| `steps` | int | Number of steps the simulation is run (if not specified otherwise) |
 | `initial_time` | double | Initial simulation time |
+| `end_time` | double | Final simulation time |
 | `time_delta` | double | Simulation step time delta |
-
-
+| `solver_type` | string | Solver to use: `euler`, `rk4` |

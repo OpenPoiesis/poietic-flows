@@ -163,7 +163,7 @@ public class GraphicalFunction {
     /// ## Choosing an Interpolation Method
     ///
     /// - Use **step** for discrete state machines, digital signals, or piecewise-constant functions
-    /// - Use **linear** as the general-purpose default for most modeming scenarios
+    /// - Use **linear** as the general-purpose default for most modelling scenarios
     /// - Use **cubic** when smoothness matters (e.g., animation, natural phenomena)
     /// - Use **nearestStep** for classification or when exact point values matter
     ///
@@ -171,7 +171,7 @@ public class GraphicalFunction {
         /// Left-continuous step function (zero-order hold).
         ///
         /// Maintains constant value from each point until the next point.
-        /// Standard in discrete-time modeming and control systems.
+        /// Standard in discrete-time modelling and control systems.
         case step = "step"
 
         /// Smooth cubic interpolation using Catmull-Rom splines.

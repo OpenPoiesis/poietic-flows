@@ -198,7 +198,6 @@ extension Trait {
                       abstract: "Solver type name"
                      ),
             // TODO: Support date/time
-            // TODO: Add Solver type
         ]
     )
 }

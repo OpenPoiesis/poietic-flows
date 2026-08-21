@@ -11,7 +11,7 @@ import PoieticCore
 ///
 /// The design describes the model from user's perspective. The content and data structures needed
 /// for the modelling process – for the editing – are different than the data used by the machine to
-/// perform the simulation. Simulation plan is contains validated and derived information from the
+/// perform the simulation. Simulation plan contains validated and derived information from the
 /// design.
 ///
 /// The simulation plan is created by the ``SimulationPlanningSystems`` and typically used by the

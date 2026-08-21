@@ -10,10 +10,10 @@ for [Stock and Flow](https://en.wikipedia.org/wiki/Stock_and_flow) models.
 The major components and capabilities of the Flows package are:
 
 - Stock and Flow metamodel, object types and validation constraints
-- Design compiler for creating computable model representation
+- Simulation planner for creating computable model representation
 - Simulator and solver for performing the simulation
 
-The relationship of the components and the flow of data between them is caputred
+The relationship of the components and the flow of data between them is captured
 in the following diagram:
 
 ![Flows Components Overview](flows-overview)
@@ -32,8 +32,9 @@ in the following diagram:
 ## Topics
 
 - <doc:Metamodel>
-- <doc:Formulas>
-- <doc:CompiledModelAndCompiler>
+- <doc:PlanAndPlanning>
 - <doc:SimulationRunning>
+- <doc:Formulas>
+
 - ``StockFlowMetamodel``
 

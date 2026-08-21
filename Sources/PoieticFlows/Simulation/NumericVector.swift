@@ -24,12 +24,8 @@ public struct NumericVector: RandomAccessCollection, Equatable {
     
     @inlinable
     public subscript(index: Index) -> Double {
-        get {
-            return values[index]
-        }
-        set(value) {
-            values[index] = value
-        }
+        get        { return values[index] }
+        set(value) { values[index] = value }
     }
    
     @inlinable
@@ -47,7 +43,7 @@ public struct NumericVector: RandomAccessCollection, Equatable {
     public func sum() -> Double {
         return values.reduce(0, +)
     }
-    /// Create a new state with variable values multiplied by given value.
+    /// Create a new vector with values multiplied by given value.
     ///
     /// The built-in values will remain the same.
     ///
@@ -73,7 +69,7 @@ public struct NumericVector: RandomAccessCollection, Equatable {
     public mutating func add(_ other: NumericVector) {
         precondition(other.count == self.values.count)
         for (index, value) in values.enumerated() {
-            values[index] = value * other[index]
+            values[index] = value + other[index]
         }
     }
     @inlinable
@@ -106,12 +102,10 @@ public struct NumericVector: RandomAccessCollection, Equatable {
         lhs.subtract(other)
     }
 
-    /// Create a new state by adding each value with corresponding value
-    /// of another state.
+    /// Create a new vector by adding each value with corresponding value
+    /// of another vector.
     ///
-    /// The built-in values will remain the same.
-    ///
-    /// - Precondition: The states must be of the same length.
+    /// - Precondition: The vectors must be of the same length.
     ///
     @inlinable
     public func adding(_ other: NumericVector) -> NumericVector {
@@ -123,10 +117,8 @@ public struct NumericVector: RandomAccessCollection, Equatable {
         return NumericVector(result)
     }
 
-    /// Create a new state by subtracting each value with corresponding value
-    /// of another state.
-    ///
-    /// The built-in values will remain the same.
+    /// Create a new vector by subtracting each value with corresponding value
+    /// of another vector.
     ///
     /// - Precondition: The states must be of the same length.
     ///
@@ -140,13 +132,11 @@ public struct NumericVector: RandomAccessCollection, Equatable {
         return NumericVector(result)
     }
     
-    /// Create a new state with variable values divided by given value.
-    ///
-    /// The built-in values will remain the same.
+    /// Create a new vector with values divided by given value.
     ///
     @inlinable
     public func divided(by value: Double) -> NumericVector {
-        return NumericVector(values.map { value / $0 })
+        return NumericVector(values.map {  $0 / value })
 
     }
 
