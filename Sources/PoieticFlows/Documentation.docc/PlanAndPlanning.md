@@ -19,8 +19,8 @@ The conversion from `Design` to ``SimulationPlan`` is done by the `SimulationPla
 through multiple steps:
 
 1. Arithmetic expressions are parsed by `ExpressionParserSystem` (provided by the PoieticCore package).
-2. Parameters are resolved with ``ComputationOrderSystem``.
-3. Computation order and simulation role of objects is determined in ``ParameterResolutionSystem``.
+2. Parameters are resolved with ``ParameterResolutionSystem``.
+3. Computation order and simulation role of objects is determined in ``ComputationOrderSystem``.
 4. Object names are resolved and validated in ``NameResolutionSystem``.
 5. Flows and stocks are collected and resolved in the ``StockFlowTopologySystem``.
 6. The simulation plan is finalised from all the components by the ``SimulationPlanningSystem``.
@@ -55,9 +55,9 @@ The planner and related systems might produce the following issues:
 | `invalid_parameter_type` | Invalid parameter data type (for delay, smooth or graphical function) |
 
 - Note: Formula parameters must be connected to the nodes using them. This is a model semantics
-  requirement. Planner can figure out the connection, but the user needs to see it to be able
-  to visually reason about the model. The two issues `unknown_parameter` and `unused_input` capture
-  that requirement.
+  requirement. The planner could resolve parameters by name alone, but explicit connections
+  are required so user cal visually reason about the model.
+  The two issues `unknown_parameter` and `unused_input` capture that requirement.
 
 You might also find the following errors that are produced by the `ExpressionParserSystem` from
 PoieticCore package. They all have prefix `expression` so your application can use that hint

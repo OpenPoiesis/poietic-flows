@@ -22,7 +22,11 @@ public enum PlanningError: Error, Equatable {
     case invalidObject(ObjectID, String)
     /// Missing required component. Probably the dependency was not satisfied.
     case missingComponent(ObjectID, String)
+    
+    /// Required component is present but contains invalid data.
     case corruptedComponent(ObjectID, String)
+    
+    /// Internal integrity of planner is broken. Some objects were not processed as required.
     case unprocessedObjects
 }
 
@@ -31,6 +35,8 @@ public enum PlanningError: Error, Equatable {
 ///
 /// The planner takes design objects, components produced by related systems and creates
 /// a simulation plan if there are no user issues.
+///
+/// - Note: The planner is single-use, create new planner per plan. Holds planning context.
 ///
 /// - SeeAlso: ``createPlan(order:in:)``
 ///

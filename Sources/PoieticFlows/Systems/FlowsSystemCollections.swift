@@ -6,7 +6,9 @@
 
 import PoieticCore
 
-/// Systems required to be run for creating a simulation plan.
+/// System list that together produces a ``SimulationPlan``.
+///
+/// Register it in a schedule and run after a plane change.
 ///
 nonisolated(unsafe) public let SimulationPlanningSystems: [System.Type] = [
     ExpressionParserSystem.self,
@@ -18,6 +20,8 @@ nonisolated(unsafe) public let SimulationPlanningSystems: [System.Type] = [
     SimulationSettingsSystem.self,
 ]
 
+/// The systems that consume the simulation plan and produce simulation results.
+/// 
 nonisolated(unsafe) public let SimulationRunningSystems: [System.Type] = [
     StockFlowSimulationSystem.self,
 ]

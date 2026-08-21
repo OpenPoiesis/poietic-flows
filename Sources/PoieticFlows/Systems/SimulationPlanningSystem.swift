@@ -56,7 +56,7 @@ extension PlanningError {
 public struct SimulationPlanningSystem: System {
     nonisolated(unsafe) public static let dependencies: [SystemDependency] = [
         .after(ExpressionParserSystem.self), // Gets us UnboundExpression for each node
-        .after(ComputationOrderSystem.self), // Gets us SimulationOrderComponent
+        .after(ComputationOrderSystem.self), // Gets us SimulationOrder
         .after(NameResolutionSystem.self), // We need name lookup and object names.
         .after(StockFlowTopologySystem.self),
     ]

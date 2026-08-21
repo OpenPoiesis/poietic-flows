@@ -18,7 +18,7 @@ types that define the computation:
 | `FlowRate` | Rate by which connected container is filled or drained. | computation |
 | `Auxiliary` | Auxiliary computation or a constant | computation | 
 | `GraphicalFunction` | Function defined by a set of points | computation |
-| `Delay` | Delay of a value by a specific number of time units | computation |
+| `Delay` | Delay of a value by a specific number of steps | computation |
 | `Smooth` | Exponential smoothing of input | computation |
 | `Chart` | Visual output in a form of a chart with one or multiple series | visualisation |
 | `Control` | Visual input node | experimentation |
@@ -45,7 +45,7 @@ model is valid. For example: _A FlowRate can fill at most one stock and drain at
 | Parameter | many | Auxiliary or Stock or FlowRate | one | Graphical Function
 | Parameter | many | Auxiliary or Stock or FlowRate | many | Auxiliary or Stock or FlowRate
 | Comment   | many | any   | many | any
-| ValueBinding   | many | Control   |  many | any
+| ValueBinding   | many | Control   |  many | trait Formula
 | ChartSeries | many | Chart | many | trait ComputedValue
 
 
@@ -66,7 +66,7 @@ let rate = plane.createNode(ObjectType.Auxiliary,
                             name: "rate",
                             attributes: ["formula": "0.02"])
 
-let interest = plane.createNode(ObjectType.Auxiliary,
+let interest = plane.createNode(ObjectType.FlowRate,
                                 name: "interest",
                                 attributes: ["formula": "account * rate"])
 
@@ -77,7 +77,7 @@ The nodes need to be connected:
 ```swift
 plane.createEdge(ObjectType.Parameter, origin: rate, target: interest)
 plane.createEdge(ObjectType.Parameter, origin: account, target: interest)
-plane.createEdge(ObjectType.Flow, origin: interest, target: account)
+plane.createEdge(ObjectType.Flow, origin: account, target: interest)
 ```
 
 - Note: Typically you would not be creating detailed models by hand like in the

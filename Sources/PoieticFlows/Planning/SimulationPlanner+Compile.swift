@@ -253,7 +253,7 @@ extension SimulationPlanner {
               case .atom(_) = type
         else {
             let issue = Issue(
-                identifier: "invalid_parameter_type",
+                identifier: IssueIdentifier.invalidParameterType,
                 severity: .error,
                 source: Self.IssueSourceName,
                 message: "Invalid parameter type",
