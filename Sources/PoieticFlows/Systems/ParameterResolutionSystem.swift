@@ -12,6 +12,12 @@ import PoieticCore
 /// This component can be used for error reporting or for automatic creation of parameter
 /// connections.
 ///
+/// - **Created By:** ``ParameterResolutionSystem``
+/// - **Used By:**
+///     - ``SimulationPlanner`` for single-input parameter nodes such as smooth, delay and
+///       graphical function.
+///     - ``ParameterConnectionProposalSystem`` for proposing parameter connections or connection
+///       removals.
 public struct ResolvedParameters: Component {
     internal init(incoming: [String : ObjectID] = [:],
                   connectedUnnamed: [ObjectID] = [],

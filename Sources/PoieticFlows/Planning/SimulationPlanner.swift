@@ -29,11 +29,16 @@ public enum PlanningError: Error, Equatable {
 
 /// Object that plans a computation.
 ///
+/// The planner takes design objects, components produced by related systems and creates
+/// a simulation plan if there are no user issues.
+///
+/// - SeeAlso: ``createPlan(order:in:)``
+///
 public class SimulationPlanner {
     public static let IssueSourceName: String = "SimulationPlanner"
     var variables: StateVariableTable
     var hasError: Bool
-    
+
     public init() {
         variables = StateVariableTable()
         hasError = false
@@ -57,6 +62,16 @@ public class SimulationPlanner {
     ///
     /// - Important: The objects are expected to be ordered by their computational dependency. If they are not
     ///   ordered, the simulation result is undefined.
+    ///
+    /// ### Expected Components
+    ///
+    /// | Component | Produced By | Required On | Use |
+    /// | ``SimulationName`` | ``NameResolutionSystem`` | all | Allocate variable name and set simulation object name |
+    /// | ``SimulationRole`` | ``ComputationOrderSystem`` | all | Set role of the simulation object |
+    /// | ``FlowRate`` | ``StockFlowTopologySystem`` | FlowRate type | Bind flow rates to simulation state variables |
+    /// | ``Stock`` | ``StockFlowTopologySystem`` | on Stock type | Bind stocks to simulation state variables and to their inflows/outflows. |
+    /// | ``ParsedExpressionComponent`` | `ExpressionParserSystem` | with trait Formula | Simulation objects with formula-based computation |
+    /// | ``ResolvedParameters`` | ``ParameterResolutionSystem`` | Smooth, Delay or Graphical Function | Get input parameter for delay, smooth and graphical function |
     ///
     /// - Throws: ``PlanningError``. Any other value except ``PlanningError/userIssue`` means
     ///   a programming error.
