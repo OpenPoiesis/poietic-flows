@@ -18,9 +18,14 @@ extension SimulationState: VariableValueLookup {
     }
 }
 
+public struct SimulationError: Error {
+    let objectID: ObjectID
+    let error: any Error
+}
+
 /// Stock-Flow simulation specific computation and logic.
 ///
-public class StockFlowSimulation: Simulation {
+public class StockFlowSimulation {
     /// Simulation plan according which the computation is performed.
     ///
     public let plan: SimulationPlan
@@ -337,7 +342,7 @@ public class StockFlowSimulation: Simulation {
 
     /// Evaluate graphical function
     ///
-    /// - Throws: ``EvaluationError/valueError(_:)`` if the parameter is no convertible to
+    /// - Throws: `EvaluationError/valueError` if the parameter is no convertible to
     ///   a numeric type.
     ///
     public func evaluate(graphicalFunction function: BoundGraphicalFunction, with state: SimulationState) throws (EvaluationError) -> Variant {

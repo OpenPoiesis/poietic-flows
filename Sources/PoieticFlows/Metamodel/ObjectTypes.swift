@@ -47,8 +47,7 @@ extension ObjectType {
     ///
     /// ```
     ///
-    /// - SeeAlso: ``ObjectType/Stock``, ``ObjectType/Fills``,
-    /// ``ObjectType/Drains``.
+    /// - SeeAlso: Object types ``Stock`` (node), ``Flow`` (edge).
     ///
     public static let FlowRate = ObjectType(
         name: "FlowRate",

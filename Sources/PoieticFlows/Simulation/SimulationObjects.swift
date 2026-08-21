@@ -135,8 +135,6 @@ public struct BoundBuiltins {
 ///
 /// Bound stock defines integration target.
 ///
-/// - SeeAlso: ``StockFlowSimulation/computeStockDelta(_:in:)``
-///
 public struct BoundStock {
     /// Object ID of the stock that this compiled structure represents.
     ///

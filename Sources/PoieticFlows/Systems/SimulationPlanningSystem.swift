@@ -42,8 +42,8 @@ extension PlanningError {
 ///     - ``SimulationRole``: required for simulation objects, otherwise no plan is created.
 ///     - `ParsedExpressionComponent`: semantically required by formula objects.
 ///     - ``ResolvedParameters``: semantically required – registers an object issue if missing.
-///     - ``FlowRateComponent``: required for flow nodes.
-///     - ``StockComponent``: required for stock nodes.
+///     - ``FlowRate``: required for flow nodes.
+///     - ``Stock``: required for stock nodes.
 /// - **Output:** ``SimulationPlan`` singleton if there were no issues, otherwise sets object issues.
 /// - **Forgiveness:** The system is forgiving in a way that it does not fail on semantic errors.
 ///

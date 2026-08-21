@@ -56,9 +56,9 @@ public struct SimulationName: Component {
 
 /// Component describing dependencies between stocks and flow rates.
 ///
-/// - SeeAlso: ``StockFlowTopologySystem``, ``FlowRateComponent``.
+/// - SeeAlso: ``StockFlowTopologySystem``, ``FlowRate``.
 ///
-public struct StockComponent: Component {
+public struct Stock: Component {
     /// List of `FlowRate` nodes that fill the stock.
     public let inflowRates: [ObjectID]
 
@@ -85,9 +85,9 @@ public struct StockComponent: Component {
 ///      |
 ///     Stock that the flow rate node drains
 ///
-/// - SeeAlso: ``StockFlowTopologySystem``, ``StockComponent``
-/// 
-public struct FlowRateComponent: Component {
+/// - SeeAlso: ``StockFlowTopologySystem``, ``Stock``
+///
+public struct FlowRate: Component {
     /// ID of a stock that the flow drains. If nil, then infinite stock (cloud) is assumed.
     ///
     /// The situation:

@@ -15,8 +15,8 @@ import PoieticCore
 ///     - Design nodes of object type `FlowRate`.
 ///     - Design nodes of object type `Stock`.
 /// - **Output:**
-///     - Set ``FlowRateComponent`` on each flow rate node entity.
-///     - Set ``StockComponent`` on each stock node entity.
+///     - Set ``FlowRate`` on each flow rate node entity.
+///     - Set ``Stock`` on each stock node entity.
 /// - **Forgiveness:**
 ///     - If multiple edges of object type `Flow` exist, only one is picked arbitrarily.
 ///
@@ -49,7 +49,7 @@ public struct StockFlowTopologySystem: System {
             // Not used now (it was, and it might be, keeping as a note here)
             // let priority: Int = flow["priority", default: 0]
             
-            let component = FlowRateComponent(drainsStock: drains, fillsStock: fills)
+            let component = FlowRate(drainsStock: drains, fillsStock: fills)
             entity.setComponent(component)
         }
     }
@@ -67,7 +67,7 @@ public struct StockFlowTopologySystem: System {
 
         for flow in plane.filter(type: .FlowRate) {
             let entity = world.entity(flow.objectID)!
-            guard let component: FlowRateComponent = entity.component() else {
+            guard let component: FlowRate = entity.component() else {
                 continue
             }
             if let stockID = component.fillsStock {
@@ -86,7 +86,7 @@ public struct StockFlowTopologySystem: System {
         
         for stock in plane.filter(type: .Stock) {
             let entity = world.entity(stock.objectID)!
-            let component = StockComponent(
+            let component = Stock(
                 inflowRates: filledByRate[stock.objectID] ?? [],
                 outflowRates: drainedByRate[stock.objectID] ?? [],
                 inflowStocks: inflowStocks[stock.objectID] ?? [],

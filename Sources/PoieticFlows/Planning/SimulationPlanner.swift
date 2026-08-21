@@ -126,9 +126,9 @@ public class SimulationPlanner {
         
         for flow in flows {
             guard let entity = world.entity(flow.objectID),
-                  let component: FlowRateComponent = entity.component()
+                  let component: FlowRate = entity.component()
             else {
-                throw .missingComponent(flow.objectID, "FlowRateComponent")
+                throw .missingComponent(flow.objectID, "FlowRate")
             }
             guard let estimatedValueIndex = variables.objectIndex[flow.objectID] else {
                 throw .corruptedVariableTable
@@ -165,9 +165,9 @@ public class SimulationPlanner {
         
         for stock in stocks {
             guard let entity = world.entity(stock.objectID),
-                  let component: StockComponent = entity.component()
+                  let component: Stock = entity.component()
             else {
-                throw .missingComponent(stock.objectID, "StockComponent")
+                throw .missingComponent(stock.objectID, "Stock")
             }
 
             let inflowIndices = component.inflowRates.compactMap { flowIndices[$0] }
@@ -176,7 +176,7 @@ public class SimulationPlanner {
             guard inflowIndices.count == component.inflowRates.count &&
                     outflowIndices.count == component.outflowRates.count
             else {
-                throw .corruptedComponent(stock.objectID, "StockComponent")
+                throw .corruptedComponent(stock.objectID, "Stock")
             }
             
             let boundStock = BoundStock(

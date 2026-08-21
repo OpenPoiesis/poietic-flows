@@ -8,31 +8,24 @@ collection of time series.
 The simulator takes the compiled model, initialises the state and computes
 desired number of steps of the simulation.
 
-The initial state is created using ``StockFlowSimulation/initialize(_:)``
+The initial state is created using ``StockFlowSimulation/initialize(time:timeDelta:parameters:)``
 
 1. Empty state is created with a zero value for each computed variable
 2. Formulas of simulation objects are evaluated in their order of dependency
 3. Evaluation result is stored in the state.
 
-Each step is computed using ``StockFlowSimulation/update(_:)``.
+Each step is computed using ``StockFlowSimulation/step(_:)``.
 
 ## Topics
 
 ### Simulation and Simulator
 
 - ``StockFlowSimulation``
-- ``Simulator``
 - ``SimulationState``
 - ``NumericVector``
+- ``GraphicalFunction``
 
 ### Formulas
 
 - ``BuiltinVariable``
-- ``ExpressionError``
 
-### Functions
-
-- ``BuiltinUnaryOperators``
-- ``BuiltinBinaryOperators``
-- ``BuiltinFunctions``
-- ``GraphicalFunction``
