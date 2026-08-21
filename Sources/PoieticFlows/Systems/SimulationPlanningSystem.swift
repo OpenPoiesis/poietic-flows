@@ -6,8 +6,26 @@
 //
 import PoieticCore
 
-// TODO: Do state variables need name? Can it be optional?
-
+extension PlanningError {
+    func internalSystemErrorContext() -> InternalSystemError.Context {
+        let context: InternalSystemError.Context
+        switch self {
+        case .corruptedComponent(let id, let name):
+            context = .component(id, name)
+        case .corruptedVariableTable:
+            context = .none
+        case .invalidObject(let id, _):
+            context = .object(id)
+        case .missingComponent(let id, let name):
+            context = .component(id, name)
+        case .unprocessedObjects:
+            context = .singleton("SimulationOrder")
+        case .userIssue:
+            context = .none
+        }
+        return context
+    }
+}
 
 /// System that creates the final simulation plan.
 ///
@@ -16,14 +34,14 @@ import PoieticCore
 ///     - Must run after ``ComputationOrderSystem`` to get the simulation order, which is one of the
 ///       key simulation information.
 ///     - Must run after ``NameResolutionSystem``.
-///     - Must run after ``FlowCollectorSystem`` and ``StockDependencySystem`` to collect stocks
+///     - Must run after ``StockFlowTopologySystem``to collect stocks
 ///       and flows.
 /// - **Input:**
-///     - ``SimulationOrderComponent``: singleton, required.
-///     - ``SimulationObjectNameComponent``: required for simulation objects, otherwise no plan is created.
-///     - ``SimulationRoleComponent``: required for simulation objects, otherwise no plan is created.
+///     - ``SimulationOrder``: singleton, required.
+///     - ``SimulationName``: required for simulation objects, otherwise no plan is created.
+///     - ``SimulationRole``: required for simulation objects, otherwise no plan is created.
 ///     - `ParsedExpressionComponent`: semantically required by formula objects.
-///     - ``ResolvedParametersComponent``: semantically required – registers an object issue if missing.
+///     - ``ResolvedParameters``: semantically required – registers an object issue if missing.
 ///     - ``FlowRateComponent``: required for flow nodes.
 ///     - ``StockComponent``: required for stock nodes.
 /// - **Output:** ``SimulationPlan`` singleton if there were no issues, otherwise sets object issues.
@@ -34,7 +52,6 @@ import PoieticCore
 ///         offending data or for an offending structure.
 ///
 public struct SimulationPlanningSystem: System {
-    // TODO: [IMPORTANT] Break this down. Requires verification mechanism that all has been considered (no intermediate forgiveness)
     /// Error thrown during the planning process
     internal enum CompilationError: Error, Equatable {
         /// Issue with object has been detected, appended to the list of issues. The caller might
@@ -53,9 +70,8 @@ public struct SimulationPlanningSystem: System {
         .after(StockFlowTopologySystem.self),
     ]
     
-    public init(_ world: World) {
-        // Nothing any more
-    }
+    public init(_ world: World) { }
+    
     public func update(_ world: World) throws (InternalSystemError) {
         guard let order: SimulationOrder = world.singleton()
         else { return }

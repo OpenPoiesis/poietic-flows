@@ -30,8 +30,8 @@ public struct ParameterProposal: Component {
 /// System that proposes parameter edges to be added and to be removed. The proposal is based on
 /// the parameter names used in parsed expressions (typically from `formula` attribute) and
 ///
-/// - **Input:** Singleton ``SimulationNameLookupComponent``
-///   and objects with ``ResolvedParametersComponent``.
+/// - **Input:** Singleton ``SimulationNameLookup``
+///   and objects with ``ResolvedParameters``.
 ///
 ///   If a singleton `Selection` is present and is not empty, then only objects in the selection
 ///   are considered.

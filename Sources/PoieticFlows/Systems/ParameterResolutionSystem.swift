@@ -36,7 +36,7 @@ public struct ResolvedParameters: Component {
     public let missing: [String]
     /// Number of missing unnamed parameters
     public let missingUnnamed: Int
-    /// List of ``ObjectType/Parameter`` edges that are connected but not used.
+    /// List of `Parameter`object type edges that are connected but not used.
     public let unused: [ObjectID]
 }
 
@@ -46,9 +46,9 @@ public struct ResolvedParameters: Component {
 /// used. The visual representation must match computational representation for human-oriented
 /// clarity.
 ///
-/// - **Input:** Nodes with compiled expression in ``ParsedExpressionComponent`` and objects
+/// - **Input:** Nodes with compiled expression in `ParsedExpressionComponent` and objects
 /// of auxiliary types: graphical function, smooth or delay.
-/// - **Output:** ``ResolvedParametersComponent`` set of each input component
+/// - **Output:** ``ResolvedParameters`` set of each input component
 /// - **Forgiveness:** Nothing needed.
 /// - **Issues Appended:**
 ///     - `unknown_parameter`: Parameter in a formula is not connected from a node.

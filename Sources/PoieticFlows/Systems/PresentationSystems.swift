@@ -12,10 +12,10 @@ import PoieticCore
 
 /// System that populates chart and chart series entities.
 ///
-/// - **Input:** Nodes of type ``/PoieticCore/ObjectType/Chart`` and ``/PoieticCore/ObjectType/ChartSeries``
+/// - **Input:** Nodes of type `Chart` and `ChartSeries`
 /// - **Output:**
-///     - Create ``Chart`` component for each chart entity
-///     - ``ChartSeries`` for chart series entities, connects to chart with ``ChildOf`` relationship.
+///     - Create `Chart` component for each chart entity
+///     - `ChartSeries` for chart series entities, connects to chart with `ChildOf` relationship.
 /// - **Forgiveness:** Ignore entities where relationships can not be satisfied (missing objects).
 ///
 

@@ -79,8 +79,7 @@ public enum ComputationalRepresentation: CustomStringConvertible {
 /// is performed (see ``ComputationalRepresentation``), which variable
 /// represents the object's state and what is the type of the stored value.
 ///
-/// - SeeAlso: ``ComputationalRepresentation``,
-///   ``StockFlowSimulation/evaluate(expression:with:)``
+/// - SeeAlso: ``ComputationalRepresentation``
 ///
 public struct SimulationObject: CustomStringConvertible {
     /// ID of the object, usually a node, that is being represented.

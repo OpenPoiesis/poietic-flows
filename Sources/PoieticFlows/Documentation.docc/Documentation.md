@@ -34,6 +34,6 @@ in the following diagram:
 - <doc:Metamodel>
 - <doc:Formulas>
 - <doc:CompiledModelAndCompiler>
-- <doc:Simulation>
-- ``FlowsMetamodel``
+- <doc:SimulationRunning>
+- ``StockFlowMetamodel``
 

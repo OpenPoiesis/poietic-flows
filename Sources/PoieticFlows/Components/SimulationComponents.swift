@@ -56,7 +56,7 @@ public struct SimulationName: Component {
 
 /// Component describing dependencies between stocks and flow rates.
 ///
-/// - SeeAlso: ``StockDependencySystem``, ``FlowCollectorSystem``.
+/// - SeeAlso: ``StockFlowTopologySystem``, ``FlowRateComponent``.
 ///
 public struct StockComponent: Component {
     /// List of `FlowRate` nodes that fill the stock.
@@ -85,6 +85,8 @@ public struct StockComponent: Component {
 ///      |
 ///     Stock that the flow rate node drains
 ///
+/// - SeeAlso: ``StockFlowTopologySystem``, ``StockComponent``
+/// 
 public struct FlowRateComponent: Component {
     /// ID of a stock that the flow drains. If nil, then infinite stock (cloud) is assumed.
     ///

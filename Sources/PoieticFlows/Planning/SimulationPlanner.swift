@@ -27,41 +27,22 @@ public enum PlanningError: Error, Equatable {
 }
 
 
-extension PlanningError {
-    func internalSystemErrorContext() -> InternalSystemError.Context {
-        let context: InternalSystemError.Context
-        switch self {
-        case .corruptedComponent(let id, let name):
-            context = .component(id, name)
-        case .corruptedVariableTable:
-            context = .none
-        case .invalidObject(let id, _):
-            context = .object(id)
-        case .missingComponent(let id, let name):
-            context = .component(id, name)
-        case .unprocessedObjects:
-            context = .singleton("SimulationOrder")
-        case .userIssue:
-            context = .none
-        }
-        return context
-    }
-}
-
 /// Object that plans a computation.
 ///
 public class SimulationPlanner {
     public static let IssueSourceName: String = "SimulationPlanner"
     var variables: StateVariableTable
+    var hasError: Bool
     
     public init() {
         variables = StateVariableTable()
+        hasError = false
     }
     
     /// Create a simulation plan for specified objects.
     ///
     /// - Parameters:
-    ///     - order: Simulation objects ordered by their computational dependencies.
+    ///     - simulationOrder: Simulation objects ordered by their computational dependencies.
     ///       Created by the ``ComputationOrderSystem``.
     ///     - world: World for which the plan is being created.
     ///
@@ -71,7 +52,7 @@ public class SimulationPlanner {
     /// - Entities must have components that correspond to their type, as produced by the analytical
     ///   systems before planning.
     ///
-    /// Side-effect: The function attaches ``HasNumericIndicator`` component on entities with
+    /// Side-effect: The function attaches `HasNumericIndicator` component on entities with
     /// numeric value.
     ///
     /// - Important: The objects are expected to be ordered by their computational dependency. If they are not
@@ -83,59 +64,24 @@ public class SimulationPlanner {
     public func createPlan(order simulationOrder: SimulationOrder, in world: World)
     throws (PlanningError) -> SimulationPlan
     {
-        var hasError: Bool = false
-        var simulationObjects: [SimulationObject] = []
         var flows: [SimulationObject] = []
         var stocks: [SimulationObject] = []
 
         let builtins = prepareBuiltins()
 
-        for object in simulationOrder.objects {
-            guard let entity = world.entity(object.objectID),
-                  let nameComp: SimulationName = entity.component(),
-                  let role: SimulationRole = entity.component()
-            else {
-                hasError = true
-                continue
-            }
-            
-            let rep: ComputationalRepresentation
-
-            do {
-                rep = try compileObject(object, entity: entity)
-            }
-            catch .userIssue { // Collect all the user issues.
-                hasError = true
-                continue
-            }
-
-            let index = variables.allocate(content: .object(object.objectID),
-                                           valueType: rep.valueType,
-                                           name: nameComp.name)
-            
-            let sim = SimulationObject(objectID: object.objectID,
-                                       computation: rep,
-                                       variableIndex: index,
-                                       role: role,
-                                       valueType: rep.valueType,
-                                       name: nameComp.name)
-       
-            simulationObjects.append(sim)
-
-            // TODO: This should be responsibility of the system. Planner should just return a plan.
-            // In the system (caller) loop through plan.unprocessedObjects and set the component for them
-            entity.setComponent(HasNumericIndicator())
-            
-            switch role {
-            case .flow: flows.append(sim)
-            case .stock: stocks.append(sim)
-            default: break
-            }
-        }
-
+        let simulationObjects = try compileObjects(objects: simulationOrder.objects, in: world)
+        
         // If we have errors, finish early without creating the final plan.
         guard !hasError else { throw .userIssue }
 
+        for object in simulationObjects {
+            switch object.role {
+            case .flow: flows.append(object)
+            case .stock: stocks.append(object)
+            case .auxiliary: break
+            }
+        }
+        
         /// Verify that all objects are processed
         guard simulationOrder.objects.count == simulationObjects.count else {
             throw .unprocessedObjects
@@ -171,229 +117,6 @@ public class SimulationPlanner {
         return builtins
     }
     
-    /// Compile an object into its computational representation.
-    ///
-    /// - Returns: Computational representation of the object.
-    /// - Throws: ``CompilationError`` when missing required component or an attribute.
-    ///
-    func compileObject(_ object: ObjectSnapshot,
-                       entity: RuntimeEntity)
-    throws (PlanningError) -> ComputationalRepresentation {
-        // FIXME: Precompute representation type (and add rep.type type) in sim ordering
-        let rep: ComputationalRepresentation
-        if object.type.hasTrait(Trait.Formula) {
-            rep = try compileFormulaObject(object, entity: entity)
-        }
-        else if object.type.hasTrait(Trait.GraphicalFunction) {
-            rep = try compileGraphicalFunctionNode(object, entity: entity)
-        }
-        else if object.type.hasTrait(Trait.Delay) {
-            rep = try compileDelayNode(object, entity: entity)
-        }
-        else if object.type.hasTrait(Trait.Smooth) {
-            rep = try compileSmoothNode(object, entity: entity)
-        }
-        else {
-            // HINT: If this error happens, then check one of the the following:
-            // - ComputationOrderSystem and SimulationOrderComponent
-            // - whether the design object constraints work properly
-            // - whether the design metamodel is stock-flows metamodel
-            //   and that it has necessary traits
-            //
-            throw .invalidObject(object.objectID, "Unknown simulation object type " + object.type.name)
-        }
-        
-        return rep
-    }
-    
-    /// Compile a node containing a formula.
-    ///
-    /// For each node with an arithmetic expression the expression is parsed
-    /// from a text into an internal representation. The variable and function
-    /// names are resolved to point to actual entities and a new bound
-    /// expression is formed.
-    ///
-    /// - Returns: Computational representation wrapping a formula.
-    ///
-    /// - Parameters:
-    ///     - node: node containing already parsed formula in
-    ///       ``ParsedFormulaComponent``.
-    ///
-    /// - Precondition: The node must have ``ParsedFormulaComponent`` associated
-    ///   with it.
-    ///
-    /// - Throws: ``PlanningError`` if there is an issue with parameters,
-    ///   function names or other variable names in the expression.
-    ///
-    func compileFormulaObject(_ object: ObjectSnapshot, entity: RuntimeEntity)
-    throws (PlanningError) -> ComputationalRepresentation
-    {
-        guard let component: ParsedExpressionComponent = entity.component() else {
-            throw .missingComponent(object.objectID, "ParsedExpressionComponent")
-        }
-        let expression = component.expression
-        
-        // Finally bind the expression.
-        //
-        let boundExpression: BoundExpression
-        do {
-            boundExpression = try Evaluator.bind(expression, variables: variables)
-        }
-        catch /* ExpressionError */ {
-            var details = error.details
-            details["attribute"] = "formula"
-            let issue = Issue(
-                identifier: error.issueIdentifier,
-                severity: .error,
-                source: Self.IssueSourceName,
-                message: error.message,
-                hints: error.hints,
-                details: details,
-            )
-
-            entity.appendIssue(issue)
-            throw .userIssue
-        }
-        
-        return .formula(boundExpression)
-    }
-    
-    /// Compiles a graphical function.
-    ///
-    /// This method creates a bound graphical function object with a single argument and a
-    /// numeric return value. The function will compute the output based on the
-    /// input parameter and on specifics of the graphical function points
-    /// interpolation.
-    ///
-    /// - Requires: node
-    /// - Throws: ``NodeIssue`` if the function parameter is not connected.
-    ///
-    /// - SeeAlso: ``BoundGraphicalFunction``, ``Solver/evaluate(objectAt:with:)``
-    ///
-    func compileGraphicalFunctionNode(_ object: ObjectSnapshot, entity: RuntimeEntity)
-    throws (PlanningError) -> ComputationalRepresentation
-    {
-        let points:[Point] = object["graphical_function_points", default: []]
-        let methodName: String = object["interpolation_method",
-                                        default: GraphicalFunction.InterpolationMethod.defaultMethod.rawValue]
-            
-        let method = GraphicalFunction.InterpolationMethod(rawValue: methodName)
-                        ?? GraphicalFunction.InterpolationMethod.defaultMethod
-
-        let function = GraphicalFunction(points: points, method: method)
-        
-        guard let paramComp: ResolvedParameters = entity.component(),
-              paramComp.connectedUnnamed.count == 1,
-              let parameterID = paramComp.connectedUnnamed.first
-        else { throw .userIssue }
-
-        guard let paramIndex = variables.index(parameterID) else {
-            throw .corruptedVariableTable
-        }
-        
-        let boundFunc = BoundGraphicalFunction(function: function, parameterIndex: paramIndex)
-        return .graphicalFunction(boundFunc)
-    }
-   
-    func compileDelayNode(_ object: ObjectSnapshot, entity: RuntimeEntity)
-    throws (PlanningError) -> ComputationalRepresentation
-    {
-        // TODO: What to do if the input is not numeric or not an atom?
-        let queueIndex = variables.allocate(
-            content: .internalState(object.objectID),
-            valueType: .doubles,
-            name: "delay_queue_\(object.objectID)"
-        )
-        
-        let initialValueIndex = variables.allocate(
-            content: .internalState(object.objectID),
-            valueType: .double,
-            name: "delay_init_\(object.objectID)"
-        )
-
-        guard let paramComp: ResolvedParameters = entity.component(),
-              paramComp.connectedUnnamed.count == 1,
-              let parameterID = paramComp.connectedUnnamed.first
-        else { throw .userIssue }
-
-        guard let parameterIndex = variables.index(parameterID) else {
-            throw .corruptedVariableTable
-        }
-        // FIXME: Store defaults somewhere. We should have values here anyways.
-        let duration: UInt = object["delay_duration", default: 1]
-        let initialValue: Variant? = object["initial_value"]
-        
-        guard let type = variables.valueType(at: parameterIndex),
-              case let .atom(atomType) = type
-        else {
-            let issue = Issue(
-                identifier: "invalid_parameter_type",
-                severity: .error,
-                source: Self.IssueSourceName,
-                message: "Invalid parameter type",
-                relatedObjects: [parameterID]
-            )
-            entity.appendIssue(issue)
-            throw .userIssue
-        }
-        
-        // TODO: Check whether the initial value and variable.valueType are the same
-        let compiled = BoundDelay(
-            steps: duration,
-            initialValue: initialValue,
-            valueType: atomType,
-            initialValueIndex: initialValueIndex,
-            queueIndex: queueIndex,
-            inputValueIndex: parameterIndex
-        )
-        
-        return .delay(compiled)
-    }
-    func compileSmoothNode(_ object: ObjectSnapshot, entity: RuntimeEntity)
-    throws (PlanningError) -> ComputationalRepresentation
-    {
-        let smoothValueIndex = variables.allocate(
-            content: .internalState(object.objectID),
-            valueType: .doubles,
-            name: "smooth_value_\(object.objectID)"
-        )
-        
-        guard let paramComp: ResolvedParameters = entity.component(),
-              paramComp.connectedUnnamed.count == 1,
-              let parameterID = paramComp.connectedUnnamed.first
-        else { throw .userIssue }
-
-        guard let parameterIndex = variables.index(parameterID) else {
-            throw .corruptedVariableTable
-        }
-        
-        guard let type = variables.valueType(at: parameterIndex),
-              case .atom(_) = type
-        else {
-            let issue = Issue(
-                identifier: "invalid_parameter_type",
-                severity: .error,
-                source: Self.IssueSourceName,
-                message: "Invalid parameter type",
-                relatedObjects: [parameterID]
-            )
-            entity.appendIssue(issue)
-            throw .userIssue
-        }
-
-        // TODO: Require the attribute, do not assume the default here?
-        // This requires attribute error
-        let windowTime: Double = object["window_time", default: 1]
-        
-        let compiled = BoundSmooth(
-            windowTime: windowTime,
-            smoothValueIndex: smoothValueIndex,
-            inputValueIndex: parameterIndex
-        )
-        
-        return .smooth(compiled)
-    }
-
 
     // MARK: - Binding of stocks and flows
     func bindFlows(_ flows: [SimulationObject], world: World)
