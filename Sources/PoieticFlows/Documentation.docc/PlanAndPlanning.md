@@ -13,6 +13,8 @@ of the objects is to be computed, in which order and where the computed values a
 
 ![Planning Overview](planning-overview)
 
+## Planning Steps
+
 The conversion from `Design` to ``SimulationPlan`` is done by the `SimulationPlanningSystem`
 through multiple steps:
 
@@ -27,6 +29,54 @@ In addition to the simulation plan, simulation settings (initial time, time delt
 extracted from the model for the simulator in the ``SimulationSettingsSystem``
 
 ![Planning Systems](planning-systems)
+
+## Issues
+
+If there are any semantic issues with the user's model, the ``SimulationPlanner`` and systems
+leading to it attach the issues to the offending entity. If there are any issues set for
+objects involved in the simulation, then the planner will not produce a plan. Application
+is expected to display list of issues with the model to the user, preferably guiding the user
+to the object with an issue.
+
+Application should check for `World.hasIssues` and then present `RuntimeEntity.issues` to the user.
+(Functionality is provided in the PoieticCore package.)
+
+The planner and related systems might produce the following issues:
+
+| Identifier | Description |
+| --- | --- |
+| `unknown_parameter` | Parameter used in the formula is not known or not connected |
+| `unused_input` | Parameter is connected but unused in the node's formula |
+| `missing_required_parameter` | Node requires a parameter and it is not connected | 
+| `too_many_parameters` | More parameters than required for given node (delay, smooth or graphical function) |
+| `duplicate_name` | Multiple nodes have the same name |
+| `empty_name` | Node name is empty or contains only whitespaces (visually empty) |
+| `computation_cycle` | Nodes are connected in a way that they for cyclic dependency |
+| `invalid_parameter_type` | Invalid parameter data type (for delay, smooth or graphical function) |
+
+- Note: Formula parameters must be connected to the nodes using them. This is a model semantics
+  requirement. Planner can figure out the connection, but the user needs to see it to be able
+  to visually reason about the model. The two issues `unknown_parameter` and `unused_input` capture
+  that requirement.
+
+You might also find the following errors that are produced by the `ExpressionParserSystem` from
+PoieticCore package. They all have prefix `expression` so your application can use that hint
+for visual indication of the error.
+
+
+| Identifier | Description |
+| --- | --- |
+| `expression.unknown_variable` | Unknown variable name used |
+| `expression.unknown_function` | Unknown function name used |
+| `expression.invalid_argument_count` | Number of function arguments do not match function requirements |
+| `expression.argument_type_mismatch` | Type of argument for a function does not match (for example used bool where numeric is expected) |
+| `expression.invalid_character_in_number` | Malformed number |
+| `expression.number_expected` | Expected a number character |
+| `expression.unexpected_character` | Unexpected character |
+| `expression.missing_right_parenthesis` |  Left parenthesis is not paired with right parenthesis |
+| `expression.expression_expected` | Expression expected (likely after a binary operator) |
+| `expression.unexpected_token` | Unexpected token |
+
 
 ## Topics
 
