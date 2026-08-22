@@ -57,7 +57,7 @@ The planner and related systems might produce the following issues:
 - Note: Formula parameters must be connected to the nodes using them. This is a model semantics
   requirement. The planner could resolve parameters by name alone, but explicit connections
   are required so user cal visually reason about the model.
-  The two issues `unknown_parameter` and `unused_input` capture that requirement.
+  The two issues `unknown_parameter` and `unused_input` captucd ../.. that requirement.
 
 You might also find the following errors that are produced by the `ExpressionParserSystem` from
 PoieticCore package. They all have prefix `expression` so your application can use that hint
