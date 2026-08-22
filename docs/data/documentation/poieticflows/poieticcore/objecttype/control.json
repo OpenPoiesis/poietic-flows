@@ -138,9 +138,8 @@
               "type" : "text"
             },
             {
-              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/ObjectType\/ValueBinding",
-              "isActive" : true,
-              "type" : "reference"
+              "code" : "ValueBinding",
+              "type" : "codeVoice"
             },
             {
               "text" : " edge.",
@@ -297,51 +296,6 @@
   "title" : "Control",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/poieticcore\/objecttype\/control"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/PoieticCore/ObjectType/ValueBinding": {
-  "abstract" : [
-    {
-      "text" : "An edge type to connect controls with their targets.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "static"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "keyword",
-      "text" : "let"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "ValueBinding"
-    },
-    {
-      "kind" : "text",
-      "text" : ": "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:11PoieticCore10ObjectTypeC",
-      "text" : "ObjectType"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/ObjectType\/ValueBinding",
-  "kind" : "symbol",
-  "role" : "symbol",
-  "title" : "ValueBinding",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/poieticcore\/objecttype\/valuebinding"
 }
 }
 }

@@ -3,7 +3,7 @@
     "paths" : [
       [
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationRunning",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction\/InterpolationMethod"
       ]
@@ -94,7 +94,7 @@
 "doc://PoieticFlows/documentation/PoieticFlows/GraphicalFunction": {
   "abstract" : [
     {
-      "text" : "Object representing a function defined by a graph.",
+      "text" : "A function defined by a set of 2D control points with configurable interpolation.",
       "type" : "text"
     }
   ],
@@ -127,7 +127,10 @@
 },
 "doc://PoieticFlows/documentation/PoieticFlows/GraphicalFunction/InterpolationMethod": {
   "abstract" : [
-
+    {
+      "text" : "Interpolation method used to compute values between control points.",
+      "type" : "text"
+    }
   ],
   "fragments" : [
     {
@@ -340,10 +343,10 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/graphicalfunction\/interpolationmethod\/hashvalue"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/Simulation": {
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationRunning": {
   "abstract" : [
     {
-      "text" : "The Simulator runs the simulation and produces a simulation result as a",
+      "text" : "The simulation is run according to the simulation plan, which describes order in which the objects",
       "type" : "text"
     },
     {
@@ -351,16 +354,24 @@
       "type" : "text"
     },
     {
-      "text" : "collection of time series.",
+      "text" : "are evaluated, how the computation is performed and where in the simulation state the variables",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "live.",
       "type" : "text"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationRunning",
   "kind" : "article",
   "role" : "collectionGroup",
-  "title" : "Simulation and Computation",
+  "title" : "Simulation",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/simulation"
+  "url" : "\/documentation\/poieticflows\/simulationrunning"
 }
 }
 }

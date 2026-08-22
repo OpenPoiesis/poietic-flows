@@ -17,10 +17,8 @@
     "paths" : [
       [
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/SolverType",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/SolverType\/RawRepresentable-Implementations"
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/SolverType"
       ]
     ]
   },
@@ -215,28 +213,6 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/Simulation": {
-  "abstract" : [
-    {
-      "text" : "The Simulator runs the simulation and produces a simulation result as a",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "collection of time series.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Simulation and Computation",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/simulation"
-},
 "doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation": {
   "abstract" : [
     {
@@ -301,17 +277,6 @@
   "title" : "StockFlowSimulation.SolverType",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/stockflowsimulation\/solvertype"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/SolverType/RawRepresentable-Implementations": {
-  "abstract" : [
-
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/SolverType\/RawRepresentable-Implementations",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "RawRepresentable Implementations",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/stockflowsimulation\/solvertype\/rawrepresentable-implementations"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/SolverType/hashValue": {
   "abstract" : [

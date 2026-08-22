@@ -1,0 +1,1455 @@
+{
+  "abstract" : [
+    {
+      "text" : "Structure according to which a simulation is performed.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "s:12PoieticFlows14SimulationPlanV",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "struct"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "SimulationPlan"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "PoieticFlows"
+      }
+    ],
+    "navigatorTitle" : [
+      {
+        "kind" : "identifier",
+        "text" : "SimulationPlan"
+      }
+    ],
+    "role" : "symbol",
+    "roleHeading" : "Structure",
+    "symbolKind" : "struct",
+    "title" : "SimulationPlan"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "macOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "struct"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "SimulationPlan"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    },
+    {
+      "content" : [
+        {
+          "anchor" : "overview",
+          "level" : 2,
+          "text" : "Overview",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "The design describes the model from user’s perspective. The content and data structures needed",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "for the modelling process – for the editing – are different than the data used by the machine to",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "perform the simulation. Simulation plan contains validated and derived information from the",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "design.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "The simulation plan is created by the ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlanningSystems",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " and typically used by the",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulationSystem",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : ". It can be also used to explain the simulation process (loosely",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "analogous to a SQL explain plan).",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "The primary content of the simulation plan is:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "items" : [
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "List of simulation objects ",
+                      "type" : "text"
+                    },
+                    {
+                      "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationObject",
+                      "isActive" : true,
+                      "type" : "reference"
+                    },
+                    {
+                      "text" : " in order of their computational dependency: ",
+                      "type" : "text"
+                    },
+                    {
+                      "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/simulationObjects",
+                      "isActive" : true,
+                      "type" : "reference"
+                    },
+                    {
+                      "text" : ".",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "Structure of the simulation state, list of state variables ",
+                      "type" : "text"
+                    },
+                    {
+                      "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StateVariable",
+                      "isActive" : true,
+                      "type" : "reference"
+                    },
+                    {
+                      "text" : ": ",
+                      "type" : "text"
+                    },
+                    {
+                      "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/stateVariables",
+                      "isActive" : true,
+                      "type" : "reference"
+                    },
+                    {
+                      "text" : ".",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "List of stocks with inflows and outflows resolved (",
+                      "type" : "text"
+                    },
+                    {
+                      "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundStock",
+                      "isActive" : true,
+                      "type" : "reference"
+                    },
+                    {
+                      "text" : ").",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "List of flows with resolved stocks that the flow drains and fills (",
+                      "type" : "text"
+                    },
+                    {
+                      "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundFlow",
+                      "isActive" : true,
+                      "type" : "reference"
+                    },
+                    {
+                      "text" : ").",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "inlineContent" : [
+                        {
+                          "text" : "Produced by:",
+                          "type" : "text"
+                        }
+                      ],
+                      "type" : "strong"
+                    },
+                    {
+                      "text" : " ",
+                      "type" : "text"
+                    },
+                    {
+                      "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlanningSystem",
+                      "isActive" : true,
+                      "type" : "reference"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "inlineContent" : [
+                        {
+                          "text" : "Used by:",
+                          "type" : "text"
+                        }
+                      ],
+                      "type" : "strong"
+                    },
+                    {
+                      "text" : " ",
+                      "type" : "text"
+                    },
+                    {
+                      "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulationSystem",
+                      "isActive" : true,
+                      "type" : "reference"
+                    },
+                    {
+                      "text" : " and your application",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            }
+          ],
+          "type" : "unorderedList"
+        },
+        {
+          "anchor" : "Plan-Integrity",
+          "level" : 2,
+          "text" : "Plan Integrity",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Simulation plan integrity is enforced on multiple levels. Higher levels assume lower",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "ones held.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "items" : [
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "inlineContent" : [
+                        {
+                          "text" : "Level 1: Structural",
+                          "type" : "text"
+                        }
+                      ],
+                      "type" : "strong"
+                    },
+                    {
+                      "text" : ". Structural integrity and conformance to metamodel assured by",
+                      "type" : "text"
+                    },
+                    {
+                      "text" : " ",
+                      "type" : "text"
+                    },
+                    {
+                      "code" : "Design",
+                      "type" : "codeVoice"
+                    },
+                    {
+                      "text" : " on acceptance.",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "inlineContent" : [
+                        {
+                          "text" : "Level 2: Semantic",
+                          "type" : "text"
+                        }
+                      ],
+                      "type" : "strong"
+                    },
+                    {
+                      "text" : ". Each system that produces artefacts consumed by the",
+                      "type" : "text"
+                    },
+                    {
+                      "text" : " ",
+                      "type" : "text"
+                    },
+                    {
+                      "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlanningSystem",
+                      "isActive" : true,
+                      "type" : "reference"
+                    },
+                    {
+                      "text" : " records user-facing errors.",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "inlineContent" : [
+                        {
+                          "text" : "Level 3: Planning",
+                          "type" : "text"
+                        }
+                      ],
+                      "type" : "strong"
+                    },
+                    {
+                      "text" : ". The planning system refuses to produce a plan if there are semantic",
+                      "type" : "text"
+                    },
+                    {
+                      "text" : " ",
+                      "type" : "text"
+                    },
+                    {
+                      "text" : "errors (user’s responsibility) and throws on internal inconsistencies",
+                      "type" : "text"
+                    },
+                    {
+                      "text" : " ",
+                      "type" : "text"
+                    },
+                    {
+                      "text" : "(developer’s responsibility).",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            }
+          ],
+          "type" : "unorderedList"
+        },
+        {
+          "content" : [
+            {
+              "inlineContent" : [
+                {
+                  "text" : "",
+                  "type" : "text"
+                },
+                {
+                  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulationSystem",
+                  "isActive" : true,
+                  "type" : "reference"
+                },
+                {
+                  "text" : ", ",
+                  "type" : "text"
+                },
+                {
+                  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlanningSystems",
+                  "isActive" : true,
+                  "type" : "reference"
+                },
+                {
+                  "text" : ".",
+                  "type" : "text"
+                }
+              ],
+              "type" : "paragraph"
+            }
+          ],
+          "name" : "See Also",
+          "style" : "note",
+          "type" : "aside"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "relationshipsSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/11PoieticCore9ComponentP"
+      ],
+      "kind" : "relationships",
+      "title" : "Conforms To",
+      "type" : "conformsTo"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "seeAlsoSections" : [
+    {
+      "anchor" : "Simulation-Plan",
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationObject",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ComputationalRepresentation",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StateVariable",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlanningSystem",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlanner",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PlanningError"
+      ],
+      "title" : "Simulation Plan"
+    }
+  ],
+  "topicSections" : [
+    {
+      "anchor" : "Instance-Properties",
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/builtins",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/flows",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/simulationObjects",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/stateVariables",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/stocks"
+      ],
+      "title" : "Instance Properties"
+    },
+    {
+      "anchor" : "Instance-Methods",
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/simulationObject(_:)",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/variable(named:)",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/variableIndex(_:)"
+      ],
+      "title" : "Instance Methods"
+    },
+    {
+      "anchor" : "Default-Implementations",
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/Component-Implementations"
+      ],
+      "title" : "Default Implementations"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/poieticflows\/simulationplan"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://PoieticFlows/11PoieticCore9ComponentP": {
+  "identifier" : "doc:\/\/PoieticFlows\/11PoieticCore9ComponentP",
+  "title" : "PoieticCore.Component",
+  "type" : "unresolvable"
+},
+"doc://PoieticFlows/documentation/PoieticFlows": {
+  "abstract" : [
+    {
+      "text" : "Poietic package for modelling and simulation ",
+      "type" : "text"
+    },
+    {
+      "inlineContent" : [
+        {
+          "text" : "Stock and Flow",
+          "type" : "text"
+        }
+      ],
+      "type" : "emphasis"
+    },
+    {
+      "text" : " models.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "PoieticFlows",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/BoundFlow": {
+  "abstract" : [
+    {
+      "text" : "Represents a flow rate between stocks.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "BoundFlow"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundFlow",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "BoundFlow"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "BoundFlow",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/boundflow"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/BoundStock": {
+  "abstract" : [
+    {
+      "text" : "Stock bound to a simulation plan and a simulation state.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "BoundStock"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundStock",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "BoundStock"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "BoundStock",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/boundstock"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/ComputationalRepresentation": {
+  "abstract" : [
+    {
+      "text" : "Representation of a node in the simulation denoting how the node will",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "be computed.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "enum"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "ComputationalRepresentation"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ComputationalRepresentation",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "ComputationalRepresentation"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "ComputationalRepresentation",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/computationalrepresentation"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/PlanningError": {
+  "abstract" : [
+    {
+      "text" : "Error thrown during the simulation planning process",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "enum"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "PlanningError"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PlanningError",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "PlanningError"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "PlanningError",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/planningerror"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationObject": {
+  "abstract" : [
+    {
+      "text" : "Structure describing an object to be simulated.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SimulationObject"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationObject",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SimulationObject"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SimulationObject",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationobject"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationPlan": {
+  "abstract" : [
+    {
+      "text" : "Structure according to which a simulation is performed.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SimulationPlan"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SimulationPlan"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SimulationPlan",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationplan"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationPlan/Component-Implementations": {
+  "abstract" : [
+
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/Component-Implementations",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Component Implementations",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationplan\/component-implementations"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationPlan/builtins": {
+  "abstract" : [
+    {
+      "text" : "List of compiled builtin variables.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "builtins"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows13BoundBuiltinsV",
+      "text" : "BoundBuiltins"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/builtins",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "builtins",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationplan\/builtins"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationPlan/flows": {
+  "abstract" : [
+    {
+      "text" : "Flows with resolved stocks the flow drains and fills.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "flows"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows9BoundFlowV",
+      "text" : "BoundFlow"
+    },
+    {
+      "kind" : "text",
+      "text" : "]"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/flows",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "flows",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationplan\/flows"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationPlan/simulationObject(_:)": {
+  "abstract" : [
+    {
+      "text" : "Get a simulation variable for an object with given ID, if exists.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "simulationObject"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore8ObjectIDa",
+      "text" : "ObjectID"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows16SimulationObjectV",
+      "text" : "SimulationObject"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/simulationObject(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "simulationObject(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationplan\/simulationobject(_:)"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationPlan/simulationObjects": {
+  "abstract" : [
+    {
+      "text" : "List of objects that are considered in the computation computed, ordered by computational",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "dependency.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "simulationObjects"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows16SimulationObjectV",
+      "text" : "SimulationObject"
+    },
+    {
+      "kind" : "text",
+      "text" : "]"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/simulationObjects",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "simulationObjects",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationplan\/simulationobjects"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationPlan/stateVariables": {
+  "abstract" : [
+    {
+      "text" : "List of simulation state variables.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "stateVariables"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows13StateVariableV",
+      "text" : "StateVariable"
+    },
+    {
+      "kind" : "text",
+      "text" : "]"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/stateVariables",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "stateVariables",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationplan\/statevariables"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationPlan/stocks": {
+  "abstract" : [
+    {
+      "text" : "Stocks with resolved inflows and outflows, ordered by the computation dependency.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "stocks"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows10BoundStockV",
+      "text" : "BoundStock"
+    },
+    {
+      "kind" : "text",
+      "text" : "]"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/stocks",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "stocks",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationplan\/stocks"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationPlan/variable(named:)": {
+  "abstract" : [
+    {
+      "text" : "Get a compiled variable by its name.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "variable"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "named"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows16SimulationObjectV",
+      "text" : "SimulationObject"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/variable(named:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "variable(named:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationplan\/variable(named:)"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationPlan/variableIndex(_:)": {
+  "abstract" : [
+    {
+      "text" : "Get index into a list of computed variables for an object with given ID.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "variableIndex"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore8ObjectIDa",
+      "text" : "ObjectID"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV",
+      "text" : "SimulationState"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV5Indexa",
+      "text" : "Index"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/variableIndex(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "variableIndex(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationplan\/variableindex(_:)"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationPlanner": {
+  "abstract" : [
+    {
+      "text" : "Object that plans a computation.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SimulationPlanner"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlanner",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SimulationPlanner"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SimulationPlanner",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationplanner"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationPlanningSystem": {
+  "abstract" : [
+    {
+      "text" : "System that creates the final simulation plan.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SimulationPlanningSystem"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlanningSystem",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SimulationPlanningSystem"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SimulationPlanningSystem",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationplanningsystem"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationPlanningSystems": {
+  "abstract" : [
+    {
+      "text" : "System list that together produces a ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SimulationPlanningSystems"
+    },
+    {
+      "kind" : "text",
+      "text" : ": [any "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore6SystemP",
+      "text" : "System"
+    },
+    {
+      "kind" : "text",
+      "text" : ".Type]"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlanningSystems",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "SimulationPlanningSystems",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationplanningsystems"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationResult": {
+  "abstract" : [
+    {
+      "text" : "Makeshift simulation result container.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SimulationResult"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationResult",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SimulationResult"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SimulationResult",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationresult"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StateVariable": {
+  "abstract" : [
+    {
+      "text" : "Structure representing a variable in a simulation state.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "StateVariable"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StateVariable",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "StateVariable"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "StateVariable",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/statevariable"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulationSystem": {
+  "abstract" : [
+    {
+      "text" : "System that runs a Stock-Flow simulation and stores results in a ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationResult",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "singleton.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "StockFlowSimulationSystem"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulationSystem",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "StockFlowSimulationSystem"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "StockFlowSimulationSystem",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stockflowsimulationsystem"
+}
+}
+}

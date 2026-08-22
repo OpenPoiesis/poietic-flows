@@ -1,9 +1,14 @@
 {
+  "abstract" : [
+    {
+      "text" : "Initialise a simulated delay.",
+      "type" : "text"
+    }
+  ],
   "hierarchy" : {
     "paths" : [
       [
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation"
       ]
     ]
@@ -14,7 +19,7 @@
   },
   "kind" : "symbol",
   "metadata" : {
-    "externalID" : "s:12PoieticFlows19StockFlowSimulationC10initialize6smooth2in0A4Core7VariantOAA14CompiledSmoothV_AA0E5StateVztKF",
+    "externalID" : "s:12PoieticFlows19StockFlowSimulationC10initialize6smooth2in0A4Core7VariantOAA11BoundSmoothV_AA0E5StateVztF",
     "fragments" : [
       {
         "kind" : "keyword",
@@ -42,8 +47,8 @@
       },
       {
         "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:12PoieticFlows14CompiledSmoothV",
-        "text" : "CompiledSmooth"
+        "preciseIdentifier" : "s:12PoieticFlows11BoundSmoothV",
+        "text" : "BoundSmooth"
       },
       {
         "kind" : "text",
@@ -72,15 +77,7 @@
       },
       {
         "kind" : "text",
-        "text" : ") "
-      },
-      {
-        "kind" : "keyword",
-        "text" : "throws"
-      },
-      {
-        "kind" : "text",
-        "text" : " -> "
+        "text" : ") -> "
       },
       {
         "kind" : "typeIdentifier",
@@ -134,10 +131,10 @@
               "text" : ": "
             },
             {
-              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledSmooth",
+              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundSmooth",
               "kind" : "typeIdentifier",
-              "preciseIdentifier" : "s:12PoieticFlows14CompiledSmoothV",
-              "text" : "CompiledSmooth"
+              "preciseIdentifier" : "s:12PoieticFlows11BoundSmoothV",
+              "text" : "BoundSmooth"
             },
             {
               "kind" : "text",
@@ -175,15 +172,7 @@
             },
             {
               "kind" : "text",
-              "text" : ") "
-            },
-            {
-              "kind" : "keyword",
-              "text" : "throws"
-            },
-            {
-              "kind" : "text",
-              "text" : " -> "
+              "text" : ") -> "
             },
             {
               "kind" : "typeIdentifier",
@@ -194,6 +183,87 @@
         }
       ],
       "kind" : "declarations"
+    },
+    {
+      "kind" : "parameters",
+      "parameters" : [
+        {
+          "content" : [
+            {
+              "inlineContent" : [
+                {
+                  "text" : "Smooth object to be initialised",
+                  "type" : "text"
+                }
+              ],
+              "type" : "paragraph"
+            }
+          ],
+          "name" : "smooth"
+        },
+        {
+          "content" : [
+            {
+              "inlineContent" : [
+                {
+                  "text" : "Simulation state in which the smooth is initialised.",
+                  "type" : "text"
+                }
+              ],
+              "type" : "paragraph"
+            }
+          ],
+          "name" : "state"
+        }
+      ]
+    },
+    {
+      "content" : [
+        {
+          "anchor" : "return-value",
+          "level" : 2,
+          "text" : "Return Value",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Value of the smooth node.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        }
+      ],
+      "kind" : "content"
+    },
+    {
+      "content" : [
+        {
+          "anchor" : "discussion",
+          "level" : 2,
+          "text" : "Discussion",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "The function prepares internal variable holding the smooth state and returns an",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "initial value of the smooth node.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        }
+      ],
+      "kind" : "content"
     }
   ],
   "schemaVersion" : {
@@ -245,7 +315,7 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/CompiledSmooth": {
+"doc://PoieticFlows/documentation/PoieticFlows/BoundSmooth": {
   "abstract" : [
     {
       "text" : "Compiled smooth node.",
@@ -263,72 +333,26 @@
     },
     {
       "kind" : "identifier",
-      "text" : "CompiledSmooth"
+      "text" : "BoundSmooth"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledSmooth",
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundSmooth",
   "kind" : "symbol",
   "navigatorTitle" : [
     {
       "kind" : "identifier",
-      "text" : "CompiledSmooth"
+      "text" : "BoundSmooth"
     }
   ],
   "role" : "symbol",
-  "title" : "CompiledSmooth",
+  "title" : "BoundSmooth",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/compiledsmooth"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/Simulation": {
-  "abstract" : [
-    {
-      "text" : "The Simulator runs the simulation and produces a simulation result as a",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "collection of time series.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Simulation and Computation",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/simulation"
+  "url" : "\/documentation\/poieticflows\/boundsmooth"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/SimulationState": {
   "abstract" : [
     {
-      "text" : "A simple vector-like structure to hold an unordered collection of numeric",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "values that can be accessed by key. Simple arithmetic operations can be done",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "with the structure, such as addition, subtraction and multiplication",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "by a scalar value.",
+      "text" : "A collection of simulation state variables.",
       "type" : "text"
     }
   ],
@@ -395,7 +419,10 @@
 },
 "doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/initialize(smooth:in:)": {
   "abstract" : [
-
+    {
+      "text" : "Initialise a simulated delay.",
+      "type" : "text"
+    }
   ],
   "fragments" : [
     {
@@ -424,8 +451,8 @@
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:12PoieticFlows14CompiledSmoothV",
-      "text" : "CompiledSmooth"
+      "preciseIdentifier" : "s:12PoieticFlows11BoundSmoothV",
+      "text" : "BoundSmooth"
     },
     {
       "kind" : "text",
@@ -454,15 +481,7 @@
     },
     {
       "kind" : "text",
-      "text" : ") "
-    },
-    {
-      "kind" : "keyword",
-      "text" : "throws"
-    },
-    {
-      "kind" : "text",
-      "text" : " -> "
+      "text" : ") -> "
     },
     {
       "kind" : "typeIdentifier",

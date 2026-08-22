@@ -1,9 +1,14 @@
 {
+  "abstract" : [
+    {
+      "text" : "Left-continuous step function (zero-order hold).",
+      "type" : "text"
+    }
+  ],
   "hierarchy" : {
     "paths" : [
       [
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction\/InterpolationMethod"
       ]
@@ -67,6 +72,34 @@
         }
       ],
       "kind" : "declarations"
+    },
+    {
+      "content" : [
+        {
+          "anchor" : "discussion",
+          "level" : 2,
+          "text" : "Discussion",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Maintains constant value from each point until the next point.",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "Standard in discrete-time modelling and control systems.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        }
+      ],
+      "kind" : "content"
     }
   ],
   "schemaVersion" : {
@@ -121,7 +154,7 @@
 "doc://PoieticFlows/documentation/PoieticFlows/GraphicalFunction": {
   "abstract" : [
     {
-      "text" : "Object representing a function defined by a graph.",
+      "text" : "A function defined by a set of 2D control points with configurable interpolation.",
       "type" : "text"
     }
   ],
@@ -154,7 +187,10 @@
 },
 "doc://PoieticFlows/documentation/PoieticFlows/GraphicalFunction/InterpolationMethod": {
   "abstract" : [
-
+    {
+      "text" : "Interpolation method used to compute values between control points.",
+      "type" : "text"
+    }
   ],
   "fragments" : [
     {
@@ -185,7 +221,10 @@
 },
 "doc://PoieticFlows/documentation/PoieticFlows/GraphicalFunction/InterpolationMethod/step": {
   "abstract" : [
-
+    {
+      "text" : "Left-continuous step function (zero-order hold).",
+      "type" : "text"
+    }
   ],
   "fragments" : [
     {
@@ -207,28 +246,6 @@
   "title" : "GraphicalFunction.InterpolationMethod.step",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/graphicalfunction\/interpolationmethod\/step"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/Simulation": {
-  "abstract" : [
-    {
-      "text" : "The Simulator runs the simulation and produces a simulation result as a",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "collection of time series.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Simulation and Computation",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/simulation"
 }
 }
 }

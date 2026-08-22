@@ -1,0 +1,268 @@
+{
+  "abstract" : [
+    {
+      "text" : "Inherited from ",
+      "type" : "text"
+    },
+    {
+      "code" : "System.dependencies",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NameResolutionSystem"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NameResolutionSystem\/dependencies-2tym7"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "extendedModule" : "PoieticCore",
+    "externalID" : "s:11PoieticCore6SystemPAAE12dependenciesSayAA0C10DependencyOGvpZ::SYNTHESIZED::s:12PoieticFlows20NameResolutionSystemV",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "static"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "keyword",
+        "text" : "var"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "dependencies"
+      },
+      {
+        "kind" : "text",
+        "text" : ": ["
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:11PoieticCore16SystemDependencyO",
+        "text" : "SystemDependency"
+      },
+      {
+        "kind" : "text",
+        "text" : "]"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "PoieticFlows",
+        "relatedModules" : [
+          "PoieticCore"
+        ]
+      }
+    ],
+    "role" : "symbol",
+    "roleHeading" : "Type Property",
+    "symbolKind" : "property",
+    "title" : "dependencies"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "macOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "static"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "keyword",
+              "text" : "var"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "dependencies"
+            },
+            {
+              "kind" : "text",
+              "text" : ": ["
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:11PoieticCore16SystemDependencyO",
+              "text" : "SystemDependency"
+            },
+            {
+              "kind" : "text",
+              "text" : "] { "
+            },
+            {
+              "kind" : "keyword",
+              "text" : "get"
+            },
+            {
+              "kind" : "text",
+              "text" : " }"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/poieticflows\/nameresolutionsystem\/dependencies-2tym7"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://PoieticFlows/documentation/PoieticFlows": {
+  "abstract" : [
+    {
+      "text" : "Poietic package for modelling and simulation ",
+      "type" : "text"
+    },
+    {
+      "inlineContent" : [
+        {
+          "text" : "Stock and Flow",
+          "type" : "text"
+        }
+      ],
+      "type" : "emphasis"
+    },
+    {
+      "text" : " models.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "PoieticFlows",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/NameResolutionSystem": {
+  "abstract" : [
+    {
+      "text" : "System that collects object names and creates a name lookup.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "NameResolutionSystem"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NameResolutionSystem",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "NameResolutionSystem"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "NameResolutionSystem",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/nameresolutionsystem"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/NameResolutionSystem/dependencies-2tym7": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "dependencies"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore16SystemDependencyO",
+      "text" : "SystemDependency"
+    },
+    {
+      "kind" : "text",
+      "text" : "]"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NameResolutionSystem\/dependencies-2tym7",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "dependencies",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/nameresolutionsystem\/dependencies-2tym7"
+}
+}
+}

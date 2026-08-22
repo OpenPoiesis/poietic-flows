@@ -3,6 +3,7 @@
     "paths" : [
       [
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationRunning",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationError"
       ]
     ]
@@ -83,15 +84,12 @@
 },
 "doc://PoieticFlows/documentation/PoieticFlows/SimulationError": {
   "abstract" : [
-    {
-      "text" : "Error raised during simulation.",
-      "type" : "text"
-    }
+
   ],
   "fragments" : [
     {
       "kind" : "keyword",
-      "text" : "enum"
+      "text" : "struct"
     },
     {
       "kind" : "text",
@@ -148,6 +146,36 @@
   "title" : "localizedDescription",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/simulationerror\/localizeddescription"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationRunning": {
+  "abstract" : [
+    {
+      "text" : "The simulation is run according to the simulation plan, which describes order in which the objects",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "are evaluated, how the computation is performed and where in the simulation state the variables",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "live.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationRunning",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Simulation",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationrunning"
 }
 }
 }

@@ -1,0 +1,230 @@
+{
+  "abstract" : [
+    {
+      "text" : "Inherited from ",
+      "type" : "text"
+    },
+    {
+      "code" : "Component.Storage",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationRole"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationRole\/Storage"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "extendedModule" : "PoieticCore",
+    "externalID" : "s:11PoieticCore9ComponentPAAE7Storagea::SYNTHESIZED::s:12PoieticFlows14SimulationRoleO",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "typealias"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "Storage"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "PoieticFlows",
+        "relatedModules" : [
+          "PoieticCore"
+        ]
+      }
+    ],
+    "navigatorTitle" : [
+      {
+        "kind" : "identifier",
+        "text" : "Storage"
+      }
+    ],
+    "role" : "symbol",
+    "roleHeading" : "Type Alias",
+    "symbolKind" : "typealias",
+    "title" : "SimulationRole.Storage"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "macOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "typealias"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "Storage"
+            },
+            {
+              "kind" : "text",
+              "text" : " = "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:11PoieticCore26DictionaryComponentStorageC",
+              "text" : "DictionaryComponentStorage"
+            },
+            {
+              "kind" : "text",
+              "text" : "<"
+            },
+            {
+              "kind" : "typeIdentifier",
+              "text" : "Self"
+            },
+            {
+              "kind" : "text",
+              "text" : ">"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/poieticflows\/simulationrole\/storage"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://PoieticFlows/documentation/PoieticFlows": {
+  "abstract" : [
+    {
+      "text" : "Poietic package for modelling and simulation ",
+      "type" : "text"
+    },
+    {
+      "inlineContent" : [
+        {
+          "text" : "Stock and Flow",
+          "type" : "text"
+        }
+      ],
+      "type" : "emphasis"
+    },
+    {
+      "text" : " models.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "PoieticFlows",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationRole": {
+  "abstract" : [
+    {
+      "text" : "Role in the Stock-Flow simulation.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "enum"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SimulationRole"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationRole",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SimulationRole"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SimulationRole",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationrole"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationRole/Storage": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "typealias"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Storage"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationRole\/Storage",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Storage"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SimulationRole.Storage",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationrole\/storage"
+}
+}
+}

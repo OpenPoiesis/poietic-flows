@@ -1,0 +1,388 @@
+{
+  "abstract" : [
+    {
+      "text" : "Flows with resolved stocks the flow drains and fills.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/flows"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "s:12PoieticFlows14SimulationPlanV5flowsSayAA9BoundFlowVGvp",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "let"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "flows"
+      },
+      {
+        "kind" : "text",
+        "text" : ": ["
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:12PoieticFlows9BoundFlowV",
+        "text" : "BoundFlow"
+      },
+      {
+        "kind" : "text",
+        "text" : "]"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "PoieticFlows"
+      }
+    ],
+    "role" : "symbol",
+    "roleHeading" : "Instance Property",
+    "symbolKind" : "property",
+    "title" : "flows"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "macOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "let"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "flows"
+            },
+            {
+              "kind" : "text",
+              "text" : ": ["
+            },
+            {
+              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundFlow",
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:12PoieticFlows9BoundFlowV",
+              "text" : "BoundFlow"
+            },
+            {
+              "kind" : "text",
+              "text" : "]"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    },
+    {
+      "content" : [
+        {
+          "anchor" : "discussion",
+          "level" : 2,
+          "text" : "Discussion",
+          "type" : "heading"
+        },
+        {
+          "content" : [
+            {
+              "inlineContent" : [
+                {
+                  "text" : "",
+                  "type" : "text"
+                },
+                {
+                  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundFlow",
+                  "isActive" : true,
+                  "type" : "reference"
+                },
+                {
+                  "text" : ", ",
+                  "type" : "text"
+                },
+                {
+                  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulationSystem",
+                  "isActive" : true,
+                  "type" : "reference"
+                },
+                {
+                  "text" : ".",
+                  "type" : "text"
+                }
+              ],
+              "type" : "paragraph"
+            }
+          ],
+          "name" : "See Also",
+          "style" : "note",
+          "type" : "aside"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/poieticflows\/simulationplan\/flows"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://PoieticFlows/documentation/PoieticFlows": {
+  "abstract" : [
+    {
+      "text" : "Poietic package for modelling and simulation ",
+      "type" : "text"
+    },
+    {
+      "inlineContent" : [
+        {
+          "text" : "Stock and Flow",
+          "type" : "text"
+        }
+      ],
+      "type" : "emphasis"
+    },
+    {
+      "text" : " models.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "PoieticFlows",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/BoundFlow": {
+  "abstract" : [
+    {
+      "text" : "Represents a flow rate between stocks.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "BoundFlow"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundFlow",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "BoundFlow"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "BoundFlow",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/boundflow"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationPlan": {
+  "abstract" : [
+    {
+      "text" : "Structure according to which a simulation is performed.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SimulationPlan"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SimulationPlan"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SimulationPlan",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationplan"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationPlan/flows": {
+  "abstract" : [
+    {
+      "text" : "Flows with resolved stocks the flow drains and fills.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "flows"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows9BoundFlowV",
+      "text" : "BoundFlow"
+    },
+    {
+      "kind" : "text",
+      "text" : "]"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/flows",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "flows",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationplan\/flows"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationResult": {
+  "abstract" : [
+    {
+      "text" : "Makeshift simulation result container.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SimulationResult"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationResult",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SimulationResult"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SimulationResult",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationresult"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulationSystem": {
+  "abstract" : [
+    {
+      "text" : "System that runs a Stock-Flow simulation and stores results in a ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationResult",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "singleton.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "StockFlowSimulationSystem"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulationSystem",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "StockFlowSimulationSystem"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "StockFlowSimulationSystem",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stockflowsimulationsystem"
+}
+}
+}

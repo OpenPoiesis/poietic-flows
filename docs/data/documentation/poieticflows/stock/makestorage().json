@@ -1,0 +1,248 @@
+{
+  "abstract" : [
+    {
+      "text" : "Inherited from ",
+      "type" : "text"
+    },
+    {
+      "code" : "Component.makeStorage()",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Stock"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Stock\/makeStorage()"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "extendedModule" : "PoieticCore",
+    "externalID" : "s:11PoieticCore9ComponentPAAE11makeStorageAA0cE8Protocol_pyFZ::SYNTHESIZED::s:12PoieticFlows5StockV",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "static"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "makeStorage"
+      },
+      {
+        "kind" : "text",
+        "text" : "() -> any "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:11PoieticCore24ComponentStorageProtocolP",
+        "text" : "ComponentStorageProtocol"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "PoieticFlows",
+        "relatedModules" : [
+          "PoieticCore"
+        ]
+      }
+    ],
+    "role" : "symbol",
+    "roleHeading" : "Type Method",
+    "symbolKind" : "method",
+    "title" : "makeStorage()"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "macOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "static"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "keyword",
+              "text" : "func"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "makeStorage"
+            },
+            {
+              "kind" : "text",
+              "text" : "() -> any "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:11PoieticCore24ComponentStorageProtocolP",
+              "text" : "ComponentStorageProtocol"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/poieticflows\/stock\/makestorage()"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://PoieticFlows/documentation/PoieticFlows": {
+  "abstract" : [
+    {
+      "text" : "Poietic package for modelling and simulation ",
+      "type" : "text"
+    },
+    {
+      "inlineContent" : [
+        {
+          "text" : "Stock and Flow",
+          "type" : "text"
+        }
+      ],
+      "type" : "emphasis"
+    },
+    {
+      "text" : " models.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "PoieticFlows",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/Stock": {
+  "abstract" : [
+    {
+      "text" : "Component describing dependencies between stocks and flow rates.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Stock"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Stock",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Stock"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Stock",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stock"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/Stock/makeStorage()": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "makeStorage"
+    },
+    {
+      "kind" : "text",
+      "text" : "() -> any "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore24ComponentStorageProtocolP",
+      "text" : "ComponentStorageProtocol"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Stock\/makeStorage()",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "makeStorage()",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stock\/makestorage()"
+}
+}
+}

@@ -1,0 +1,1512 @@
+{
+  "abstract" : [
+    {
+      "text" : "The simulation is run according to the simulation plan, which describes order in which the objects",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "are evaluated, how the computation is performed and where in the simulation state the variables",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "live.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationRunning"
+  },
+  "kind" : "article",
+  "metadata" : {
+    "modules" : [
+      {
+        "name" : "PoieticFlows"
+      }
+    ],
+    "role" : "collectionGroup",
+    "roleHeading" : "API Collection",
+    "title" : "Simulation"
+  },
+  "primaryContentSections" : [
+    {
+      "content" : [
+        {
+          "anchor" : "Overview",
+          "level" : 2,
+          "text" : "Overview",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "The object that performs the simulation is ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : ". It reads the simulation plan",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "and evaluates simulation objects according to specified order.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "anchor" : "Simulation-System",
+          "level" : 3,
+          "text" : "Simulation System",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "In your application you run the ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulationSystem",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " within a schedule. You rarely need to",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "use the simulation object directly. The system does the following:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "items" : [
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "Reads the ",
+                      "type" : "text"
+                    },
+                    {
+                      "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationSettings",
+                      "isActive" : true,
+                      "type" : "reference"
+                    },
+                    {
+                      "text" : " singleton to set-up time, time delta and solver type. If not",
+                      "type" : "text"
+                    },
+                    {
+                      "text" : " ",
+                      "type" : "text"
+                    },
+                    {
+                      "text" : "present, then default settings are used.",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "Reads the ",
+                      "type" : "text"
+                    },
+                    {
+                      "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ScenarioParameters",
+                      "isActive" : true,
+                      "type" : "reference"
+                    },
+                    {
+                      "text" : " that is used to override object values during initialisation.",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "Initialises a new simulation state.",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "Runs the simulation for given number of steps.",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "Constructs a simulation result ",
+                      "type" : "text"
+                    },
+                    {
+                      "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationResult",
+                      "isActive" : true,
+                      "type" : "reference"
+                    },
+                    {
+                      "text" : " and sets it as a singleton.",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            }
+          ],
+          "type" : "orderedList"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "If the simulation was not successful, the simulation result is not set and if existed before the",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "system was run, it will be removed.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "anchor" : "Computation",
+          "level" : 2,
+          "text" : "Computation",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "The simulation is performed as follows:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "inlineContent" : [
+                {
+                  "text" : "Initialisation",
+                  "type" : "text"
+                }
+              ],
+              "type" : "strong"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "items" : [
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "prepare new simulation state",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "set values of builtins in the state",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "FOR EACH simulation object in the order of computational dependency:",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                },
+                {
+                  "items" : [
+                    {
+                      "content" : [
+                        {
+                          "inlineContent" : [
+                            {
+                              "inlineContent" : [
+                                {
+                                  "text" : "Stocks",
+                                  "type" : "text"
+                                }
+                              ],
+                              "type" : "emphasis"
+                            },
+                            {
+                              "text" : ", ",
+                              "type" : "text"
+                            },
+                            {
+                              "inlineContent" : [
+                                {
+                                  "text" : "Auxiliaries",
+                                  "type" : "text"
+                                }
+                              ],
+                              "type" : "emphasis"
+                            },
+                            {
+                              "text" : ", ",
+                              "type" : "text"
+                            },
+                            {
+                              "inlineContent" : [
+                                {
+                                  "text" : "Flow Rates",
+                                  "type" : "text"
+                                }
+                              ],
+                              "type" : "emphasis"
+                            },
+                            {
+                              "text" : ": compute initial value by evaluating the formula.",
+                              "type" : "text"
+                            }
+                          ],
+                          "type" : "paragraph"
+                        }
+                      ]
+                    },
+                    {
+                      "content" : [
+                        {
+                          "inlineContent" : [
+                            {
+                              "inlineContent" : [
+                                {
+                                  "text" : "Graphical function",
+                                  "type" : "text"
+                                }
+                              ],
+                              "type" : "emphasis"
+                            },
+                            {
+                              "text" : ": get initial value according to the function definition.",
+                              "type" : "text"
+                            }
+                          ],
+                          "type" : "paragraph"
+                        }
+                      ]
+                    },
+                    {
+                      "content" : [
+                        {
+                          "inlineContent" : [
+                            {
+                              "inlineContent" : [
+                                {
+                                  "text" : "Delay",
+                                  "type" : "text"
+                                }
+                              ],
+                              "type" : "emphasis"
+                            },
+                            {
+                              "text" : ", ",
+                              "type" : "text"
+                            },
+                            {
+                              "inlineContent" : [
+                                {
+                                  "text" : "Smooth",
+                                  "type" : "text"
+                                }
+                              ],
+                              "type" : "emphasis"
+                            },
+                            {
+                              "text" : ": If the object has initial value is set, initialise it to the value,",
+                              "type" : "text"
+                            },
+                            {
+                              "text" : " ",
+                              "type" : "text"
+                            },
+                            {
+                              "text" : "otherwise use value from the parameter.",
+                              "type" : "text"
+                            }
+                          ],
+                          "type" : "paragraph"
+                        }
+                      ]
+                    }
+                  ],
+                  "type" : "unorderedList"
+                }
+              ]
+            }
+          ],
+          "type" : "orderedList"
+        },
+        {
+          "inlineContent" : [
+            {
+              "inlineContent" : [
+                {
+                  "text" : "Simulation Step: Euler Integration",
+                  "type" : "text"
+                }
+              ],
+              "type" : "strong"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "items" : [
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "Prepare a new simulation state.",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "Get stock values from the t-1 (previous step).",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "Get flows estimation from the t-1 (previous step).",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "Compute adjusted flows from flows estimates and stock values.",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                },
+                {
+                  "items" : [
+                    {
+                      "content" : [
+                        {
+                          "inlineContent" : [
+                            {
+                              "text" : "FOR each stock:",
+                              "type" : "text"
+                            }
+                          ],
+                          "type" : "paragraph"
+                        },
+                        {
+                          "items" : [
+                            {
+                              "content" : [
+                                {
+                                  "inlineContent" : [
+                                    {
+                                      "text" : "total inflow estimate = ∑ flow rates filling the stock",
+                                      "type" : "text"
+                                    }
+                                  ],
+                                  "type" : "paragraph"
+                                }
+                              ]
+                            },
+                            {
+                              "content" : [
+                                {
+                                  "inlineContent" : [
+                                    {
+                                      "text" : "total outflow estimate = ∑ flow rates draining the stock",
+                                      "type" : "text"
+                                    }
+                                  ],
+                                  "type" : "paragraph"
+                                }
+                              ]
+                            },
+                            {
+                              "content" : [
+                                {
+                                  "inlineContent" : [
+                                    {
+                                      "text" : "Compute adjusted flows by scaling:",
+                                      "type" : "text"
+                                    }
+                                  ],
+                                  "type" : "paragraph"
+                                },
+                                {
+                                  "items" : [
+                                    {
+                                      "content" : [
+                                        {
+                                          "inlineContent" : [
+                                            {
+                                              "text" : "IF flow scaling is ",
+                                              "type" : "text"
+                                            },
+                                            {
+                                              "inlineContent" : [
+                                                {
+                                                  "text" : "outflows first",
+                                                  "type" : "text"
+                                                }
+                                              ],
+                                              "type" : "emphasis"
+                                            },
+                                            {
+                                              "text" : ":",
+                                              "type" : "text"
+                                            }
+                                          ],
+                                          "type" : "paragraph"
+                                        },
+                                        {
+                                          "inlineContent" : [
+                                            {
+                                              "text" : "scale = min(1, current \/ outflow)",
+                                              "type" : "text"
+                                            }
+                                          ],
+                                          "type" : "paragraph"
+                                        },
+                                        {
+                                          "inlineContent" : [
+                                            {
+                                              "text" : "adjustedₙ = estimatedₙ * scale",
+                                              "type" : "text"
+                                            }
+                                          ],
+                                          "type" : "paragraph"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "content" : [
+                                        {
+                                          "inlineContent" : [
+                                            {
+                                              "text" : "IF flow scaling is ",
+                                              "type" : "text"
+                                            },
+                                            {
+                                              "inlineContent" : [
+                                                {
+                                                  "text" : "inflows first",
+                                                  "type" : "text"
+                                                }
+                                              ],
+                                              "type" : "emphasis"
+                                            },
+                                            {
+                                              "text" : ":",
+                                              "type" : "text"
+                                            }
+                                          ],
+                                          "type" : "paragraph"
+                                        },
+                                        {
+                                          "inlineContent" : [
+                                            {
+                                              "text" : "available = current stock + inflow",
+                                              "type" : "text"
+                                            }
+                                          ],
+                                          "type" : "paragraph"
+                                        },
+                                        {
+                                          "inlineContent" : [
+                                            {
+                                              "text" : "scale = min(1, available \/ outflow)",
+                                              "type" : "text"
+                                            }
+                                          ],
+                                          "type" : "paragraph"
+                                        },
+                                        {
+                                          "inlineContent" : [
+                                            {
+                                              "text" : "adjustedₙ = estimatedₙ * scale",
+                                              "type" : "text"
+                                            }
+                                          ],
+                                          "type" : "paragraph"
+                                        }
+                                      ]
+                                    }
+                                  ],
+                                  "type" : "unorderedList"
+                                }
+                              ]
+                            }
+                          ],
+                          "type" : "orderedList"
+                        }
+                      ]
+                    }
+                  ],
+                  "type" : "orderedList"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "Returns a vector of adjusted flow rates.",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "Compute derivatives Δstock from adjusted flows and stocks.",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                },
+                {
+                  "items" : [
+                    {
+                      "content" : [
+                        {
+                          "inlineContent" : [
+                            {
+                              "text" : "FOR each stock:",
+                              "type" : "text"
+                            }
+                          ],
+                          "type" : "paragraph"
+                        },
+                        {
+                          "items" : [
+                            {
+                              "content" : [
+                                {
+                                  "inlineContent" : [
+                                    {
+                                      "text" : "inflow = total ∑ of adjusted stock’s inflows",
+                                      "type" : "text"
+                                    }
+                                  ],
+                                  "type" : "paragraph"
+                                }
+                              ]
+                            },
+                            {
+                              "content" : [
+                                {
+                                  "inlineContent" : [
+                                    {
+                                      "text" : "outflow = total ∑ of adjusted stock’s outflows",
+                                      "type" : "text"
+                                    }
+                                  ],
+                                  "type" : "paragraph"
+                                }
+                              ]
+                            },
+                            {
+                              "content" : [
+                                {
+                                  "inlineContent" : [
+                                    {
+                                      "text" : "compute net flow:",
+                                      "type" : "text"
+                                    }
+                                  ],
+                                  "type" : "paragraph"
+                                },
+                                {
+                                  "items" : [
+                                    {
+                                      "content" : [
+                                        {
+                                          "inlineContent" : [
+                                            {
+                                              "text" : "IF allows negative: net flow = (inflow - outflow) * timeDelta",
+                                              "type" : "text"
+                                            }
+                                          ],
+                                          "type" : "paragraph"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "content" : [
+                                        {
+                                          "inlineContent" : [
+                                            {
+                                              "text" : "ELSE: net flow = max(-current, (inflow - outflow) * timeDelta)",
+                                              "type" : "text"
+                                            }
+                                          ],
+                                          "type" : "paragraph"
+                                        }
+                                      ]
+                                    }
+                                  ],
+                                  "type" : "unorderedList"
+                                }
+                              ]
+                            }
+                          ],
+                          "type" : "orderedList"
+                        }
+                      ]
+                    },
+                    {
+                      "content" : [
+                        {
+                          "inlineContent" : [
+                            {
+                              "text" : "Returns a vector of Δstock",
+                              "type" : "text"
+                            }
+                          ],
+                          "type" : "paragraph"
+                        }
+                      ]
+                    }
+                  ],
+                  "type" : "orderedList"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "Adjust stocks: stockₙ(t) = stockₙ(t-1) + Δstockₙ",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "Update auxiliaries and flow rates.",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "Write adjusted flow values to the simulation state.",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            }
+          ],
+          "type" : "orderedList"
+        },
+        {
+          "content" : [
+            {
+              "inlineContent" : [
+                {
+                  "text" : "Runge Kutta 4 solver (",
+                  "type" : "text"
+                },
+                {
+                  "code" : "rk4",
+                  "type" : "codeVoice"
+                },
+                {
+                  "text" : ") follows the same pattern with four intermediate evaluations.",
+                  "type" : "text"
+                }
+              ],
+              "type" : "paragraph"
+            }
+          ],
+          "name" : "Note",
+          "style" : "note",
+          "type" : "aside"
+        },
+        {
+          "anchor" : "Results",
+          "level" : 2,
+          "text" : "Results",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "The ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulationSystem",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " runs the simulation and if the simulation was successful",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "(no evaluation errors), then it produces a ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationResult",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " singleton. The result contains",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "states for each step of the simulation.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "The results can be further processed and distributed on entities for presentation.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "seeAlsoSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Metamodel",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PlanAndPlanning",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Formulas",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowMetamodel"
+      ]
+    }
+  ],
+  "topicSections" : [
+    {
+      "anchor" : "Simulation",
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulationSystem",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationSettingsSystem",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationState",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationError",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/RegularTimeSeries",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BuiltinVariable"
+      ],
+      "title" : "Simulation"
+    },
+    {
+      "anchor" : "Components",
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationSettings",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ScenarioParameters",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationResult"
+      ],
+      "title" : "Components"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/poieticflows\/simulationrunning"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://PoieticFlows/documentation/PoieticFlows": {
+  "abstract" : [
+    {
+      "text" : "Poietic package for modelling and simulation ",
+      "type" : "text"
+    },
+    {
+      "inlineContent" : [
+        {
+          "text" : "Stock and Flow",
+          "type" : "text"
+        }
+      ],
+      "type" : "emphasis"
+    },
+    {
+      "text" : " models.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "PoieticFlows",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/BuiltinVariable": {
+  "abstract" : [
+    {
+      "text" : "Builtin variables for the Stock and Flow simulation.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "enum"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "BuiltinVariable"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BuiltinVariable",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "BuiltinVariable"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "BuiltinVariable",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/builtinvariable"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/Formulas": {
+  "abstract" : [
+    {
+      "text" : "Formulas define an arithmetic computation of a node.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Formulas",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Formulas",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/formulas"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/GraphicalFunction": {
+  "abstract" : [
+    {
+      "text" : "A function defined by a set of 2D control points with configurable interpolation.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "GraphicalFunction"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "GraphicalFunction"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "GraphicalFunction",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/graphicalfunction"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/Metamodel": {
+  "abstract" : [
+    {
+      "text" : "Description of the Stock and Flow domain.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Metamodel",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Stock and Flow Metamodel",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/metamodel"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/NumericVector": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "NumericVector"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "NumericVector"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "NumericVector",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/numericvector"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/PlanAndPlanning": {
+  "abstract" : [
+    {
+      "text" : "To perform a simulation, the computer needs to understand how it is to be performed and needs to",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "be sure that it is possible to simulate the model. The simulation plan is computer-oriented",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "representation of the model, derived from the user-oriented representation in the model design.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PlanAndPlanning",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Simulation Plan and Planning",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/planandplanning"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/RegularTimeSeries": {
+  "abstract" : [
+    {
+      "text" : "Structure representing numeric time series with regular time intervals.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "RegularTimeSeries"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/RegularTimeSeries",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "RegularTimeSeries"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "RegularTimeSeries",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/regulartimeseries"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/ScenarioParameters": {
+  "abstract" : [
+    {
+      "text" : "Initial values of simulation variables.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "ScenarioParameters"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ScenarioParameters",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "ScenarioParameters"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "ScenarioParameters",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/scenarioparameters"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationError": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SimulationError"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationError",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SimulationError"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SimulationError",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationerror"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationResult": {
+  "abstract" : [
+    {
+      "text" : "Makeshift simulation result container.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SimulationResult"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationResult",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SimulationResult"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SimulationResult",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationresult"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationSettings": {
+  "abstract" : [
+    {
+      "text" : "Settings of the simulation – time and solver.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SimulationSettings"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationSettings",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SimulationSettings"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SimulationSettings",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationsettings"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationSettingsSystem": {
+  "abstract" : [
+    {
+      "text" : "System that extracts simulation settings from a plane.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SimulationSettingsSystem"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationSettingsSystem",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SimulationSettingsSystem"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SimulationSettingsSystem",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationsettingssystem"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationState": {
+  "abstract" : [
+    {
+      "text" : "A collection of simulation state variables.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SimulationState"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationState",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SimulationState"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SimulationState",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationstate"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowMetamodel": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "StockFlowMetamodel"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore9MetamodelC",
+      "text" : "Metamodel"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowMetamodel",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "StockFlowMetamodel",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stockflowmetamodel"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation": {
+  "abstract" : [
+    {
+      "text" : "Stock-Flow simulation specific computation and logic.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "StockFlowSimulation"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "StockFlowSimulation"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "StockFlowSimulation",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stockflowsimulation"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulationSystem": {
+  "abstract" : [
+    {
+      "text" : "System that runs a Stock-Flow simulation and stores results in a ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationResult",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "singleton.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "StockFlowSimulationSystem"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulationSystem",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "StockFlowSimulationSystem"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "StockFlowSimulationSystem",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stockflowsimulationsystem"
+}
+}
+}

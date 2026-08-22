@@ -3,7 +3,7 @@
     "paths" : [
       [
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationRunning",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector"
       ]
     ]
@@ -33,10 +33,21 @@
   ],
   "topicSections" : [
     {
+      "anchor" : "Instance-Properties",
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/indices"
+      ],
+      "title" : "Instance Properties"
+    },
+    {
       "anchor" : "Instance-Methods",
       "generated" : true,
       "identifiers" : [
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/index(_:offsetBy:limitedBy:)"
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/distance(from:to:)",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/index(_:offsetBy:)",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/index(_:offsetBy:limitedBy:)",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/index(before:)"
       ],
       "title" : "Instance Methods"
     }
@@ -112,6 +123,328 @@
   "title" : "NumericVector",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/numericvector"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/NumericVector/distance(from:to:)": {
+  "abstract" : [
+
+  ],
+  "conformance" : {
+    "availabilityPrefix" : [
+      {
+        "text" : "Available when",
+        "type" : "text"
+      }
+    ],
+    "conformancePrefix" : [
+      {
+        "text" : "Conforms when",
+        "type" : "text"
+      }
+    ],
+    "constraints" : [
+      {
+        "code" : "Index",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : " conforms to ",
+        "type" : "text"
+      },
+      {
+        "code" : "Strideable",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : ", ",
+        "type" : "text"
+      },
+      {
+        "code" : "Indices",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : " is ",
+        "type" : "text"
+      },
+      {
+        "code" : "Range<Self.Index>",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : ", and ",
+        "type" : "text"
+      },
+      {
+        "code" : "Index.Stride",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : " is ",
+        "type" : "text"
+      },
+      {
+        "code" : "Int",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : ".",
+        "type" : "text"
+      }
+    ]
+  },
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "distance"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "from"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Self"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sl5IndexQa",
+      "text" : "Index"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "to"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Self"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sl5IndexQa",
+      "text" : "Index"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Self"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sl5IndexQa",
+      "text" : "Index"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sx6StrideQa",
+      "text" : "Stride"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/distance(from:to:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "distance(from:to:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/numericvector\/distance(from:to:)"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/NumericVector/index(_:offsetBy:)": {
+  "abstract" : [
+
+  ],
+  "conformance" : {
+    "availabilityPrefix" : [
+      {
+        "text" : "Available when",
+        "type" : "text"
+      }
+    ],
+    "conformancePrefix" : [
+      {
+        "text" : "Conforms when",
+        "type" : "text"
+      }
+    ],
+    "constraints" : [
+      {
+        "code" : "Index",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : " conforms to ",
+        "type" : "text"
+      },
+      {
+        "code" : "Strideable",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : ", ",
+        "type" : "text"
+      },
+      {
+        "code" : "Indices",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : " is ",
+        "type" : "text"
+      },
+      {
+        "code" : "Range<Self.Index>",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : ", and ",
+        "type" : "text"
+      },
+      {
+        "code" : "Index.Stride",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : " is ",
+        "type" : "text"
+      },
+      {
+        "code" : "Int",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : ".",
+        "type" : "text"
+      }
+    ]
+  },
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "index"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Self"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sl5IndexQa",
+      "text" : "Index"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "offsetBy"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Self"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sl5IndexQa",
+      "text" : "Index"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sx6StrideQa",
+      "text" : "Stride"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Self"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sl5IndexQa",
+      "text" : "Index"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/index(_:offsetBy:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "index(_:offsetBy:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/numericvector\/index(_:offsetby:)"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/NumericVector/index(_:offsetBy:limitedBy:)": {
   "abstract" : [
@@ -218,10 +551,260 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/numericvector\/index(_:offsetby:limitedby:)"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/Simulation": {
+"doc://PoieticFlows/documentation/PoieticFlows/NumericVector/index(before:)": {
+  "abstract" : [
+
+  ],
+  "conformance" : {
+    "availabilityPrefix" : [
+      {
+        "text" : "Available when",
+        "type" : "text"
+      }
+    ],
+    "conformancePrefix" : [
+      {
+        "text" : "Conforms when",
+        "type" : "text"
+      }
+    ],
+    "constraints" : [
+      {
+        "code" : "Index",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : " conforms to ",
+        "type" : "text"
+      },
+      {
+        "code" : "Strideable",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : ", ",
+        "type" : "text"
+      },
+      {
+        "code" : "Indices",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : " is ",
+        "type" : "text"
+      },
+      {
+        "code" : "Range<Self.Index>",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : ", and ",
+        "type" : "text"
+      },
+      {
+        "code" : "Index.Stride",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : " is ",
+        "type" : "text"
+      },
+      {
+        "code" : "Int",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : ".",
+        "type" : "text"
+      }
+    ]
+  },
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "index"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "before"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Self"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sl5IndexQa",
+      "text" : "Index"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Self"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sl5IndexQa",
+      "text" : "Index"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/index(before:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "index(before:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/numericvector\/index(before:)"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/NumericVector/indices": {
+  "abstract" : [
+
+  ],
+  "conformance" : {
+    "availabilityPrefix" : [
+      {
+        "text" : "Available when",
+        "type" : "text"
+      }
+    ],
+    "conformancePrefix" : [
+      {
+        "text" : "Conforms when",
+        "type" : "text"
+      }
+    ],
+    "constraints" : [
+      {
+        "code" : "Index",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : " conforms to ",
+        "type" : "text"
+      },
+      {
+        "code" : "Strideable",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : ", ",
+        "type" : "text"
+      },
+      {
+        "code" : "Indices",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : " is ",
+        "type" : "text"
+      },
+      {
+        "code" : "Range<Self.Index>",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : ", and ",
+        "type" : "text"
+      },
+      {
+        "code" : "Index.Stride",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : " is ",
+        "type" : "text"
+      },
+      {
+        "code" : "Int",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : ".",
+        "type" : "text"
+      }
+    ]
+  },
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "indices"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sn",
+      "text" : "Range"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Self"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sl5IndexQa",
+      "text" : "Index"
+    },
+    {
+      "kind" : "text",
+      "text" : ">"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/indices",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "indices",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/numericvector\/indices"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationRunning": {
   "abstract" : [
     {
-      "text" : "The Simulator runs the simulation and produces a simulation result as a",
+      "text" : "The simulation is run according to the simulation plan, which describes order in which the objects",
       "type" : "text"
     },
     {
@@ -229,16 +812,24 @@
       "type" : "text"
     },
     {
-      "text" : "collection of time series.",
+      "text" : "are evaluated, how the computation is performed and where in the simulation state the variables",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "live.",
       "type" : "text"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationRunning",
   "kind" : "article",
   "role" : "collectionGroup",
-  "title" : "Simulation and Computation",
+  "title" : "Simulation",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/simulation"
+  "url" : "\/documentation\/poieticflows\/simulationrunning"
 }
 }
 }

@@ -1,7 +1,7 @@
 {
   "abstract" : [
     {
-      "text" : "A flow node - one of the two core nodes.",
+      "text" : "An edge between stock node and a flow rate node.",
       "type" : "text"
     }
   ],
@@ -122,7 +122,7 @@
         {
           "inlineContent" : [
             {
-              "text" : "Flow node represents a rate at which a stock is drained or a stock",
+              "text" : "Origin stock of the edge is drained, target stock is being filled. One end",
               "type" : "text"
             },
             {
@@ -130,37 +130,11 @@
               "type" : "text"
             },
             {
-              "text" : "is filed.",
+              "text" : "of the edge must be a stock and another edge must be a flow.",
               "type" : "text"
             }
           ],
           "type" : "paragraph"
-        },
-        {
-          "inlineContent" : [
-            {
-              "text" : "Flow can be connected to only one stock that the flow fills and from",
-              "type" : "text"
-            },
-            {
-              "text" : " ",
-              "type" : "text"
-            },
-            {
-              "text" : "only one stock that the flow drains.",
-              "type" : "text"
-            }
-          ],
-          "type" : "paragraph"
-        },
-        {
-          "code" : [
-            "                   drains           fills",
-            "    Stock source ----------> Flow ---------> Stock drain",
-            ""
-          ],
-          "syntax" : null,
-          "type" : "codeListing"
         },
         {
           "content" : [
@@ -171,35 +145,9 @@
                   "type" : "text"
                 },
                 {
-                  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/ObjectType\/Stock",
+                  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/ObjectType\/FlowRate",
                   "isActive" : true,
                   "type" : "reference"
-                },
-                {
-                  "text" : ", ",
-                  "type" : "text"
-                },
-                {
-                  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/ObjectType\/Fills",
-                  "isActive" : true,
-                  "type" : "reference"
-                },
-                {
-                  "text" : ",",
-                  "type" : "text"
-                },
-                {
-                  "text" : " ",
-                  "type" : "text"
-                },
-                {
-                  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/ObjectType\/Drains",
-                  "isActive" : true,
-                  "type" : "reference"
-                },
-                {
-                  "text" : ".",
-                  "type" : "text"
                 }
               ],
               "type" : "paragraph"
@@ -305,100 +253,10 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/poieticcore\/objecttype"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/PoieticCore/ObjectType/Drains": {
-  "abstract" : [
-    {
-      "text" : "Edge from a stock to a flow. Denotes “what the flow drains”.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "static"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "keyword",
-      "text" : "let"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "Drains"
-    },
-    {
-      "kind" : "text",
-      "text" : ": "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:11PoieticCore10ObjectTypeC",
-      "text" : "ObjectType"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/ObjectType\/Drains",
-  "kind" : "symbol",
-  "role" : "symbol",
-  "title" : "Drains",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/poieticcore\/objecttype\/drains"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/PoieticCore/ObjectType/Fills": {
-  "abstract" : [
-    {
-      "text" : "Edge from a flow to a stock. Denotes “what the flow fills”.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "static"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "keyword",
-      "text" : "let"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "Fills"
-    },
-    {
-      "kind" : "text",
-      "text" : ": "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:11PoieticCore10ObjectTypeC",
-      "text" : "ObjectType"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/ObjectType\/Fills",
-  "kind" : "symbol",
-  "role" : "symbol",
-  "title" : "Fills",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/poieticcore\/objecttype\/fills"
-},
 "doc://PoieticFlows/documentation/PoieticFlows/PoieticCore/ObjectType/Flow": {
   "abstract" : [
     {
-      "text" : "A flow node - one of the two core nodes.",
+      "text" : "An edge between stock node and a flow rate node.",
       "type" : "text"
     }
   ],
@@ -440,10 +298,10 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/poieticcore\/objecttype\/flow"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/PoieticCore/ObjectType/Stock": {
+"doc://PoieticFlows/documentation/PoieticFlows/PoieticCore/ObjectType/FlowRate": {
   "abstract" : [
     {
-      "text" : "A stock node - one of the two core nodes.",
+      "text" : "A flow rate node.",
       "type" : "text"
     }
   ],
@@ -466,7 +324,7 @@
     },
     {
       "kind" : "identifier",
-      "text" : "Stock"
+      "text" : "FlowRate"
     },
     {
       "kind" : "text",
@@ -478,12 +336,12 @@
       "text" : "ObjectType"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/ObjectType\/Stock",
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/ObjectType\/FlowRate",
   "kind" : "symbol",
   "role" : "symbol",
-  "title" : "Stock",
+  "title" : "FlowRate",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/poieticcore\/objecttype\/stock"
+  "url" : "\/documentation\/poieticflows\/poieticcore\/objecttype\/flowrate"
 }
 }
 }

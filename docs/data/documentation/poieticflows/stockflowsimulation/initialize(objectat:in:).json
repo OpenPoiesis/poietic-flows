@@ -9,7 +9,6 @@
     "paths" : [
       [
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation"
       ]
     ]
@@ -20,7 +19,7 @@
   },
   "kind" : "symbol",
   "metadata" : {
-    "externalID" : "s:12PoieticFlows19StockFlowSimulationC10initialize8objectAt2inySi_AA0E5StateVztKF",
+    "externalID" : "s:12PoieticFlows19StockFlowSimulationC10initialize8objectAt2inySi_AA0E5StateVztAA0E5ErrorVYKF",
     "fragments" : [
       {
         "kind" : "keyword",
@@ -83,6 +82,19 @@
       {
         "kind" : "keyword",
         "text" : "throws"
+      },
+      {
+        "kind" : "text",
+        "text" : "("
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:12PoieticFlows15SimulationErrorV",
+        "text" : "SimulationError"
+      },
+      {
+        "kind" : "text",
+        "text" : ")"
       }
     ],
     "modules" : [
@@ -184,6 +196,20 @@
             {
               "kind" : "keyword",
               "text" : "throws"
+            },
+            {
+              "kind" : "text",
+              "text" : "("
+            },
+            {
+              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationError",
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:12PoieticFlows15SimulationErrorV",
+              "text" : "SimulationError"
+            },
+            {
+              "kind" : "text",
+              "text" : ")"
             }
           ]
         }
@@ -273,56 +299,41 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/Simulation": {
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationError": {
   "abstract" : [
+
+  ],
+  "fragments" : [
     {
-      "text" : "The Simulator runs the simulation and produces a simulation result as a",
-      "type" : "text"
+      "kind" : "keyword",
+      "text" : "struct"
     },
     {
-      "text" : " ",
-      "type" : "text"
+      "kind" : "text",
+      "text" : " "
     },
     {
-      "text" : "collection of time series.",
-      "type" : "text"
+      "kind" : "identifier",
+      "text" : "SimulationError"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Simulation and Computation",
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationError",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SimulationError"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SimulationError",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/simulation"
+  "url" : "\/documentation\/poieticflows\/simulationerror"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/SimulationState": {
   "abstract" : [
     {
-      "text" : "A simple vector-like structure to hold an unordered collection of numeric",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "values that can be accessed by key. Simple arithmetic operations can be done",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "with the structure, such as addition, subtraction and multiplication",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "by a scalar value.",
+      "text" : "A collection of simulation state variables.",
       "type" : "text"
     }
   ],
@@ -456,6 +467,19 @@
     {
       "kind" : "keyword",
       "text" : "throws"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationErrorV",
+      "text" : "SimulationError"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
     }
   ],
   "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/initialize(objectAt:in:)",

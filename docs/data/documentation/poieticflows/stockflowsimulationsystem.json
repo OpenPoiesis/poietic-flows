@@ -1,0 +1,1356 @@
+{
+  "abstract" : [
+    {
+      "text" : "System that runs a Stock-Flow simulation and stores results in a ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationResult",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "singleton.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulationSystem"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "s:12PoieticFlows25StockFlowSimulationSystemV",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "struct"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "StockFlowSimulationSystem"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "PoieticFlows"
+      }
+    ],
+    "navigatorTitle" : [
+      {
+        "kind" : "identifier",
+        "text" : "StockFlowSimulationSystem"
+      }
+    ],
+    "role" : "symbol",
+    "roleHeading" : "Structure",
+    "symbolKind" : "struct",
+    "title" : "StockFlowSimulationSystem"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "macOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "struct"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "StockFlowSimulationSystem"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    },
+    {
+      "content" : [
+        {
+          "anchor" : "overview",
+          "level" : 2,
+          "text" : "Overview",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "The simulation time and solver type is retrieved from the ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationSettings",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " component.",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "If the component is not present, then defaults are used",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "(see ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationSettings\/init(initialTime:timeDelta:endTime:solverType:)",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : "). The simulation",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "is run whole, from the initial time to the end time.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "The system has the following limitations, which might be removed in the future:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "items" : [
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "The simulation is run as a whole, there are no external events triggered on each step.",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "Only the singleton plan is used - only one simulation can be run per world.",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "inlineContent" : [
+                        {
+                          "text" : "Input:",
+                          "type" : "text"
+                        }
+                      ],
+                      "type" : "strong"
+                    }
+                  ],
+                  "type" : "paragraph"
+                },
+                {
+                  "items" : [
+                    {
+                      "content" : [
+                        {
+                          "inlineContent" : [
+                            {
+                              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan",
+                              "isActive" : true,
+                              "type" : "reference"
+                            },
+                            {
+                              "text" : " singleton, required.",
+                              "type" : "text"
+                            }
+                          ],
+                          "type" : "paragraph"
+                        }
+                      ]
+                    },
+                    {
+                      "content" : [
+                        {
+                          "inlineContent" : [
+                            {
+                              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationSettings",
+                              "isActive" : true,
+                              "type" : "reference"
+                            },
+                            {
+                              "text" : " singleton, optional. If not provided then default settings are used.",
+                              "type" : "text"
+                            }
+                          ],
+                          "type" : "paragraph"
+                        }
+                      ]
+                    },
+                    {
+                      "content" : [
+                        {
+                          "inlineContent" : [
+                            {
+                              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ScenarioParameters",
+                              "isActive" : true,
+                              "type" : "reference"
+                            },
+                            {
+                              "text" : " singleton, optional.",
+                              "type" : "text"
+                            }
+                          ],
+                          "type" : "paragraph"
+                        }
+                      ]
+                    }
+                  ],
+                  "type" : "unorderedList"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "inlineContent" : [
+                        {
+                          "text" : "Output:",
+                          "type" : "text"
+                        }
+                      ],
+                      "type" : "strong"
+                    },
+                    {
+                      "text" : " ",
+                      "type" : "text"
+                    },
+                    {
+                      "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationResult",
+                      "isActive" : true,
+                      "type" : "reference"
+                    },
+                    {
+                      "text" : " singleton is set when simulation was finished successfully,",
+                      "type" : "text"
+                    },
+                    {
+                      "text" : " ",
+                      "type" : "text"
+                    },
+                    {
+                      "text" : "otherwise the simulation result will be removed or not set.",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "inlineContent" : [
+                        {
+                          "text" : "Forgiveness:",
+                          "type" : "text"
+                        }
+                      ],
+                      "type" : "strong"
+                    },
+                    {
+                      "text" : " No forgiveness.",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "inlineContent" : [
+                        {
+                          "text" : "Issues:",
+                          "type" : "text"
+                        }
+                      ],
+                      "type" : "strong"
+                    },
+                    {
+                      "text" : " No issues created.",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            }
+          ],
+          "type" : "unorderedList"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "relationshipsSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/11PoieticCore6SystemP",
+        "doc:\/\/PoieticFlows\/s8SendableP",
+        "doc:\/\/PoieticFlows\/s16SendableMetatypeP"
+      ],
+      "kind" : "relationships",
+      "title" : "Conforms To",
+      "type" : "conformsTo"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "seeAlsoSections" : [
+    {
+      "anchor" : "Simulation",
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationSettingsSystem",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationState",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationError",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/RegularTimeSeries",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BuiltinVariable"
+      ],
+      "title" : "Simulation"
+    }
+  ],
+  "topicSections" : [
+    {
+      "anchor" : "Type-Properties",
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulationSystem\/dependencies"
+      ],
+      "title" : "Type Properties"
+    },
+    {
+      "anchor" : "Type-Methods",
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulationSystem\/initialize(world:plan:settings:parameters:)",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulationSystem\/step(simulation:state:)",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulationSystem\/update(_:)"
+      ],
+      "title" : "Type Methods"
+    },
+    {
+      "anchor" : "Default-Implementations",
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulationSystem\/System-Implementations"
+      ],
+      "title" : "Default Implementations"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/poieticflows\/stockflowsimulationsystem"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://PoieticFlows/11PoieticCore6SystemP": {
+  "identifier" : "doc:\/\/PoieticFlows\/11PoieticCore6SystemP",
+  "title" : "PoieticCore.System",
+  "type" : "unresolvable"
+},
+"doc://PoieticFlows/documentation/PoieticFlows": {
+  "abstract" : [
+    {
+      "text" : "Poietic package for modelling and simulation ",
+      "type" : "text"
+    },
+    {
+      "inlineContent" : [
+        {
+          "text" : "Stock and Flow",
+          "type" : "text"
+        }
+      ],
+      "type" : "emphasis"
+    },
+    {
+      "text" : " models.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "PoieticFlows",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/BuiltinVariable": {
+  "abstract" : [
+    {
+      "text" : "Builtin variables for the Stock and Flow simulation.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "enum"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "BuiltinVariable"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BuiltinVariable",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "BuiltinVariable"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "BuiltinVariable",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/builtinvariable"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/GraphicalFunction": {
+  "abstract" : [
+    {
+      "text" : "A function defined by a set of 2D control points with configurable interpolation.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "GraphicalFunction"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "GraphicalFunction"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "GraphicalFunction",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/graphicalfunction"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/NumericVector": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "NumericVector"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "NumericVector"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "NumericVector",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/numericvector"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/RegularTimeSeries": {
+  "abstract" : [
+    {
+      "text" : "Structure representing numeric time series with regular time intervals.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "RegularTimeSeries"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/RegularTimeSeries",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "RegularTimeSeries"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "RegularTimeSeries",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/regulartimeseries"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/ScenarioParameters": {
+  "abstract" : [
+    {
+      "text" : "Initial values of simulation variables.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "ScenarioParameters"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ScenarioParameters",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "ScenarioParameters"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "ScenarioParameters",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/scenarioparameters"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationError": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SimulationError"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationError",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SimulationError"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SimulationError",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationerror"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationPlan": {
+  "abstract" : [
+    {
+      "text" : "Structure according to which a simulation is performed.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SimulationPlan"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SimulationPlan"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SimulationPlan",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationplan"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationResult": {
+  "abstract" : [
+    {
+      "text" : "Makeshift simulation result container.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SimulationResult"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationResult",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SimulationResult"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SimulationResult",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationresult"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationSettings": {
+  "abstract" : [
+    {
+      "text" : "Settings of the simulation – time and solver.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SimulationSettings"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationSettings",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SimulationSettings"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SimulationSettings",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationsettings"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationSettings/init(initialTime:timeDelta:endTime:solverType:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "identifier",
+      "text" : "init"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "initialTime"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sd",
+      "text" : "Double"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "timeDelta"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sd",
+      "text" : "Double"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "endTime"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sd",
+      "text" : "Double"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "solverType"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationSettings\/init(initialTime:timeDelta:endTime:solverType:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "init(initialTime:timeDelta:endTime:solverType:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationsettings\/init(initialtime:timedelta:endtime:solvertype:)"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationSettingsSystem": {
+  "abstract" : [
+    {
+      "text" : "System that extracts simulation settings from a plane.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SimulationSettingsSystem"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationSettingsSystem",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SimulationSettingsSystem"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SimulationSettingsSystem",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationsettingssystem"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationState": {
+  "abstract" : [
+    {
+      "text" : "A collection of simulation state variables.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SimulationState"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationState",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SimulationState"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SimulationState",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationstate"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation": {
+  "abstract" : [
+    {
+      "text" : "Stock-Flow simulation specific computation and logic.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "StockFlowSimulation"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "StockFlowSimulation"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "StockFlowSimulation",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stockflowsimulation"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulationSystem": {
+  "abstract" : [
+    {
+      "text" : "System that runs a Stock-Flow simulation and stores results in a ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationResult",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "singleton.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "StockFlowSimulationSystem"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulationSystem",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "StockFlowSimulationSystem"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "StockFlowSimulationSystem",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stockflowsimulationsystem"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulationSystem/System-Implementations": {
+  "abstract" : [
+
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulationSystem\/System-Implementations",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "System Implementations",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stockflowsimulationsystem\/system-implementations"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulationSystem/dependencies": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "dependencies"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore16SystemDependencyO",
+      "text" : "SystemDependency"
+    },
+    {
+      "kind" : "text",
+      "text" : "]"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulationSystem\/dependencies",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "dependencies",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stockflowsimulationsystem\/dependencies"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulationSystem/initialize(world:plan:settings:parameters:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "initialize"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "world"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore5WorldC",
+      "text" : "World"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "plan"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows14SimulationPlanV",
+      "text" : "SimulationPlan"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "settings"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows18SimulationSettingsV",
+      "text" : "SimulationSettings"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "parameters"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows18ScenarioParametersV",
+      "text" : "ScenarioParameters"
+    },
+    {
+      "kind" : "text",
+      "text" : ") "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "throws"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore19InternalSystemErrorV",
+      "text" : "InternalSystemError"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV",
+      "text" : "SimulationState"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulationSystem\/initialize(world:plan:settings:parameters:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "initialize(world:plan:settings:parameters:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stockflowsimulationsystem\/initialize(world:plan:settings:parameters:)"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulationSystem/step(simulation:state:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "step"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "simulation"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows19StockFlowSimulationC",
+      "text" : "StockFlowSimulation"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "state"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV",
+      "text" : "SimulationState"
+    },
+    {
+      "kind" : "text",
+      "text" : ") "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "throws"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore19InternalSystemErrorV",
+      "text" : "InternalSystemError"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV",
+      "text" : "SimulationState"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulationSystem\/step(simulation:state:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "step(simulation:state:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stockflowsimulationsystem\/step(simulation:state:)"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulationSystem/update(_:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "update"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore5WorldC",
+      "text" : "World"
+    },
+    {
+      "kind" : "text",
+      "text" : ") "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "throws"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore19InternalSystemErrorV",
+      "text" : "InternalSystemError"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulationSystem\/update(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "update(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stockflowsimulationsystem\/update(_:)"
+},
+"doc://PoieticFlows/s16SendableMetatypeP": {
+  "identifier" : "doc:\/\/PoieticFlows\/s16SendableMetatypeP",
+  "title" : "Swift.SendableMetatype",
+  "type" : "unresolvable"
+},
+"doc://PoieticFlows/s8SendableP": {
+  "identifier" : "doc:\/\/PoieticFlows\/s8SendableP",
+  "title" : "Swift.Sendable",
+  "type" : "unresolvable"
+}
+}
+}

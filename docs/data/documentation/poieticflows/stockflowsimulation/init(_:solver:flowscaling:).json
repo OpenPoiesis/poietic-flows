@@ -1,0 +1,476 @@
+{
+  "abstract" : [
+    {
+      "text" : "Create a new Stock Flow simulation for a specific model.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/init(_:solver:flowScaling:)"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "s:12PoieticFlows19StockFlowSimulationC_6solver11flowScalingAcA0E4PlanV_AC10SolverTypeOAC0dH0Otcfc",
+    "fragments" : [
+      {
+        "kind" : "identifier",
+        "text" : "init"
+      },
+      {
+        "kind" : "text",
+        "text" : "("
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:12PoieticFlows14SimulationPlanV",
+        "text" : "SimulationPlan"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "solver"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:12PoieticFlows19StockFlowSimulationC",
+        "text" : "StockFlowSimulation"
+      },
+      {
+        "kind" : "text",
+        "text" : "."
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:12PoieticFlows19StockFlowSimulationC10SolverTypeO",
+        "text" : "SolverType"
+      },
+      {
+        "kind" : "text",
+        "text" : ", "
+      },
+      {
+        "kind" : "externalParam",
+        "text" : "flowScaling"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:12PoieticFlows19StockFlowSimulationC",
+        "text" : "StockFlowSimulation"
+      },
+      {
+        "kind" : "text",
+        "text" : "."
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:12PoieticFlows19StockFlowSimulationC0D7ScalingO",
+        "text" : "FlowScaling"
+      },
+      {
+        "kind" : "text",
+        "text" : ")"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "PoieticFlows"
+      }
+    ],
+    "role" : "symbol",
+    "roleHeading" : "Initializer",
+    "symbolKind" : "init",
+    "title" : "init(_:solver:flowScaling:)"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "macOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "init"
+            },
+            {
+              "kind" : "text",
+              "text" : "("
+            },
+            {
+              "kind" : "externalParam",
+              "text" : "_"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "internalParam",
+              "text" : "plan"
+            },
+            {
+              "kind" : "text",
+              "text" : ": "
+            },
+            {
+              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan",
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:12PoieticFlows14SimulationPlanV",
+              "text" : "SimulationPlan"
+            },
+            {
+              "kind" : "text",
+              "text" : ", "
+            },
+            {
+              "kind" : "externalParam",
+              "text" : "solver"
+            },
+            {
+              "kind" : "text",
+              "text" : ": "
+            },
+            {
+              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation",
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:12PoieticFlows19StockFlowSimulationC",
+              "text" : "StockFlowSimulation"
+            },
+            {
+              "kind" : "text",
+              "text" : "."
+            },
+            {
+              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/SolverType",
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:12PoieticFlows19StockFlowSimulationC10SolverTypeO",
+              "text" : "SolverType"
+            },
+            {
+              "kind" : "text",
+              "text" : " = .euler, "
+            },
+            {
+              "kind" : "externalParam",
+              "text" : "flowScaling"
+            },
+            {
+              "kind" : "text",
+              "text" : ": "
+            },
+            {
+              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation",
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:12PoieticFlows19StockFlowSimulationC",
+              "text" : "StockFlowSimulation"
+            },
+            {
+              "kind" : "text",
+              "text" : "."
+            },
+            {
+              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/FlowScaling-swift.enum",
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:12PoieticFlows19StockFlowSimulationC0D7ScalingO",
+              "text" : "FlowScaling"
+            },
+            {
+              "kind" : "text",
+              "text" : " = .outflowFirst)"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/poieticflows\/stockflowsimulation\/init(_:solver:flowscaling:)"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://PoieticFlows/documentation/PoieticFlows": {
+  "abstract" : [
+    {
+      "text" : "Poietic package for modelling and simulation ",
+      "type" : "text"
+    },
+    {
+      "inlineContent" : [
+        {
+          "text" : "Stock and Flow",
+          "type" : "text"
+        }
+      ],
+      "type" : "emphasis"
+    },
+    {
+      "text" : " models.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "PoieticFlows",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationPlan": {
+  "abstract" : [
+    {
+      "text" : "Structure according to which a simulation is performed.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SimulationPlan"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SimulationPlan"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SimulationPlan",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationplan"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation": {
+  "abstract" : [
+    {
+      "text" : "Stock-Flow simulation specific computation and logic.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "StockFlowSimulation"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "StockFlowSimulation"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "StockFlowSimulation",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stockflowsimulation"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/FlowScaling-swift.enum": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "enum"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "FlowScaling"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/FlowScaling-swift.enum",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "FlowScaling"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "StockFlowSimulation.FlowScaling",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stockflowsimulation\/flowscaling-swift.enum"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/SolverType": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "enum"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SolverType"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/SolverType",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SolverType"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "StockFlowSimulation.SolverType",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stockflowsimulation\/solvertype"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/init(_:solver:flowScaling:)": {
+  "abstract" : [
+    {
+      "text" : "Create a new Stock Flow simulation for a specific model.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "identifier",
+      "text" : "init"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows14SimulationPlanV",
+      "text" : "SimulationPlan"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "solver"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows19StockFlowSimulationC",
+      "text" : "StockFlowSimulation"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows19StockFlowSimulationC10SolverTypeO",
+      "text" : "SolverType"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "flowScaling"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows19StockFlowSimulationC",
+      "text" : "StockFlowSimulation"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows19StockFlowSimulationC0D7ScalingO",
+      "text" : "FlowScaling"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/init(_:solver:flowScaling:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "init(_:solver:flowScaling:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stockflowsimulation\/init(_:solver:flowscaling:)"
+}
+}
+}

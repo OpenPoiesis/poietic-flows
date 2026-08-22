@@ -1,0 +1,395 @@
+{
+  "abstract" : [
+    {
+      "text" : "The metamodel for Stock-and-Flows domain model.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/Metamodel"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/Metamodel\/StockFlowBase"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "extendedModule" : "PoieticCore",
+    "externalID" : "s:11PoieticCore9MetamodelC0A5FlowsE13StockFlowBaseACvpZ",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "static"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "keyword",
+        "text" : "let"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "StockFlowBase"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:11PoieticCore9MetamodelC",
+        "text" : "Metamodel"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "PoieticFlows",
+        "relatedModules" : [
+          "PoieticCore"
+        ]
+      }
+    ],
+    "role" : "symbol",
+    "roleHeading" : "Type Property",
+    "symbolKind" : "property",
+    "title" : "StockFlowBase"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "macOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "static"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "keyword",
+              "text" : "let"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "StockFlowBase"
+            },
+            {
+              "kind" : "text",
+              "text" : ": "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:11PoieticCore9MetamodelC",
+              "text" : "Metamodel"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    },
+    {
+      "content" : [
+        {
+          "anchor" : "discussion",
+          "level" : 2,
+          "text" : "Discussion",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "The ",
+              "type" : "text"
+            },
+            {
+              "code" : "FlowsMetamodel",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " describes concepts, components, constraints and",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "queries that define the ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "https:\/\/en.wikipedia.org\/wiki\/Stock_and_flow",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "model domain.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "The basic object types are: ",
+              "type" : "text"
+            },
+            {
+              "code" : "Stock",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ", ",
+              "type" : "text"
+            },
+            {
+              "code" : "Flow",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ", ",
+              "type" : "text"
+            },
+            {
+              "code" : "Auxiliary",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ". More advanced",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "node type is ",
+              "type" : "text"
+            },
+            {
+              "code" : "GraphicalFunction",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ".",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "content" : [
+            {
+              "inlineContent" : [
+                {
+                  "text" : "",
+                  "type" : "text"
+                },
+                {
+                  "code" : "Metamodel",
+                  "type" : "codeVoice"
+                },
+                {
+                  "text" : " protocol description for more information and reasons",
+                  "type" : "text"
+                },
+                {
+                  "text" : " ",
+                  "type" : "text"
+                },
+                {
+                  "text" : "behind this approach of describing the metamodel.",
+                  "type" : "text"
+                }
+              ],
+              "type" : "paragraph"
+            }
+          ],
+          "name" : "See Also",
+          "style" : "note",
+          "type" : "aside"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/poieticflows\/poieticcore\/metamodel\/stockflowbase"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://PoieticFlows/documentation/PoieticFlows": {
+  "abstract" : [
+    {
+      "text" : "Poietic package for modelling and simulation ",
+      "type" : "text"
+    },
+    {
+      "inlineContent" : [
+        {
+          "text" : "Stock and Flow",
+          "type" : "text"
+        }
+      ],
+      "type" : "emphasis"
+    },
+    {
+      "text" : " models.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "PoieticFlows",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/PoieticCore": {
+  "abstract" : [
+
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "PoieticCore",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/poieticcore"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/PoieticCore/Metamodel": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "extension"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "preciseIdentifier" : "s:11PoieticCore9MetamodelC",
+      "text" : "Metamodel"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/Metamodel",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Metamodel"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Metamodel",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/poieticcore\/metamodel"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/PoieticCore/Metamodel/StockFlowBase": {
+  "abstract" : [
+    {
+      "text" : "The metamodel for Stock-and-Flows domain model.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "StockFlowBase"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore9MetamodelC",
+      "text" : "Metamodel"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/Metamodel\/StockFlowBase",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "StockFlowBase",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/poieticcore\/metamodel\/stockflowbase"
+},
+"https://en.wikipedia.org/wiki/Stock_and_flow": {
+  "identifier" : "https:\/\/en.wikipedia.org\/wiki\/Stock_and_flow",
+  "title" : "Stock and Flow",
+  "titleInlineContent" : [
+    {
+      "text" : "Stock and Flow",
+      "type" : "text"
+    }
+  ],
+  "type" : "link",
+  "url" : "https:\/\/en.wikipedia.org\/wiki\/Stock_and_flow"
+}
+}
+}

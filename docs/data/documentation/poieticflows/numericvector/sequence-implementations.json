@@ -3,7 +3,7 @@
     "paths" : [
       [
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationRunning",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector"
       ]
     ]
@@ -54,8 +54,7 @@
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/elementsEqual(_:)",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/elementsEqual(_:by:)",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/enumerated()",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/filter(_:)-2sb5x",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/filter(_:)-3aagh",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/filter(_:)",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/first(where:)",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/flatMap(_:)-2bzlk",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/flatMap(_:)-80l3w",
@@ -913,87 +912,7 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/numericvector\/enumerated()"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/NumericVector/filter(_:)-2sb5x": {
-  "abstract" : [
-
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "func"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "filter"
-    },
-    {
-      "kind" : "text",
-      "text" : "("
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:10Foundation9PredicateV",
-      "text" : "Predicate"
-    },
-    {
-      "kind" : "text",
-      "text" : "<"
-    },
-    {
-      "kind" : "typeIdentifier",
-      "text" : "Self"
-    },
-    {
-      "kind" : "text",
-      "text" : "."
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:ST7ElementQa",
-      "text" : "Element"
-    },
-    {
-      "kind" : "text",
-      "text" : ">) "
-    },
-    {
-      "kind" : "keyword",
-      "text" : "throws"
-    },
-    {
-      "kind" : "text",
-      "text" : " -> ["
-    },
-    {
-      "kind" : "typeIdentifier",
-      "text" : "Self"
-    },
-    {
-      "kind" : "text",
-      "text" : "."
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:ST7ElementQa",
-      "text" : "Element"
-    },
-    {
-      "kind" : "text",
-      "text" : "]"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/filter(_:)-2sb5x",
-  "kind" : "symbol",
-  "role" : "symbol",
-  "title" : "filter(_:)",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/numericvector\/filter(_:)-2sb5x"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/NumericVector/filter(_:)-3aagh": {
+"doc://PoieticFlows/documentation/PoieticFlows/NumericVector/filter(_:)": {
   "abstract" : [
 
   ],
@@ -1074,12 +993,12 @@
       "text" : "]"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/filter(_:)-3aagh",
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/filter(_:)",
   "kind" : "symbol",
   "role" : "symbol",
   "title" : "filter(_:)",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/numericvector\/filter(_:)-3aagh"
+  "url" : "\/documentation\/poieticflows\/numericvector\/filter(_:)"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/NumericVector/first(where:)": {
   "abstract" : [
@@ -3262,10 +3181,10 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/numericvector\/withcontiguousstorageifavailable(_:)"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/Simulation": {
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationRunning": {
   "abstract" : [
     {
-      "text" : "The Simulator runs the simulation and produces a simulation result as a",
+      "text" : "The simulation is run according to the simulation plan, which describes order in which the objects",
       "type" : "text"
     },
     {
@@ -3273,16 +3192,24 @@
       "type" : "text"
     },
     {
-      "text" : "collection of time series.",
+      "text" : "are evaluated, how the computation is performed and where in the simulation state the variables",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "live.",
       "type" : "text"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationRunning",
   "kind" : "article",
   "role" : "collectionGroup",
-  "title" : "Simulation and Computation",
+  "title" : "Simulation",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/simulation"
+  "url" : "\/documentation\/poieticflows\/simulationrunning"
 }
 }
 }

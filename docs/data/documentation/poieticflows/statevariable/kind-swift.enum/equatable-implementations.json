@@ -3,7 +3,7 @@
     "paths" : [
       [
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledModelAndCompiler",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PlanAndPlanning",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StateVariable",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StateVariable\/Kind-swift.enum"
       ]
@@ -83,10 +83,10 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/CompiledModelAndCompiler": {
+"doc://PoieticFlows/documentation/PoieticFlows/PlanAndPlanning": {
   "abstract" : [
     {
-      "text" : "Compiler creates a compiled model, which is an internal representation of",
+      "text" : "To perform a simulation, the computer needs to understand how it is to be performed and needs to",
       "type" : "text"
     },
     {
@@ -94,21 +94,29 @@
       "type" : "text"
     },
     {
-      "text" : "a design that can be simulated.",
+      "text" : "be sure that it is possible to simulate the model. The simulation plan is computer-oriented",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "representation of the model, derived from the user-oriented representation in the model design.",
       "type" : "text"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledModelAndCompiler",
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PlanAndPlanning",
   "kind" : "article",
   "role" : "collectionGroup",
-  "title" : "Compiled Model and Compiler",
+  "title" : "Simulation Plan and Planning",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/compiledmodelandcompiler"
+  "url" : "\/documentation\/poieticflows\/planandplanning"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/StateVariable": {
   "abstract" : [
     {
-      "text" : "Structure representing a reference to a simulation variable.",
+      "text" : "Structure representing a variable in a simulation state.",
       "type" : "text"
     }
   ],

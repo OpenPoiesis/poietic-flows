@@ -17,9 +17,7 @@
     "paths" : [
       [
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/Collection-Implementations"
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector"
       ]
     ]
   },
@@ -235,17 +233,6 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/numericvector"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/NumericVector/Collection-Implementations": {
-  "abstract" : [
-
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/Collection-Implementations",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Collection Implementations",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/numericvector\/collection-implementations"
-},
 "doc://PoieticFlows/documentation/PoieticFlows/NumericVector/dropFirst(_:)": {
   "abstract" : [
 
@@ -296,28 +283,6 @@
   "title" : "dropFirst(_:)",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/numericvector\/dropfirst(_:)"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/Simulation": {
-  "abstract" : [
-    {
-      "text" : "The Simulator runs the simulation and produces a simulation result as a",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "collection of time series.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Simulation and Computation",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/simulation"
 }
 }
 }

@@ -1,0 +1,425 @@
+{
+  "abstract" : [
+    {
+      "text" : "System that populates chart and chart series entities.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ChartResolutionSystem"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "s:12PoieticFlows21ChartResolutionSystemV",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "struct"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "ChartResolutionSystem"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "PoieticFlows"
+      }
+    ],
+    "navigatorTitle" : [
+      {
+        "kind" : "identifier",
+        "text" : "ChartResolutionSystem"
+      }
+    ],
+    "role" : "symbol",
+    "roleHeading" : "Structure",
+    "symbolKind" : "struct",
+    "title" : "ChartResolutionSystem"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "macOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "struct"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "ChartResolutionSystem"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    },
+    {
+      "content" : [
+        {
+          "anchor" : "overview",
+          "level" : 2,
+          "text" : "Overview",
+          "type" : "heading"
+        },
+        {
+          "items" : [
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "inlineContent" : [
+                        {
+                          "text" : "Input:",
+                          "type" : "text"
+                        }
+                      ],
+                      "type" : "strong"
+                    },
+                    {
+                      "text" : " Nodes of type ",
+                      "type" : "text"
+                    },
+                    {
+                      "code" : "Chart",
+                      "type" : "codeVoice"
+                    },
+                    {
+                      "text" : " and ",
+                      "type" : "text"
+                    },
+                    {
+                      "code" : "ChartSeries",
+                      "type" : "codeVoice"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "inlineContent" : [
+                        {
+                          "text" : "Output:",
+                          "type" : "text"
+                        }
+                      ],
+                      "type" : "strong"
+                    }
+                  ],
+                  "type" : "paragraph"
+                },
+                {
+                  "items" : [
+                    {
+                      "content" : [
+                        {
+                          "inlineContent" : [
+                            {
+                              "text" : "Create ",
+                              "type" : "text"
+                            },
+                            {
+                              "code" : "Chart",
+                              "type" : "codeVoice"
+                            },
+                            {
+                              "text" : " component for each chart entity",
+                              "type" : "text"
+                            }
+                          ],
+                          "type" : "paragraph"
+                        }
+                      ]
+                    },
+                    {
+                      "content" : [
+                        {
+                          "inlineContent" : [
+                            {
+                              "code" : "ChartSeries",
+                              "type" : "codeVoice"
+                            },
+                            {
+                              "text" : " for chart series entities, connects to chart with ",
+                              "type" : "text"
+                            },
+                            {
+                              "code" : "ChildOf",
+                              "type" : "codeVoice"
+                            },
+                            {
+                              "text" : " relationship.",
+                              "type" : "text"
+                            }
+                          ],
+                          "type" : "paragraph"
+                        }
+                      ]
+                    }
+                  ],
+                  "type" : "unorderedList"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "inlineContent" : [
+                        {
+                          "text" : "Forgiveness:",
+                          "type" : "text"
+                        }
+                      ],
+                      "type" : "strong"
+                    },
+                    {
+                      "text" : " Ignore entities where relationships can not be satisfied (missing objects).",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            }
+          ],
+          "type" : "unorderedList"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "relationshipsSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/11PoieticCore6SystemP",
+        "doc:\/\/PoieticFlows\/s8SendableP",
+        "doc:\/\/PoieticFlows\/s16SendableMetatypeP"
+      ],
+      "kind" : "relationships",
+      "title" : "Conforms To",
+      "type" : "conformsTo"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "topicSections" : [
+    {
+      "anchor" : "Type-Methods",
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ChartResolutionSystem\/update(_:)"
+      ],
+      "title" : "Type Methods"
+    },
+    {
+      "anchor" : "Default-Implementations",
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ChartResolutionSystem\/System-Implementations"
+      ],
+      "title" : "Default Implementations"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/poieticflows\/chartresolutionsystem"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://PoieticFlows/11PoieticCore6SystemP": {
+  "identifier" : "doc:\/\/PoieticFlows\/11PoieticCore6SystemP",
+  "title" : "PoieticCore.System",
+  "type" : "unresolvable"
+},
+"doc://PoieticFlows/documentation/PoieticFlows": {
+  "abstract" : [
+    {
+      "text" : "Poietic package for modelling and simulation ",
+      "type" : "text"
+    },
+    {
+      "inlineContent" : [
+        {
+          "text" : "Stock and Flow",
+          "type" : "text"
+        }
+      ],
+      "type" : "emphasis"
+    },
+    {
+      "text" : " models.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "PoieticFlows",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/ChartResolutionSystem": {
+  "abstract" : [
+    {
+      "text" : "System that populates chart and chart series entities.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "ChartResolutionSystem"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ChartResolutionSystem",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "ChartResolutionSystem"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "ChartResolutionSystem",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/chartresolutionsystem"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/ChartResolutionSystem/System-Implementations": {
+  "abstract" : [
+
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ChartResolutionSystem\/System-Implementations",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "System Implementations",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/chartresolutionsystem\/system-implementations"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/ChartResolutionSystem/update(_:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "update"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore5WorldC",
+      "text" : "World"
+    },
+    {
+      "kind" : "text",
+      "text" : ") "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "throws"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore19InternalSystemErrorV",
+      "text" : "InternalSystemError"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ChartResolutionSystem\/update(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "update(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/chartresolutionsystem\/update(_:)"
+},
+"doc://PoieticFlows/s16SendableMetatypeP": {
+  "identifier" : "doc:\/\/PoieticFlows\/s16SendableMetatypeP",
+  "title" : "Swift.SendableMetatype",
+  "type" : "unresolvable"
+},
+"doc://PoieticFlows/s8SendableP": {
+  "identifier" : "doc:\/\/PoieticFlows\/s8SendableP",
+  "title" : "Swift.Sendable",
+  "type" : "unresolvable"
+}
+}
+}

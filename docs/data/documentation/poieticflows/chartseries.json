@@ -1,0 +1,550 @@
+{
+  "abstract" : [
+    {
+      "text" : "Component for entities representing chart series.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ChartSeries"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "s:12PoieticFlows11ChartSeriesV",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "struct"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "ChartSeries"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "PoieticFlows"
+      }
+    ],
+    "navigatorTitle" : [
+      {
+        "kind" : "identifier",
+        "text" : "ChartSeries"
+      }
+    ],
+    "role" : "symbol",
+    "roleHeading" : "Structure",
+    "symbolKind" : "struct",
+    "title" : "ChartSeries"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "macOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "struct"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "ChartSeries"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    },
+    {
+      "content" : [
+        {
+          "anchor" : "overview",
+          "level" : 2,
+          "text" : "Overview",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "World structure: chart series are children of ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Chart",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : ". They are created from design objects",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "(edges) of type ",
+              "type" : "text"
+            },
+            {
+              "code" : "ChartSeries",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : ".",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "relationshipsSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/11PoieticCore9ComponentP",
+        "doc:\/\/PoieticFlows\/11PoieticCore12RelationshipP"
+      ],
+      "kind" : "relationships",
+      "title" : "Conforms To",
+      "type" : "conformsTo"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "topicSections" : [
+    {
+      "anchor" : "Initializers",
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ChartSeries\/init(target:colorKey:displayBounds:)"
+      ],
+      "title" : "Initializers"
+    },
+    {
+      "anchor" : "Instance-Properties",
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ChartSeries\/colorKey",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ChartSeries\/displayBounds",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ChartSeries\/other"
+      ],
+      "title" : "Instance Properties"
+    },
+    {
+      "anchor" : "Type-Properties",
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ChartSeries\/targetRemovalPolicy"
+      ],
+      "title" : "Type Properties"
+    },
+    {
+      "anchor" : "Default-Implementations",
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ChartSeries\/Component-Implementations",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ChartSeries\/Relationship-Implementations"
+      ],
+      "title" : "Default Implementations"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/poieticflows\/chartseries"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://PoieticFlows/11PoieticCore12RelationshipP": {
+  "identifier" : "doc:\/\/PoieticFlows\/11PoieticCore12RelationshipP",
+  "title" : "PoieticCore.Relationship",
+  "type" : "unresolvable"
+},
+"doc://PoieticFlows/11PoieticCore9ComponentP": {
+  "identifier" : "doc:\/\/PoieticFlows\/11PoieticCore9ComponentP",
+  "title" : "PoieticCore.Component",
+  "type" : "unresolvable"
+},
+"doc://PoieticFlows/documentation/PoieticFlows": {
+  "abstract" : [
+    {
+      "text" : "Poietic package for modelling and simulation ",
+      "type" : "text"
+    },
+    {
+      "inlineContent" : [
+        {
+          "text" : "Stock and Flow",
+          "type" : "text"
+        }
+      ],
+      "type" : "emphasis"
+    },
+    {
+      "text" : " models.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "PoieticFlows",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/Chart": {
+  "abstract" : [
+    {
+      "text" : "Component representing a chart.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Chart"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Chart",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Chart"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "Chart",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/chart"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/ChartSeries": {
+  "abstract" : [
+    {
+      "text" : "Component for entities representing chart series.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "ChartSeries"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ChartSeries",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "ChartSeries"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "ChartSeries",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/chartseries"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/ChartSeries/Component-Implementations": {
+  "abstract" : [
+
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ChartSeries\/Component-Implementations",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Component Implementations",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/chartseries\/component-implementations"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/ChartSeries/Relationship-Implementations": {
+  "abstract" : [
+
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ChartSeries\/Relationship-Implementations",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Relationship Implementations",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/chartseries\/relationship-implementations"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/ChartSeries/colorKey": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "colorKey"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore17AdaptableColorKeyO",
+      "text" : "AdaptableColorKey"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ChartSeries\/colorKey",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "colorKey",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/chartseries\/colorkey"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/ChartSeries/displayBounds": {
+  "abstract" : [
+    {
+      "text" : "Display value bounds pulled from the target object.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "displayBounds"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore18DisplayValueBoundsV",
+      "text" : "DisplayValueBounds"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ChartSeries\/displayBounds",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "displayBounds",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/chartseries\/displaybounds"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/ChartSeries/init(target:colorKey:displayBounds:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "identifier",
+      "text" : "init"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "target"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore9RuntimeIDV",
+      "text" : "RuntimeID"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "colorKey"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore17AdaptableColorKeyO",
+      "text" : "AdaptableColorKey"
+    },
+    {
+      "kind" : "text",
+      "text" : "?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "displayBounds"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore18DisplayValueBoundsV",
+      "text" : "DisplayValueBounds"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ChartSeries\/init(target:colorKey:displayBounds:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "init(target:colorKey:displayBounds:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/chartseries\/init(target:colorkey:displaybounds:)"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/ChartSeries/other": {
+  "abstract" : [
+    {
+      "text" : "Value representable object that the series represent. Should be a simulation object.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "other"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore9RuntimeIDV",
+      "text" : "RuntimeID"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ChartSeries\/other",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "other",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/chartseries\/other"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/ChartSeries/targetRemovalPolicy": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "targetRemovalPolicy"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore25RelationshipRemovalPolicyO",
+      "text" : "RelationshipRemovalPolicy"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ChartSeries\/targetRemovalPolicy",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "targetRemovalPolicy",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/chartseries\/targetremovalpolicy"
+}
+}
+}

@@ -1,0 +1,815 @@
+{
+  "abstract" : [
+    {
+      "text" : "Compiled delay node.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundDelay"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "s:12PoieticFlows10BoundDelayV",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "struct"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "BoundDelay"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "PoieticFlows"
+      }
+    ],
+    "navigatorTitle" : [
+      {
+        "kind" : "identifier",
+        "text" : "BoundDelay"
+      }
+    ],
+    "role" : "symbol",
+    "roleHeading" : "Structure",
+    "symbolKind" : "struct",
+    "title" : "BoundDelay"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "macOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "struct"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "BoundDelay"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    },
+    {
+      "content" : [
+        {
+          "anchor" : "overview",
+          "level" : 2,
+          "text" : "Overview",
+          "type" : "heading"
+        },
+        {
+          "content" : [
+            {
+              "inlineContent" : [
+                {
+                  "text" : "",
+                  "type" : "text"
+                },
+                {
+                  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/initialize(delay:in:)",
+                  "isActive" : true,
+                  "type" : "reference"
+                }
+              ],
+              "type" : "paragraph"
+            }
+          ],
+          "name" : "See Also",
+          "style" : "note",
+          "type" : "aside"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "seeAlsoSections" : [
+    {
+      "anchor" : "Plan-Internals",
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundBuiltins",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundStock",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundFlow",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundSmooth",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundGraphicalFunction",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/IssueIdentifier"
+      ],
+      "title" : "Plan Internals"
+    }
+  ],
+  "topicSections" : [
+    {
+      "anchor" : "Instance-Properties",
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundDelay\/initialValue",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundDelay\/initialValueIndex",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundDelay\/inputValueIndex",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundDelay\/queueIndex",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundDelay\/steps",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundDelay\/valueType"
+      ],
+      "title" : "Instance Properties"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/poieticflows\/bounddelay"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://PoieticFlows/documentation/PoieticFlows": {
+  "abstract" : [
+    {
+      "text" : "Poietic package for modelling and simulation ",
+      "type" : "text"
+    },
+    {
+      "inlineContent" : [
+        {
+          "text" : "Stock and Flow",
+          "type" : "text"
+        }
+      ],
+      "type" : "emphasis"
+    },
+    {
+      "text" : " models.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "PoieticFlows",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/BoundBuiltins": {
+  "abstract" : [
+    {
+      "text" : "Indices of built-in variables bound to a simulation plan.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "BoundBuiltins"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundBuiltins",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "BoundBuiltins"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "BoundBuiltins",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/boundbuiltins"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/BoundDelay": {
+  "abstract" : [
+    {
+      "text" : "Compiled delay node.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "BoundDelay"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundDelay",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "BoundDelay"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "BoundDelay",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/bounddelay"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/BoundDelay/initialValue": {
+  "abstract" : [
+    {
+      "text" : "Initial value of the delay node output.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "initialValue"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore7VariantO",
+      "text" : "Variant"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundDelay\/initialValue",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "initialValue",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/bounddelay\/initialvalue"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/BoundDelay/initialValueIndex": {
+  "abstract" : [
+    {
+      "text" : "Index where the actual initial value is stored. The initial value",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "can be either the ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundDelay\/initialValue",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " if provided, or the input",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "value during initialisation.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "initialValueIndex"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV",
+      "text" : "SimulationState"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV5Indexa",
+      "text" : "Index"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundDelay\/initialValueIndex",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "initialValueIndex",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/bounddelay\/initialvalueindex"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/BoundDelay/inputValueIndex": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "inputValueIndex"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV",
+      "text" : "SimulationState"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV5Indexa",
+      "text" : "Index"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundDelay\/inputValueIndex",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "inputValueIndex",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/bounddelay\/inputvalueindex"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/BoundDelay/queueIndex": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "queueIndex"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV",
+      "text" : "SimulationState"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV5Indexa",
+      "text" : "Index"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundDelay\/queueIndex",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "queueIndex",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/bounddelay\/queueindex"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/BoundDelay/steps": {
+  "abstract" : [
+    {
+      "text" : "Number of steps to delay the input value by.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "steps"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Su",
+      "text" : "UInt"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundDelay\/steps",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "steps",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/bounddelay\/steps"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/BoundDelay/valueType": {
+  "abstract" : [
+    {
+      "text" : "Value type of the input and output.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "valueType"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore8AtomTypeO",
+      "text" : "AtomType"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundDelay\/valueType",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "valueType",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/bounddelay\/valuetype"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/BoundFlow": {
+  "abstract" : [
+    {
+      "text" : "Represents a flow rate between stocks.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "BoundFlow"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundFlow",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "BoundFlow"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "BoundFlow",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/boundflow"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/BoundGraphicalFunction": {
+  "abstract" : [
+    {
+      "text" : "A structure representing a concrete instance of a graphical function",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "in the context of a graph.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "BoundGraphicalFunction"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundGraphicalFunction",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "BoundGraphicalFunction"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "BoundGraphicalFunction",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/boundgraphicalfunction"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/BoundSmooth": {
+  "abstract" : [
+    {
+      "text" : "Compiled smooth node.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "BoundSmooth"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundSmooth",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "BoundSmooth"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "BoundSmooth",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/boundsmooth"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/BoundStock": {
+  "abstract" : [
+    {
+      "text" : "Stock bound to a simulation plan and a simulation state.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "BoundStock"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundStock",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "BoundStock"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "BoundStock",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/boundstock"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/IssueIdentifier": {
+  "abstract" : [
+    {
+      "text" : "Collection of issue identifiers that are attached to objects by systems in the PoieticFlows",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "package.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "enum"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "IssueIdentifier"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/IssueIdentifier",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "IssueIdentifier"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "IssueIdentifier",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/issueidentifier"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/initialize(delay:in:)": {
+  "abstract" : [
+    {
+      "text" : "Initialise a simulated delay.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "initialize"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "delay"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows10BoundDelayV",
+      "text" : "BoundDelay"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "in"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "inout"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV",
+      "text" : "SimulationState"
+    },
+    {
+      "kind" : "text",
+      "text" : ") "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "throws"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore15EvaluationErrorO",
+      "text" : "EvaluationError"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore7VariantO",
+      "text" : "Variant"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/initialize(delay:in:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "initialize(delay:in:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stockflowsimulation\/initialize(delay:in:)"
+}
+}
+}

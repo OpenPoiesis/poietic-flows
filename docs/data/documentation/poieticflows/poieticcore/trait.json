@@ -94,12 +94,13 @@
       "identifiers" : [
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/Trait\/Auxiliary",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/Trait\/Chart",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/Trait\/ChartSeries",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/Trait\/ComputedValue",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/Trait\/Control",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/Trait\/Delay",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/Trait\/Flow",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/Trait\/Formula",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/Trait\/FlowRate",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/Trait\/GraphicalFunction",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/Trait\/Reservoir",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/Trait\/Simulation",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/Trait\/Smooth",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/Trait\/Stock"
@@ -278,6 +279,48 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/poieticcore\/trait\/chart"
 },
+"doc://PoieticFlows/documentation/PoieticFlows/PoieticCore/Trait/ChartSeries": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "ChartSeries"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore5TraitC",
+      "text" : "Trait"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/Trait\/ChartSeries",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "ChartSeries",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/poieticcore\/trait\/chartseries"
+},
 "doc://PoieticFlows/documentation/PoieticFlows/PoieticCore/Trait/ComputedValue": {
   "abstract" : [
 
@@ -404,10 +447,10 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/poieticcore\/trait\/delay"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/PoieticCore/Trait/Flow": {
+"doc://PoieticFlows/documentation/PoieticFlows/PoieticCore/Trait/FlowRate": {
   "abstract" : [
     {
-      "text" : "Trait of nodes representing a flow.",
+      "text" : "Trait of nodes representing a flow rate valve.",
       "type" : "text"
     }
   ],
@@ -430,7 +473,7 @@
     },
     {
       "kind" : "identifier",
-      "text" : "Flow"
+      "text" : "FlowRate"
     },
     {
       "kind" : "text",
@@ -442,57 +485,12 @@
       "text" : "Trait"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/Trait\/Flow",
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/Trait\/FlowRate",
   "kind" : "symbol",
   "role" : "symbol",
-  "title" : "Flow",
+  "title" : "FlowRate",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/poieticcore\/trait\/flow"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/PoieticCore/Trait/Formula": {
-  "abstract" : [
-    {
-      "text" : "Trait of simulation nodes that are computed using an arithmetic formula.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "static"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "keyword",
-      "text" : "let"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "Formula"
-    },
-    {
-      "kind" : "text",
-      "text" : ": "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:11PoieticCore5TraitC",
-      "text" : "Trait"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/Trait\/Formula",
-  "kind" : "symbol",
-  "role" : "symbol",
-  "title" : "Formula",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/poieticcore\/trait\/formula"
+  "url" : "\/documentation\/poieticflows\/poieticcore\/trait\/flowrate"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/PoieticCore/Trait/GraphicalFunction": {
   "abstract" : [
@@ -538,6 +536,51 @@
   "title" : "GraphicalFunction",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/poieticcore\/trait\/graphicalfunction"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/PoieticCore/Trait/Reservoir": {
+  "abstract" : [
+    {
+      "text" : "Trait of nodes representing a stock.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Reservoir"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore5TraitC",
+      "text" : "Trait"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/Trait\/Reservoir",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "Reservoir",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/poieticcore\/trait\/reservoir"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/PoieticCore/Trait/Simulation": {
   "abstract" : [
@@ -628,10 +671,7 @@
 },
 "doc://PoieticFlows/documentation/PoieticFlows/PoieticCore/Trait/Stock": {
   "abstract" : [
-    {
-      "text" : "Trait of nodes representing a stock.",
-      "type" : "text"
-    }
+
   ],
   "fragments" : [
     {

@@ -17,9 +17,7 @@
     "paths" : [
       [
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/BidirectionalCollection-Implementations"
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector"
       ]
     ]
   },
@@ -400,17 +398,6 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/numericvector"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/NumericVector/BidirectionalCollection-Implementations": {
-  "abstract" : [
-
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/BidirectionalCollection-Implementations",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "BidirectionalCollection Implementations",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/numericvector\/bidirectionalcollection-implementations"
-},
 "doc://PoieticFlows/documentation/PoieticFlows/NumericVector/firstRange(of:)-319xv": {
   "abstract" : [
 
@@ -521,28 +508,6 @@
   "title" : "firstRange(of:)",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/numericvector\/firstrange(of:)-319xv"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/Simulation": {
-  "abstract" : [
-    {
-      "text" : "The Simulator runs the simulation and produces a simulation result as a",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "collection of time series.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Simulation and Computation",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/simulation"
 }
 }
 }

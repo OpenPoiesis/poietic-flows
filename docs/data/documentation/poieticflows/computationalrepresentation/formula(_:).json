@@ -9,7 +9,6 @@
     "paths" : [
       [
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledModelAndCompiler",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ComputationalRepresentation"
       ]
     ]
@@ -20,7 +19,7 @@
   },
   "kind" : "symbol",
   "metadata" : {
-    "externalID" : "s:12PoieticFlows27ComputationalRepresentationO7formulayAC0A4Core20ArithmeticExpressionOyAA13BoundVariableVAE8FunctionCGcACmF",
+    "externalID" : "s:12PoieticFlows27ComputationalRepresentationO7formulayAC0A4Core20ArithmeticExpressionOyAA13BoundVariableVAE15BuiltinFunctionOGcACmF",
     "fragments" : [
       {
         "kind" : "keyword",
@@ -180,28 +179,6 @@
   "title" : "BoundExpression",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/boundexpression"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/CompiledModelAndCompiler": {
-  "abstract" : [
-    {
-      "text" : "Compiler creates a compiled model, which is an internal representation of",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "a design that can be simulated.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledModelAndCompiler",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Compiled Model and Compiler",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/compiledmodelandcompiler"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/ComputationalRepresentation": {
   "abstract" : [

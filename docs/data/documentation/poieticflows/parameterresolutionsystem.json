@@ -1,0 +1,998 @@
+{
+  "abstract" : [
+    {
+      "text" : "Resolve missing and unused parameter connections.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ParameterResolutionSystem"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "s:12PoieticFlows25ParameterResolutionSystemV",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "struct"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "ParameterResolutionSystem"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "PoieticFlows"
+      }
+    ],
+    "navigatorTitle" : [
+      {
+        "kind" : "identifier",
+        "text" : "ParameterResolutionSystem"
+      }
+    ],
+    "role" : "symbol",
+    "roleHeading" : "Structure",
+    "symbolKind" : "struct",
+    "title" : "ParameterResolutionSystem"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "macOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "struct"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "ParameterResolutionSystem"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    },
+    {
+      "content" : [
+        {
+          "anchor" : "overview",
+          "level" : 2,
+          "text" : "Overview",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "The Stock and Flow model requires that parameters are connected to the nodes where they are",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "used. The visual representation must match computational representation for human-oriented",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "clarity.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "items" : [
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "inlineContent" : [
+                        {
+                          "text" : "Input:",
+                          "type" : "text"
+                        }
+                      ],
+                      "type" : "strong"
+                    },
+                    {
+                      "text" : " Nodes with compiled expression in ",
+                      "type" : "text"
+                    },
+                    {
+                      "code" : "ParsedExpressionComponent",
+                      "type" : "codeVoice"
+                    },
+                    {
+                      "text" : " and objects",
+                      "type" : "text"
+                    },
+                    {
+                      "text" : " ",
+                      "type" : "text"
+                    },
+                    {
+                      "text" : "of auxiliary types: graphical function, smooth or delay.",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "inlineContent" : [
+                        {
+                          "text" : "Output:",
+                          "type" : "text"
+                        }
+                      ],
+                      "type" : "strong"
+                    },
+                    {
+                      "text" : " ",
+                      "type" : "text"
+                    },
+                    {
+                      "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ResolvedParameters",
+                      "isActive" : true,
+                      "type" : "reference"
+                    },
+                    {
+                      "text" : " set of each input component",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "inlineContent" : [
+                        {
+                          "text" : "Forgiveness:",
+                          "type" : "text"
+                        }
+                      ],
+                      "type" : "strong"
+                    },
+                    {
+                      "text" : " Nothing needed.",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "inlineContent" : [
+                        {
+                          "text" : "Issues Appended:",
+                          "type" : "text"
+                        }
+                      ],
+                      "type" : "strong"
+                    }
+                  ],
+                  "type" : "paragraph"
+                },
+                {
+                  "items" : [
+                    {
+                      "content" : [
+                        {
+                          "inlineContent" : [
+                            {
+                              "code" : "unknown_parameter",
+                              "type" : "codeVoice"
+                            },
+                            {
+                              "text" : ": Parameter in a formula is not connected from a node.",
+                              "type" : "text"
+                            }
+                          ],
+                          "type" : "paragraph"
+                        }
+                      ]
+                    },
+                    {
+                      "content" : [
+                        {
+                          "inlineContent" : [
+                            {
+                              "code" : "unused_input",
+                              "type" : "codeVoice"
+                            },
+                            {
+                              "text" : ": Parameter connected to a node is not used in the formula.",
+                              "type" : "text"
+                            }
+                          ],
+                          "type" : "paragraph"
+                        }
+                      ]
+                    },
+                    {
+                      "content" : [
+                        {
+                          "inlineContent" : [
+                            {
+                              "code" : "missing_required_parameter",
+                              "type" : "codeVoice"
+                            },
+                            {
+                              "text" : ": Missing a connection from a parameter node to a graphical",
+                              "type" : "text"
+                            },
+                            {
+                              "text" : " ",
+                              "type" : "text"
+                            },
+                            {
+                              "text" : "function.",
+                              "type" : "text"
+                            }
+                          ],
+                          "type" : "paragraph"
+                        }
+                      ]
+                    },
+                    {
+                      "content" : [
+                        {
+                          "inlineContent" : [
+                            {
+                              "code" : "too_many_parameters",
+                              "type" : "codeVoice"
+                            },
+                            {
+                              "text" : ": Too many parameters for a node, usually used with single-parameter",
+                              "type" : "text"
+                            },
+                            {
+                              "text" : " ",
+                              "type" : "text"
+                            },
+                            {
+                              "text" : "auxiliaries such as graphical function, delay or smooth.",
+                              "type" : "text"
+                            }
+                          ],
+                          "type" : "paragraph"
+                        }
+                      ]
+                    }
+                  ],
+                  "type" : "unorderedList"
+                }
+              ]
+            }
+          ],
+          "type" : "unorderedList"
+        },
+        {
+          "content" : [
+            {
+              "inlineContent" : [
+                {
+                  "text" : "All parameters in a formula must have a connection from a node that represents the",
+                  "type" : "text"
+                },
+                {
+                  "text" : " ",
+                  "type" : "text"
+                },
+                {
+                  "text" : "parameter. This requirement is to make sure that the model is transparent to the human",
+                  "type" : "text"
+                },
+                {
+                  "text" : " ",
+                  "type" : "text"
+                },
+                {
+                  "text" : "readers.",
+                  "type" : "text"
+                }
+              ],
+              "type" : "paragraph"
+            }
+          ],
+          "name" : "Note",
+          "style" : "note",
+          "type" : "aside"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "relationshipsSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/11PoieticCore6SystemP",
+        "doc:\/\/PoieticFlows\/s8SendableP",
+        "doc:\/\/PoieticFlows\/s16SendableMetatypeP"
+      ],
+      "kind" : "relationships",
+      "title" : "Conforms To",
+      "type" : "conformsTo"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "seeAlsoSections" : [
+    {
+      "anchor" : "Plan-Analysis",
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ComputationOrderSystem",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NameResolutionSystem",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowTopologySystem"
+      ],
+      "title" : "Plan Analysis"
+    }
+  ],
+  "topicSections" : [
+    {
+      "anchor" : "Type-Properties",
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ParameterResolutionSystem\/IssueSourceName",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ParameterResolutionSystem\/dependencies"
+      ],
+      "title" : "Type Properties"
+    },
+    {
+      "anchor" : "Type-Methods",
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ParameterResolutionSystem\/resolveAuxiliaries(_:plane:type:)",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ParameterResolutionSystem\/resolveFormulas(_:plane:)",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ParameterResolutionSystem\/update(_:)"
+      ],
+      "title" : "Type Methods"
+    },
+    {
+      "anchor" : "Default-Implementations",
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ParameterResolutionSystem\/System-Implementations"
+      ],
+      "title" : "Default Implementations"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/poieticflows\/parameterresolutionsystem"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://PoieticFlows/11PoieticCore6SystemP": {
+  "identifier" : "doc:\/\/PoieticFlows\/11PoieticCore6SystemP",
+  "title" : "PoieticCore.System",
+  "type" : "unresolvable"
+},
+"doc://PoieticFlows/documentation/PoieticFlows": {
+  "abstract" : [
+    {
+      "text" : "Poietic package for modelling and simulation ",
+      "type" : "text"
+    },
+    {
+      "inlineContent" : [
+        {
+          "text" : "Stock and Flow",
+          "type" : "text"
+        }
+      ],
+      "type" : "emphasis"
+    },
+    {
+      "text" : " models.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "PoieticFlows",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/ComputationOrderSystem": {
+  "abstract" : [
+    {
+      "text" : "System that collects objects for computation and orders them by computational dependency.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "ComputationOrderSystem"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ComputationOrderSystem",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "ComputationOrderSystem"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "ComputationOrderSystem",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/computationordersystem"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/NameResolutionSystem": {
+  "abstract" : [
+    {
+      "text" : "System that collects object names and creates a name lookup.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "NameResolutionSystem"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NameResolutionSystem",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "NameResolutionSystem"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "NameResolutionSystem",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/nameresolutionsystem"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/ParameterResolutionSystem": {
+  "abstract" : [
+    {
+      "text" : "Resolve missing and unused parameter connections.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "ParameterResolutionSystem"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ParameterResolutionSystem",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "ParameterResolutionSystem"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "ParameterResolutionSystem",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/parameterresolutionsystem"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/ParameterResolutionSystem/IssueSourceName": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "IssueSourceName"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ParameterResolutionSystem\/IssueSourceName",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "IssueSourceName",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/parameterresolutionsystem\/issuesourcename"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/ParameterResolutionSystem/System-Implementations": {
+  "abstract" : [
+
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ParameterResolutionSystem\/System-Implementations",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "System Implementations",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/parameterresolutionsystem\/system-implementations"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/ParameterResolutionSystem/dependencies": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "dependencies"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore16SystemDependencyO",
+      "text" : "SystemDependency"
+    },
+    {
+      "kind" : "text",
+      "text" : "]"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ParameterResolutionSystem\/dependencies",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "dependencies",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/parameterresolutionsystem\/dependencies"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/ParameterResolutionSystem/resolveAuxiliaries(_:plane:type:)": {
+  "abstract" : [
+    {
+      "text" : "Resolve connections of single-parameter auxiliaries such as graphical function,",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "delay or smooth.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "resolveAuxiliaries"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore5WorldC",
+      "text" : "World"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "plane"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore11DesignPlaneC",
+      "text" : "DesignPlane"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "type"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore10ObjectTypeC",
+      "text" : "ObjectType"
+    },
+    {
+      "kind" : "text",
+      "text" : ") "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "throws"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore19InternalSystemErrorV",
+      "text" : "InternalSystemError"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ParameterResolutionSystem\/resolveAuxiliaries(_:plane:type:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "resolveAuxiliaries(_:plane:type:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/parameterresolutionsystem\/resolveauxiliaries(_:plane:type:)"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/ParameterResolutionSystem/resolveFormulas(_:plane:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "resolveFormulas"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore5WorldC",
+      "text" : "World"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "plane"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore11DesignPlaneC",
+      "text" : "DesignPlane"
+    },
+    {
+      "kind" : "text",
+      "text" : ") "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "throws"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore19InternalSystemErrorV",
+      "text" : "InternalSystemError"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ParameterResolutionSystem\/resolveFormulas(_:plane:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "resolveFormulas(_:plane:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/parameterresolutionsystem\/resolveformulas(_:plane:)"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/ParameterResolutionSystem/update(_:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "update"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore5WorldC",
+      "text" : "World"
+    },
+    {
+      "kind" : "text",
+      "text" : ") "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "throws"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore19InternalSystemErrorV",
+      "text" : "InternalSystemError"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ParameterResolutionSystem\/update(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "update(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/parameterresolutionsystem\/update(_:)"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/ResolvedParameters": {
+  "abstract" : [
+    {
+      "text" : "Component with information about connected, missing and unused parameters.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "ResolvedParameters"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ResolvedParameters",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "ResolvedParameters"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "ResolvedParameters",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/resolvedparameters"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowTopologySystem": {
+  "abstract" : [
+    {
+      "text" : "System that collects all flow rates and stocks. Then determines relationships between flow",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "rates and stocks, and flows between stocks (skipping the flow rates).",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "StockFlowTopologySystem"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowTopologySystem",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "StockFlowTopologySystem"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "StockFlowTopologySystem",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stockflowtopologysystem"
+},
+"doc://PoieticFlows/s16SendableMetatypeP": {
+  "identifier" : "doc:\/\/PoieticFlows\/s16SendableMetatypeP",
+  "title" : "Swift.SendableMetatype",
+  "type" : "unresolvable"
+},
+"doc://PoieticFlows/s8SendableP": {
+  "identifier" : "doc:\/\/PoieticFlows\/s8SendableP",
+  "title" : "Swift.Sendable",
+  "type" : "unresolvable"
+}
+}
+}

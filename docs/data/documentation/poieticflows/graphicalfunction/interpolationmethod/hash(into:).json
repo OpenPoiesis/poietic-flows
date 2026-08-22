@@ -17,10 +17,8 @@
     "paths" : [
       [
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction\/InterpolationMethod",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction\/InterpolationMethod\/RawRepresentable-Implementations"
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction\/InterpolationMethod"
       ]
     ]
   },
@@ -254,7 +252,7 @@
 "doc://PoieticFlows/documentation/PoieticFlows/GraphicalFunction": {
   "abstract" : [
     {
-      "text" : "Object representing a function defined by a graph.",
+      "text" : "A function defined by a set of 2D control points with configurable interpolation.",
       "type" : "text"
     }
   ],
@@ -287,7 +285,10 @@
 },
 "doc://PoieticFlows/documentation/PoieticFlows/GraphicalFunction/InterpolationMethod": {
   "abstract" : [
-
+    {
+      "text" : "Interpolation method used to compute values between control points.",
+      "type" : "text"
+    }
   ],
   "fragments" : [
     {
@@ -315,17 +316,6 @@
   "title" : "GraphicalFunction.InterpolationMethod",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/graphicalfunction\/interpolationmethod"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/GraphicalFunction/InterpolationMethod/RawRepresentable-Implementations": {
-  "abstract" : [
-
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction\/InterpolationMethod\/RawRepresentable-Implementations",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "RawRepresentable Implementations",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/graphicalfunction\/interpolationmethod\/rawrepresentable-implementations"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/GraphicalFunction/InterpolationMethod/hash(into:)": {
   "abstract" : [
@@ -428,28 +418,6 @@
   "title" : "hash(into:)",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/graphicalfunction\/interpolationmethod\/hash(into:)"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/Simulation": {
-  "abstract" : [
-    {
-      "text" : "The Simulator runs the simulation and produces a simulation result as a",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "collection of time series.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Simulation and Computation",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/simulation"
 }
 }
 }

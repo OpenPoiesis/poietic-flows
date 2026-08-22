@@ -1,0 +1,231 @@
+{
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PlanAndPlanning",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationOrder"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationOrder\/Component-Implementations"
+  },
+  "kind" : "article",
+  "metadata" : {
+    "modules" : [
+      {
+        "name" : "PoieticFlows"
+      }
+    ],
+    "role" : "collectionGroup",
+    "roleHeading" : "API Collection",
+    "title" : "Component Implementations"
+  },
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "topicSections" : [
+    {
+      "anchor" : "Type-Aliases",
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationOrder\/Storage"
+      ],
+      "title" : "Type Aliases"
+    },
+    {
+      "anchor" : "Type-Methods",
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationOrder\/makeStorage()"
+      ],
+      "title" : "Type Methods"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/poieticflows\/simulationorder\/component-implementations"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://PoieticFlows/documentation/PoieticFlows": {
+  "abstract" : [
+    {
+      "text" : "Poietic package for modelling and simulation ",
+      "type" : "text"
+    },
+    {
+      "inlineContent" : [
+        {
+          "text" : "Stock and Flow",
+          "type" : "text"
+        }
+      ],
+      "type" : "emphasis"
+    },
+    {
+      "text" : " models.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "PoieticFlows",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/PlanAndPlanning": {
+  "abstract" : [
+    {
+      "text" : "To perform a simulation, the computer needs to understand how it is to be performed and needs to",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "be sure that it is possible to simulate the model. The simulation plan is computer-oriented",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "representation of the model, derived from the user-oriented representation in the model design.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PlanAndPlanning",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Simulation Plan and Planning",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/planandplanning"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationOrder": {
+  "abstract" : [
+    {
+      "text" : "Component with a list of simulation objects in order of their computational dependency.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SimulationOrder"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationOrder",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SimulationOrder"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SimulationOrder",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationorder"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationOrder/Storage": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "typealias"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Storage"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationOrder\/Storage",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Storage"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SimulationOrder.Storage",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationorder\/storage"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationOrder/makeStorage()": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "makeStorage"
+    },
+    {
+      "kind" : "text",
+      "text" : "() -> any "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore24ComponentStorageProtocolP",
+      "text" : "ComponentStorageProtocol"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationOrder\/makeStorage()",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "makeStorage()",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationorder\/makestorage()"
+}
+}
+}

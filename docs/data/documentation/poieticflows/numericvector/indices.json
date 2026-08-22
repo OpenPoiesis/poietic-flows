@@ -1,0 +1,420 @@
+{
+  "abstract" : [
+    {
+      "text" : "Inherited from ",
+      "type" : "text"
+    },
+    {
+      "code" : "RandomAccessCollection.indices",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/indices"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "conformance" : {
+      "availabilityPrefix" : [
+        {
+          "text" : "Available when",
+          "type" : "text"
+        }
+      ],
+      "conformancePrefix" : [
+        {
+          "text" : "Conforms when",
+          "type" : "text"
+        }
+      ],
+      "constraints" : [
+        {
+          "code" : "Index",
+          "type" : "codeVoice"
+        },
+        {
+          "text" : " conforms to ",
+          "type" : "text"
+        },
+        {
+          "code" : "Strideable",
+          "type" : "codeVoice"
+        },
+        {
+          "text" : ", ",
+          "type" : "text"
+        },
+        {
+          "code" : "Indices",
+          "type" : "codeVoice"
+        },
+        {
+          "text" : " is ",
+          "type" : "text"
+        },
+        {
+          "code" : "Range<Self.Index>",
+          "type" : "codeVoice"
+        },
+        {
+          "text" : ", and ",
+          "type" : "text"
+        },
+        {
+          "code" : "Index.Stride",
+          "type" : "codeVoice"
+        },
+        {
+          "text" : " is ",
+          "type" : "text"
+        },
+        {
+          "code" : "Int",
+          "type" : "codeVoice"
+        },
+        {
+          "text" : ".",
+          "type" : "text"
+        }
+      ]
+    },
+    "extendedModule" : "Swift",
+    "externalID" : "s:SksSx5IndexRpzSnyABG7IndicesRtzSiAA_6StrideRTzrlE7indicesACvp::SYNTHESIZED::s:12PoieticFlows13NumericVectorV",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "var"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "indices"
+      },
+      {
+        "kind" : "text",
+        "text" : ": "
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Sn",
+        "text" : "Range"
+      },
+      {
+        "kind" : "text",
+        "text" : "<"
+      },
+      {
+        "kind" : "typeIdentifier",
+        "text" : "Self"
+      },
+      {
+        "kind" : "text",
+        "text" : "."
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Sl5IndexQa",
+        "text" : "Index"
+      },
+      {
+        "kind" : "text",
+        "text" : ">"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "PoieticFlows",
+        "relatedModules" : [
+          "Swift"
+        ]
+      }
+    ],
+    "role" : "symbol",
+    "roleHeading" : "Instance Property",
+    "symbolKind" : "property",
+    "title" : "indices"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "macOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "var"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "indices"
+            },
+            {
+              "kind" : "text",
+              "text" : ": "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:Sn",
+              "text" : "Range"
+            },
+            {
+              "kind" : "text",
+              "text" : "<"
+            },
+            {
+              "kind" : "typeIdentifier",
+              "text" : "Self"
+            },
+            {
+              "kind" : "text",
+              "text" : "."
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:Sl5IndexQa",
+              "text" : "Index"
+            },
+            {
+              "kind" : "text",
+              "text" : "> { "
+            },
+            {
+              "kind" : "keyword",
+              "text" : "get"
+            },
+            {
+              "kind" : "text",
+              "text" : " }"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/poieticflows\/numericvector\/indices"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://PoieticFlows/documentation/PoieticFlows": {
+  "abstract" : [
+    {
+      "text" : "Poietic package for modelling and simulation ",
+      "type" : "text"
+    },
+    {
+      "inlineContent" : [
+        {
+          "text" : "Stock and Flow",
+          "type" : "text"
+        }
+      ],
+      "type" : "emphasis"
+    },
+    {
+      "text" : " models.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "PoieticFlows",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/NumericVector": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "NumericVector"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "NumericVector"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "NumericVector",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/numericvector"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/NumericVector/indices": {
+  "abstract" : [
+
+  ],
+  "conformance" : {
+    "availabilityPrefix" : [
+      {
+        "text" : "Available when",
+        "type" : "text"
+      }
+    ],
+    "conformancePrefix" : [
+      {
+        "text" : "Conforms when",
+        "type" : "text"
+      }
+    ],
+    "constraints" : [
+      {
+        "code" : "Index",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : " conforms to ",
+        "type" : "text"
+      },
+      {
+        "code" : "Strideable",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : ", ",
+        "type" : "text"
+      },
+      {
+        "code" : "Indices",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : " is ",
+        "type" : "text"
+      },
+      {
+        "code" : "Range<Self.Index>",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : ", and ",
+        "type" : "text"
+      },
+      {
+        "code" : "Index.Stride",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : " is ",
+        "type" : "text"
+      },
+      {
+        "code" : "Int",
+        "type" : "codeVoice"
+      },
+      {
+        "text" : ".",
+        "type" : "text"
+      }
+    ]
+  },
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "indices"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sn",
+      "text" : "Range"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "text" : "Self"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sl5IndexQa",
+      "text" : "Index"
+    },
+    {
+      "kind" : "text",
+      "text" : ">"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/indices",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "indices",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/numericvector\/indices"
+}
+}
+}

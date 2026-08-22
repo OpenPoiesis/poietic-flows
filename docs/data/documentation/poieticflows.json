@@ -106,7 +106,7 @@
                 {
                   "inlineContent" : [
                     {
-                      "text" : "Design compiler for creating computable model representation",
+                      "text" : "Simulation planner for creating computable model representation",
                       "type" : "text"
                     }
                   ],
@@ -133,7 +133,7 @@
         {
           "inlineContent" : [
             {
-              "text" : "The relationship of the components and the flow of data between them is caputred",
+              "text" : "The relationship of the components and the flow of data between them is captured",
               "type" : "text"
             },
             {
@@ -402,19 +402,34 @@
       "anchor" : "Topics",
       "identifiers" : [
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Metamodel",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PlanAndPlanning",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationRunning",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Formulas",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledModelAndCompiler",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/FlowsMetamodel"
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowMetamodel"
       ]
     },
     {
-      "anchor" : "Enumerations",
+      "anchor" : "Structures",
       "generated" : true,
       "identifiers" : [
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationError"
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundVariable",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ChartComponent",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ChartResolutionSystem",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ChartSeries",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NewSimulationState",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NewStateVariable",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ParameterConnectionProposalSystem",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ParameterProposal"
       ],
-      "title" : "Enumerations"
+      "title" : "Structures"
+    },
+    {
+      "anchor" : "Functions",
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/catmullRomSpline(p0:p1:p2:p3:t:)"
+      ],
+      "title" : "Functions"
     },
     {
       "anchor" : "Extended-Modules",
@@ -466,36 +481,14 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/CompiledModelAndCompiler": {
-  "abstract" : [
-    {
-      "text" : "Compiler creates a compiled model, which is an internal representation of",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "a design that can be simulated.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledModelAndCompiler",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Compiled Model and Compiler",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/compiledmodelandcompiler"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/FlowsMetamodel": {
+"doc://PoieticFlows/documentation/PoieticFlows/BoundVariable": {
   "abstract" : [
 
   ],
   "fragments" : [
     {
       "kind" : "keyword",
-      "text" : "let"
+      "text" : "struct"
     },
     {
       "kind" : "text",
@@ -503,24 +496,121 @@
     },
     {
       "kind" : "identifier",
-      "text" : "FlowsMetamodel"
+      "text" : "BoundVariable"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundVariable",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "BoundVariable"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "BoundVariable",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/boundvariable"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/ChartComponent": {
+  "abstract" : [
+
+  ],
+  "deprecated" : true,
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
     },
     {
       "kind" : "text",
-      "text" : ": "
+      "text" : " "
     },
     {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:11PoieticCore9MetamodelC",
-      "text" : "Metamodel"
+      "kind" : "identifier",
+      "text" : "ChartComponent"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/FlowsMetamodel",
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ChartComponent",
   "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "ChartComponent"
+    }
+  ],
   "role" : "symbol",
-  "title" : "FlowsMetamodel",
+  "title" : "ChartComponent",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/flowsmetamodel"
+  "url" : "\/documentation\/poieticflows\/chartcomponent"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/ChartResolutionSystem": {
+  "abstract" : [
+    {
+      "text" : "System that populates chart and chart series entities.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "ChartResolutionSystem"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ChartResolutionSystem",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "ChartResolutionSystem"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "ChartResolutionSystem",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/chartresolutionsystem"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/ChartSeries": {
+  "abstract" : [
+    {
+      "text" : "Component for entities representing chart series.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "ChartSeries"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ChartSeries",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "ChartSeries"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "ChartSeries",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/chartseries"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/Formulas": {
   "abstract" : [
@@ -550,6 +640,182 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/metamodel"
 },
+"doc://PoieticFlows/documentation/PoieticFlows/NewSimulationState": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "NewSimulationState"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NewSimulationState",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "NewSimulationState"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "NewSimulationState",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/newsimulationstate"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/NewStateVariable": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "NewStateVariable"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NewStateVariable",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "NewStateVariable"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "NewStateVariable",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/newstatevariable"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/ParameterConnectionProposalSystem": {
+  "abstract" : [
+    {
+      "text" : "System that proposes parameter edges to be added and to be removed. The proposal is based on",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "the parameter names used in parsed expressions (typically from ",
+      "type" : "text"
+    },
+    {
+      "code" : "formula",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " attribute) and",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "ParameterConnectionProposalSystem"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ParameterConnectionProposalSystem",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "ParameterConnectionProposalSystem"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "ParameterConnectionProposalSystem",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/parameterconnectionproposalsystem"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/ParameterProposal": {
+  "abstract" : [
+    {
+      "text" : "Component that proposes parameter edges to be created or removed.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "ParameterProposal"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ParameterProposal",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "ParameterProposal"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "ParameterProposal",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/parameterproposal"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/PlanAndPlanning": {
+  "abstract" : [
+    {
+      "text" : "To perform a simulation, the computer needs to understand how it is to be performed and needs to",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "be sure that it is possible to simulate the model. The simulation plan is computer-oriented",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "representation of the model, derived from the user-oriented representation in the model design.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PlanAndPlanning",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Simulation Plan and Planning",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/planandplanning"
+},
 "doc://PoieticFlows/documentation/PoieticFlows/PoieticCore": {
   "abstract" : [
 
@@ -561,10 +827,10 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/poieticcore"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/Simulation": {
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationRunning": {
   "abstract" : [
     {
-      "text" : "The Simulator runs the simulation and produces a simulation result as a",
+      "text" : "The simulation is run according to the simulation plan, which describes order in which the objects",
       "type" : "text"
     },
     {
@@ -572,28 +838,33 @@
       "type" : "text"
     },
     {
-      "text" : "collection of time series.",
+      "text" : "are evaluated, how the computation is performed and where in the simulation state the variables",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "live.",
       "type" : "text"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationRunning",
   "kind" : "article",
   "role" : "collectionGroup",
-  "title" : "Simulation and Computation",
+  "title" : "Simulation",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/simulation"
+  "url" : "\/documentation\/poieticflows\/simulationrunning"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/SimulationError": {
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowMetamodel": {
   "abstract" : [
-    {
-      "text" : "Error raised during simulation.",
-      "type" : "text"
-    }
+
   ],
   "fragments" : [
     {
       "kind" : "keyword",
-      "text" : "enum"
+      "text" : "let"
     },
     {
       "kind" : "text",
@@ -601,21 +872,146 @@
     },
     {
       "kind" : "identifier",
-      "text" : "SimulationError"
+      "text" : "StockFlowMetamodel"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore9MetamodelC",
+      "text" : "Metamodel"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationError",
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowMetamodel",
   "kind" : "symbol",
-  "navigatorTitle" : [
+  "role" : "symbol",
+  "title" : "StockFlowMetamodel",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stockflowmetamodel"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/catmullRomSpline(p0:p1:p2:p3:t:)": {
+  "abstract" : [
+    {
+      "text" : "Evaluates a Catmull-Rom spline segment at parameter t.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
     {
       "kind" : "identifier",
-      "text" : "SimulationError"
+      "text" : "catmullRomSpline"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "p0"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore5Pointa",
+      "text" : "Point"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "p1"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore5Pointa",
+      "text" : "Point"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "p2"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore5Pointa",
+      "text" : "Point"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "p3"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore5Pointa",
+      "text" : "Point"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "t"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sd",
+      "text" : "Double"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sd",
+      "text" : "Double"
     }
   ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/catmullRomSpline(p0:p1:p2:p3:t:)",
+  "kind" : "symbol",
   "role" : "symbol",
-  "title" : "SimulationError",
+  "title" : "catmullRomSpline(p0:p1:p2:p3:t:)",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/simulationerror"
+  "url" : "\/documentation\/poieticflows\/catmullromspline(p0:p1:p2:p3:t:)"
 },
 "flows-overview": {
   "alt" : "Flows Components Overview",

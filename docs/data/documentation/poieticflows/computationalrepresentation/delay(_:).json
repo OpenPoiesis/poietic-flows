@@ -9,7 +9,6 @@
     "paths" : [
       [
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledModelAndCompiler",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ComputationalRepresentation"
       ]
     ]
@@ -20,7 +19,7 @@
   },
   "kind" : "symbol",
   "metadata" : {
-    "externalID" : "s:12PoieticFlows27ComputationalRepresentationO5delayyAcA13CompiledDelayVcACmF",
+    "externalID" : "s:12PoieticFlows27ComputationalRepresentationO5delayyAcA10BoundDelayVcACmF",
     "fragments" : [
       {
         "kind" : "keyword",
@@ -40,8 +39,8 @@
       },
       {
         "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:12PoieticFlows13CompiledDelayV",
-        "text" : "CompiledDelay"
+        "preciseIdentifier" : "s:12PoieticFlows10BoundDelayV",
+        "text" : "BoundDelay"
       },
       {
         "kind" : "text",
@@ -86,10 +85,10 @@
               "text" : "("
             },
             {
-              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledDelay",
+              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundDelay",
               "kind" : "typeIdentifier",
-              "preciseIdentifier" : "s:12PoieticFlows13CompiledDelayV",
-              "text" : "CompiledDelay"
+              "preciseIdentifier" : "s:12PoieticFlows10BoundDelayV",
+              "text" : "BoundDelay"
             },
             {
               "kind" : "text",
@@ -150,7 +149,7 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/CompiledDelay": {
+"doc://PoieticFlows/documentation/PoieticFlows/BoundDelay": {
   "abstract" : [
     {
       "text" : "Compiled delay node.",
@@ -168,43 +167,21 @@
     },
     {
       "kind" : "identifier",
-      "text" : "CompiledDelay"
+      "text" : "BoundDelay"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledDelay",
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundDelay",
   "kind" : "symbol",
   "navigatorTitle" : [
     {
       "kind" : "identifier",
-      "text" : "CompiledDelay"
+      "text" : "BoundDelay"
     }
   ],
   "role" : "symbol",
-  "title" : "CompiledDelay",
+  "title" : "BoundDelay",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/compileddelay"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/CompiledModelAndCompiler": {
-  "abstract" : [
-    {
-      "text" : "Compiler creates a compiled model, which is an internal representation of",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "a design that can be simulated.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledModelAndCompiler",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Compiled Model and Compiler",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/compiledmodelandcompiler"
+  "url" : "\/documentation\/poieticflows\/bounddelay"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/ComputationalRepresentation": {
   "abstract" : [
@@ -274,8 +251,8 @@
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:12PoieticFlows13CompiledDelayV",
-      "text" : "CompiledDelay"
+      "preciseIdentifier" : "s:12PoieticFlows10BoundDelayV",
+      "text" : "BoundDelay"
     },
     {
       "kind" : "text",

@@ -17,7 +17,6 @@
     "paths" : [
       [
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector"
       ]
     ]
@@ -88,26 +87,8 @@
             },
             {
               "kind" : "typeIdentifier",
-              "preciseIdentifier" : "s:Sa",
-              "text" : "Array"
-            },
-            {
-              "kind" : "text",
-              "text" : "<"
-            },
-            {
-              "kind" : "typeIdentifier",
-              "preciseIdentifier" : "s:Sd",
-              "text" : "Double"
-            },
-            {
-              "kind" : "text",
-              "text" : ">."
-            },
-            {
-              "kind" : "typeIdentifier",
-              "preciseIdentifier" : "s:Sa5Indexa",
-              "text" : "Index"
+              "preciseIdentifier" : "s:Si",
+              "text" : "Int"
             }
           ]
         }
@@ -225,28 +206,6 @@
   "title" : "NumericVector.Index",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/numericvector\/index"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/Simulation": {
-  "abstract" : [
-    {
-      "text" : "The Simulator runs the simulation and produces a simulation result as a",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "collection of time series.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Simulation and Computation",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/simulation"
 }
 }
 }

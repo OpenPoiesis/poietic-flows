@@ -8,8 +8,7 @@
   "hierarchy" : {
     "paths" : [
       [
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation"
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows"
       ]
     ]
   },
@@ -79,16 +78,6 @@
       "kind" : "declarations"
     }
   ],
-  "relationshipsSections" : [
-    {
-      "identifiers" : [
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation"
-      ],
-      "kind" : "relationships",
-      "title" : "Conforms To",
-      "type" : "conformsTo"
-    }
-  ],
   "schemaVersion" : {
     "major" : 0,
     "minor" : 3,
@@ -99,14 +88,19 @@
   ],
   "seeAlsoSections" : [
     {
-      "anchor" : "Simulation-and-Simulator",
+      "anchor" : "Simulation",
       "generated" : true,
       "identifiers" : [
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulator",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulationSystem",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationSettingsSystem",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationState",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector"
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationError",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/RegularTimeSeries",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BuiltinVariable"
       ],
-      "title" : "Simulation and Simulator"
+      "title" : "Simulation"
     }
   ],
   "topicSections" : [
@@ -114,7 +108,7 @@
       "anchor" : "Initializers",
       "generated" : true,
       "identifiers" : [
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/init(_:solver:)"
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/init(_:solver:flowScaling:)"
       ],
       "title" : "Initializers"
     },
@@ -122,7 +116,8 @@
       "anchor" : "Instance-Properties",
       "generated" : true,
       "identifiers" : [
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/model",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/flowScaling-swift.property",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/plan",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/solver"
       ],
       "title" : "Instance Properties"
@@ -131,18 +126,22 @@
       "anchor" : "Instance-Methods",
       "generated" : true,
       "identifiers" : [
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/computeStockDelta(_:in:)",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/initialize(_:)",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/advance(_:time:timeDelta:)",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/evaluate(delay:in:)",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/evaluate(graphicalFunction:with:)",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/evaluate(object:in:)",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/evaluate(smooth:in:)",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/flows(_:)",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/initialize(delay:in:)",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/initialize(objectAt:in:)",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/initialize(smooth:in:)",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/stockDifference(state:time:)",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/update(_:)",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/update(delay:in:)",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/update(objectAt:in:)",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/update(smooth:in:)",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/updateWithEuler(_:)",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/updateWithRK4(_:)"
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/initialize(time:timeDelta:parameters:)",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/integrateWithEuler(_:)",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/integrateWithRK4(_:)",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/setBuiltins(in:)",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/step(_:)",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/stocks(_:)",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/updateAuxiliariesAndFlows(in:)"
       ],
       "title" : "Instance Methods"
     },
@@ -150,17 +149,10 @@
       "anchor" : "Enumerations",
       "generated" : true,
       "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/FlowScaling-swift.enum",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/SolverType"
       ],
       "title" : "Enumerations"
-    },
-    {
-      "anchor" : "Default-Implementations",
-      "generated" : true,
-      "identifiers" : [
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/Simulation-Implementations"
-      ],
-      "title" : "Default Implementations"
     }
   ],
   "variants" : [
@@ -204,6 +196,74 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows"
 },
+"doc://PoieticFlows/documentation/PoieticFlows/BuiltinVariable": {
+  "abstract" : [
+    {
+      "text" : "Builtin variables for the Stock and Flow simulation.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "enum"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "BuiltinVariable"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BuiltinVariable",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "BuiltinVariable"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "BuiltinVariable",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/builtinvariable"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/GraphicalFunction": {
+  "abstract" : [
+    {
+      "text" : "A function defined by a set of 2D control points with configurable interpolation.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "GraphicalFunction"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "GraphicalFunction"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "GraphicalFunction",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/graphicalfunction"
+},
 "doc://PoieticFlows/documentation/PoieticFlows/NumericVector": {
   "abstract" : [
 
@@ -235,56 +295,143 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/numericvector"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/Simulation": {
+"doc://PoieticFlows/documentation/PoieticFlows/RegularTimeSeries": {
   "abstract" : [
     {
-      "text" : "The Simulator runs the simulation and produces a simulation result as a",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "collection of time series.",
+      "text" : "Structure representing numeric time series with regular time intervals.",
       "type" : "text"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Simulation and Computation",
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "RegularTimeSeries"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/RegularTimeSeries",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "RegularTimeSeries"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "RegularTimeSeries",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/simulation"
+  "url" : "\/documentation\/poieticflows\/regulartimeseries"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationError": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SimulationError"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationError",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SimulationError"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SimulationError",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationerror"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationResult": {
+  "abstract" : [
+    {
+      "text" : "Makeshift simulation result container.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SimulationResult"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationResult",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SimulationResult"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SimulationResult",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationresult"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationSettingsSystem": {
+  "abstract" : [
+    {
+      "text" : "System that extracts simulation settings from a plane.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SimulationSettingsSystem"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationSettingsSystem",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SimulationSettingsSystem"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SimulationSettingsSystem",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationsettingssystem"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/SimulationState": {
   "abstract" : [
     {
-      "text" : "A simple vector-like structure to hold an unordered collection of numeric",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "values that can be accessed by key. Simple arithmetic operations can be done",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "with the structure, such as addition, subtraction and multiplication",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "by a scalar value.",
+      "text" : "A collection of simulation state variables.",
       "type" : "text"
     }
   ],
@@ -314,40 +461,6 @@
   "title" : "SimulationState",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/simulationstate"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/Simulator": {
-  "abstract" : [
-    {
-      "text" : "Object for controlling a simulation session.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "class"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "Simulator"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulator",
-  "kind" : "symbol",
-  "navigatorTitle" : [
-    {
-      "kind" : "identifier",
-      "text" : "Simulator"
-    }
-  ],
-  "role" : "symbol",
-  "title" : "Simulator",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/simulator"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation": {
   "abstract" : [
@@ -383,16 +496,36 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/stockflowsimulation"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/Simulation-Implementations": {
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/FlowScaling-swift.enum": {
   "abstract" : [
 
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/Simulation-Implementations",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Simulation Implementations",
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "enum"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "FlowScaling"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/FlowScaling-swift.enum",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "FlowScaling"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "StockFlowSimulation.FlowScaling",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/stockflowsimulation\/simulation-implementations"
+  "url" : "\/documentation\/poieticflows\/stockflowsimulation\/flowscaling-swift.enum"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/SolverType": {
   "abstract" : [
@@ -425,10 +558,10 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/stockflowsimulation\/solvertype"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/computeStockDelta(_:in:)": {
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/advance(_:time:timeDelta:)": {
   "abstract" : [
     {
-      "text" : "Compute a difference of a stock.",
+      "text" : "Creates a copy of a state and advances the time.",
       "type" : "text"
     }
   ],
@@ -443,7 +576,7 @@
     },
     {
       "kind" : "identifier",
-      "text" : "computeStockDelta"
+      "text" : "advance"
     },
     {
       "kind" : "text",
@@ -451,8 +584,96 @@
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:12PoieticFlows13CompiledStockV",
-      "text" : "CompiledStock"
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV",
+      "text" : "SimulationState"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "time"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sd",
+      "text" : "Double"
+    },
+    {
+      "kind" : "text",
+      "text" : "?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "timeDelta"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sd",
+      "text" : "Double"
+    },
+    {
+      "kind" : "text",
+      "text" : "?) -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV",
+      "text" : "SimulationState"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/advance(_:time:timeDelta:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "advance(_:time:timeDelta:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stockflowsimulation\/advance(_:time:timedelta:)"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/evaluate(delay:in:)": {
+  "abstract" : [
+    {
+      "text" : "Computes and updates a delay value within a simulation state.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "evaluate"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "delay"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows10BoundDelayV",
+      "text" : "BoundDelay"
     },
     {
       "kind" : "text",
@@ -489,22 +710,395 @@
     },
     {
       "kind" : "text",
-      "text" : " -> "
+      "text" : "("
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:Sd",
-      "text" : "Double"
+      "preciseIdentifier" : "s:11PoieticCore15EvaluationErrorO",
+      "text" : "EvaluationError"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore7VariantO",
+      "text" : "Variant"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/computeStockDelta(_:in:)",
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/evaluate(delay:in:)",
   "kind" : "symbol",
   "role" : "symbol",
-  "title" : "computeStockDelta(_:in:)",
+  "title" : "evaluate(delay:in:)",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/stockflowsimulation\/computestockdelta(_:in:)"
+  "url" : "\/documentation\/poieticflows\/stockflowsimulation\/evaluate(delay:in:)"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/init(_:solver:)": {
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/evaluate(graphicalFunction:with:)": {
+  "abstract" : [
+    {
+      "text" : "Evaluate graphical function",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "evaluate"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "graphicalFunction"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows22BoundGraphicalFunctionV",
+      "text" : "BoundGraphicalFunction"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "with"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV",
+      "text" : "SimulationState"
+    },
+    {
+      "kind" : "text",
+      "text" : ") "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "throws"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore15EvaluationErrorO",
+      "text" : "EvaluationError"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore7VariantO",
+      "text" : "Variant"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/evaluate(graphicalFunction:with:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "evaluate(graphicalFunction:with:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stockflowsimulation\/evaluate(graphicalfunction:with:)"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/evaluate(object:in:)": {
+  "abstract" : [
+    {
+      "text" : "Computes and updates a new state of an object.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "evaluate"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "object"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows16SimulationObjectV",
+      "text" : "SimulationObject"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "in"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "inout"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV",
+      "text" : "SimulationState"
+    },
+    {
+      "kind" : "text",
+      "text" : ") "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "throws"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationErrorV",
+      "text" : "SimulationError"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/evaluate(object:in:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "evaluate(object:in:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stockflowsimulation\/evaluate(object:in:)"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/evaluate(smooth:in:)": {
+  "abstract" : [
+    {
+      "text" : "Update an exponential smoothing node.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "evaluate"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "smooth"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows11BoundSmoothV",
+      "text" : "BoundSmooth"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "in"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "inout"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV",
+      "text" : "SimulationState"
+    },
+    {
+      "kind" : "text",
+      "text" : ") "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "throws"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore10ValueErrorO",
+      "text" : "ValueError"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore7VariantO",
+      "text" : "Variant"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/evaluate(smooth:in:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "evaluate(smooth:in:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stockflowsimulation\/evaluate(smooth:in:)"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/flowScaling-swift.property": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "flowScaling"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows19StockFlowSimulationC",
+      "text" : "StockFlowSimulation"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows19StockFlowSimulationC0D7ScalingO",
+      "text" : "FlowScaling"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/flowScaling-swift.property",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "flowScaling",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stockflowsimulation\/flowscaling-swift.property"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/flows(_:)": {
+  "abstract" : [
+    {
+      "text" : "Get a vector with estimated flow rates from the state.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "flows"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV",
+      "text" : "SimulationState"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows13NumericVectorV",
+      "text" : "NumericVector"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/flows(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "flows(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stockflowsimulation\/flows(_:)"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/init(_:solver:flowScaling:)": {
   "abstract" : [
     {
       "text" : "Create a new Stock Flow simulation for a specific model.",
@@ -522,8 +1116,8 @@
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:12PoieticFlows13CompiledModelV",
-      "text" : "CompiledModel"
+      "preciseIdentifier" : "s:12PoieticFlows14SimulationPlanV",
+      "text" : "SimulationPlan"
     },
     {
       "kind" : "text",
@@ -553,73 +1147,46 @@
     },
     {
       "kind" : "text",
-      "text" : ")"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/init(_:solver:)",
-  "kind" : "symbol",
-  "role" : "symbol",
-  "title" : "init(_:solver:)",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/stockflowsimulation\/init(_:solver:)"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/initialize(_:)": {
-  "abstract" : [
+      "text" : ", "
+    },
     {
-      "text" : "Initialise a simulation state.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "func"
+      "kind" : "externalParam",
+      "text" : "flowScaling"
     },
     {
       "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "initialize"
-    },
-    {
-      "kind" : "text",
-      "text" : "("
-    },
-    {
-      "kind" : "keyword",
-      "text" : "inout"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
+      "text" : ": "
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV",
-      "text" : "SimulationState"
+      "preciseIdentifier" : "s:12PoieticFlows19StockFlowSimulationC",
+      "text" : "StockFlowSimulation"
     },
     {
       "kind" : "text",
-      "text" : ") "
+      "text" : "."
     },
     {
-      "kind" : "keyword",
-      "text" : "throws"
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows19StockFlowSimulationC0D7ScalingO",
+      "text" : "FlowScaling"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/initialize(_:)",
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/init(_:solver:flowScaling:)",
   "kind" : "symbol",
   "role" : "symbol",
-  "title" : "initialize(_:)",
+  "title" : "init(_:solver:flowScaling:)",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/stockflowsimulation\/initialize(_:)"
+  "url" : "\/documentation\/poieticflows\/stockflowsimulation\/init(_:solver:flowscaling:)"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/initialize(delay:in:)": {
   "abstract" : [
     {
-      "text" : "Initialise a delay object.",
+      "text" : "Initialise a simulated delay.",
       "type" : "text"
     }
   ],
@@ -650,8 +1217,8 @@
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:12PoieticFlows13CompiledDelayV",
-      "text" : "CompiledDelay"
+      "preciseIdentifier" : "s:12PoieticFlows10BoundDelayV",
+      "text" : "BoundDelay"
     },
     {
       "kind" : "text",
@@ -688,7 +1255,16 @@
     },
     {
       "kind" : "text",
-      "text" : " -> "
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore15EvaluationErrorO",
+      "text" : "EvaluationError"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
     },
     {
       "kind" : "typeIdentifier",
@@ -772,6 +1348,19 @@
     {
       "kind" : "keyword",
       "text" : "throws"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationErrorV",
+      "text" : "SimulationError"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
     }
   ],
   "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/initialize(objectAt:in:)",
@@ -783,7 +1372,10 @@
 },
 "doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/initialize(smooth:in:)": {
   "abstract" : [
-
+    {
+      "text" : "Initialise a simulated delay.",
+      "type" : "text"
+    }
   ],
   "fragments" : [
     {
@@ -812,8 +1404,8 @@
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:12PoieticFlows14CompiledSmoothV",
-      "text" : "CompiledSmooth"
+      "preciseIdentifier" : "s:12PoieticFlows11BoundSmoothV",
+      "text" : "BoundSmooth"
     },
     {
       "kind" : "text",
@@ -842,15 +1434,7 @@
     },
     {
       "kind" : "text",
-      "text" : ") "
-    },
-    {
-      "kind" : "keyword",
-      "text" : "throws"
-    },
-    {
-      "kind" : "text",
-      "text" : " -> "
+      "text" : ") -> "
     },
     {
       "kind" : "typeIdentifier",
@@ -865,10 +1449,250 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/stockflowsimulation\/initialize(smooth:in:)"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/model": {
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/initialize(time:timeDelta:parameters:)": {
   "abstract" : [
     {
-      "text" : "Compiled model for which we are computing.",
+      "text" : "Create and initialise a simulation state.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "initialize"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "time"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sd",
+      "text" : "Double"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "timeDelta"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sd",
+      "text" : "Double"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "parameters"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore8ObjectIDa",
+      "text" : "ObjectID"
+    },
+    {
+      "kind" : "text",
+      "text" : " : "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore7VariantO",
+      "text" : "Variant"
+    },
+    {
+      "kind" : "text",
+      "text" : "]) "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "throws"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationErrorV",
+      "text" : "SimulationError"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV",
+      "text" : "SimulationState"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/initialize(time:timeDelta:parameters:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "initialize(time:timeDelta:parameters:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stockflowsimulation\/initialize(time:timedelta:parameters:)"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/integrateWithEuler(_:)": {
+  "abstract" : [
+    {
+      "text" : "Solver that integrates using the Euler method.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "integrateWithEuler"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV",
+      "text" : "SimulationState"
+    },
+    {
+      "kind" : "text",
+      "text" : ") "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "throws"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationErrorV",
+      "text" : "SimulationError"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV",
+      "text" : "SimulationState"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/integrateWithEuler(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "integrateWithEuler(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stockflowsimulation\/integratewitheuler(_:)"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/integrateWithRK4(_:)": {
+  "abstract" : [
+    {
+      "text" : "Solver that integrates using the Runge-Kutta 4th order method.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "integrateWithRK4"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV",
+      "text" : "SimulationState"
+    },
+    {
+      "kind" : "text",
+      "text" : ") "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "throws"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationErrorV",
+      "text" : "SimulationError"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV",
+      "text" : "SimulationState"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/integrateWithRK4(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "integrateWithRK4(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stockflowsimulation\/integratewithrk4(_:)"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/plan": {
+  "abstract" : [
+    {
+      "text" : "Simulation plan according which the computation is performed.",
       "type" : "text"
     }
   ],
@@ -883,7 +1707,7 @@
     },
     {
       "kind" : "identifier",
-      "text" : "model"
+      "text" : "plan"
     },
     {
       "kind" : "text",
@@ -891,16 +1715,73 @@
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:12PoieticFlows13CompiledModelV",
-      "text" : "CompiledModel"
+      "preciseIdentifier" : "s:12PoieticFlows14SimulationPlanV",
+      "text" : "SimulationPlan"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/model",
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/plan",
   "kind" : "symbol",
   "role" : "symbol",
-  "title" : "model",
+  "title" : "plan",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/stockflowsimulation\/model"
+  "url" : "\/documentation\/poieticflows\/stockflowsimulation\/plan"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/setBuiltins(in:)": {
+  "abstract" : [
+    {
+      "text" : "Set values of built-in variables such as time or time delta.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "setBuiltins"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "in"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "inout"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV",
+      "text" : "SimulationState"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/setBuiltins(in:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "setBuiltins(in:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stockflowsimulation\/setbuiltins(in:)"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/solver": {
   "abstract" : [
@@ -948,86 +1829,7 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/stockflowsimulation\/solver"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/stockDifference(state:time:)": {
-  "abstract" : [
-    {
-      "text" : "Comptes differences of stocks.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "func"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "stockDifference"
-    },
-    {
-      "kind" : "text",
-      "text" : "("
-    },
-    {
-      "kind" : "externalParam",
-      "text" : "state"
-    },
-    {
-      "kind" : "text",
-      "text" : ": "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV",
-      "text" : "SimulationState"
-    },
-    {
-      "kind" : "text",
-      "text" : ", "
-    },
-    {
-      "kind" : "externalParam",
-      "text" : "time"
-    },
-    {
-      "kind" : "text",
-      "text" : ": "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:Sd",
-      "text" : "Double"
-    },
-    {
-      "kind" : "text",
-      "text" : ") "
-    },
-    {
-      "kind" : "keyword",
-      "text" : "throws"
-    },
-    {
-      "kind" : "text",
-      "text" : " -> "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:12PoieticFlows13NumericVectorV",
-      "text" : "NumericVector"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/stockDifference(state:time:)",
-  "kind" : "symbol",
-  "role" : "symbol",
-  "title" : "stockDifference(state:time:)",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/stockflowsimulation\/stockdifference(state:time:)"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/update(_:)": {
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/step(_:)": {
   "abstract" : [
     {
       "text" : "Update the simulation state.",
@@ -1045,19 +1847,11 @@
     },
     {
       "kind" : "identifier",
-      "text" : "update"
+      "text" : "step"
     },
     {
       "kind" : "text",
       "text" : "("
-    },
-    {
-      "kind" : "keyword",
-      "text" : "inout"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
     },
     {
       "kind" : "typeIdentifier",
@@ -1071,19 +1865,37 @@
     {
       "kind" : "keyword",
       "text" : "throws"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationErrorV",
+      "text" : "SimulationError"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV",
+      "text" : "SimulationState"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/update(_:)",
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/step(_:)",
   "kind" : "symbol",
   "role" : "symbol",
-  "title" : "update(_:)",
+  "title" : "step(_:)",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/stockflowsimulation\/update(_:)"
+  "url" : "\/documentation\/poieticflows\/stockflowsimulation\/step(_:)"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/update(delay:in:)": {
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/stocks(_:)": {
   "abstract" : [
     {
-      "text" : "Computes and updates a delay value within a simulation state.",
+      "text" : "Get a vector with stock values in the simulation state.",
       "type" : "text"
     }
   ],
@@ -1098,44 +1910,11 @@
     },
     {
       "kind" : "identifier",
-      "text" : "update"
+      "text" : "stocks"
     },
     {
       "kind" : "text",
       "text" : "("
-    },
-    {
-      "kind" : "externalParam",
-      "text" : "delay"
-    },
-    {
-      "kind" : "text",
-      "text" : ": "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:12PoieticFlows13CompiledDelayV",
-      "text" : "CompiledDelay"
-    },
-    {
-      "kind" : "text",
-      "text" : ", "
-    },
-    {
-      "kind" : "externalParam",
-      "text" : "in"
-    },
-    {
-      "kind" : "text",
-      "text" : ": "
-    },
-    {
-      "kind" : "keyword",
-      "text" : "inout"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
     },
     {
       "kind" : "typeIdentifier",
@@ -1144,242 +1923,7 @@
     },
     {
       "kind" : "text",
-      "text" : ") "
-    },
-    {
-      "kind" : "keyword",
-      "text" : "throws"
-    },
-    {
-      "kind" : "text",
-      "text" : " -> "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:11PoieticCore7VariantO",
-      "text" : "Variant"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/update(delay:in:)",
-  "kind" : "symbol",
-  "role" : "symbol",
-  "title" : "update(delay:in:)",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/stockflowsimulation\/update(delay:in:)"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/update(objectAt:in:)": {
-  "abstract" : [
-    {
-      "text" : "Computes and updates a new state of an object.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "func"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "update"
-    },
-    {
-      "kind" : "text",
-      "text" : "("
-    },
-    {
-      "kind" : "externalParam",
-      "text" : "objectAt"
-    },
-    {
-      "kind" : "text",
-      "text" : ": "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:Si",
-      "text" : "Int"
-    },
-    {
-      "kind" : "text",
-      "text" : ", "
-    },
-    {
-      "kind" : "externalParam",
-      "text" : "in"
-    },
-    {
-      "kind" : "text",
-      "text" : ": "
-    },
-    {
-      "kind" : "keyword",
-      "text" : "inout"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV",
-      "text" : "SimulationState"
-    },
-    {
-      "kind" : "text",
-      "text" : ") "
-    },
-    {
-      "kind" : "keyword",
-      "text" : "throws"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/update(objectAt:in:)",
-  "kind" : "symbol",
-  "role" : "symbol",
-  "title" : "update(objectAt:in:)",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/stockflowsimulation\/update(objectat:in:)"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/update(smooth:in:)": {
-  "abstract" : [
-    {
-      "text" : "Update an exponential smoothing node.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "func"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "update"
-    },
-    {
-      "kind" : "text",
-      "text" : "("
-    },
-    {
-      "kind" : "externalParam",
-      "text" : "smooth"
-    },
-    {
-      "kind" : "text",
-      "text" : ": "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:12PoieticFlows14CompiledSmoothV",
-      "text" : "CompiledSmooth"
-    },
-    {
-      "kind" : "text",
-      "text" : ", "
-    },
-    {
-      "kind" : "externalParam",
-      "text" : "in"
-    },
-    {
-      "kind" : "text",
-      "text" : ": "
-    },
-    {
-      "kind" : "keyword",
-      "text" : "inout"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV",
-      "text" : "SimulationState"
-    },
-    {
-      "kind" : "text",
-      "text" : ") "
-    },
-    {
-      "kind" : "keyword",
-      "text" : "throws"
-    },
-    {
-      "kind" : "text",
-      "text" : " -> "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:11PoieticCore7VariantO",
-      "text" : "Variant"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/update(smooth:in:)",
-  "kind" : "symbol",
-  "role" : "symbol",
-  "title" : "update(smooth:in:)",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/stockflowsimulation\/update(smooth:in:)"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/updateWithEuler(_:)": {
-  "abstract" : [
-    {
-      "text" : "Solver that integrates using the Euler method.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "func"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "updateWithEuler"
-    },
-    {
-      "kind" : "text",
-      "text" : "("
-    },
-    {
-      "kind" : "keyword",
-      "text" : "inout"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV",
-      "text" : "SimulationState"
-    },
-    {
-      "kind" : "text",
-      "text" : ") "
-    },
-    {
-      "kind" : "keyword",
-      "text" : "throws"
-    },
-    {
-      "kind" : "text",
-      "text" : " -> "
+      "text" : ") -> "
     },
     {
       "kind" : "typeIdentifier",
@@ -1387,19 +1931,16 @@
       "text" : "NumericVector"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/updateWithEuler(_:)",
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/stocks(_:)",
   "kind" : "symbol",
   "role" : "symbol",
-  "title" : "updateWithEuler(_:)",
+  "title" : "stocks(_:)",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/stockflowsimulation\/updatewitheuler(_:)"
+  "url" : "\/documentation\/poieticflows\/stockflowsimulation\/stocks(_:)"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/updateWithRK4(_:)": {
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/updateAuxiliariesAndFlows(in:)": {
   "abstract" : [
-    {
-      "text" : "Solver that integrates using the Runge Kutta 4 method.",
-      "type" : "text"
-    }
+
   ],
   "fragments" : [
     {
@@ -1412,11 +1953,19 @@
     },
     {
       "kind" : "identifier",
-      "text" : "updateWithRK4"
+      "text" : "updateAuxiliariesAndFlows"
     },
     {
       "kind" : "text",
       "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "in"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
     },
     {
       "kind" : "keyword",
@@ -1441,20 +1990,71 @@
     },
     {
       "kind" : "text",
-      "text" : " -> "
+      "text" : "("
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:12PoieticFlows13NumericVectorV",
-      "text" : "NumericVector"
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationErrorV",
+      "text" : "SimulationError"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/updateWithRK4(_:)",
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation\/updateAuxiliariesAndFlows(in:)",
   "kind" : "symbol",
   "role" : "symbol",
-  "title" : "updateWithRK4(_:)",
+  "title" : "updateAuxiliariesAndFlows(in:)",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/stockflowsimulation\/updatewithrk4(_:)"
+  "url" : "\/documentation\/poieticflows\/stockflowsimulation\/updateauxiliariesandflows(in:)"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulationSystem": {
+  "abstract" : [
+    {
+      "text" : "System that runs a Stock-Flow simulation and stores results in a ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationResult",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "singleton.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "StockFlowSimulationSystem"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulationSystem",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "StockFlowSimulationSystem"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "StockFlowSimulationSystem",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stockflowsimulationsystem"
 }
 }
 }

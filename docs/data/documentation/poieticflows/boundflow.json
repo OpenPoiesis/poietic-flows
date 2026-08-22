@@ -1,0 +1,641 @@
+{
+  "abstract" : [
+    {
+      "text" : "Represents a flow rate between stocks.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundFlow"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "s:12PoieticFlows9BoundFlowV",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "struct"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "BoundFlow"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "PoieticFlows"
+      }
+    ],
+    "navigatorTitle" : [
+      {
+        "kind" : "identifier",
+        "text" : "BoundFlow"
+      }
+    ],
+    "role" : "symbol",
+    "roleHeading" : "Structure",
+    "symbolKind" : "struct",
+    "title" : "BoundFlow"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "macOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "struct"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "BoundFlow"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "seeAlsoSections" : [
+    {
+      "anchor" : "Plan-Internals",
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundBuiltins",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundStock",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundDelay",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundSmooth",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundGraphicalFunction",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/IssueIdentifier"
+      ],
+      "title" : "Plan Internals"
+    }
+  ],
+  "topicSections" : [
+    {
+      "anchor" : "Instance-Properties",
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundFlow\/adjustedValueIndex",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundFlow\/drains",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundFlow\/estimatedValueIndex",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundFlow\/fills",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundFlow\/objectID"
+      ],
+      "title" : "Instance Properties"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/poieticflows\/boundflow"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://PoieticFlows/documentation/PoieticFlows": {
+  "abstract" : [
+    {
+      "text" : "Poietic package for modelling and simulation ",
+      "type" : "text"
+    },
+    {
+      "inlineContent" : [
+        {
+          "text" : "Stock and Flow",
+          "type" : "text"
+        }
+      ],
+      "type" : "emphasis"
+    },
+    {
+      "text" : " models.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "PoieticFlows",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/BoundBuiltins": {
+  "abstract" : [
+    {
+      "text" : "Indices of built-in variables bound to a simulation plan.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "BoundBuiltins"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundBuiltins",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "BoundBuiltins"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "BoundBuiltins",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/boundbuiltins"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/BoundDelay": {
+  "abstract" : [
+    {
+      "text" : "Compiled delay node.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "BoundDelay"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundDelay",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "BoundDelay"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "BoundDelay",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/bounddelay"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/BoundFlow": {
+  "abstract" : [
+    {
+      "text" : "Represents a flow rate between stocks.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "BoundFlow"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundFlow",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "BoundFlow"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "BoundFlow",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/boundflow"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/BoundFlow/adjustedValueIndex": {
+  "abstract" : [
+    {
+      "text" : "Index of a variable in the state holding value of the flow rate that was used in the",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "computation – rate actually applied after non-negative-stock scaling.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "adjustedValueIndex"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV",
+      "text" : "SimulationState"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV5Indexa",
+      "text" : "Index"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundFlow\/adjustedValueIndex",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "adjustedValueIndex",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/boundflow\/adjustedvalueindex"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/BoundFlow/drains": {
+  "abstract" : [
+    {
+      "text" : "ID of a stock in bound stocks that the flow drains.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "drains"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore8ObjectIDa",
+      "text" : "ObjectID"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundFlow\/drains",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "drains",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/boundflow\/drains"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/BoundFlow/estimatedValueIndex": {
+  "abstract" : [
+    {
+      "text" : "Index of a variable in the state holding value of the flow rate that is expected –",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "as computed by the flow’s formula.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "estimatedValueIndex"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV",
+      "text" : "SimulationState"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows15SimulationStateV5Indexa",
+      "text" : "Index"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundFlow\/estimatedValueIndex",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "estimatedValueIndex",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/boundflow\/estimatedvalueindex"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/BoundFlow/fills": {
+  "abstract" : [
+    {
+      "text" : "ID of a stock in bound stocks that the flow fills.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "fills"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore8ObjectIDa",
+      "text" : "ObjectID"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundFlow\/fills",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "fills",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/boundflow\/fills"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/BoundFlow/objectID": {
+  "abstract" : [
+    {
+      "text" : "ID of object that represents this flow rate.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "objectID"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore8ObjectIDa",
+      "text" : "ObjectID"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundFlow\/objectID",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "objectID",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/boundflow\/objectid"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/BoundGraphicalFunction": {
+  "abstract" : [
+    {
+      "text" : "A structure representing a concrete instance of a graphical function",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "in the context of a graph.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "BoundGraphicalFunction"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundGraphicalFunction",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "BoundGraphicalFunction"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "BoundGraphicalFunction",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/boundgraphicalfunction"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/BoundSmooth": {
+  "abstract" : [
+    {
+      "text" : "Compiled smooth node.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "BoundSmooth"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundSmooth",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "BoundSmooth"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "BoundSmooth",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/boundsmooth"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/BoundStock": {
+  "abstract" : [
+    {
+      "text" : "Stock bound to a simulation plan and a simulation state.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "BoundStock"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundStock",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "BoundStock"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "BoundStock",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/boundstock"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/IssueIdentifier": {
+  "abstract" : [
+    {
+      "text" : "Collection of issue identifiers that are attached to objects by systems in the PoieticFlows",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "package.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "enum"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "IssueIdentifier"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/IssueIdentifier",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "IssueIdentifier"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "IssueIdentifier",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/issueidentifier"
+}
+}
+}

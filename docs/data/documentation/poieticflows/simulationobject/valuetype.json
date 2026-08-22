@@ -9,7 +9,6 @@
     "paths" : [
       [
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledModelAndCompiler",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationObject"
       ]
     ]
@@ -24,7 +23,7 @@
     "fragments" : [
       {
         "kind" : "keyword",
-        "text" : "var"
+        "text" : "let"
       },
       {
         "kind" : "text",
@@ -67,7 +66,7 @@
           "tokens" : [
             {
               "kind" : "keyword",
-              "text" : "var"
+              "text" : "let"
             },
             {
               "kind" : "text",
@@ -141,28 +140,6 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/CompiledModelAndCompiler": {
-  "abstract" : [
-    {
-      "text" : "Compiler creates a compiled model, which is an internal representation of",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "a design that can be simulated.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledModelAndCompiler",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Compiled Model and Compiler",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/compiledmodelandcompiler"
-},
 "doc://PoieticFlows/documentation/PoieticFlows/SimulationObject": {
   "abstract" : [
     {
@@ -207,7 +184,7 @@
   "fragments" : [
     {
       "kind" : "keyword",
-      "text" : "var"
+      "text" : "let"
     },
     {
       "kind" : "text",

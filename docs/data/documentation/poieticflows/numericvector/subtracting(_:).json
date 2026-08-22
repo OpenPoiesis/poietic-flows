@@ -1,7 +1,7 @@
 {
   "abstract" : [
     {
-      "text" : "Create a new state by subtracting each value with corresponding value",
+      "text" : "Create a new vector by subtracting each value with corresponding value",
       "type" : "text"
     },
     {
@@ -9,7 +9,7 @@
       "type" : "text"
     },
     {
-      "text" : "of another state.",
+      "text" : "of another vector.",
       "type" : "text"
     }
   ],
@@ -17,7 +17,6 @@
     "paths" : [
       [
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector"
       ]
     ]
@@ -144,15 +143,6 @@
           "type" : "heading"
         },
         {
-          "inlineContent" : [
-            {
-              "text" : "The built-in values will remain the same.",
-              "type" : "text"
-            }
-          ],
-          "type" : "paragraph"
-        },
-        {
           "content" : [
             {
               "inlineContent" : [
@@ -255,7 +245,7 @@
 "doc://PoieticFlows/documentation/PoieticFlows/NumericVector/subtracting(_:)": {
   "abstract" : [
     {
-      "text" : "Create a new state by subtracting each value with corresponding value",
+      "text" : "Create a new vector by subtracting each value with corresponding value",
       "type" : "text"
     },
     {
@@ -263,7 +253,7 @@
       "type" : "text"
     },
     {
-      "text" : "of another state.",
+      "text" : "of another vector.",
       "type" : "text"
     }
   ],
@@ -305,28 +295,6 @@
   "title" : "subtracting(_:)",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/numericvector\/subtracting(_:)"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/Simulation": {
-  "abstract" : [
-    {
-      "text" : "The Simulator runs the simulation and produces a simulation result as a",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "collection of time series.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Simulation and Computation",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/simulation"
 }
 }
 }

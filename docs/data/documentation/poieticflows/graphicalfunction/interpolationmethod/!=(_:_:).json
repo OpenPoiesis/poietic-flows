@@ -17,10 +17,8 @@
     "paths" : [
       [
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction\/InterpolationMethod",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction\/InterpolationMethod\/Equatable-Implementations"
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction\/InterpolationMethod"
       ]
     ]
   },
@@ -230,7 +228,7 @@
 "doc://PoieticFlows/documentation/PoieticFlows/GraphicalFunction": {
   "abstract" : [
     {
-      "text" : "Object representing a function defined by a graph.",
+      "text" : "A function defined by a set of 2D control points with configurable interpolation.",
       "type" : "text"
     }
   ],
@@ -263,7 +261,10 @@
 },
 "doc://PoieticFlows/documentation/PoieticFlows/GraphicalFunction/InterpolationMethod": {
   "abstract" : [
-
+    {
+      "text" : "Interpolation method used to compute values between control points.",
+      "type" : "text"
+    }
   ],
   "fragments" : [
     {
@@ -353,39 +354,6 @@
   "title" : "!=(_:_:)",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/graphicalfunction\/interpolationmethod\/!=(_:_:)"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/GraphicalFunction/InterpolationMethod/Equatable-Implementations": {
-  "abstract" : [
-
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction\/InterpolationMethod\/Equatable-Implementations",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Equatable Implementations",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/graphicalfunction\/interpolationmethod\/equatable-implementations"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/Simulation": {
-  "abstract" : [
-    {
-      "text" : "The Simulator runs the simulation and produces a simulation result as a",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "collection of time series.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Simulation and Computation",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/simulation"
 }
 }
 }

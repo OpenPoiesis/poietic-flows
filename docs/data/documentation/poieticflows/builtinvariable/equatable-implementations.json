@@ -3,12 +3,7 @@
     "paths" : [
       [
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledModelAndCompiler",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BuiltinVariable"
-      ],
-      [
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationRunning",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BuiltinVariable"
       ]
     ]
@@ -90,7 +85,7 @@
 "doc://PoieticFlows/documentation/PoieticFlows/BuiltinVariable": {
   "abstract" : [
     {
-      "text" : "Builtin variable kind.",
+      "text" : "Builtin variables for the Stock and Flow simulation.",
       "type" : "text"
     }
   ],
@@ -183,10 +178,10 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/builtinvariable\/!=(_:_:)"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/CompiledModelAndCompiler": {
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationRunning": {
   "abstract" : [
     {
-      "text" : "Compiler creates a compiled model, which is an internal representation of",
+      "text" : "The simulation is run according to the simulation plan, which describes order in which the objects",
       "type" : "text"
     },
     {
@@ -194,21 +189,7 @@
       "type" : "text"
     },
     {
-      "text" : "a design that can be simulated.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledModelAndCompiler",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Compiled Model and Compiler",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/compiledmodelandcompiler"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/Simulation": {
-  "abstract" : [
-    {
-      "text" : "The Simulator runs the simulation and produces a simulation result as a",
+      "text" : "are evaluated, how the computation is performed and where in the simulation state the variables",
       "type" : "text"
     },
     {
@@ -216,16 +197,16 @@
       "type" : "text"
     },
     {
-      "text" : "collection of time series.",
+      "text" : "live.",
       "type" : "text"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationRunning",
   "kind" : "article",
   "role" : "collectionGroup",
-  "title" : "Simulation and Computation",
+  "title" : "Simulation",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/simulation"
+  "url" : "\/documentation\/poieticflows\/simulationrunning"
 }
 }
 }

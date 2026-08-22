@@ -1,15 +1,14 @@
 {
   "abstract" : [
     {
-      "text" : "Object representing a function defined by a graph.",
+      "text" : "A function defined by a set of 2D control points with configurable interpolation.",
       "type" : "text"
     }
   ],
   "hierarchy" : {
     "paths" : [
       [
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation"
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows"
       ]
     ]
   },
@@ -89,7 +88,11 @@
         {
           "inlineContent" : [
             {
-              "text" : "The graphical function is defined by a set of points. The function output",
+              "code" : "GraphicalFunction",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " represents a mathematical function y = f(x) defined by",
               "type" : "text"
             },
             {
@@ -97,7 +100,7 @@
               "type" : "text"
             },
             {
-              "text" : "value for given input value is computed using the function’s interpolation",
+              "text" : "discrete control points rather than an analytical formula. The function value",
               "type" : "text"
             },
             {
@@ -105,11 +108,406 @@
               "type" : "text"
             },
             {
-              "text" : "method.",
+              "text" : "at any x-coordinate is computed by interpolating between the control points",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "using one of several interpolation methods.",
               "type" : "text"
             }
           ],
           "type" : "paragraph"
+        },
+        {
+          "anchor" : "Overview",
+          "level" : 2,
+          "text" : "Overview",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Graphical functions are commonly used in system dynamics modelling to represent",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "non-linear relationships, lookup tables, and empirical data. They provide a",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "flexible way to define complex relationships without requiring explicit",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "mathematical formulas.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "anchor" : "Usage",
+          "level" : 2,
+          "text" : "Usage",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Create a graphical function by specifying control points and an interpolation method:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "let points = [",
+            "    Point(x: 0.0, y: 0.0),",
+            "    Point(x: 5.0, y: 10.0),",
+            "    Point(x: 10.0, y: 15.0)",
+            "]",
+            "",
+            "let function = GraphicalFunction(points: points, method: .linear)",
+            "let result = function.apply(x: 7.5)  \/\/ Returns 12.5"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "anchor" : "Interpolation-Methods",
+          "level" : 2,
+          "text" : "Interpolation Methods",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Four interpolation methods are available, each suited for different use cases:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "items" : [
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "inlineContent" : [
+                        {
+                          "text" : "Step",
+                          "type" : "text"
+                        }
+                      ],
+                      "type" : "strong"
+                    },
+                    {
+                      "text" : " (",
+                      "type" : "text"
+                    },
+                    {
+                      "code" : ".step",
+                      "type" : "codeVoice"
+                    },
+                    {
+                      "text" : "): Left-continuous step function (zero-order hold).",
+                      "type" : "text"
+                    },
+                    {
+                      "text" : " ",
+                      "type" : "text"
+                    },
+                    {
+                      "text" : "Best for discrete state changes and digital signals.",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "inlineContent" : [
+                        {
+                          "text" : "Linear",
+                          "type" : "text"
+                        }
+                      ],
+                      "type" : "strong"
+                    },
+                    {
+                      "text" : " (",
+                      "type" : "text"
+                    },
+                    {
+                      "code" : ".linear",
+                      "type" : "codeVoice"
+                    },
+                    {
+                      "text" : "): Piecewise linear interpolation.",
+                      "type" : "text"
+                    },
+                    {
+                      "text" : " ",
+                      "type" : "text"
+                    },
+                    {
+                      "text" : "General-purpose method providing simple, predictable behaviors.",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "inlineContent" : [
+                        {
+                          "text" : "Cubic",
+                          "type" : "text"
+                        }
+                      ],
+                      "type" : "strong"
+                    },
+                    {
+                      "text" : " (",
+                      "type" : "text"
+                    },
+                    {
+                      "code" : ".cubic",
+                      "type" : "codeVoice"
+                    },
+                    {
+                      "text" : "): Smooth Catmull-Rom spline interpolation.",
+                      "type" : "text"
+                    },
+                    {
+                      "text" : " ",
+                      "type" : "text"
+                    },
+                    {
+                      "text" : "Creates smooth curves through all points, ideal for natural-looking curves.",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "inlineContent" : [
+                        {
+                          "text" : "Nearest",
+                          "type" : "text"
+                        }
+                      ],
+                      "type" : "strong"
+                    },
+                    {
+                      "text" : " (",
+                      "type" : "text"
+                    },
+                    {
+                      "code" : ".nearestStep",
+                      "type" : "codeVoice"
+                    },
+                    {
+                      "text" : "): Nearest-neighbor interpolation.",
+                      "type" : "text"
+                    },
+                    {
+                      "text" : " ",
+                      "type" : "text"
+                    },
+                    {
+                      "text" : "Selects the y-value of the closest control point.",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            }
+          ],
+          "type" : "unorderedList"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "See ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction\/InterpolationMethod",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : " for detailed descriptions of each method.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "anchor" : "Notes-on-Points",
+          "level" : 2,
+          "text" : "Notes on Points",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Control points are automatically sorted by their x-coordinate when the function",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "is created, ensuring correct interpolation behaviour regardless of input order.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Points outside the defined range are clamped to the boundary values (except",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "for nearest-neighbor interpolation, which extends the nearest point indefinitely).",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "anchor" : "Performance-Considerations",
+          "level" : 2,
+          "text" : "Performance Considerations",
+          "type" : "heading"
+        },
+        {
+          "items" : [
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "Point lookup is O(n) where n is the number of points",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "Consider using fewer points for frequently evaluated functions",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "text" : "Points are sorted once during initialisation",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            }
+          ],
+          "type" : "unorderedList"
+        },
+        {
+          "content" : [
+            {
+              "inlineContent" : [
+                {
+                  "text" : "",
+                  "type" : "text"
+                },
+                {
+                  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction\/InterpolationMethod",
+                  "isActive" : true,
+                  "type" : "reference"
+                },
+                {
+                  "text" : ", ",
+                  "type" : "text"
+                },
+                {
+                  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction\/apply(x:)",
+                  "isActive" : true,
+                  "type" : "reference"
+                },
+                {
+                  "text" : ", ",
+                  "type" : "text"
+                },
+                {
+                  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/catmullRomSpline(p0:p1:p2:p3:t:)",
+                  "isActive" : true,
+                  "type" : "reference"
+                }
+              ],
+              "type" : "paragraph"
+            }
+          ],
+          "name" : "See Also",
+          "style" : "note",
+          "type" : "aside"
         }
       ],
       "kind" : "content"
@@ -125,14 +523,19 @@
   ],
   "seeAlsoSections" : [
     {
-      "anchor" : "Functions",
+      "anchor" : "Simulation",
       "generated" : true,
       "identifiers" : [
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BuiltinUnaryOperators",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BuiltinBinaryOperators",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BuiltinFunctions"
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulationSystem",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationSettingsSystem",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationState",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationError",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/RegularTimeSeries",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BuiltinVariable"
       ],
-      "title" : "Functions"
+      "title" : "Simulation"
     }
   ],
   "topicSections" : [
@@ -140,16 +543,28 @@
       "anchor" : "Initializers",
       "generated" : true,
       "identifiers" : [
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction\/init(points:)"
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction\/init(points:method:)"
       ],
       "title" : "Initializers"
+    },
+    {
+      "anchor" : "Instance-Properties",
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction\/method",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction\/points"
+      ],
+      "title" : "Instance Properties"
     },
     {
       "anchor" : "Instance-Methods",
       "generated" : true,
       "identifiers" : [
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction\/createFunction(name:)",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction\/stepFunction(x:)"
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction\/apply(x:)",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction\/cubicInterpolation(x:)",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction\/linearInterpolation(x:)",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction\/nearestInterpolation(x:)",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction\/stepInterpolation(x:)"
       ],
       "title" : "Instance Methods"
     },
@@ -203,17 +618,17 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/BuiltinBinaryOperators": {
+"doc://PoieticFlows/documentation/PoieticFlows/BuiltinVariable": {
   "abstract" : [
     {
-      "text" : "List of built-in numeric binary operators.",
+      "text" : "Builtin variables for the Stock and Flow simulation.",
       "type" : "text"
     }
   ],
   "fragments" : [
     {
       "kind" : "keyword",
-      "text" : "let"
+      "text" : "enum"
     },
     {
       "kind" : "text",
@@ -221,115 +636,26 @@
     },
     {
       "kind" : "identifier",
-      "text" : "BuiltinBinaryOperators"
-    },
-    {
-      "kind" : "text",
-      "text" : ": ["
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:11PoieticCore8FunctionC",
-      "text" : "Function"
-    },
-    {
-      "kind" : "text",
-      "text" : "]"
+      "text" : "BuiltinVariable"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BuiltinBinaryOperators",
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BuiltinVariable",
   "kind" : "symbol",
-  "role" : "symbol",
-  "title" : "BuiltinBinaryOperators",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/builtinbinaryoperators"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/BuiltinFunctions": {
-  "abstract" : [
-    {
-      "text" : "List of built-in numeric function.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "let"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
+  "navigatorTitle" : [
     {
       "kind" : "identifier",
-      "text" : "BuiltinFunctions"
-    },
-    {
-      "kind" : "text",
-      "text" : ": ["
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:11PoieticCore8FunctionC",
-      "text" : "Function"
-    },
-    {
-      "kind" : "text",
-      "text" : "]"
+      "text" : "BuiltinVariable"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BuiltinFunctions",
-  "kind" : "symbol",
   "role" : "symbol",
-  "title" : "BuiltinFunctions",
+  "title" : "BuiltinVariable",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/builtinfunctions"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/BuiltinUnaryOperators": {
-  "abstract" : [
-    {
-      "text" : "List of built-in numeric unary operators.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "let"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "BuiltinUnaryOperators"
-    },
-    {
-      "kind" : "text",
-      "text" : ": ["
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:11PoieticCore8FunctionC",
-      "text" : "Function"
-    },
-    {
-      "kind" : "text",
-      "text" : "]"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BuiltinUnaryOperators",
-  "kind" : "symbol",
-  "role" : "symbol",
-  "title" : "BuiltinUnaryOperators",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/builtinunaryoperators"
+  "url" : "\/documentation\/poieticflows\/builtinvariable"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/GraphicalFunction": {
   "abstract" : [
     {
-      "text" : "Object representing a function defined by a graph.",
+      "text" : "A function defined by a set of 2D control points with configurable interpolation.",
       "type" : "text"
     }
   ],
@@ -362,7 +688,10 @@
 },
 "doc://PoieticFlows/documentation/PoieticFlows/GraphicalFunction/InterpolationMethod": {
   "abstract" : [
-
+    {
+      "text" : "Interpolation method used to compute values between control points.",
+      "type" : "text"
+    }
   ],
   "fragments" : [
     {
@@ -391,18 +720,10 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/graphicalfunction\/interpolationmethod"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/GraphicalFunction/createFunction(name:)": {
+"doc://PoieticFlows/documentation/PoieticFlows/GraphicalFunction/apply(x:)": {
   "abstract" : [
     {
-      "text" : "Creates an unary function used in computation that wraps",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "this graphical function.",
+      "text" : "Evaluates the graphical function at the given x coordinate.",
       "type" : "text"
     }
   ],
@@ -417,7 +738,7 @@
     },
     {
       "kind" : "identifier",
-      "text" : "createFunction"
+      "text" : "apply"
     },
     {
       "kind" : "text",
@@ -425,7 +746,7 @@
     },
     {
       "kind" : "externalParam",
-      "text" : "name"
+      "text" : "x"
     },
     {
       "kind" : "text",
@@ -433,8 +754,8 @@
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:SS",
-      "text" : "String"
+      "preciseIdentifier" : "s:Sd",
+      "text" : "Double"
     },
     {
       "kind" : "text",
@@ -442,18 +763,72 @@
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:11PoieticCore8FunctionC",
-      "text" : "Function"
+      "preciseIdentifier" : "s:Sd",
+      "text" : "Double"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction\/createFunction(name:)",
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction\/apply(x:)",
   "kind" : "symbol",
   "role" : "symbol",
-  "title" : "createFunction(name:)",
+  "title" : "apply(x:)",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/graphicalfunction\/createfunction(name:)"
+  "url" : "\/documentation\/poieticflows\/graphicalfunction\/apply(x:)"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/GraphicalFunction/init(points:)": {
+"doc://PoieticFlows/documentation/PoieticFlows/GraphicalFunction/cubicInterpolation(x:)": {
+  "abstract" : [
+    {
+      "text" : "Cubic interpolation using Catmull-Rom spline.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "cubicInterpolation"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "x"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sd",
+      "text" : "Double"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sd",
+      "text" : "Double"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction\/cubicInterpolation(x:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "cubicInterpolation(x:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/graphicalfunction\/cubicinterpolation(x:)"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/GraphicalFunction/init(points:method:)": {
   "abstract" : [
     {
       "text" : "Create a new graphical function with given set of points.",
@@ -484,20 +859,46 @@
     },
     {
       "kind" : "text",
-      "text" : "])"
+      "text" : "], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "method"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows17GraphicalFunctionC",
+      "text" : "GraphicalFunction"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows17GraphicalFunctionC19InterpolationMethodO",
+      "text" : "InterpolationMethod"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction\/init(points:)",
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction\/init(points:method:)",
   "kind" : "symbol",
   "role" : "symbol",
-  "title" : "init(points:)",
+  "title" : "init(points:method:)",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/graphicalfunction\/init(points:)"
+  "url" : "\/documentation\/poieticflows\/graphicalfunction\/init(points:method:)"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/GraphicalFunction/stepFunction(x:)": {
+"doc://PoieticFlows/documentation/PoieticFlows/GraphicalFunction/linearInterpolation(x:)": {
   "abstract" : [
     {
-      "text" : "Function that finds the nearest time point and returns its y-value.",
+      "text" : "Linear interpolation between consecutive points.",
       "type" : "text"
     }
   ],
@@ -512,7 +913,7 @@
     },
     {
       "kind" : "identifier",
-      "text" : "stepFunction"
+      "text" : "linearInterpolation"
     },
     {
       "kind" : "text",
@@ -541,34 +942,608 @@
       "text" : "Double"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction\/stepFunction(x:)",
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction\/linearInterpolation(x:)",
   "kind" : "symbol",
   "role" : "symbol",
-  "title" : "stepFunction(x:)",
+  "title" : "linearInterpolation(x:)",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/graphicalfunction\/stepfunction(x:)"
+  "url" : "\/documentation\/poieticflows\/graphicalfunction\/linearinterpolation(x:)"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/Simulation": {
+"doc://PoieticFlows/documentation/PoieticFlows/GraphicalFunction/method": {
   "abstract" : [
     {
-      "text" : "The Simulator runs the simulation and produces a simulation result as a",
+      "text" : "Interpolation method used to compute output.",
       "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "method"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows17GraphicalFunctionC",
+      "text" : "GraphicalFunction"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows17GraphicalFunctionC19InterpolationMethodO",
+      "text" : "InterpolationMethod"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction\/method",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "method",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/graphicalfunction\/method"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/GraphicalFunction/nearestInterpolation(x:)": {
+  "abstract" : [
+    {
+      "text" : "Function that finds the nearest point and returns its y-value.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "nearestInterpolation"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "x"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sd",
+      "text" : "Double"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sd",
+      "text" : "Double"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction\/nearestInterpolation(x:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "nearestInterpolation(x:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/graphicalfunction\/nearestinterpolation(x:)"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/GraphicalFunction/points": {
+  "abstract" : [
+    {
+      "text" : "Set of points defining the function.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "points"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore5Pointa",
+      "text" : "Point"
+    },
+    {
+      "kind" : "text",
+      "text" : "]"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction\/points",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "points",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/graphicalfunction\/points"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/GraphicalFunction/stepInterpolation(x:)": {
+  "abstract" : [
+    {
+      "text" : "Left-continuous step function interpolation (zero-order hold).",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "stepInterpolation"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "x"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sd",
+      "text" : "Double"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sd",
+      "text" : "Double"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction\/stepInterpolation(x:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "stepInterpolation(x:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/graphicalfunction\/stepinterpolation(x:)"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/NumericVector": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "NumericVector"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "NumericVector"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "NumericVector",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/numericvector"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/RegularTimeSeries": {
+  "abstract" : [
+    {
+      "text" : "Structure representing numeric time series with regular time intervals.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "RegularTimeSeries"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/RegularTimeSeries",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "RegularTimeSeries"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "RegularTimeSeries",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/regulartimeseries"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationError": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SimulationError"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationError",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SimulationError"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SimulationError",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationerror"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationResult": {
+  "abstract" : [
+    {
+      "text" : "Makeshift simulation result container.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SimulationResult"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationResult",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SimulationResult"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SimulationResult",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationresult"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationSettingsSystem": {
+  "abstract" : [
+    {
+      "text" : "System that extracts simulation settings from a plane.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SimulationSettingsSystem"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationSettingsSystem",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SimulationSettingsSystem"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SimulationSettingsSystem",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationsettingssystem"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationState": {
+  "abstract" : [
+    {
+      "text" : "A collection of simulation state variables.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SimulationState"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationState",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SimulationState"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SimulationState",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationstate"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation": {
+  "abstract" : [
+    {
+      "text" : "Stock-Flow simulation specific computation and logic.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "StockFlowSimulation"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "StockFlowSimulation"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "StockFlowSimulation",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stockflowsimulation"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulationSystem": {
+  "abstract" : [
+    {
+      "text" : "System that runs a Stock-Flow simulation and stores results in a ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationResult",
+      "isActive" : true,
+      "type" : "reference"
     },
     {
       "text" : " ",
       "type" : "text"
     },
     {
-      "text" : "collection of time series.",
+      "text" : "singleton.",
       "type" : "text"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Simulation and Computation",
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "StockFlowSimulationSystem"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulationSystem",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "StockFlowSimulationSystem"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "StockFlowSimulationSystem",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/simulation"
+  "url" : "\/documentation\/poieticflows\/stockflowsimulationsystem"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/catmullRomSpline(p0:p1:p2:p3:t:)": {
+  "abstract" : [
+    {
+      "text" : "Evaluates a Catmull-Rom spline segment at parameter t.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "catmullRomSpline"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "p0"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore5Pointa",
+      "text" : "Point"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "p1"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore5Pointa",
+      "text" : "Point"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "p2"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore5Pointa",
+      "text" : "Point"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "p3"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore5Pointa",
+      "text" : "Point"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "t"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sd",
+      "text" : "Double"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sd",
+      "text" : "Double"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/catmullRomSpline(p0:p1:p2:p3:t:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "catmullRomSpline(p0:p1:p2:p3:t:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/catmullromspline(p0:p1:p2:p3:t:)"
 }
 }
 }

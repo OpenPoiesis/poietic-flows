@@ -17,7 +17,6 @@
     "paths" : [
       [
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledModelAndCompiler",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationObject"
       ]
     ]
@@ -116,7 +115,7 @@
                   "type" : "text"
                 },
                 {
-                  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledModel\/stateVariables",
+                  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/stateVariables",
                   "isActive" : true,
                   "type" : "reference"
                 }
@@ -180,69 +179,6 @@
   "title" : "PoieticFlows",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/CompiledModel/stateVariables": {
-  "abstract" : [
-    {
-      "text" : "List of simulation state variables.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "let"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "stateVariables"
-    },
-    {
-      "kind" : "text",
-      "text" : ": ["
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:12PoieticFlows13StateVariableV",
-      "text" : "StateVariable"
-    },
-    {
-      "kind" : "text",
-      "text" : "]"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledModel\/stateVariables",
-  "kind" : "symbol",
-  "role" : "symbol",
-  "title" : "stateVariables",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/compiledmodel\/statevariables"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/CompiledModelAndCompiler": {
-  "abstract" : [
-    {
-      "text" : "Compiler creates a compiled model, which is an internal representation of",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "a design that can be simulated.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledModelAndCompiler",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Compiled Model and Compiler",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/compiledmodelandcompiler"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/SimulationObject": {
   "abstract" : [
@@ -322,6 +258,47 @@
   "title" : "variableIndex",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/simulationobject\/variableindex"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationPlan/stateVariables": {
+  "abstract" : [
+    {
+      "text" : "List of simulation state variables.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "stateVariables"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows13StateVariableV",
+      "text" : "StateVariable"
+    },
+    {
+      "kind" : "text",
+      "text" : "]"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/stateVariables",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "stateVariables",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationplan\/statevariables"
 }
 }
 }

@@ -2,8 +2,7 @@
   "hierarchy" : {
     "paths" : [
       [
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation"
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows"
       ]
     ]
   },
@@ -78,6 +77,7 @@
       "identifiers" : [
         "doc:\/\/PoieticFlows\/SK",
         "doc:\/\/PoieticFlows\/Sl",
+        "doc:\/\/PoieticFlows\/SQ",
         "doc:\/\/PoieticFlows\/Sk",
         "doc:\/\/PoieticFlows\/ST"
       ],
@@ -96,14 +96,19 @@
   ],
   "seeAlsoSections" : [
     {
-      "anchor" : "Simulation-and-Simulator",
+      "anchor" : "Simulation",
       "generated" : true,
       "identifiers" : [
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulator",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationState"
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulationSystem",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationSettingsSystem",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationState",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationError",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/RegularTimeSeries",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BuiltinVariable"
       ],
-      "title" : "Simulation and Simulator"
+      "title" : "Simulation"
     }
   ],
   "topicSections" : [
@@ -113,8 +118,12 @@
       "identifiers" : [
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/*(_:_:)-402xh",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/*(_:_:)-9sb44",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/*=(_:_:)",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/+(_:_:)",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/+=(_:_:)",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/-(_:)",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/-(_:_:)",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/-=(_:_:)",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/_(_:_:)"
       ],
       "title" : "Operators"
@@ -142,11 +151,16 @@
       "anchor" : "Instance-Methods",
       "generated" : true,
       "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/add(_:)",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/adding(_:)",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/divided(by:)",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/index(after:)",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/multiplied(by:)",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/subtracting(_:)"
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/multiply(_:)",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/negated()",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/subtract(_:)",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/subtracting(_:)",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/sum()"
       ],
       "title" : "Instance Methods"
     },
@@ -154,7 +168,8 @@
       "anchor" : "Subscripts",
       "generated" : true,
       "identifiers" : [
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/subscript(_:)"
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/subscript(_:)-5xsh1",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/subscript(_:)-mlh2"
       ],
       "title" : "Subscripts"
     },
@@ -172,6 +187,7 @@
       "identifiers" : [
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/BidirectionalCollection-Implementations",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/Collection-Implementations",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/Equatable-Implementations",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/RandomAccessCollection-Implementations",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/Sequence-Implementations"
       ],
@@ -195,6 +211,11 @@
 "doc://PoieticFlows/SK": {
   "identifier" : "doc:\/\/PoieticFlows\/SK",
   "title" : "Swift.BidirectionalCollection",
+  "type" : "unresolvable"
+},
+"doc://PoieticFlows/SQ": {
+  "identifier" : "doc:\/\/PoieticFlows\/SQ",
+  "title" : "Swift.Equatable",
   "type" : "unresolvable"
 },
 "doc://PoieticFlows/ST": {
@@ -238,6 +259,74 @@
   "title" : "PoieticFlows",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/BuiltinVariable": {
+  "abstract" : [
+    {
+      "text" : "Builtin variables for the Stock and Flow simulation.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "enum"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "BuiltinVariable"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BuiltinVariable",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "BuiltinVariable"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "BuiltinVariable",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/builtinvariable"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/GraphicalFunction": {
+  "abstract" : [
+    {
+      "text" : "A function defined by a set of 2D control points with configurable interpolation.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "GraphicalFunction"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/GraphicalFunction",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "GraphicalFunction"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "GraphicalFunction",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/graphicalfunction"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/NumericVector": {
   "abstract" : [
@@ -398,6 +487,73 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/numericvector\/*(_:_:)-9sb44"
 },
+"doc://PoieticFlows/documentation/PoieticFlows/NumericVector/*=(_:_:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "*="
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "keyword",
+      "text" : "inout"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows13NumericVectorV",
+      "text" : "NumericVector"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sd",
+      "text" : "Double"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/*=(_:_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "*=(_:_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/numericvector\/*=(_:_:)"
+},
 "doc://PoieticFlows/documentation/PoieticFlows/NumericVector/+(_:_:)": {
   "abstract" : [
 
@@ -461,6 +617,136 @@
   "title" : "+(_:_:)",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/numericvector\/+(_:_:)"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/NumericVector/+=(_:_:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "+="
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "keyword",
+      "text" : "inout"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows13NumericVectorV",
+      "text" : "NumericVector"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows13NumericVectorV",
+      "text" : "NumericVector"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/+=(_:_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "+=(_:_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/numericvector\/+=(_:_:)"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/NumericVector/-(_:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "-"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "keyword",
+      "text" : "inout"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows13NumericVectorV",
+      "text" : "NumericVector"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows13NumericVectorV",
+      "text" : "NumericVector"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/-(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "-(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/numericvector\/-(_:)"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/NumericVector/-(_:_:)": {
   "abstract" : [
@@ -526,6 +812,73 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/numericvector\/-(_:_:)"
 },
+"doc://PoieticFlows/documentation/PoieticFlows/NumericVector/-=(_:_:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "-="
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "keyword",
+      "text" : "inout"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows13NumericVectorV",
+      "text" : "NumericVector"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows13NumericVectorV",
+      "text" : "NumericVector"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/-=(_:_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "-=(_:_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/numericvector\/-=(_:_:)"
+},
 "doc://PoieticFlows/documentation/PoieticFlows/NumericVector/BidirectionalCollection-Implementations": {
   "abstract" : [
 
@@ -547,6 +900,17 @@
   "title" : "Collection Implementations",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/numericvector\/collection-implementations"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/NumericVector/Equatable-Implementations": {
+  "abstract" : [
+
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/Equatable-Implementations",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Equatable Implementations",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/numericvector\/equatable-implementations"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/NumericVector/Index": {
   "abstract" : [
@@ -665,10 +1029,48 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/numericvector\/_(_:_:)"
 },
+"doc://PoieticFlows/documentation/PoieticFlows/NumericVector/add(_:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "add"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows13NumericVectorV",
+      "text" : "NumericVector"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/add(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "add(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/numericvector\/add(_:)"
+},
 "doc://PoieticFlows/documentation/PoieticFlows/NumericVector/adding(_:)": {
   "abstract" : [
     {
-      "text" : "Create a new state by adding each value with corresponding value",
+      "text" : "Create a new vector by adding each value with corresponding value",
       "type" : "text"
     },
     {
@@ -676,7 +1078,7 @@
       "type" : "text"
     },
     {
-      "text" : "of another state.",
+      "text" : "of another vector.",
       "type" : "text"
     }
   ],
@@ -722,7 +1124,7 @@
 "doc://PoieticFlows/documentation/PoieticFlows/NumericVector/divided(by:)": {
   "abstract" : [
     {
-      "text" : "Create a new state with variable values divided by given value.",
+      "text" : "Create a new vector with values divided by given value.",
       "type" : "text"
     }
   ],
@@ -965,7 +1367,7 @@
 "doc://PoieticFlows/documentation/PoieticFlows/NumericVector/multiplied(by:)": {
   "abstract" : [
     {
-      "text" : "Create a new state with variable values multiplied by given value.",
+      "text" : "Create a new vector with values multiplied by given value.",
       "type" : "text"
     }
   ],
@@ -1015,6 +1417,78 @@
   "title" : "multiplied(by:)",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/numericvector\/multiplied(by:)"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/NumericVector/multiply(_:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "multiply"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sd",
+      "text" : "Double"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/multiply(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "multiply(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/numericvector\/multiply(_:)"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/NumericVector/negated()": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "negated"
+    },
+    {
+      "kind" : "text",
+      "text" : "() -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows13NumericVectorV",
+      "text" : "NumericVector"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/negated()",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "negated()",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/numericvector\/negated()"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/NumericVector/startIndex": {
   "abstract" : [
@@ -1068,7 +1542,7 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/numericvector\/startindex"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/NumericVector/subscript(_:)": {
+"doc://PoieticFlows/documentation/PoieticFlows/NumericVector/subscript(_:)-5xsh1": {
   "abstract" : [
 
   ],
@@ -1105,17 +1579,99 @@
       "text" : "Double"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/subscript(_:)",
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/subscript(_:)-5xsh1",
   "kind" : "symbol",
   "role" : "symbol",
   "title" : "subscript(_:)",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/numericvector\/subscript(_:)"
+  "url" : "\/documentation\/poieticflows\/numericvector\/subscript(_:)-5xsh1"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/NumericVector/subscript(_:)-mlh2": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "subscript"
+    },
+    {
+      "kind" : "text",
+      "text" : "(["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows13NumericVectorV",
+      "text" : "NumericVector"
+    },
+    {
+      "kind" : "text",
+      "text" : "."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows13NumericVectorV5Indexa",
+      "text" : "Index"
+    },
+    {
+      "kind" : "text",
+      "text" : "]) -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows13NumericVectorV",
+      "text" : "NumericVector"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/subscript(_:)-mlh2",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "subscript(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/numericvector\/subscript(_:)-mlh2"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/NumericVector/subtract(_:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "subtract"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows13NumericVectorV",
+      "text" : "NumericVector"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/subtract(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "subtract(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/numericvector\/subtract(_:)"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/NumericVector/subtracting(_:)": {
   "abstract" : [
     {
-      "text" : "Create a new state by subtracting each value with corresponding value",
+      "text" : "Create a new vector by subtracting each value with corresponding value",
       "type" : "text"
     },
     {
@@ -1123,7 +1679,7 @@
       "type" : "text"
     },
     {
-      "text" : "of another state.",
+      "text" : "of another vector.",
       "type" : "text"
     }
   ],
@@ -1166,6 +1722,40 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/numericvector\/subtracting(_:)"
 },
+"doc://PoieticFlows/documentation/PoieticFlows/NumericVector/sum()": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "sum"
+    },
+    {
+      "kind" : "text",
+      "text" : "() -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sd",
+      "text" : "Double"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/sum()",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "sum()",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/numericvector\/sum()"
+},
 "doc://PoieticFlows/documentation/PoieticFlows/NumericVector/values": {
   "abstract" : [
 
@@ -1204,56 +1794,143 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/numericvector\/values"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/Simulation": {
+"doc://PoieticFlows/documentation/PoieticFlows/RegularTimeSeries": {
   "abstract" : [
     {
-      "text" : "The Simulator runs the simulation and produces a simulation result as a",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "collection of time series.",
+      "text" : "Structure representing numeric time series with regular time intervals.",
       "type" : "text"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Simulation and Computation",
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "RegularTimeSeries"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/RegularTimeSeries",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "RegularTimeSeries"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "RegularTimeSeries",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/simulation"
+  "url" : "\/documentation\/poieticflows\/regulartimeseries"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationError": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SimulationError"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationError",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SimulationError"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SimulationError",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationerror"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationResult": {
+  "abstract" : [
+    {
+      "text" : "Makeshift simulation result container.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SimulationResult"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationResult",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SimulationResult"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SimulationResult",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationresult"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationSettingsSystem": {
+  "abstract" : [
+    {
+      "text" : "System that extracts simulation settings from a plane.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SimulationSettingsSystem"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationSettingsSystem",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SimulationSettingsSystem"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SimulationSettingsSystem",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationsettingssystem"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/SimulationState": {
   "abstract" : [
     {
-      "text" : "A simple vector-like structure to hold an unordered collection of numeric",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "values that can be accessed by key. Simple arithmetic operations can be done",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "with the structure, such as addition, subtraction and multiplication",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "by a scalar value.",
+      "text" : "A collection of simulation state variables.",
       "type" : "text"
     }
   ],
@@ -1283,40 +1960,6 @@
   "title" : "SimulationState",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/simulationstate"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/Simulator": {
-  "abstract" : [
-    {
-      "text" : "Object for controlling a simulation session.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "class"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "Simulator"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulator",
-  "kind" : "symbol",
-  "navigatorTitle" : [
-    {
-      "kind" : "identifier",
-      "text" : "Simulator"
-    }
-  ],
-  "role" : "symbol",
-  "title" : "Simulator",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/simulator"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation": {
   "abstract" : [
@@ -1351,6 +1994,53 @@
   "title" : "StockFlowSimulation",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/stockflowsimulation"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulationSystem": {
+  "abstract" : [
+    {
+      "text" : "System that runs a Stock-Flow simulation and stores results in a ",
+      "type" : "text"
+    },
+    {
+      "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationResult",
+      "isActive" : true,
+      "type" : "reference"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "singleton.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "StockFlowSimulationSystem"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulationSystem",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "StockFlowSimulationSystem"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "StockFlowSimulationSystem",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/stockflowsimulationsystem"
 }
 }
 }

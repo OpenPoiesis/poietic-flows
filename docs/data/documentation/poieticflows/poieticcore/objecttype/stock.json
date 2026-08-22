@@ -261,7 +261,7 @@
 "doc://PoieticFlows/documentation/PoieticFlows/PoieticCore/ObjectType/Flow": {
   "abstract" : [
     {
-      "text" : "A flow node - one of the two core nodes.",
+      "text" : "An edge between stock node and a flow rate node.",
       "type" : "text"
     }
   ],

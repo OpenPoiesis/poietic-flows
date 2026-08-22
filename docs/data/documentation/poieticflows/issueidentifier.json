@@ -1,0 +1,761 @@
+{
+  "abstract" : [
+    {
+      "text" : "Collection of issue identifiers that are attached to objects by systems in the PoieticFlows",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "package.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/IssueIdentifier"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "s:12PoieticFlows15IssueIdentifierO",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "enum"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "IssueIdentifier"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "PoieticFlows"
+      }
+    ],
+    "navigatorTitle" : [
+      {
+        "kind" : "identifier",
+        "text" : "IssueIdentifier"
+      }
+    ],
+    "role" : "symbol",
+    "roleHeading" : "Enumeration",
+    "symbolKind" : "enum",
+    "title" : "IssueIdentifier"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "macOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "enum"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "IssueIdentifier"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 3,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "seeAlsoSections" : [
+    {
+      "anchor" : "Plan-Internals",
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundBuiltins",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundStock",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundFlow",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundDelay",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundSmooth",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundGraphicalFunction"
+      ],
+      "title" : "Plan Internals"
+    }
+  ],
+  "topicSections" : [
+    {
+      "anchor" : "Type-Properties",
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/IssueIdentifier\/computationCycle",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/IssueIdentifier\/duplicateName",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/IssueIdentifier\/emptyName",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/IssueIdentifier\/invalidParameterType",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/IssueIdentifier\/missingRequiredParameter",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/IssueIdentifier\/tooManyParameters",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/IssueIdentifier\/unknownParameter",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/IssueIdentifier\/unusedInput"
+      ],
+      "title" : "Type Properties"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/poieticflows\/issueidentifier"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://PoieticFlows/documentation/PoieticFlows": {
+  "abstract" : [
+    {
+      "text" : "Poietic package for modelling and simulation ",
+      "type" : "text"
+    },
+    {
+      "inlineContent" : [
+        {
+          "text" : "Stock and Flow",
+          "type" : "text"
+        }
+      ],
+      "type" : "emphasis"
+    },
+    {
+      "text" : " models.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "PoieticFlows",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/BoundBuiltins": {
+  "abstract" : [
+    {
+      "text" : "Indices of built-in variables bound to a simulation plan.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "BoundBuiltins"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundBuiltins",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "BoundBuiltins"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "BoundBuiltins",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/boundbuiltins"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/BoundDelay": {
+  "abstract" : [
+    {
+      "text" : "Compiled delay node.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "BoundDelay"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundDelay",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "BoundDelay"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "BoundDelay",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/bounddelay"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/BoundFlow": {
+  "abstract" : [
+    {
+      "text" : "Represents a flow rate between stocks.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "BoundFlow"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundFlow",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "BoundFlow"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "BoundFlow",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/boundflow"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/BoundGraphicalFunction": {
+  "abstract" : [
+    {
+      "text" : "A structure representing a concrete instance of a graphical function",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "in the context of a graph.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "BoundGraphicalFunction"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundGraphicalFunction",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "BoundGraphicalFunction"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "BoundGraphicalFunction",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/boundgraphicalfunction"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/BoundSmooth": {
+  "abstract" : [
+    {
+      "text" : "Compiled smooth node.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "BoundSmooth"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundSmooth",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "BoundSmooth"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "BoundSmooth",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/boundsmooth"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/BoundStock": {
+  "abstract" : [
+    {
+      "text" : "Stock bound to a simulation plan and a simulation state.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "BoundStock"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundStock",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "BoundStock"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "BoundStock",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/boundstock"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/IssueIdentifier": {
+  "abstract" : [
+    {
+      "text" : "Collection of issue identifiers that are attached to objects by systems in the PoieticFlows",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "package.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "enum"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "IssueIdentifier"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/IssueIdentifier",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "IssueIdentifier"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "IssueIdentifier",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/issueidentifier"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/IssueIdentifier/computationCycle": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "computationCycle"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/IssueIdentifier\/computationCycle",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "computationCycle",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/issueidentifier\/computationcycle"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/IssueIdentifier/duplicateName": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "duplicateName"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/IssueIdentifier\/duplicateName",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "duplicateName",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/issueidentifier\/duplicatename"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/IssueIdentifier/emptyName": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "emptyName"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/IssueIdentifier\/emptyName",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "emptyName",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/issueidentifier\/emptyname"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/IssueIdentifier/invalidParameterType": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "invalidParameterType"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/IssueIdentifier\/invalidParameterType",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "invalidParameterType",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/issueidentifier\/invalidparametertype"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/IssueIdentifier/missingRequiredParameter": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "missingRequiredParameter"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/IssueIdentifier\/missingRequiredParameter",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "missingRequiredParameter",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/issueidentifier\/missingrequiredparameter"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/IssueIdentifier/tooManyParameters": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "tooManyParameters"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/IssueIdentifier\/tooManyParameters",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "tooManyParameters",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/issueidentifier\/toomanyparameters"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/IssueIdentifier/unknownParameter": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "unknownParameter"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/IssueIdentifier\/unknownParameter",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "unknownParameter",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/issueidentifier\/unknownparameter"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/IssueIdentifier/unusedInput": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "unusedInput"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/IssueIdentifier\/unusedInput",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "unusedInput",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/issueidentifier\/unusedinput"
+}
+}
+}

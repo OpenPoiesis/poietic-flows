@@ -9,7 +9,6 @@
     "paths" : [
       [
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledModelAndCompiler",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StateVariable"
       ]
     ]
@@ -150,6 +149,7 @@
       "anchor" : "Enumeration-Cases",
       "generated" : true,
       "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StateVariable\/Content-swift.enum\/adjustedResult(_:)",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StateVariable\/Content-swift.enum\/builtin(_:)",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StateVariable\/Content-swift.enum\/internalState(_:)",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StateVariable\/Content-swift.enum\/object(_:)"
@@ -224,32 +224,10 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/CompiledModelAndCompiler": {
-  "abstract" : [
-    {
-      "text" : "Compiler creates a compiled model, which is an internal representation of",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "a design that can be simulated.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledModelAndCompiler",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Compiled Model and Compiler",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/compiledmodelandcompiler"
-},
 "doc://PoieticFlows/documentation/PoieticFlows/StateVariable": {
   "abstract" : [
     {
-      "text" : "Structure representing a reference to a simulation variable.",
+      "text" : "Structure representing a variable in a simulation state.",
       "type" : "text"
     }
   ],
@@ -406,6 +384,47 @@
   "title" : "Equatable Implementations",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/statevariable\/content-swift.enum\/equatable-implementations"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StateVariable/Content-swift.enum/adjustedResult(_:)": {
+  "abstract" : [
+    {
+      "text" : "Actual or adjusted value of the object after computation",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "adjustedResult"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore8ObjectIDa",
+      "text" : "ObjectID"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StateVariable\/Content-swift.enum\/adjustedResult(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "StateVariable.Content.adjustedResult(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/statevariable\/content-swift.enum\/adjustedresult(_:)"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/StateVariable/Content-swift.enum/builtin(_:)": {
   "abstract" : [

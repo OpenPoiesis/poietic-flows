@@ -95,11 +95,12 @@
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/ObjectType\/Auxiliary",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/ObjectType\/Chart",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/ObjectType\/ChartSeries",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/ObjectType\/Cloud",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/ObjectType\/Comment",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/ObjectType\/Control",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/ObjectType\/Delay",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/ObjectType\/Drains",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/ObjectType\/Fills",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/ObjectType\/Flow",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/ObjectType\/FlowRate",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/ObjectType\/GraphicalFunction",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/ObjectType\/Note",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/ObjectType\/Parameter",
@@ -339,6 +340,93 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/poieticcore\/objecttype\/chartseries"
 },
+"doc://PoieticFlows/documentation/PoieticFlows/PoieticCore/ObjectType/Cloud": {
+  "abstract" : [
+    {
+      "text" : "A cloud node representing out-of-scope stock that has no restrictions.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Cloud"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore10ObjectTypeC",
+      "text" : "ObjectType"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/ObjectType\/Cloud",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "Cloud",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/poieticcore\/objecttype\/cloud"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/PoieticCore/ObjectType/Comment": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Comment"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore10ObjectTypeC",
+      "text" : "ObjectType"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/ObjectType\/Comment",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "Comment",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/poieticcore\/objecttype\/comment"
+},
 "doc://PoieticFlows/documentation/PoieticFlows/PoieticCore/ObjectType/Control": {
   "abstract" : [
     {
@@ -437,100 +525,10 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/poieticcore\/objecttype\/delay"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/PoieticCore/ObjectType/Drains": {
-  "abstract" : [
-    {
-      "text" : "Edge from a stock to a flow. Denotes “what the flow drains”.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "static"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "keyword",
-      "text" : "let"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "Drains"
-    },
-    {
-      "kind" : "text",
-      "text" : ": "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:11PoieticCore10ObjectTypeC",
-      "text" : "ObjectType"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/ObjectType\/Drains",
-  "kind" : "symbol",
-  "role" : "symbol",
-  "title" : "Drains",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/poieticcore\/objecttype\/drains"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/PoieticCore/ObjectType/Fills": {
-  "abstract" : [
-    {
-      "text" : "Edge from a flow to a stock. Denotes “what the flow fills”.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "static"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "keyword",
-      "text" : "let"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "Fills"
-    },
-    {
-      "kind" : "text",
-      "text" : ": "
-    },
-    {
-      "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:11PoieticCore10ObjectTypeC",
-      "text" : "ObjectType"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/ObjectType\/Fills",
-  "kind" : "symbol",
-  "role" : "symbol",
-  "title" : "Fills",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/poieticcore\/objecttype\/fills"
-},
 "doc://PoieticFlows/documentation/PoieticFlows/PoieticCore/ObjectType/Flow": {
   "abstract" : [
     {
-      "text" : "A flow node - one of the two core nodes.",
+      "text" : "An edge between stock node and a flow rate node.",
       "type" : "text"
     }
   ],
@@ -571,6 +569,51 @@
   "title" : "Flow",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/poieticcore\/objecttype\/flow"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/PoieticCore/ObjectType/FlowRate": {
+  "abstract" : [
+    {
+      "text" : "A flow rate node.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "FlowRate"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore10ObjectTypeC",
+      "text" : "ObjectType"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/ObjectType\/FlowRate",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "FlowRate",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/poieticcore\/objecttype\/flowrate"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/PoieticCore/ObjectType/GraphicalFunction": {
   "abstract" : [

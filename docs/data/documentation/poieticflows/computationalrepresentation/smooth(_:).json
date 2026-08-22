@@ -9,7 +9,6 @@
     "paths" : [
       [
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledModelAndCompiler",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ComputationalRepresentation"
       ]
     ]
@@ -20,7 +19,7 @@
   },
   "kind" : "symbol",
   "metadata" : {
-    "externalID" : "s:12PoieticFlows27ComputationalRepresentationO6smoothyAcA14CompiledSmoothVcACmF",
+    "externalID" : "s:12PoieticFlows27ComputationalRepresentationO6smoothyAcA11BoundSmoothVcACmF",
     "fragments" : [
       {
         "kind" : "keyword",
@@ -40,8 +39,8 @@
       },
       {
         "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:12PoieticFlows14CompiledSmoothV",
-        "text" : "CompiledSmooth"
+        "preciseIdentifier" : "s:12PoieticFlows11BoundSmoothV",
+        "text" : "BoundSmooth"
       },
       {
         "kind" : "text",
@@ -86,10 +85,10 @@
               "text" : "("
             },
             {
-              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledSmooth",
+              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundSmooth",
               "kind" : "typeIdentifier",
-              "preciseIdentifier" : "s:12PoieticFlows14CompiledSmoothV",
-              "text" : "CompiledSmooth"
+              "preciseIdentifier" : "s:12PoieticFlows11BoundSmoothV",
+              "text" : "BoundSmooth"
             },
             {
               "kind" : "text",
@@ -150,29 +149,7 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/CompiledModelAndCompiler": {
-  "abstract" : [
-    {
-      "text" : "Compiler creates a compiled model, which is an internal representation of",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "a design that can be simulated.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledModelAndCompiler",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Compiled Model and Compiler",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/compiledmodelandcompiler"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/CompiledSmooth": {
+"doc://PoieticFlows/documentation/PoieticFlows/BoundSmooth": {
   "abstract" : [
     {
       "text" : "Compiled smooth node.",
@@ -190,21 +167,21 @@
     },
     {
       "kind" : "identifier",
-      "text" : "CompiledSmooth"
+      "text" : "BoundSmooth"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledSmooth",
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundSmooth",
   "kind" : "symbol",
   "navigatorTitle" : [
     {
       "kind" : "identifier",
-      "text" : "CompiledSmooth"
+      "text" : "BoundSmooth"
     }
   ],
   "role" : "symbol",
-  "title" : "CompiledSmooth",
+  "title" : "BoundSmooth",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/compiledsmooth"
+  "url" : "\/documentation\/poieticflows\/boundsmooth"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/ComputationalRepresentation": {
   "abstract" : [
@@ -274,8 +251,8 @@
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:12PoieticFlows14CompiledSmoothV",
-      "text" : "CompiledSmooth"
+      "preciseIdentifier" : "s:12PoieticFlows11BoundSmoothV",
+      "text" : "BoundSmooth"
     },
     {
       "kind" : "text",

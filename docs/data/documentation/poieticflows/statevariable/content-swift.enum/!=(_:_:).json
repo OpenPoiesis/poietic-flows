@@ -17,10 +17,8 @@
     "paths" : [
       [
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledModelAndCompiler",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StateVariable",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StateVariable\/Content-swift.enum",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StateVariable\/Content-swift.enum\/Equatable-Implementations"
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StateVariable\/Content-swift.enum"
       ]
     ]
   },
@@ -227,32 +225,10 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/CompiledModelAndCompiler": {
-  "abstract" : [
-    {
-      "text" : "Compiler creates a compiled model, which is an internal representation of",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "a design that can be simulated.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledModelAndCompiler",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Compiled Model and Compiler",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/compiledmodelandcompiler"
-},
 "doc://PoieticFlows/documentation/PoieticFlows/StateVariable": {
   "abstract" : [
     {
-      "text" : "Structure representing a reference to a simulation variable.",
+      "text" : "Structure representing a variable in a simulation state.",
       "type" : "text"
     }
   ],
@@ -378,17 +354,6 @@
   "title" : "!=(_:_:)",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/statevariable\/content-swift.enum\/!=(_:_:)"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/StateVariable/Content-swift.enum/Equatable-Implementations": {
-  "abstract" : [
-
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StateVariable\/Content-swift.enum\/Equatable-Implementations",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Equatable Implementations",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/statevariable\/content-swift.enum\/equatable-implementations"
 }
 }
 }

@@ -42,14 +42,6 @@
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/Variable"
       ],
       "title" : "Extended Classes"
-    },
-    {
-      "anchor" : "Extended-Enumerations",
-      "generated" : true,
-      "identifiers" : [
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/ArithmeticExpression"
-      ],
-      "title" : "Extended Enumerations"
     }
   ],
   "variants" : [
@@ -103,38 +95,6 @@
   "title" : "PoieticCore",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/poieticcore"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/PoieticCore/ArithmeticExpression": {
-  "abstract" : [
-
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "extension"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "preciseIdentifier" : "s:11PoieticCore20ArithmeticExpressionO",
-      "text" : "ArithmeticExpression"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PoieticCore\/ArithmeticExpression",
-  "kind" : "symbol",
-  "navigatorTitle" : [
-    {
-      "kind" : "identifier",
-      "text" : "ArithmeticExpression"
-    }
-  ],
-  "role" : "symbol",
-  "title" : "ArithmeticExpression",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/poieticcore\/arithmeticexpression"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/PoieticCore/Metamodel": {
   "abstract" : [

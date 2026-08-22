@@ -28,9 +28,7 @@
     "paths" : [
       [
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/Sequence-Implementations"
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector"
       ]
     ]
   },
@@ -126,7 +124,15 @@
       }
     ],
     "platforms" : [
-
+      {
+        "beta" : false,
+        "deprecated" : false,
+        "deprecatedAt" : "4.1",
+        "message" : "Please use compactMap(_:) for the case where closure returns an optional value",
+        "name" : "Swift",
+        "renamed" : "compactMap(_:)",
+        "unavailable" : false
+      }
     ],
     "role" : "symbol",
     "roleHeading" : "Instance Method",
@@ -319,17 +325,6 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/numericvector"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/NumericVector/Sequence-Implementations": {
-  "abstract" : [
-
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NumericVector\/Sequence-Implementations",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Sequence Implementations",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/numericvector\/sequence-implementations"
-},
 "doc://PoieticFlows/documentation/PoieticFlows/NumericVector/flatMap(_:)-80l3w": {
   "abstract" : [
 
@@ -416,28 +411,6 @@
   "title" : "flatMap(_:)",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/numericvector\/flatmap(_:)-80l3w"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/Simulation": {
-  "abstract" : [
-    {
-      "text" : "The Simulator runs the simulation and produces a simulation result as a",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "collection of time series.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Simulation and Computation",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/simulation"
 }
 }
 }

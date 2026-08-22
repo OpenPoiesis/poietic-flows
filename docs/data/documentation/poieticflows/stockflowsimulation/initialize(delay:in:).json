@@ -1,7 +1,7 @@
 {
   "abstract" : [
     {
-      "text" : "Initialise a delay object.",
+      "text" : "Initialise a simulated delay.",
       "type" : "text"
     }
   ],
@@ -9,7 +9,6 @@
     "paths" : [
       [
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StockFlowSimulation"
       ]
     ]
@@ -20,7 +19,7 @@
   },
   "kind" : "symbol",
   "metadata" : {
-    "externalID" : "s:12PoieticFlows19StockFlowSimulationC10initialize5delay2in0A4Core7VariantOAA13CompiledDelayV_AA0E5StateVztKF",
+    "externalID" : "s:12PoieticFlows19StockFlowSimulationC10initialize5delay2in0A4Core7VariantOAA10BoundDelayV_AA0E5StateVztAG15EvaluationErrorOYKF",
     "fragments" : [
       {
         "kind" : "keyword",
@@ -48,8 +47,8 @@
       },
       {
         "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:12PoieticFlows13CompiledDelayV",
-        "text" : "CompiledDelay"
+        "preciseIdentifier" : "s:12PoieticFlows10BoundDelayV",
+        "text" : "BoundDelay"
       },
       {
         "kind" : "text",
@@ -86,7 +85,16 @@
       },
       {
         "kind" : "text",
-        "text" : " -> "
+        "text" : "("
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:11PoieticCore15EvaluationErrorO",
+        "text" : "EvaluationError"
+      },
+      {
+        "kind" : "text",
+        "text" : ") -> "
       },
       {
         "kind" : "typeIdentifier",
@@ -140,10 +148,10 @@
               "text" : ": "
             },
             {
-              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledDelay",
+              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundDelay",
               "kind" : "typeIdentifier",
-              "preciseIdentifier" : "s:12PoieticFlows13CompiledDelayV",
-              "text" : "CompiledDelay"
+              "preciseIdentifier" : "s:12PoieticFlows10BoundDelayV",
+              "text" : "BoundDelay"
             },
             {
               "kind" : "text",
@@ -189,7 +197,16 @@
             },
             {
               "kind" : "text",
-              "text" : " -> "
+              "text" : "("
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:11PoieticCore15EvaluationErrorO",
+              "text" : "EvaluationError"
+            },
+            {
+              "kind" : "text",
+              "text" : ") -> "
             },
             {
               "kind" : "typeIdentifier",
@@ -209,7 +226,7 @@
             {
               "inlineContent" : [
                 {
-                  "text" : "Delay to be initialised",
+                  "text" : "Delay object to be initialised",
                   "type" : "text"
                 }
               ],
@@ -223,7 +240,7 @@
             {
               "inlineContent" : [
                 {
-                  "text" : "State in which the delay is initialised.",
+                  "text" : "Simulation state in which the delay is initialised.",
                   "type" : "text"
                 }
               ],
@@ -245,7 +262,35 @@
         {
           "inlineContent" : [
             {
-              "text" : "Value of the delay.",
+              "text" : "Value of the delay node.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        }
+      ],
+      "kind" : "content"
+    },
+    {
+      "content" : [
+        {
+          "anchor" : "discussion",
+          "level" : 2,
+          "text" : "Discussion",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "The function prepares internal state variable holding a delay queue and returns",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "an initial value of the delay node.",
               "type" : "text"
             }
           ],
@@ -304,7 +349,7 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/CompiledDelay": {
+"doc://PoieticFlows/documentation/PoieticFlows/BoundDelay": {
   "abstract" : [
     {
       "text" : "Compiled delay node.",
@@ -322,72 +367,26 @@
     },
     {
       "kind" : "identifier",
-      "text" : "CompiledDelay"
+      "text" : "BoundDelay"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/CompiledDelay",
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundDelay",
   "kind" : "symbol",
   "navigatorTitle" : [
     {
       "kind" : "identifier",
-      "text" : "CompiledDelay"
+      "text" : "BoundDelay"
     }
   ],
   "role" : "symbol",
-  "title" : "CompiledDelay",
+  "title" : "BoundDelay",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/compileddelay"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/Simulation": {
-  "abstract" : [
-    {
-      "text" : "The Simulator runs the simulation and produces a simulation result as a",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "collection of time series.",
-      "type" : "text"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Simulation",
-  "kind" : "article",
-  "role" : "collectionGroup",
-  "title" : "Simulation and Computation",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/simulation"
+  "url" : "\/documentation\/poieticflows\/bounddelay"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/SimulationState": {
   "abstract" : [
     {
-      "text" : "A simple vector-like structure to hold an unordered collection of numeric",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "values that can be accessed by key. Simple arithmetic operations can be done",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "with the structure, such as addition, subtraction and multiplication",
-      "type" : "text"
-    },
-    {
-      "text" : " ",
-      "type" : "text"
-    },
-    {
-      "text" : "by a scalar value.",
+      "text" : "A collection of simulation state variables.",
       "type" : "text"
     }
   ],
@@ -455,7 +454,7 @@
 "doc://PoieticFlows/documentation/PoieticFlows/StockFlowSimulation/initialize(delay:in:)": {
   "abstract" : [
     {
-      "text" : "Initialise a delay object.",
+      "text" : "Initialise a simulated delay.",
       "type" : "text"
     }
   ],
@@ -486,8 +485,8 @@
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:12PoieticFlows13CompiledDelayV",
-      "text" : "CompiledDelay"
+      "preciseIdentifier" : "s:12PoieticFlows10BoundDelayV",
+      "text" : "BoundDelay"
     },
     {
       "kind" : "text",
@@ -524,7 +523,16 @@
     },
     {
       "kind" : "text",
-      "text" : " -> "
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:11PoieticCore15EvaluationErrorO",
+      "text" : "EvaluationError"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
     },
     {
       "kind" : "typeIdentifier",
