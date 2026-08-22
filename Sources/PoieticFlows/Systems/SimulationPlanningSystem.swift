@@ -54,16 +54,14 @@ extension PlanningError {
 ///         offending data or for an offending structure.
 ///
 public struct SimulationPlanningSystem: System {
-    nonisolated(unsafe) public static let dependencies: [SystemDependency] = [
+    public static let dependencies: [SystemDependency] = [
         .after(ExpressionParserSystem.self), // Gets us UnboundExpression for each node
         .after(ComputationOrderSystem.self), // Gets us SimulationOrder
         .after(NameResolutionSystem.self), // We need name lookup and object names.
         .after(StockFlowTopologySystem.self),
     ]
     
-    public init(_ world: World) { }
-    
-    public func update(_ world: World) throws (InternalSystemError) {
+    public static func update(_ world: World) throws (InternalSystemError) {
         guard let order: SimulationOrder = world.singleton()
         else { return }
 
@@ -101,10 +99,7 @@ public struct SimulationPlanningSystem: System {
 /// is removed.
 ///
 public struct SimulationSettingsSystem: System {
-    public init(_ world: World) {
-        // Nothing
-    }
-    public func update(_ world: World) throws (InternalSystemError) {
+    public static func update(_ world: World) throws (InternalSystemError) {
         guard let plane = world.plane,
               let object = plane.first(trait: Trait.Simulation)
         else {

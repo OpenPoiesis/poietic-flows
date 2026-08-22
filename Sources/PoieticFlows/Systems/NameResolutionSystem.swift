@@ -23,12 +23,11 @@ public struct NameResolutionSystem: System {
 
     // Note: In the future this system might be doing fully qualified name resolution, once we get
     //       nested simulation blocks.
-    public init(_ world: World) { }
-    nonisolated(unsafe) public static let dependencies: [SystemDependency] = [
+    public static let dependencies: [SystemDependency] = [
         .after(ComputationOrderSystem.self),
     ]
 
-    public func update(_ world: World) throws (InternalSystemError) {
+    public static func update(_ world: World) throws (InternalSystemError) {
         guard let order: SimulationOrder = world.singleton() else {
             return
         }

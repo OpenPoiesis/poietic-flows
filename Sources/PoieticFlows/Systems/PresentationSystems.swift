@@ -21,16 +21,14 @@ import PoieticCore
 
 public struct ChartResolutionSystem: System {
     
-    public init(_ world: World) { }
-
-    public func update(_ world: World) throws (InternalSystemError) {
+    public static func update(_ world: World) throws (InternalSystemError) {
         guard let plane = world.plane else { return }
 
         processCharts(world, plane: plane)
         processSeries(world, plane: plane)
     }
 
-    func processCharts(_ world: World, plane: DesignPlane) {
+    static func processCharts(_ world: World, plane: DesignPlane) {
         for chartObject in plane.filter(type: .Chart) {
             guard let chartEntity = world.entity(chartObject.objectID)
             else { continue }
@@ -39,7 +37,7 @@ public struct ChartResolutionSystem: System {
         }
     }
     
-    func processSeries(_ world: World, plane: DesignPlane) {
+    static func processSeries(_ world: World, plane: DesignPlane) {
 
         for seriesEdge in plane.filter(type: .ChartSeries) {
             guard let seriesEntity = world.entity(seriesEdge.objectID),

@@ -27,8 +27,7 @@ import Testing
     @Test
     func empty() throws {
         let world = try accept(frame)
-        let system = ComputationOrderSystem(world)
-        try system.update(world)
+        try ComputationOrderSystem.update(world)
         let component: SimulationOrder = try #require(world.singleton())
         #expect(component.objects.isEmpty)
     }
@@ -43,8 +42,7 @@ import Testing
         frame.createEdge(ObjectType.Parameter, origin: b, target: c)
         
         let world = try accept(frame)
-        let system = ComputationOrderSystem(world)
-        try system.update(world)
+        try ComputationOrderSystem.update(world)
         let component: SimulationOrder = try #require(world.singleton())
 
         #expect(component.objects.count == 3)
@@ -60,8 +58,7 @@ import Testing
         frame.createEdge(ObjectType.Parameter, origin: b, target: a)
 
         let world = try accept(frame)
-        let system = ComputationOrderSystem(world)
-        try system.update(world)
+        try ComputationOrderSystem.update(world)
         let component: SimulationOrder? = world.singleton()
         #expect(component == nil)
         
@@ -80,8 +77,7 @@ import Testing
         frame.createEdge(ObjectType.Parameter, origin: gf, target: aux)
 
         let world = try accept(frame)
-        let system = ComputationOrderSystem(world)
-        try system.update(world)
+        try ComputationOrderSystem.update(world)
 
         let component: SimulationOrder = try #require(world.singleton())
         #expect(component.objects.count == 3)

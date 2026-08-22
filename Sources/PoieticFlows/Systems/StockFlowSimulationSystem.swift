@@ -31,13 +31,13 @@ import PoieticCore
 /// - **Issues:** No issues created.
 ///
 public struct StockFlowSimulationSystem: System {
-    nonisolated(unsafe) public static let dependencies: [SystemDependency] = [
+    public static let dependencies: [SystemDependency] = [
         // Soft dependencies - only relevant if the simulation system ends up in the same schedule.
         .after(SimulationPlanningSystem.self),
         .after(SimulationSettingsSystem.self),
     ]
-    public init(_ world: World) { }
-    public func update(_ world: World) throws (InternalSystemError) {
+
+    public static func update(_ world: World) throws (InternalSystemError) {
         world.removeSingleton(SimulationResult.self)
 
         guard let plan: SimulationPlan = world.singleton() else { return }
@@ -72,7 +72,7 @@ public struct StockFlowSimulationSystem: System {
         world.setSingleton(result)
     }
     
-    public func initialize(world: World,
+    public static func initialize(world: World,
                            plan: SimulationPlan,
                            settings: SimulationSettings,
                            parameters: ScenarioParameters)
@@ -97,7 +97,7 @@ public struct StockFlowSimulationSystem: System {
         return state
     }
     
-    public func step(simulation: StockFlowSimulation,
+    public static func step(simulation: StockFlowSimulation,
                      state currentState: SimulationState)
     throws (InternalSystemError) -> SimulationState {
         let newState: SimulationState

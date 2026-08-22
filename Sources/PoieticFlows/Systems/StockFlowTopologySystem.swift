@@ -21,10 +21,7 @@ import PoieticCore
 ///     - If multiple edges of object type `Flow` exist, only one is picked arbitrarily.
 ///
 public struct StockFlowTopologySystem: System {
-
-    public init(_ world: World) { }
-
-    public func update(_ world: World) throws (InternalSystemError) {
+    public static func update(_ world: World) throws (InternalSystemError) {
         guard let plane = world.plane else { return }
         
         // Important: Keep the order: flows first, then stocks.
@@ -32,7 +29,7 @@ public struct StockFlowTopologySystem: System {
         collectStocks(from: plane, in: world)
     }
     
-    func collectFlowRates(from plane: DesignPlane, in world: World) {
+    static func collectFlowRates(from plane: DesignPlane, in world: World) {
         for flow in plane.filter(type: .FlowRate) {
             let entity = world.entity(flow.objectID)!
             
@@ -54,7 +51,7 @@ public struct StockFlowTopologySystem: System {
         }
     }
     
-    public func collectStocks(from plane: DesignPlane, in world: World) {
+    static public func collectStocks(from plane: DesignPlane, in world: World) {
         var filledByRate: [ObjectID:[ObjectID]] = [:] // Flows filling a stock
         var drainedByRate: [ObjectID:[ObjectID]] = [:] // Flows draining a stock
 
