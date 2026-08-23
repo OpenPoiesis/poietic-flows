@@ -31,11 +31,8 @@ import Testing
 
         let world = try accept(plane)
 
-        let parser = ExpressionParserSystem(world)
-        parser.update(world)
-
-        let system = ParameterResolutionSystem(world)
-        try system.update(world)
+        try ExpressionParserSystem.update(world)
+        try ParameterResolutionSystem.update(world)
 
         let entity = try #require(world.entity(info.objectID))
         let component: ResolvedParameters? = entity.component()
@@ -51,11 +48,8 @@ import Testing
 
         let world = try accept(plane)
 
-        let parser = ExpressionParserSystem(world)
-        parser.update(world)
-
-        let system = ParameterResolutionSystem(world)
-        try system.update(world)
+        try ExpressionParserSystem.update(world)
+        try ParameterResolutionSystem.update(world)
 
         let entity = try #require(world.entity(aux.objectID))
         let component: ResolvedParameters? = entity.component()
@@ -72,11 +66,8 @@ import Testing
 
         let world = try accept(plane)
 
-        let parser = ExpressionParserSystem(world)
-        parser.update(world)
-
-        let system = ParameterResolutionSystem(world)
-        try system.update(world)
+        try ExpressionParserSystem.update(world)
+        try ParameterResolutionSystem.update(world)
 
         let entity = try #require(world.entity(aux.objectID))
         let component: ResolvedParameters = try #require(entity.component())
@@ -93,13 +84,9 @@ import Testing
 
         let world = try accept(plane)
 
-        let parser = ExpressionParserSystem(world)
-        parser.update(world)
+        try ExpressionParserSystem.update(world)
+        try ParameterResolutionSystem.update(world)
 
-        let system = ParameterResolutionSystem(world)
-        try system.update(world)
-
-        
         let entity = try #require(world.entity(aux.objectID))
         let component: ResolvedParameters = try #require(entity.component())
         #expect(component.incoming.isEmpty == true)
@@ -120,11 +107,8 @@ import Testing
 
         let world = try accept(plane)
 
-        let parser = ExpressionParserSystem(world)
-        parser.update(world)
-
-        let system = ParameterResolutionSystem(world)
-        try system.update(world)
+        try ExpressionParserSystem.update(world)
+        try ParameterResolutionSystem.update(world)
 
         let entity = try #require(world.entity(aux.objectID))
         let component: ResolvedParameters = try #require(entity.component())
@@ -149,11 +133,8 @@ import Testing
 
         let world = try accept(plane)
 
-        let parser = ExpressionParserSystem(world)
-        parser.update(world)
-
-        let system = ParameterResolutionSystem(world)
-        try system.update(world)
+        try ExpressionParserSystem.update(world)
+        try ParameterResolutionSystem.update(world)
 
         let entity = try #require(world.entity(aux.objectID))
         let component: ResolvedParameters = try #require(entity.component())
@@ -173,11 +154,8 @@ import Testing
 
         let world = try accept(plane)
 
-        let parser = ExpressionParserSystem(world)
-        parser.update(world)
-
-        let system = ParameterResolutionSystem(world)
-        try system.update(world)
+        try ExpressionParserSystem.update(world)
+        try ParameterResolutionSystem.update(world)
 
         let entity = try #require(world.entity(aux.objectID))
         let component: ResolvedParameters? = entity.component()
@@ -198,11 +176,8 @@ import Testing
 
         let world = try accept(plane)
 
-        let parser = ExpressionParserSystem(world)
-        parser.update(world)
-
-        let system = ParameterResolutionSystem(world)
-        try system.update(world)
+        try ExpressionParserSystem.update(world)
+        try ParameterResolutionSystem.update(world)
 
         let entity = try #require(world.entity(aux.objectID))
         let component: ResolvedParameters = try #require(entity.component())
@@ -223,11 +198,8 @@ import Testing
 
         let world = try accept(plane)
 
-        let parser = ExpressionParserSystem(world)
-        parser.update(world)
-
-        let system = ParameterResolutionSystem(world)
-        try system.update(world)
+        try ExpressionParserSystem.update(world)
+        try ParameterResolutionSystem.update(world)
 
         let entity = try #require(world.entity(delay.objectID))
         let component: ResolvedParameters = try #require(entity.component())
@@ -244,11 +216,8 @@ import Testing
 
         let world = try accept(plane)
 
-        let parser = ExpressionParserSystem(world)
-        parser.update(world)
-
-        let system = ParameterResolutionSystem(world)
-        try system.update(world)
+        try ExpressionParserSystem.update(world)
+        try ParameterResolutionSystem.update(world)
 
         let entity = try #require(world.entity(delay.objectID))
         let component: ResolvedParameters = try #require(entity.component())
@@ -267,12 +236,8 @@ import Testing
 
         let world = try accept(plane)
 
-        let parser = ExpressionParserSystem(world)
-        parser.update(world)
-
-        let system = ParameterResolutionSystem(world)
-        try system.update(world)
-        try system.update(world)
+        try ExpressionParserSystem.update(world)
+        try ParameterResolutionSystem.update(world)
 
         let entity = try #require(world.entity(delay.objectID))
         let component: ResolvedParameters = try #require(entity.component())
@@ -294,11 +259,8 @@ import Testing
 
         let world = try accept(plane)
 
-        let parser = ExpressionParserSystem(world)
-        parser.update(world)
-
-        let system = ParameterResolutionSystem(world)
-        try system.update(world)
+        try ExpressionParserSystem.update(world)
+        try ParameterResolutionSystem.update(world)
 
         let gfEnt = try #require(world.entity(gf.objectID))
         let gfComp: ResolvedParameters = try #require(gfEnt.component())

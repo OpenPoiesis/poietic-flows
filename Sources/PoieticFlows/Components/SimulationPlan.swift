@@ -11,7 +11,7 @@ import PoieticCore
 ///
 /// The design describes the model from user's perspective. The content and data structures needed
 /// for the modelling process – for the editing – are different than the data used by the machine to
-/// perform the simulation. Simulation plan is contains validated and derived information from the
+/// perform the simulation. Simulation plan contains validated and derived information from the
 /// design.
 ///
 /// The simulation plan is created by the ``SimulationPlanningSystems`` and typically used by the
@@ -125,20 +125,34 @@ public struct SimulationPlan: Component {
         return first.variableIndex
     }
     
-    /// Get a simulation variable for an object with given ID, if exists.
+    /// List of all simulation object names.
+    public var objectNames: [String] { simulationObjects.map {$0.name} }
+    
+    /// Get a simulation object with given ID, if exists.
     ///
-    /// This function is not used during computation, it is provided for
-    /// consumers of the simulation state or simulation result.
+    /// - Note: This function is not used during computation, it is provided for
+    ///   consumers of the simulation state or simulation result.
     ///
     /// - Complexity: O(n)
     /// - SeeAlso: ``simulationObjects``, ``variableIndex(_:)``
     ///
     public func simulationObject(_ id: ObjectID) -> SimulationObject? {
         return simulationObjects.first { $0.objectID == id }
-        
     }
-    
-    /// Get a compiled variable by its name.
+
+    /// Get a simulation object with given name, if exists.
+    ///
+    /// - Note: This function is not used during computation, it is provided for
+    ///   consumers of the simulation state or simulation result.
+    ///
+    /// - Complexity: O(n)
+    /// - SeeAlso: ``simulationObjects``, ``variableIndex(_:)``
+    ///
+    public func simulationObject(named name: String) -> SimulationObject? {
+        return simulationObjects.first { $0.name == name }
+    }
+
+    /// Get a state variable by its name.
     ///
     /// This function is mostly for user-facing tools that would like to
     /// interfere with the simulation state. Example use-cases are:
@@ -149,17 +163,20 @@ public struct SimulationPlan: Component {
     /// Since the function is slow, it is highly not recommended to be used
     /// during iterative computation.
     ///
-    /// This property is not used during computation, it is provided for
-    /// consumers of the simulation state or simulation result.
+    /// - Note: This property is not used during computation, it is provided for
+    ///   consumers of the simulation state or simulation result.
     ///
     /// - Complexity: O(n)
     ///
-    public func variable(named name: String) -> SimulationObject? {
-        guard let object = simulationObjects.first(where: { $0.name == name}) else {
+    public func variable(named name: String) -> StateVariable? {
+        guard let variable = stateVariables.first(where: { $0.name == name}) else {
             return nil
         }
         
-        return object
+        return variable
     }
+    
+    /// List of all state variable names, including internal ones.
+    public var variableNames: [String] { stateVariables.map {$0.name} }
 }
 

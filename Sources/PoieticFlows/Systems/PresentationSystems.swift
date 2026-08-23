@@ -20,17 +20,18 @@ import PoieticCore
 ///
 
 public struct ChartResolutionSystem: System {
-    
-    public init(_ world: World) { }
+    public static let dependencies: [SystemDependency] = [
+        .after(VisualMetadataSystem.self),
+    ]
 
-    public func update(_ world: World) throws (InternalSystemError) {
+    public static func update(_ world: World) throws (InternalSystemError) {
         guard let plane = world.plane else { return }
 
         processCharts(world, plane: plane)
         processSeries(world, plane: plane)
     }
 
-    func processCharts(_ world: World, plane: DesignPlane) {
+    static func processCharts(_ world: World, plane: DesignPlane) {
         for chartObject in plane.filter(type: .Chart) {
             guard let chartEntity = world.entity(chartObject.objectID)
             else { continue }
@@ -39,7 +40,7 @@ public struct ChartResolutionSystem: System {
         }
     }
     
-    func processSeries(_ world: World, plane: DesignPlane) {
+    static func processSeries(_ world: World, plane: DesignPlane) {
 
         for seriesEdge in plane.filter(type: .ChartSeries) {
             guard let seriesEntity = world.entity(seriesEdge.objectID),
@@ -56,12 +57,12 @@ public struct ChartResolutionSystem: System {
             colorKey = color.map { AdaptableColorKey(rawValue: $0) } ?? nil
 
             let series = ChartSeries(
-                target: targetEntity.runtimeID,
                 colorKey: colorKey,
                 displayBounds: bounds
             )
             seriesEntity.setComponent(series)
             seriesEntity.relate(ChildOf(), to: chartEntity.runtimeID)
+            seriesEntity.relate(RepresentationOf(), to: targetEntity.runtimeID)
         }
     }
 }

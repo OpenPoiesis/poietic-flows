@@ -23,12 +23,11 @@ public struct NameResolutionSystem: System {
 
     // Note: In the future this system might be doing fully qualified name resolution, once we get
     //       nested simulation blocks.
-    public init(_ world: World) { }
-    nonisolated(unsafe) public static let dependencies: [SystemDependency] = [
+    public static let dependencies: [SystemDependency] = [
         .after(ComputationOrderSystem.self),
     ]
 
-    public func update(_ world: World) throws (InternalSystemError) {
+    public static func update(_ world: World) throws (InternalSystemError) {
         guard let order: SimulationOrder = world.singleton() else {
             return
         }
@@ -41,7 +40,7 @@ public struct NameResolutionSystem: System {
                   let entity = world.entity(object.objectID)
             else { continue }
             let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
-            if trimmedName.isEmpty {
+            guard !trimmedName.isEmpty else {
                 let issue = Issue(
                     identifier: IssueIdentifier.emptyName,
                     severity: .error,
@@ -52,6 +51,20 @@ public struct NameResolutionSystem: System {
                 entity.appendIssue(issue)
                 continue
             }
+            
+            // TODO: Add test
+            guard !BuiltinVariable.allNames.contains(trimmedName) else {
+                let issue = Issue(
+                    identifier: IssueIdentifier.reservedName,
+                    severity: .error,
+                    source: Self.IssueSourceName,
+                    message: "Node uses a reserved name",
+                    hints: [ "Set a node name that one of reserved/built-in variable names" ],
+                )
+                entity.appendIssue(issue)
+                continue
+            }
+            
             namedObjects[trimmedName, default: []].append(object.objectID)
         }
        

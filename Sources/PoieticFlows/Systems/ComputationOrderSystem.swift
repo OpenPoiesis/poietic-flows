@@ -22,9 +22,7 @@ import PoieticCore
 public struct ComputationOrderSystem: System {
     public static let IssueSourceName = "ComputationOrderSystem"
     
-    public init(_ world: World) { }
-
-    public func update(_ world: World) throws (InternalSystemError) {
+    public static func update(_ world: World) throws (InternalSystemError) {
         guard let plane = world.plane
         else { return }
         
@@ -53,7 +51,7 @@ public struct ComputationOrderSystem: System {
         world.setSingleton(orderComponent)
     }
     
-    func filterSimulationObjects(plane: DesignPlane) -> [ObjectID:SimulationRole] {
+    static func filterSimulationObjects(plane: DesignPlane) -> [ObjectID:SimulationRole] {
         var result: [ObjectID:SimulationRole] = [:]
         for object in plane.snapshots {
             let role: SimulationRole
@@ -76,7 +74,7 @@ public struct ComputationOrderSystem: System {
         return result
     }
     
-    func orderedSnapshots(world: World, plane: DesignPlane) -> [(object: ObjectSnapshot, role: SimulationRole)]? {
+    static func orderedSnapshots(world: World, plane: DesignPlane) -> [(object: ObjectSnapshot, role: SimulationRole)]? {
         // TODO: Replace with SimulationObject trait once we have it (there are practical reasons we don't yet)
         // TODO: Should we use Trait.Stock?
         let unordered = filterSimulationObjects(plane: plane)

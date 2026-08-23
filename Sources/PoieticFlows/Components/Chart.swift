@@ -33,15 +33,18 @@ public struct Chart: Component {
         }
     }
     
+    public let label: String?
     public let xAxis: Axis
     public let yAxis: Axis
     
     public init() {
+        self.label = nil
         self.xAxis = Axis()
         self.yAxis = Axis()
     }
     
     public init(from object: ObjectSnapshot) {
+        label = object.name
         xAxis = Axis(
             displayBounds: DisplayValueBounds(
                 min: object["min_x_value"],
@@ -65,52 +68,28 @@ public struct Chart: Component {
 
 /// Component for entities representing chart series.
 ///
-/// World structure: chart series are children of ``Chart``. They are created from design objects
-/// (edges) of type `ChartSeries`.
+/// Chart series are created from design objects (edges) of type `ChartSeries`
+///
+/// - **CreatedBy:** ``ChartResolutionSystem``.
+/// - **UsedBy:** your application.
+///
+/// Expected components:
+///
+/// - `ChildOf` relationship to a ``Chart``
+/// - `RepresentationOf` relationship to an object with content to be plotted.
 ///
 public struct ChartSeries: Relationship {
     public static var targetRemovalPolicy: RelationshipRemovalPolicy { .despawn }
     
-    // TODO: [IMPORTANT] Validate how the `other` is used, might be remnant from pre-relationships
-    /// Value representable object that the series represent. Should be a simulation object.
-    ///
-    /// If the chart series is created from a design object - edge, then the other property
-    /// is the the edge's target.
-    ///
-    public var other: RuntimeID
     public var colorKey: AdaptableColorKey?
 
     /// Display value bounds pulled from the target object.
     public var displayBounds: DisplayValueBounds
 
-    public init(target: RuntimeID,
-                colorKey: AdaptableColorKey? = nil,
+    public init(colorKey: AdaptableColorKey? = nil,
                 displayBounds: DisplayValueBounds)
     {
-        self.other = target
         self.colorKey = colorKey
         self.displayBounds = displayBounds
     }
-}
-
-@available(*, deprecated, message: "Use Chart:Component and ChartSeries component")
-public struct ChartComponent: Component {
-    struct Series {
-        var colorName: String?
-    }
-    
-    /// Chart-type node.
-    ///
-    /// Series are connected from the node through a `Series` edge, where the chart is the
-    /// edge origin and the series node is the edge target.
-    ///
-    public let chartObject: ObjectSnapshot
-    public var name: String? { chartObject.name }
-    
-    /// Nodes that represent the chart series.
-    ///
-    /// Series are connected from the node through a `Series` edge, where the chart is the
-    /// edge origin and the series node is the edge target.
-    ///
-    public let series: [ObjectSnapshot]
 }

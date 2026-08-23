@@ -56,6 +56,9 @@ public struct SimulationName: Component {
 
 /// Component describing dependencies between stocks and flow rates.
 ///
+/// - **Created By:** ``StockFlowTopologySystem``
+/// - **Used By:** ``SimulationPlanner``
+///
 /// - SeeAlso: ``StockFlowTopologySystem``, ``FlowRate``.
 ///
 public struct Stock: Component {
@@ -65,10 +68,10 @@ public struct Stock: Component {
     /// List of `FlowRate` nodes that drain the stock.
     public let outflowRates: [ObjectID]
 
-    /// List of stocks that are drained.
+    /// List of stocks that send flow into this stock.
     public let inflowStocks: [ObjectID]
     
-    /// List of stocks that are filled.
+    /// List of stocks this stock sends flow into.
     public let outflowStocks: [ObjectID]
     
     public let allowsNegative: Bool
@@ -84,6 +87,9 @@ public struct Stock: Component {
 ///      |             Node of component         +--- stock that the flow rate node fills
 ///      |
 ///     Stock that the flow rate node drains
+///
+/// - **Created By:** ``StockFlowTopologySystem``
+/// - **Used By:** ``SimulationPlanner``
 ///
 /// - SeeAlso: ``StockFlowTopologySystem``, ``Stock``
 ///

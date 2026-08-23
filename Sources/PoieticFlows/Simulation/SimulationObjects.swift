@@ -169,7 +169,7 @@ public struct BoundStock {
     /// ```
     public let inflows: [Int]
 
-    /// Indices of flows from the list of flows that represent stock's inflows.
+    /// Indices of flows from the list of flows that represent stock's outflows.
     ///
     /// To get flow details:
     ///
@@ -177,8 +177,8 @@ public struct BoundStock {
     /// let plan: SimulationPlan // Plan is given
     /// let stock: BoundStock    // Stock is given
     /// for index in outflows {
-    ///     let inflow = plan.flows[index]
-    ///     let value = state[inflow.estimatedValueIndex]
+    ///     let outflow = plan.flows[index]
+    ///     let value = state[outflow.estimatedValueIndex]
     ///     ...
     /// }
     /// ```
@@ -215,7 +215,7 @@ public struct BoundGraphicalFunction {
     /// The function object itself
     public let function: GraphicalFunction
     
-    /// ID of a node that is a parameter for the function.
+    /// Index of a variable that is a parameter for the function.
     public let parameterIndex: SimulationState.Index
 }
 

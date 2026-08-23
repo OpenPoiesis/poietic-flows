@@ -57,7 +57,7 @@ extension SimulationPlanner {
     /// Compile an object into its computational representation.
     ///
     /// - Returns: Computational representation of the object.
-    /// - Throws: ``CompilationError`` when missing required component or an attribute.
+    /// - Throws: ``PlanningError`` when missing required component or an attribute.
     ///
     func compileObject(_ object: ObjectSnapshot, entity: RuntimeEntity)
     throws (PlanningError) -> ComputationalRepresentation
@@ -78,7 +78,7 @@ extension SimulationPlanner {
         }
         else {
             // HINT: If this error happens, then check one of the the following:
-            // - ComputationOrderSystem and SimulationOrderComponent
+            // - ComputationOrderSystem and SimulationOrder
             // - whether the design object constraints work properly
             // - whether the design metamodel is stock-flows metamodel
             //   and that it has necessary traits
@@ -100,9 +100,9 @@ extension SimulationPlanner {
     ///
     /// - Parameters:
     ///     - node: node containing already parsed formula in
-    ///       ``ParsedFormulaComponent``.
+    ///       `ParsedExpressionComponent`.
     ///
-    /// - Precondition: The node must have ``ParsedFormulaComponent`` associated
+    /// - Precondition: The node must have `ParsedExpressionComponent` associated
     ///   with it.
     ///
     /// - Throws: ``PlanningError`` if there is an issue with parameters,
@@ -148,7 +148,7 @@ extension SimulationPlanner {
     /// interpolation.
     ///
     /// - Requires: node
-    /// - Throws: ``NodeIssue`` if the function parameter is not connected.
+    /// - Throws: ``PlanningError`` if the function parameter is not connected.
     ///
     /// - SeeAlso: ``BoundGraphicalFunction``, ``Solver/evaluate(objectAt:with:)``
     ///
@@ -209,7 +209,7 @@ extension SimulationPlanner {
               case let .atom(atomType) = type
         else {
             let issue = Issue(
-                identifier: "invalid_parameter_type",
+                identifier: IssueIdentifier.invalidParameterType,
                 severity: .error,
                 source: Self.IssueSourceName,
                 message: "Invalid parameter type",
@@ -253,7 +253,7 @@ extension SimulationPlanner {
               case .atom(_) = type
         else {
             let issue = Issue(
-                identifier: "invalid_parameter_type",
+                identifier: IssueIdentifier.invalidParameterType,
                 severity: .error,
                 source: Self.IssueSourceName,
                 message: "Invalid parameter type",

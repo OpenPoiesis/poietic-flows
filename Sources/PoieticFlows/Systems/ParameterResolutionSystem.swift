@@ -12,6 +12,12 @@ import PoieticCore
 /// This component can be used for error reporting or for automatic creation of parameter
 /// connections.
 ///
+/// - **Created By:** ``ParameterResolutionSystem``
+/// - **Used By:**
+///     - ``SimulationPlanner`` for single-input parameter nodes such as smooth, delay and
+///       graphical function.
+///     - ``ParameterConnectionProposalSystem`` for proposing parameter connections or connection
+///       removals.
 public struct ResolvedParameters: Component {
     internal init(incoming: [String : ObjectID] = [:],
                   connectedUnnamed: [ObjectID] = [],
@@ -65,13 +71,11 @@ public struct ResolvedParameters: Component {
 public struct ParameterResolutionSystem: System {
     public static let IssueSourceName = "ParameterResolutionSystem"
 
-    nonisolated(unsafe) public static let dependencies: [SystemDependency] = [
+    public static let dependencies: [SystemDependency] = [
         .after(ExpressionParserSystem.self), // We need variable names
     ]
 
-    public init(_ world: World) { }
-
-    public func update(_ world: World) throws (InternalSystemError) {
+    public static func update(_ world: World) throws (InternalSystemError) {
         guard let plane = world.plane else { return }
         try resolveFormulas(world, plane: plane)
         try resolveAuxiliaries(world, plane: plane, type: .GraphicalFunction)
@@ -79,7 +83,7 @@ public struct ParameterResolutionSystem: System {
         try resolveAuxiliaries(world, plane: plane, type: .Smooth)
     }
 
-    public func resolveFormulas(_ world: World, plane: DesignPlane) throws (InternalSystemError) {
+    public static func resolveFormulas(_ world: World, plane: DesignPlane) throws (InternalSystemError) {
         let builtinNames = BuiltinVariable.allNames
 
         for (entity, exprComponent) in world.query(ParsedExpressionComponent.self) {
@@ -152,7 +156,7 @@ public struct ParameterResolutionSystem: System {
     ///
     /// - Requirement: The auxiliary should have one incoming parameter.
     ///
-    public func resolveAuxiliaries(_ world: World, plane: DesignPlane, type: ObjectType)
+    public static func resolveAuxiliaries(_ world: World, plane: DesignPlane, type: ObjectType)
     throws (InternalSystemError) {
         for object in plane.filter(type: type) {
             guard let entity = world.entity(object.objectID) else { continue }

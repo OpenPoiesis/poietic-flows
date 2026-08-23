@@ -58,12 +58,10 @@ extension Trait {
             /// when draining a non-negative stocks. The lower the number, the higher
             /// the priority.
             ///
-            /// - Note: It is highly recommended to specify priority explicitly if a
-            /// functionality that considers the priority is used. It is not advised
-            /// to rely on the default priority.
+            /// - Note: No longer used by the simulation.
             ///
             Attribute("priority", type: .int, default: Variant(0),
-                      abstract: "Priority during computation. The flows are considered in the ascending order of priority."),
+                      abstract: "Priority during computation. (no longer used)"),
         ]
     )
     
@@ -198,7 +196,6 @@ extension Trait {
                       abstract: "Solver type name"
                      ),
             // TODO: Support date/time
-            // TODO: Add Solver type
         ]
     )
 }

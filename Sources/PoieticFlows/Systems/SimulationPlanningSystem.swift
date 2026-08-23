@@ -1,5 +1,5 @@
 //
-//  CompilationSystem.swift
+//  SimulationPlanningSystem.swift
 //  poietic-flows
 //
 //  Created by Stefan Urbanek on 01/11/2025.
@@ -44,7 +44,9 @@ extension PlanningError {
 ///     - ``ResolvedParameters``: semantically required – registers an object issue if missing.
 ///     - ``FlowRate``: required for flow nodes.
 ///     - ``Stock``: required for stock nodes.
-/// - **Output:** ``SimulationPlan`` singleton if there were no issues, otherwise sets object issues.
+/// - **Output:**
+///     - ``SimulationPlan`` singleton is set if there were no issues. If there are issues the
+///       existing singleton is removed.
 /// - **Forgiveness:** The system is forgiving in a way that it does not fail on semantic errors.
 ///
 /// - Note: If the simulation plan was not produced by the system, it means that the model contained
@@ -52,27 +54,14 @@ extension PlanningError {
 ///         offending data or for an offending structure.
 ///
 public struct SimulationPlanningSystem: System {
-    /// Error thrown during the planning process
-    internal enum CompilationError: Error, Equatable {
-        /// Issue with object has been detected, appended to the list of issues. The caller might
-        /// continue with the operation to gather more issues. Criticality of this error is
-        /// problem specific.
-        case objectIssue
-        case corruptedState(String)
-        /// Missing required component. Probably the dependency was not satisfied.
-        case missingComponent(String)
-    }
-    
-    nonisolated(unsafe) public static let dependencies: [SystemDependency] = [
+    public static let dependencies: [SystemDependency] = [
         .after(ExpressionParserSystem.self), // Gets us UnboundExpression for each node
-        .after(ComputationOrderSystem.self), // Gets us SimulationOrderComponent
+        .after(ComputationOrderSystem.self), // Gets us SimulationOrder
         .after(NameResolutionSystem.self), // We need name lookup and object names.
         .after(StockFlowTopologySystem.self),
     ]
     
-    public init(_ world: World) { }
-    
-    public func update(_ world: World) throws (InternalSystemError) {
+    public static func update(_ world: World) throws (InternalSystemError) {
         guard let order: SimulationOrder = world.singleton()
         else { return }
 
@@ -110,10 +99,7 @@ public struct SimulationPlanningSystem: System {
 /// is removed.
 ///
 public struct SimulationSettingsSystem: System {
-    public init(_ world: World) {
-        // Nothing
-    }
-    public func update(_ world: World) throws (InternalSystemError) {
+    public static func update(_ world: World) throws (InternalSystemError) {
         guard let plane = world.plane,
               let object = plane.first(trait: Trait.Simulation)
         else {

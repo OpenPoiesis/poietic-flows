@@ -22,8 +22,7 @@ import Testing
         let accepted = try design.accept(frame)
         let world = World(plane: accepted)
         
-        let system = ComputationOrderSystem(world)
-        try system.update(world)
+        try NameResolutionSystem.update(world)
         return world
     }
     
@@ -31,8 +30,8 @@ import Testing
         let object = frame.createNode(.Note, name: "note")
         
         let world = try accept(frame)
-        let system = NameResolutionSystem(world)
-        try system.update(world)
+        try ComputationOrderSystem.update(world)
+        try NameResolutionSystem.update(world)
         
         let lookup: SimulationNameLookup = try #require(world.singleton())
         #expect(lookup.namedObjects.isEmpty)
@@ -46,8 +45,8 @@ import Testing
         let whitespace = frame.createNode(.Auxiliary, name: " \t\n\r")
         
         let world = try accept(frame)
-        let system = NameResolutionSystem(world)
-        try system.update(world)
+        try ComputationOrderSystem.update(world)
+        try NameResolutionSystem.update(world)
         
         let lookup: SimulationNameLookup = try #require(world.singleton())
         #expect(lookup.namedObjects.isEmpty)
@@ -67,8 +66,8 @@ import Testing
         let object = frame.createNode(.Auxiliary, name: "  object \n")
 
         let world = try accept(frame)
-        let system = NameResolutionSystem(world)
-        try system.update(world)
+        try ComputationOrderSystem.update(world)
+        try NameResolutionSystem.update(world)
         
         let lookup: SimulationNameLookup = try #require(world.singleton())
         #expect(lookup.namedObjects["object"] == object.objectID)
@@ -81,8 +80,8 @@ import Testing
         let dupe = frame.createNode(.Auxiliary, name: "object")
 
         let world = try accept(frame)
-        let system = NameResolutionSystem(world)
-        try system.update(world)
+        try ComputationOrderSystem.update(world)
+        try NameResolutionSystem.update(world)
         
         let objEnt = try #require(world.entity(object.objectID))
         let component: SimulationName? = objEnt.component()
@@ -101,8 +100,8 @@ import Testing
         let single = frame.createNode(.Auxiliary, name: "single")
 
         let world = try accept(frame)
-        let system = NameResolutionSystem(world)
-        try system.update(world)
+        try ComputationOrderSystem.update(world)
+        try NameResolutionSystem.update(world)
         
         let objEnt = try #require(world.entity(object.objectID))
         let component: SimulationName? = objEnt.component()
