@@ -27,8 +27,7 @@
   },
   "kind" : "symbol",
   "metadata" : {
-    "extendedModule" : "PoieticCore",
-    "externalID" : "s:11PoieticCore6SystemPAAE12dependenciesSayAA0C10DependencyOGvpZ::SYNTHESIZED::s:12PoieticFlows21ChartResolutionSystemV",
+    "externalID" : "s:12PoieticFlows21ChartResolutionSystemV12dependenciesSay0A4Core0E10DependencyOGvpZ",
     "fragments" : [
       {
         "kind" : "keyword",
@@ -40,7 +39,7 @@
       },
       {
         "kind" : "keyword",
-        "text" : "var"
+        "text" : "let"
       },
       {
         "kind" : "text",
@@ -66,10 +65,7 @@
     ],
     "modules" : [
       {
-        "name" : "PoieticFlows",
-        "relatedModules" : [
-          "PoieticCore"
-        ]
+        "name" : "PoieticFlows"
       }
     ],
     "role" : "symbol",
@@ -98,7 +94,7 @@
             },
             {
               "kind" : "keyword",
-              "text" : "var"
+              "text" : "let"
             },
             {
               "kind" : "text",
@@ -119,15 +115,7 @@
             },
             {
               "kind" : "text",
-              "text" : "] { "
-            },
-            {
-              "kind" : "keyword",
-              "text" : "get"
-            },
-            {
-              "kind" : "text",
-              "text" : " }"
+              "text" : "]"
             }
           ]
         }
@@ -160,20 +148,7 @@
 "doc://PoieticFlows/documentation/PoieticFlows": {
   "abstract" : [
     {
-      "text" : "Poietic package for modelling and simulation ",
-      "type" : "text"
-    },
-    {
-      "inlineContent" : [
-        {
-          "text" : "Stock and Flow",
-          "type" : "text"
-        }
-      ],
-      "type" : "emphasis"
-    },
-    {
-      "text" : " models.",
+      "text" : "Stock and Flow domain package for PoieticCore.",
       "type" : "text"
     }
   ],
@@ -233,7 +208,7 @@
     },
     {
       "kind" : "keyword",
-      "text" : "var"
+      "text" : "let"
     },
     {
       "kind" : "text",

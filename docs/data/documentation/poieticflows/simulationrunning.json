@@ -951,11 +951,18 @@
       "title" : "Simulation"
     },
     {
+      "anchor" : "Result",
+      "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationResult",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationResultView"
+      ],
+      "title" : "Result"
+    },
+    {
       "anchor" : "Components",
       "identifiers" : [
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationSettings",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ScenarioParameters",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationResult"
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ScenarioParameters"
       ],
       "title" : "Components"
     }
@@ -977,20 +984,7 @@
 "doc://PoieticFlows/documentation/PoieticFlows": {
   "abstract" : [
     {
-      "text" : "Poietic package for modelling and simulation ",
-      "type" : "text"
-    },
-    {
-      "inlineContent" : [
-        {
-          "text" : "Stock and Flow",
-          "type" : "text"
-        }
-      ],
-      "type" : "emphasis"
-    },
-    {
-      "text" : " models.",
+      "text" : "Stock and Flow domain package for PoieticCore.",
       "type" : "text"
     }
   ],
@@ -1290,6 +1284,40 @@
   "title" : "SimulationResult",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/simulationresult"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationResultView": {
+  "abstract" : [
+    {
+      "text" : "Convenience view on simulation result.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SimulationResultView"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationResultView",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SimulationResultView"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SimulationResultView",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationresultview"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/SimulationSettings": {
   "abstract" : [

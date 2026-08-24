@@ -198,6 +198,7 @@
       "anchor" : "Instance-Properties",
       "generated" : true,
       "identifiers" : [
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Chart\/label",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Chart\/xAxis",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Chart\/yAxis"
       ],
@@ -234,20 +235,7 @@
 "doc://PoieticFlows/documentation/PoieticFlows": {
   "abstract" : [
     {
-      "text" : "Poietic package for modelling and simulation ",
-      "type" : "text"
-    },
-    {
-      "inlineContent" : [
-        {
-          "text" : "Stock and Flow",
-          "type" : "text"
-        }
-      ],
-      "type" : "emphasis"
-    },
-    {
-      "text" : " models.",
+      "text" : "Stock and Flow domain package for PoieticCore.",
       "type" : "text"
     }
   ],
@@ -392,6 +380,44 @@
   "title" : "init(from:)",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/chart\/init(from:)"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/Chart/label": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "label"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Chart\/label",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "label",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/chart\/label"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/Chart/xAxis": {
   "abstract" : [

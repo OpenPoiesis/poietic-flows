@@ -548,9 +548,11 @@
       "identifiers" : [
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/builtins",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/flows",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/objectNames",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/simulationObjects",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/stateVariables",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/stocks"
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/stocks",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/variableNames"
       ],
       "title" : "Instance Properties"
     },
@@ -559,6 +561,7 @@
       "generated" : true,
       "identifiers" : [
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/simulationObject(_:)",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/simulationObject(named:)",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/variable(named:)",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/variableIndex(_:)"
       ],
@@ -595,20 +598,7 @@
 "doc://PoieticFlows/documentation/PoieticFlows": {
   "abstract" : [
     {
-      "text" : "Poietic package for modelling and simulation ",
-      "type" : "text"
-    },
-    {
-      "inlineContent" : [
-        {
-          "text" : "Stock and Flow",
-          "type" : "text"
-        }
-      ],
-      "type" : "emphasis"
-    },
-    {
-      "text" : " models.",
+      "text" : "Stock and Flow domain package for PoieticCore.",
       "type" : "text"
     }
   ],
@@ -920,10 +910,51 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/simulationplan\/flows"
 },
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationPlan/objectNames": {
+  "abstract" : [
+    {
+      "text" : "List of all simulation object names.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "objectNames"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : "]"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/objectNames",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "objectNames",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationplan\/objectnames"
+},
 "doc://PoieticFlows/documentation/PoieticFlows/SimulationPlan/simulationObject(_:)": {
   "abstract" : [
     {
-      "text" : "Get a simulation variable for an object with given ID, if exists.",
+      "text" : "Get a simulation object with given ID, if exists.",
       "type" : "text"
     }
   ],
@@ -969,6 +1000,64 @@
   "title" : "simulationObject(_:)",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/simulationplan\/simulationobject(_:)"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationPlan/simulationObject(named:)": {
+  "abstract" : [
+    {
+      "text" : "Get a simulation object with given name, if exists.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "simulationObject"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "named"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12PoieticFlows16SimulationObjectV",
+      "text" : "SimulationObject"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/simulationObject(named:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "simulationObject(named:)",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationplan\/simulationobject(named:)"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/SimulationPlan/simulationObjects": {
   "abstract" : [
@@ -1104,7 +1193,7 @@
 "doc://PoieticFlows/documentation/PoieticFlows/SimulationPlan/variable(named:)": {
   "abstract" : [
     {
-      "text" : "Get a compiled variable by its name.",
+      "text" : "Get a state variable by its name.",
       "type" : "text"
     }
   ],
@@ -1144,8 +1233,8 @@
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:12PoieticFlows16SimulationObjectV",
-      "text" : "SimulationObject"
+      "preciseIdentifier" : "s:12PoieticFlows13StateVariableV",
+      "text" : "StateVariable"
     },
     {
       "kind" : "text",
@@ -1217,6 +1306,47 @@
   "title" : "variableIndex(_:)",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/simulationplan\/variableindex(_:)"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationPlan/variableNames": {
+  "abstract" : [
+    {
+      "text" : "List of all state variable names, including internal ones.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "variableNames"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : "]"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan\/variableNames",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "variableNames",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationplan\/variablenames"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/SimulationPlanner": {
   "abstract" : [

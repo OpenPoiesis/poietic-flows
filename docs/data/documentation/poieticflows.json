@@ -1,20 +1,7 @@
 {
   "abstract" : [
     {
-      "text" : "Poietic package for modelling and simulation ",
-      "type" : "text"
-    },
-    {
-      "inlineContent" : [
-        {
-          "text" : "Stock and Flow",
-          "type" : "text"
-        }
-      ],
-      "type" : "emphasis"
-    },
-    {
-      "text" : " models.",
+      "text" : "Stock and Flow domain package for PoieticCore.",
       "type" : "text"
     }
   ],
@@ -54,7 +41,16 @@
         {
           "inlineContent" : [
             {
-              "text" : "The PoieticFlows package provides a domain model and a simulation functionality",
+              "inlineContent" : [
+                {
+                  "text" : "Stock and Flow",
+                  "type" : "text"
+                }
+              ],
+              "type" : "emphasis"
+            },
+            {
+              "text" : " models are networks of stocks that accumulate material (or energy, value,…),",
               "type" : "text"
             },
             {
@@ -62,7 +58,15 @@
               "type" : "text"
             },
             {
-              "text" : "for ",
+              "text" : "flows that move the material, and of other meaningful connections.",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "See ",
               "type" : "text"
             },
             {
@@ -71,7 +75,7 @@
               "type" : "reference"
             },
             {
-              "text" : " models.",
+              "text" : ".",
               "type" : "text"
             }
           ],
@@ -80,11 +84,25 @@
         {
           "inlineContent" : [
             {
-              "text" : "The major components and capabilities of the Flows package are:",
+              "text" : "This is a methodology package, not a tool nor an application. This package is for developers",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "that want to build applications presenting Stock and Flow scenarios or to build tools for modellers.",
               "type" : "text"
             }
           ],
           "type" : "paragraph"
+        },
+        {
+          "anchor" : "Features",
+          "level" : 3,
+          "text" : "Features",
+          "type" : "heading"
         },
         {
           "items" : [
@@ -93,7 +111,33 @@
                 {
                   "inlineContent" : [
                     {
-                      "text" : "Stock and Flow metamodel, object types and validation constraints",
+                      "inlineContent" : [
+                        {
+                          "text" : "Metamodel",
+                          "type" : "text"
+                        }
+                      ],
+                      "type" : "strong"
+                    },
+                    {
+                      "text" : ": Stock, FlowRate, Auxiliary, GraphicalFunction, Delay, Smooth and related",
+                      "type" : "text"
+                    },
+                    {
+                      "text" : " ",
+                      "type" : "text"
+                    },
+                    {
+                      "text" : "edges. See ",
+                      "type" : "text"
+                    },
+                    {
+                      "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/Metamodel",
+                      "isActive" : true,
+                      "type" : "reference"
+                    },
+                    {
+                      "text" : " with full list of nodes and edges with their description.",
                       "type" : "text"
                     }
                   ],
@@ -106,7 +150,42 @@
                 {
                   "inlineContent" : [
                     {
-                      "text" : "Simulation planner for creating computable model representation",
+                      "inlineContent" : [
+                        {
+                          "text" : "Planning Pipeline",
+                          "type" : "text"
+                        }
+                      ],
+                      "type" : "strong"
+                    },
+                    {
+                      "text" : ": Collection of systems that analyse the design and turn it into a",
+                      "type" : "text"
+                    },
+                    {
+                      "text" : " ",
+                      "type" : "text"
+                    },
+                    {
+                      "text" : "computable ",
+                      "type" : "text"
+                    },
+                    {
+                      "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan",
+                      "isActive" : true,
+                      "type" : "reference"
+                    },
+                    {
+                      "text" : ". See ",
+                      "type" : "text"
+                    },
+                    {
+                      "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/PlanAndPlanning",
+                      "isActive" : true,
+                      "type" : "reference"
+                    },
+                    {
+                      "text" : ".",
                       "type" : "text"
                     }
                   ],
@@ -119,7 +198,73 @@
                 {
                   "inlineContent" : [
                     {
-                      "text" : "Simulator and solver for performing the simulation",
+                      "inlineContent" : [
+                        {
+                          "text" : "Simulation",
+                          "type" : "text"
+                        }
+                      ],
+                      "type" : "strong"
+                    },
+                    {
+                      "text" : ": ",
+                      "type" : "text"
+                    },
+                    {
+                      "identifier" : "https:\/\/en.wikipedia.org\/wiki\/Euler_method",
+                      "isActive" : true,
+                      "type" : "reference"
+                    },
+                    {
+                      "text" : " ",
+                      "type" : "text"
+                    },
+                    {
+                      "identifier" : "https:\/\/en.wikipedia.org\/wiki\/Runge–Kutta_methods",
+                      "isActive" : true,
+                      "type" : "reference"
+                    },
+                    {
+                      "text" : " solvers, support for",
+                      "type" : "text"
+                    },
+                    {
+                      "text" : " ",
+                      "type" : "text"
+                    },
+                    {
+                      "text" : "non-negative stock constraints. See ",
+                      "type" : "text"
+                    },
+                    {
+                      "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationRunning",
+                      "isActive" : true,
+                      "type" : "reference"
+                    },
+                    {
+                      "text" : ".",
+                      "type" : "text"
+                    }
+                  ],
+                  "type" : "paragraph"
+                }
+              ]
+            },
+            {
+              "content" : [
+                {
+                  "inlineContent" : [
+                    {
+                      "inlineContent" : [
+                        {
+                          "text" : "Issue Reporting",
+                          "type" : "text"
+                        }
+                      ],
+                      "type" : "strong"
+                    },
+                    {
+                      "text" : ": User errors are collected as issues with hints and related objects.",
                       "type" : "text"
                     }
                   ],
@@ -157,233 +302,60 @@
           "type" : "paragraph"
         },
         {
-          "items" : [
-            {
-              "content" : [
-                {
-                  "inlineContent" : [
-                    {
-                      "text" : "Core computational nodes: ",
-                      "type" : "text"
-                    },
-                    {
-                      "code" : "Stock",
-                      "type" : "codeVoice"
-                    },
-                    {
-                      "text" : ", ",
-                      "type" : "text"
-                    },
-                    {
-                      "code" : "Flow",
-                      "type" : "codeVoice"
-                    },
-                    {
-                      "text" : " and ",
-                      "type" : "text"
-                    },
-                    {
-                      "code" : "Auxiliary",
-                      "type" : "codeVoice"
-                    }
-                  ],
-                  "type" : "paragraph"
-                }
-              ]
-            },
-            {
-              "content" : [
-                {
-                  "inlineContent" : [
-                    {
-                      "code" : "GraphicalFunction",
-                      "type" : "codeVoice"
-                    },
-                    {
-                      "text" : " node for a function that is represented",
-                      "type" : "text"
-                    },
-                    {
-                      "text" : " ",
-                      "type" : "text"
-                    },
-                    {
-                      "text" : "by a graph – set of points in a 2D plane.",
-                      "type" : "text"
-                    }
-                  ],
-                  "type" : "paragraph"
-                }
-              ]
-            },
-            {
-              "content" : [
-                {
-                  "inlineContent" : [
-                    {
-                      "text" : "Special nodes: ",
-                      "type" : "text"
-                    },
-                    {
-                      "code" : "Delay",
-                      "type" : "codeVoice"
-                    },
-                    {
-                      "text" : " and ",
-                      "type" : "text"
-                    },
-                    {
-                      "code" : "Smooth",
-                      "type" : "codeVoice"
-                    }
-                  ],
-                  "type" : "paragraph"
-                }
-              ]
-            },
-            {
-              "content" : [
-                {
-                  "inlineContent" : [
-                    {
-                      "text" : "Component for arithmetic formulas ",
-                      "type" : "text"
-                    },
-                    {
-                      "code" : "Formula",
-                      "type" : "codeVoice"
-                    },
-                    {
-                      "text" : " for all core",
-                      "type" : "text"
-                    },
-                    {
-                      "text" : " ",
-                      "type" : "text"
-                    },
-                    {
-                      "text" : "computational nodes.",
-                      "type" : "text"
-                    }
-                  ],
-                  "type" : "paragraph"
-                }
-              ]
-            },
-            {
-              "content" : [
-                {
-                  "inlineContent" : [
-                    {
-                      "text" : "Built-in functions: ",
-                      "type" : "text"
-                    },
-                    {
-                      "code" : "abs",
-                      "type" : "codeVoice"
-                    },
-                    {
-                      "text" : ", ",
-                      "type" : "text"
-                    },
-                    {
-                      "code" : "floor",
-                      "type" : "codeVoice"
-                    },
-                    {
-                      "text" : ", ",
-                      "type" : "text"
-                    },
-                    {
-                      "code" : "ceiling",
-                      "type" : "codeVoice"
-                    },
-                    {
-                      "text" : ", ",
-                      "type" : "text"
-                    },
-                    {
-                      "code" : "round",
-                      "type" : "codeVoice"
-                    },
-                    {
-                      "text" : ", ",
-                      "type" : "text"
-                    },
-                    {
-                      "code" : "power",
-                      "type" : "codeVoice"
-                    },
-                    {
-                      "text" : ", ",
-                      "type" : "text"
-                    },
-                    {
-                      "code" : "sum",
-                      "type" : "codeVoice"
-                    },
-                    {
-                      "text" : ", ",
-                      "type" : "text"
-                    },
-                    {
-                      "code" : "min",
-                      "type" : "codeVoice"
-                    },
-                    {
-                      "text" : ",",
-                      "type" : "text"
-                    },
-                    {
-                      "text" : " ",
-                      "type" : "text"
-                    },
-                    {
-                      "code" : "max",
-                      "type" : "codeVoice"
-                    }
-                  ],
-                  "type" : "paragraph"
-                }
-              ]
-            },
-            {
-              "content" : [
-                {
-                  "inlineContent" : [
-                    {
-                      "text" : "Included ",
-                      "type" : "text"
-                    },
-                    {
-                      "identifier" : "https:\/\/en.wikipedia.org\/wiki\/Euler_method",
-                      "isActive" : true,
-                      "type" : "reference"
-                    },
-                    {
-                      "text" : " ",
-                      "type" : "text"
-                    },
-                    {
-                      "text" : "and ",
-                      "type" : "text"
-                    },
-                    {
-                      "identifier" : "https:\/\/en.wikipedia.org\/wiki\/Runge–Kutta_methods",
-                      "isActive" : true,
-                      "type" : "reference"
-                    },
-                    {
-                      "text" : " solvers.",
-                      "type" : "text"
-                    }
-                  ],
-                  "type" : "paragraph"
-                }
-              ]
-            }
+          "anchor" : "Example",
+          "level" : 3,
+          "text" : "Example",
+          "type" : "heading"
+        },
+        {
+          "code" : [
+            "    import Foundation",
+            "    import PoieticCore",
+            "    import PoieticFlows",
+            "    ",
+            "    \/\/ 1. Load the design from a file.",
+            "    let url = URL(fileURLWithPath: \"predator_prey.poietic\")",
+            "    let design = try DesignStore(url: url).load(metamodel: StockFlowMetamodel)",
+            "    ",
+            "    guard let plane = design.currentPlane else {",
+            "        print(\"The design has no current plane.\")",
+            "        exit(1)",
+            "    }",
+            "    ",
+            "    \/\/ 2. Create a world for the plane and prepare the two schedules.",
+            "    let world = World(plane: plane)",
+            "    ",
+            "    \/\/ 3. Create the simulation plan.",
+            "    try world.run(systems: SimulationPlanningSystems)",
+            "    ",
+            "    guard let plan: SimulationPlan = world.singleton() else {",
+            "        \/\/ The model has issues – present them to the user.",
+            "        for (id, issues) in world.issues {",
+            "            print(\"Object \\(id):\")",
+            "            for issue in issues { print(\"  \\(issue)\") }",
+            "        }",
+            "        exit(1)",
+            "    }",
+            "    ",
+            "    \/\/ 4. Run the simulation.",
+            "    try world.run(systems: SimulationRunningSystems)",
+            "    ",
+            "    guard let result: SimulationResult = world.singleton() else {",
+            "        print(\"The simulation failed.\")",
+            "        exit(1)",
+            "    }",
+            "    ",
+            "    \/\/ 5. Print the results.",
+            "    let view = SimulationResultView(result: result, plan: plan,",
+            "                                    columns: [\"time\"] + plan.objectNames)",
+            "",
+            "    print(view.columnNames.joined(separator: \"\\t\"))",
+            "    for row in view {",
+            "        print(row.stringValues().joined(separator: \"\\t\"))",
+            "    }"
           ],
-          "type" : "unorderedList"
+          "syntax" : "swift",
+          "type" : "codeListing"
         }
       ],
       "kind" : "content"
@@ -413,7 +385,6 @@
       "generated" : true,
       "identifiers" : [
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/BoundVariable",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ChartComponent",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ChartResolutionSystem",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ChartSeries",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/NewSimulationState",
@@ -457,20 +428,7 @@
 "doc://PoieticFlows/documentation/PoieticFlows": {
   "abstract" : [
     {
-      "text" : "Poietic package for modelling and simulation ",
-      "type" : "text"
-    },
-    {
-      "inlineContent" : [
-        {
-          "text" : "Stock and Flow",
-          "type" : "text"
-        }
-      ],
-      "type" : "emphasis"
-    },
-    {
-      "text" : " models.",
+      "text" : "Stock and Flow domain package for PoieticCore.",
       "type" : "text"
     }
   ],
@@ -511,38 +469,6 @@
   "title" : "BoundVariable",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/boundvariable"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/ChartComponent": {
-  "abstract" : [
-
-  ],
-  "deprecated" : true,
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "struct"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "ChartComponent"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ChartComponent",
-  "kind" : "symbol",
-  "navigatorTitle" : [
-    {
-      "kind" : "identifier",
-      "text" : "ChartComponent"
-    }
-  ],
-  "role" : "symbol",
-  "title" : "ChartComponent",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/chartcomponent"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/ChartResolutionSystem": {
   "abstract" : [
@@ -827,6 +753,40 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/poieticcore"
 },
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationPlan": {
+  "abstract" : [
+    {
+      "text" : "Structure according to which a simulation is performed.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SimulationPlan"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationPlan",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SimulationPlan"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "SimulationPlan",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/simulationplan"
+},
 "doc://PoieticFlows/documentation/PoieticFlows/SimulationRunning": {
   "abstract" : [
     {
@@ -1041,10 +1001,10 @@
 },
 "https://en.wikipedia.org/wiki/Runge–Kutta_methods": {
   "identifier" : "https:\/\/en.wikipedia.org\/wiki\/Runge–Kutta_methods",
-  "title" : "RK4",
+  "title" : "Runge-Kutta 4",
   "titleInlineContent" : [
     {
-      "text" : "RK4",
+      "text" : "Runge-Kutta 4",
       "type" : "text"
     }
   ],

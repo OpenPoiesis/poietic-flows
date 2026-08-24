@@ -118,13 +118,12 @@
   ],
   "seeAlsoSections" : [
     {
-      "anchor" : "Components",
+      "anchor" : "Result",
       "generated" : true,
       "identifiers" : [
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationSettings",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ScenarioParameters"
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationResultView"
       ],
-      "title" : "Components"
+      "title" : "Result"
     }
   ],
   "topicSections" : [
@@ -196,20 +195,7 @@
 "doc://PoieticFlows/documentation/PoieticFlows": {
   "abstract" : [
     {
-      "text" : "Poietic package for modelling and simulation ",
-      "type" : "text"
-    },
-    {
-      "inlineContent" : [
-        {
-          "text" : "Stock and Flow",
-          "type" : "text"
-        }
-      ],
-      "type" : "emphasis"
-    },
-    {
-      "text" : " models.",
+      "text" : "Stock and Flow domain package for PoieticCore.",
       "type" : "text"
     }
   ],
@@ -219,40 +205,6 @@
   "title" : "PoieticFlows",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/ScenarioParameters": {
-  "abstract" : [
-    {
-      "text" : "Initial values of simulation variables.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "struct"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "ScenarioParameters"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/ScenarioParameters",
-  "kind" : "symbol",
-  "navigatorTitle" : [
-    {
-      "kind" : "identifier",
-      "text" : "ScenarioParameters"
-    }
-  ],
-  "role" : "symbol",
-  "title" : "ScenarioParameters",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/scenarioparameters"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/SimulationResult": {
   "abstract" : [
@@ -671,10 +623,10 @@
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/simulationresult\/unsafetimeseries(at:)"
 },
-"doc://PoieticFlows/documentation/PoieticFlows/SimulationSettings": {
+"doc://PoieticFlows/documentation/PoieticFlows/SimulationResultView": {
   "abstract" : [
     {
-      "text" : "Settings of the simulation – time and solver.",
+      "text" : "Convenience view on simulation result.",
       "type" : "text"
     }
   ],
@@ -689,21 +641,21 @@
     },
     {
       "kind" : "identifier",
-      "text" : "SimulationSettings"
+      "text" : "SimulationResultView"
     }
   ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationSettings",
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationResultView",
   "kind" : "symbol",
   "navigatorTitle" : [
     {
       "kind" : "identifier",
-      "text" : "SimulationSettings"
+      "text" : "SimulationResultView"
     }
   ],
   "role" : "symbol",
-  "title" : "SimulationSettings",
+  "title" : "SimulationResultView",
   "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/simulationsettings"
+  "url" : "\/documentation\/poieticflows\/simulationresultview"
 }
 }
 }

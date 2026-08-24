@@ -119,6 +119,7 @@
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/IssueIdentifier\/emptyName",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/IssueIdentifier\/invalidParameterType",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/IssueIdentifier\/missingRequiredParameter",
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/IssueIdentifier\/reservedName",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/IssueIdentifier\/tooManyParameters",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/IssueIdentifier\/unknownParameter",
         "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/IssueIdentifier\/unusedInput"
@@ -143,20 +144,7 @@
 "doc://PoieticFlows/documentation/PoieticFlows": {
   "abstract" : [
     {
-      "text" : "Poietic package for modelling and simulation ",
-      "type" : "text"
-    },
-    {
-      "inlineContent" : [
-        {
-          "text" : "Stock and Flow",
-          "type" : "text"
-        }
-      ],
-      "type" : "emphasis"
-    },
-    {
-      "text" : " models.",
+      "text" : "Stock and Flow domain package for PoieticCore.",
       "type" : "text"
     }
   ],
@@ -630,6 +618,48 @@
   "title" : "missingRequiredParameter",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/issueidentifier\/missingrequiredparameter"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/IssueIdentifier/reservedName": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "static"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "reservedName"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/IssueIdentifier\/reservedName",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "reservedName",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/issueidentifier\/reservedname"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/IssueIdentifier/tooManyParameters": {
   "abstract" : [

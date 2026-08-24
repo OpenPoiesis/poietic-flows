@@ -1,7 +1,7 @@
 {
   "abstract" : [
     {
-      "text" : "Get a simulation variable for an object with given ID, if exists.",
+      "text" : "Get a simulation object with given ID, if exists.",
       "type" : "text"
     }
   ],
@@ -142,21 +142,28 @@
           "type" : "heading"
         },
         {
-          "inlineContent" : [
+          "content" : [
             {
-              "text" : "This function is not used during computation, it is provided for",
-              "type" : "text"
-            },
-            {
-              "text" : " ",
-              "type" : "text"
-            },
-            {
-              "text" : "consumers of the simulation state or simulation result.",
-              "type" : "text"
+              "inlineContent" : [
+                {
+                  "text" : "This function is not used during computation, it is provided for",
+                  "type" : "text"
+                },
+                {
+                  "text" : " ",
+                  "type" : "text"
+                },
+                {
+                  "text" : "consumers of the simulation state or simulation result.",
+                  "type" : "text"
+                }
+              ],
+              "type" : "paragraph"
             }
           ],
-          "type" : "paragraph"
+          "name" : "Note",
+          "style" : "note",
+          "type" : "aside"
         },
         {
           "content" : [
@@ -233,20 +240,7 @@
 "doc://PoieticFlows/documentation/PoieticFlows": {
   "abstract" : [
     {
-      "text" : "Poietic package for modelling and simulation ",
-      "type" : "text"
-    },
-    {
-      "inlineContent" : [
-        {
-          "text" : "Stock and Flow",
-          "type" : "text"
-        }
-      ],
-      "type" : "emphasis"
-    },
-    {
-      "text" : " models.",
+      "text" : "Stock and Flow domain package for PoieticCore.",
       "type" : "text"
     }
   ],
@@ -328,7 +322,7 @@
 "doc://PoieticFlows/documentation/PoieticFlows/SimulationPlan/simulationObject(_:)": {
   "abstract" : [
     {
-      "text" : "Get a simulation variable for an object with given ID, if exists.",
+      "text" : "Get a simulation object with given ID, if exists.",
       "type" : "text"
     }
   ],

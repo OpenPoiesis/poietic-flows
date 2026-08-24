@@ -137,8 +137,7 @@
       "anchor" : "Components",
       "generated" : true,
       "identifiers" : [
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationSettings",
-        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationResult"
+        "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationSettings"
       ],
       "title" : "Components"
     }
@@ -191,20 +190,7 @@
 "doc://PoieticFlows/documentation/PoieticFlows": {
   "abstract" : [
     {
-      "text" : "Poietic package for modelling and simulation ",
-      "type" : "text"
-    },
-    {
-      "inlineContent" : [
-        {
-          "text" : "Stock and Flow",
-          "type" : "text"
-        }
-      ],
-      "type" : "emphasis"
-    },
-    {
-      "text" : " models.",
+      "text" : "Stock and Flow domain package for PoieticCore.",
       "type" : "text"
     }
   ],
@@ -353,40 +339,6 @@
   "title" : "initialValues",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/scenarioparameters\/initialvalues"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/SimulationResult": {
-  "abstract" : [
-    {
-      "text" : "Makeshift simulation result container.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "struct"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "SimulationResult"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationResult",
-  "kind" : "symbol",
-  "navigatorTitle" : [
-    {
-      "kind" : "identifier",
-      "text" : "SimulationResult"
-    }
-  ],
-  "role" : "symbol",
-  "title" : "SimulationResult",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/simulationresult"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/SimulationSettings": {
   "abstract" : [

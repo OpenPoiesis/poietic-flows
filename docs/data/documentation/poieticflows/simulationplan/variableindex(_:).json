@@ -252,20 +252,7 @@
 "doc://PoieticFlows/documentation/PoieticFlows": {
   "abstract" : [
     {
-      "text" : "Poietic package for modelling and simulation ",
-      "type" : "text"
-    },
-    {
-      "inlineContent" : [
-        {
-          "text" : "Stock and Flow",
-          "type" : "text"
-        }
-      ],
-      "type" : "emphasis"
-    },
-    {
-      "text" : " models.",
+      "text" : "Stock and Flow domain package for PoieticCore.",
       "type" : "text"
     }
   ],
@@ -313,7 +300,7 @@
 "doc://PoieticFlows/documentation/PoieticFlows/SimulationPlan/simulationObject(_:)": {
   "abstract" : [
     {
-      "text" : "Get a simulation variable for an object with given ID, if exists.",
+      "text" : "Get a simulation object with given ID, if exists.",
       "type" : "text"
     }
   ],

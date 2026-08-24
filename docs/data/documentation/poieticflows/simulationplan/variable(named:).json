@@ -1,7 +1,7 @@
 {
   "abstract" : [
     {
-      "text" : "Get a compiled variable by its name.",
+      "text" : "Get a state variable by its name.",
       "type" : "text"
     }
   ],
@@ -19,7 +19,7 @@
   },
   "kind" : "symbol",
   "metadata" : {
-    "externalID" : "s:12PoieticFlows14SimulationPlanV8variable5namedAA0C6ObjectVSgSS_tF",
+    "externalID" : "s:12PoieticFlows14SimulationPlanV8variable5namedAA13StateVariableVSgSS_tF",
     "fragments" : [
       {
         "kind" : "keyword",
@@ -56,8 +56,8 @@
       },
       {
         "kind" : "typeIdentifier",
-        "preciseIdentifier" : "s:12PoieticFlows16SimulationObjectV",
-        "text" : "SimulationObject"
+        "preciseIdentifier" : "s:12PoieticFlows13StateVariableV",
+        "text" : "StateVariable"
       },
       {
         "kind" : "text",
@@ -127,10 +127,10 @@
               "text" : ") -> "
             },
             {
-              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationObject",
+              "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StateVariable",
               "kind" : "typeIdentifier",
-              "preciseIdentifier" : "s:12PoieticFlows16SimulationObjectV",
-              "text" : "SimulationObject"
+              "preciseIdentifier" : "s:12PoieticFlows13StateVariableV",
+              "text" : "StateVariable"
             },
             {
               "kind" : "text",
@@ -215,21 +215,28 @@
           "type" : "paragraph"
         },
         {
-          "inlineContent" : [
+          "content" : [
             {
-              "text" : "This property is not used during computation, it is provided for",
-              "type" : "text"
-            },
-            {
-              "text" : " ",
-              "type" : "text"
-            },
-            {
-              "text" : "consumers of the simulation state or simulation result.",
-              "type" : "text"
+              "inlineContent" : [
+                {
+                  "text" : "This property is not used during computation, it is provided for",
+                  "type" : "text"
+                },
+                {
+                  "text" : " ",
+                  "type" : "text"
+                },
+                {
+                  "text" : "consumers of the simulation state or simulation result.",
+                  "type" : "text"
+                }
+              ],
+              "type" : "paragraph"
             }
           ],
-          "type" : "paragraph"
+          "name" : "Note",
+          "style" : "note",
+          "type" : "aside"
         },
         {
           "content" : [
@@ -276,20 +283,7 @@
 "doc://PoieticFlows/documentation/PoieticFlows": {
   "abstract" : [
     {
-      "text" : "Poietic package for modelling and simulation ",
-      "type" : "text"
-    },
-    {
-      "inlineContent" : [
-        {
-          "text" : "Stock and Flow",
-          "type" : "text"
-        }
-      ],
-      "type" : "emphasis"
-    },
-    {
-      "text" : " models.",
+      "text" : "Stock and Flow domain package for PoieticCore.",
       "type" : "text"
     }
   ],
@@ -299,40 +293,6 @@
   "title" : "PoieticFlows",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows"
-},
-"doc://PoieticFlows/documentation/PoieticFlows/SimulationObject": {
-  "abstract" : [
-    {
-      "text" : "Structure describing an object to be simulated.",
-      "type" : "text"
-    }
-  ],
-  "fragments" : [
-    {
-      "kind" : "keyword",
-      "text" : "struct"
-    },
-    {
-      "kind" : "text",
-      "text" : " "
-    },
-    {
-      "kind" : "identifier",
-      "text" : "SimulationObject"
-    }
-  ],
-  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/SimulationObject",
-  "kind" : "symbol",
-  "navigatorTitle" : [
-    {
-      "kind" : "identifier",
-      "text" : "SimulationObject"
-    }
-  ],
-  "role" : "symbol",
-  "title" : "SimulationObject",
-  "type" : "topic",
-  "url" : "\/documentation\/poieticflows\/simulationobject"
 },
 "doc://PoieticFlows/documentation/PoieticFlows/SimulationPlan": {
   "abstract" : [
@@ -371,7 +331,7 @@
 "doc://PoieticFlows/documentation/PoieticFlows/SimulationPlan/variable(named:)": {
   "abstract" : [
     {
-      "text" : "Get a compiled variable by its name.",
+      "text" : "Get a state variable by its name.",
       "type" : "text"
     }
   ],
@@ -411,8 +371,8 @@
     },
     {
       "kind" : "typeIdentifier",
-      "preciseIdentifier" : "s:12PoieticFlows16SimulationObjectV",
-      "text" : "SimulationObject"
+      "preciseIdentifier" : "s:12PoieticFlows13StateVariableV",
+      "text" : "StateVariable"
     },
     {
       "kind" : "text",
@@ -425,6 +385,40 @@
   "title" : "variable(named:)",
   "type" : "topic",
   "url" : "\/documentation\/poieticflows\/simulationplan\/variable(named:)"
+},
+"doc://PoieticFlows/documentation/PoieticFlows/StateVariable": {
+  "abstract" : [
+    {
+      "text" : "Structure representing a variable in a simulation state.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "StateVariable"
+    }
+  ],
+  "identifier" : "doc:\/\/PoieticFlows\/documentation\/PoieticFlows\/StateVariable",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "StateVariable"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "StateVariable",
+  "type" : "topic",
+  "url" : "\/documentation\/poieticflows\/statevariable"
 }
 }
 }
