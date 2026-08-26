@@ -26,6 +26,8 @@ import PoieticCore
 /// }
 /// ```
 ///
+/// - Note: This is not suitable for a CSV output. Please use `CSVFormatter` from PoieticCore.
+/// 
 public struct SimulationResultView {
     public let result: SimulationResult
     public let plan: SimulationPlan

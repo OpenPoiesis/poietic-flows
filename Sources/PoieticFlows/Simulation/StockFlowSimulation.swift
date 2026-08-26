@@ -6,6 +6,7 @@
 //
 
 // FIXME: [IMPORTANT] Test for dt = 0
+// TODO: [IMPORTANT] Set object issues when computation fails (for example value conversion, or division by zero). Do not throw.
 // TODO: Halt on negative inflow or outflow (optional)
 
 import PoieticCore

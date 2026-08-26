@@ -91,7 +91,6 @@ public class SimulationPlanner {
         let builtins = prepareBuiltins()
 
         let simulationObjects = try compileObjects(objects: simulationOrder.objects, in: world)
-        
         // If we have errors, finish early without creating the final plan.
         guard !hasError else { throw .userIssue }
 

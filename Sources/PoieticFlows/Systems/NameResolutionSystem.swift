@@ -36,16 +36,33 @@ public struct NameResolutionSystem: System {
         var nameLookup: [String:ObjectID] = [:]
 
         for object in order.objects {
-            guard let name = object.name,
-                  let entity = world.entity(object.objectID)
-            else { continue }
+            guard let entity = world.entity(object.objectID) else { continue }
+
+            guard let name = object.name else {
+                if object.type.hasTrait(.Name) {
+                    let issue = Issue(
+                        identifier: IssueIdentifier.nameRequired,
+                        severity: .error,
+                        source: Self.IssueSourceName,
+                        message: "'name' attribute is required",
+                        hints: [
+                            "Set a name attribute attribute",
+                            // This is more likely the issue: model was not validated correctly
+                            "Contact application developers"
+                        ],
+                    )
+                    entity.appendIssue(issue)
+                }
+                continue
+            }
+
             let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
             guard !trimmedName.isEmpty else {
                 let issue = Issue(
                     identifier: IssueIdentifier.emptyName,
                     severity: .error,
                     source: Self.IssueSourceName,
-                    message: "Node name is empty",
+                    message: "Object name is empty",
                     hints: [ "Set a node name that is not visually empty" ],
                 )
                 entity.appendIssue(issue)
@@ -58,7 +75,7 @@ public struct NameResolutionSystem: System {
                     identifier: IssueIdentifier.reservedName,
                     severity: .error,
                     source: Self.IssueSourceName,
-                    message: "Node uses a reserved name",
+                    message: "Object uses a reserved name",
                     hints: [ "Set a node name that one of reserved/built-in variable names" ],
                 )
                 entity.appendIssue(issue)

@@ -16,12 +16,17 @@ extension SimulationPlanner {
         var result: [SimulationObject] = []
         
         for object in objects {
-            guard let entity = world.entity(object.objectID),
-                  let nameComp: SimulationName = entity.component(),
-                  let role: SimulationRole = entity.component()
-            else {
+            guard let entity = world.entity(object.objectID) else {
+                throw .invalidObject(object.objectID, "No world entity")
+            }
+            guard let nameComp: SimulationName = entity.component() else {
+                // Name issues were recorded in NameResolutionSystem
                 hasError = true
                 continue
+                // throw .missingComponent(object.objectID, "SimulationName")
+            }
+            guard let role: SimulationRole = entity.component() else {
+                throw .missingComponent(object.objectID, "SimulationRole")
             }
             
             let rep: ComputationalRepresentation
