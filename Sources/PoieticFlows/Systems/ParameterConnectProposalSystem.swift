@@ -22,6 +22,10 @@ public struct ParameterProposal: Component {
     /// Endpoints of edges to be created. Create edges of type `Parameter`.
     public let toAdd: [EdgeProposal]
     
+    /// IDs of single-input auxiliaries (GraphicalFunction, Delay, Smooth) missing their required
+    /// unnamed input parameter,
+    public let missingUnnamed: [ObjectID]
+    
     /// Flag whether there are any parameters to be removed or added.
     ///
     public var isEmpty: Bool { toRemove.isEmpty && toAdd.isEmpty }
@@ -82,7 +86,8 @@ public struct ParameterConnectionProposalSystem: System {
         
         var toRemove: [ObjectID] = []
         var toAdd: [ParameterProposal.EdgeProposal] = []
-        
+        var missingUnnamed: [ObjectID] = []
+
         for (entity, resolution) in world.query(ResolvedParameters.self) {
             guard let objectID = entity.objectID
             else { continue }
@@ -100,8 +105,12 @@ public struct ParameterConnectionProposalSystem: System {
                 let edge = ParameterProposal.EdgeProposal(origin: parameterID, target: objectID)
                 toAdd.append(edge)
             }
+            
+            if resolution.missingUnnamed > 0 {
+                missingUnnamed.append(objectID)
+            }
         }
-        let proposal = ParameterProposal(toRemove: toRemove, toAdd: toAdd)
+        let proposal = ParameterProposal(toRemove: toRemove, toAdd: toAdd, missingUnnamed: missingUnnamed)
         world.setSingleton(proposal)
     }
 }

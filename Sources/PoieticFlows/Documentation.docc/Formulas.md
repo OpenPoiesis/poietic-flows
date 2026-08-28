@@ -51,7 +51,6 @@ Arithmetic functions:
 | `floor(x)` | Rounding downwards to the nearest integer |
 | `ceiling(x)` | Rounding upwards to the nearest integer |
 | `round(x)` | Rounding to the nearest integer |
-| `power(x,e)` | Power of _x_ to _e_ |
 | `exp(x)` | Natural exponent of _x_ |
 | `sqrt(x)` | Square root of _x_ |
 | `sum(a,...)` | Sum of multiple values |
