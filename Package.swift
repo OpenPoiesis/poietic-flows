@@ -13,7 +13,7 @@ let package = Package(
             targets: ["PoieticFlows"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/openpoiesis/poietic-core", branch: "main"),
+        .package(url: "https://github.com/openpoiesis/poietic-core", from: "0.8.0"),
         .package(url: "https://github.com/apple/swift-docc-plugin", from: "1.1.0"),
     ],
     targets: [
