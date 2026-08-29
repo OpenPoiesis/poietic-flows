@@ -19,9 +19,16 @@ extension SimulationState: VariableValueLookup {
     }
 }
 
-public struct SimulationError: Error {
-    let objectID: ObjectID
-    let error: any Error
+public enum SimulationError: Error, CustomStringConvertible {
+    case evaluationError(ObjectID, EvaluationError)
+    case unknownObject(ObjectID)
+    
+    public var description: String {
+        switch self {
+        case let .evaluationError(id , error): "Evaluation of \(id) failed: \(error)"
+        case let .unknownObject(id): "Unknown object \(id)"
+        }
+    }
 }
 
 /// Stock-Flow simulation specific computation and logic.
@@ -93,7 +100,13 @@ public class StockFlowSimulation {
     throws (SimulationError) -> SimulationState
     {
         self.constantIndices = Set()
-        
+
+        for requiredID in parameters.keys {
+            guard plan.containsObject(requiredID) else {
+                throw .unknownObject(requiredID)
+            }
+        }
+
         var state = SimulationState(count: plan.stateVariables.count,
                                     step: 0,
                                     time: time,
@@ -161,7 +174,7 @@ public class StockFlowSimulation {
             }
         }
         catch {
-            throw SimulationError(objectID: object.objectID, error: error)
+            throw .evaluationError(object.objectID, error)
         }
         state[object.variableIndex] = result
     }
@@ -183,7 +196,7 @@ public class StockFlowSimulation {
             }
         }
         catch {
-            throw SimulationError(objectID: accumulator.objectID, error: error)
+            throw .evaluationError(accumulator.objectID, error)
         }
     }
     
@@ -338,8 +351,8 @@ public class StockFlowSimulation {
                 result = try evaluate(smooth: smooth, in: &state)
             }
         }
-        catch /* EvaluationError */ {
-            throw SimulationError(objectID: object.objectID, error: error)
+        catch {
+            throw .evaluationError(object.objectID, error)
         }
         
         state[object.variableIndex] = result
@@ -356,8 +369,8 @@ public class StockFlowSimulation {
             throw .valueError(.atomExpected)
         }
         guard case var .array(queue) = state[delay.queueIndex] else {
-            // FIXME: Throw runtime error here
-            fatalError("Expected array for delay queue, got atom (compilation is corrupted)")
+            // Unreachable
+            fatalError("Expected array for delay queue, got atom (planning is corrupted)")
         }
 
         let outputValue: VariantAtom
@@ -403,9 +416,15 @@ public class StockFlowSimulation {
     /// - _s_: smooth value
     /// - _α = Δt / w_
     ///
-    public func evaluate(smooth: BoundSmooth, in state: inout SimulationState) throws (ValueError) -> Variant {
+    public func evaluate(smooth: BoundSmooth, in state: inout SimulationState) throws (EvaluationError) -> Variant {
         
-        let inputValue = try state[smooth.inputValueIndex].doubleValue()
+        let inputValue: Double
+        do {
+            inputValue = try state[smooth.inputValueIndex].doubleValue()
+        }
+        catch {
+            throw .valueError(error)
+        }
         let oldSmooth = state.double(at: smooth.smoothValueIndex)
         
         // TODO: Division by zero - what to do?

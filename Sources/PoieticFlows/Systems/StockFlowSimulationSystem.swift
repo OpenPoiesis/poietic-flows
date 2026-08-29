@@ -61,8 +61,8 @@ public struct StockFlowSimulationSystem: System {
                                               parameters: parameters.values)
         }
         catch {
-            // FIXME: Handle this error with a simulation result/error component.
-            throw InternalSystemError(self, message: "Unhandled simulation error: \(error)")
+            // TODO: Consider object issue component, if relevant.
+            throw InternalSystemError(self, message: "Simulation failed: \(error)")
         }
 
         result.append(currentState)
@@ -88,7 +88,8 @@ public struct StockFlowSimulationSystem: System {
             newState = try simulation.step(currentState)
         }
         catch {
-            throw InternalSystemError(self, message: "Unhandled simulation error: \(error)")
+            // TODO: Consider object issue component, if relevant.
+            throw InternalSystemError(self, message: "Simulation failed: \(error)")
         }
 
         return newState

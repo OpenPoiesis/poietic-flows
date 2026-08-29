@@ -139,6 +139,12 @@ public struct SimulationPlan: Component {
     public func simulationObject(_ id: ObjectID) -> SimulationObject? {
         return simulationObjects.first { $0.objectID == id }
     }
+    
+    // TODO: Consider objectID -> simulation object index map
+    /// Check whether the plan contains a simulation object with given ID.
+    public func containsObject(_ id: ObjectID) -> Bool {
+        return simulationObjects.contains { $0.objectID == id }
+    }
 
     /// Get a simulation object with given name, if exists.
     ///
