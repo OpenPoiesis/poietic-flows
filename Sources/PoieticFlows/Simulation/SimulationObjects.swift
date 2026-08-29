@@ -95,9 +95,17 @@ public struct SimulationObject: CustomStringConvertible {
     ///
     /// - SeeAlso: ``SimulationPlan/stateVariables``
     ///
-    public let variableIndex: Int
+    public let variableIndex: SimulationState.Index
     
     public let role: SimulationRole
+    
+    public var isAccumulator: Bool {
+        if role == .stock { return true }
+        switch computation {
+        case .delay, .smooth: return true
+        case .formula, .graphicalFunction: return false
+        }
+    }
 
     /// Type of the variable value.
     ///

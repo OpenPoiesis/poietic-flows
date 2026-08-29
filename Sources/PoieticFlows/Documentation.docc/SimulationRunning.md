@@ -80,6 +80,22 @@ The simulation is performed as follows:
 
 - Note: Runge Kutta 4 solver (`rk4`) follows the same pattern with four intermediate evaluations.
 
+
+### Simulation Parameters
+
+Simulation parameters can be provided during initialisation
+(``StockFlowSimulation/initialize(time:timeDelta:parameters:)``). They override initial value
+of all objects and simulation run values of some of the objects. 
+
+For objects where the parameter is **not provided**: the object value is evaluated as specified
+in its computational representation.
+
+For objects where the parameter is **provided**: the object is initialised to given parameter
+value. For accumulator objects (stock, delay, smooth) the parameter is used only to set
+the initial value, later during the computation the value is disregarded. For objects that
+are not accumulators (flow rates, auxiliaries, graphical function, ...) the parameter value
+is preserved as their constant through the whole simulation run.
+
 ## Results
 
 The ``StockFlowSimulationSystem`` runs the simulation and if the simulation was successful

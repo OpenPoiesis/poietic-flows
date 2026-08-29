@@ -42,21 +42,29 @@ public struct StockFlowSimulationSystem: System {
 
         guard let plan: SimulationPlan = world.singleton() else { return }
         let settings: SimulationSettings = world.singleton() ?? SimulationSettings()
-        let params: ScenarioParameters = world.singleton() ?? ScenarioParameters()
+        let parameters: ScenarioParameters = world.singleton() ?? ScenarioParameters()
         
         guard let solverType = StockFlowSimulation.SolverType(rawValue: settings.solverType) else {
             throw InternalSystemError(self, message: "Unknown solver type: \(settings.solverType)")
         }
 
+        // TODO: Add flow scaling parameter
         let simulation = StockFlowSimulation(plan, solver: solverType)
 
         var result = SimulationResult(initialTime: settings.initialTime,
                                       timeDelta: settings.timeDelta)
 
-        var currentState = try initialize(world: world,
-                                          plan: plan,
-                                          settings: settings,
-                                          parameters: params)
+        var currentState: SimulationState
+        do {
+            currentState = try simulation.initialize(time: settings.initialTime,
+                                              timeDelta: settings.timeDelta,
+                                              parameters: parameters.values)
+        }
+        catch {
+            // FIXME: Handle this error with a simulation result/error component.
+            throw InternalSystemError(self, message: "Unhandled simulation error: \(error)")
+        }
+
         result.append(currentState)
         var currentTime = settings.initialTime
         var step: UInt = 1
@@ -70,31 +78,6 @@ public struct StockFlowSimulationSystem: System {
         }
 
         world.setSingleton(result)
-    }
-    
-    public static func initialize(world: World,
-                           plan: SimulationPlan,
-                           settings: SimulationSettings,
-                           parameters: ScenarioParameters)
-    throws (InternalSystemError) -> SimulationState
-    {
-        guard let solverType = StockFlowSimulation.SolverType(rawValue: settings.solverType) else {
-            throw InternalSystemError(self, message: "Unknown solver type: \(settings.solverType)")
-        }
-        // TODO: Add flow scaling parameter
-        let simulation = StockFlowSimulation(plan, solver: solverType)
-
-        let state: SimulationState
-        do {
-            state = try simulation.initialize(time: settings.initialTime,
-                                              timeDelta: settings.timeDelta,
-                                              parameters: parameters.initialValues)
-        }
-        catch {
-            // FIXME: Handle this error with a simulation result/error component.
-            throw InternalSystemError(self, message: "Unhandled simulation error: \(error)")
-        }
-        return state
     }
     
     public static func step(simulation: StockFlowSimulation,

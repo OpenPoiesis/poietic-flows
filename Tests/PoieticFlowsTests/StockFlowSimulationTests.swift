@@ -52,7 +52,7 @@ import Testing
         let simulation = StockFlowSimulation(plan, solver: solverType)
         var state = try simulation.initialize(time: settings.initialTime,
                                               timeDelta: settings.timeDelta,
-                                              parameters: parameters.initialValues)
+                                              parameters: parameters.values)
         var result = SimulationResult(initialTime: settings.initialTime,
                                       timeDelta: settings.timeDelta)
         result.append(state)
@@ -105,15 +105,60 @@ import Testing
         let plan = try self.accept()
 
         let params = ScenarioParameters(
-            initialValues: [a.objectID: 999.0]
+            values: [a.objectID: 999.0]
         )
         let simulation = StockFlowSimulation(plan)
-        let state = try simulation.initialize(parameters: params.initialValues)
+        let state = try simulation.initialize(parameters: params.values)
 
         #expect(state[plan.variableIndex(a)!] == 999)
         #expect(state[plan.variableIndex(b)!] == 20)
         #expect(state[plan.variableIndex(c)!] == 998)
     }
+
+    @Test mutating func parameterStaysConstant() throws {
+        let a = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "time"])
+        let b = frame.createNode(ObjectType.Auxiliary, name: "b", attributes: ["formula": "a * 10"])
+        frame.createEdge(ObjectType.Parameter, origin: a.objectID, target: b.objectID)
+        
+        let plan = try self.accept()
+
+        let params = ScenarioParameters(
+            values: [b.objectID: 999.0]
+        )
+        let simulation = StockFlowSimulation(plan)
+        let state0 = try simulation.initialize(parameters: params.values)
+        
+        #expect(state0[plan.variableIndex(a)!] == 0)
+        #expect(state0[plan.variableIndex(b)!] == 999)
+
+        let state1 = try simulation.step(state0)
+        
+        #expect(state1[plan.variableIndex(a)!] == 1)
+        #expect(state1[plan.variableIndex(b)!] == 999.0)
+    }
+
+    @Test mutating func stockParameterIsNotConstant() throws {
+        let stock = frame.createNode(ObjectType.Stock, name: "stock", attributes: ["formula": "100"])
+        let inflow = frame.createNode(ObjectType.FlowRate, name: "flow", attributes: ["formula": "10"])
+        frame.createEdge(ObjectType.Flow, origin: inflow.objectID, target: stock.objectID)
+        
+        let plan = try self.accept()
+
+        let params = ScenarioParameters(
+            values: [stock.objectID: 200.0]
+        )
+        let simulation = StockFlowSimulation(plan)
+        let state0 = try simulation.initialize(parameters: params.values)
+
+        #expect(state0[plan.variableIndex(stock)!] == 200)
+        #expect(state0[plan.variableIndex(inflow)!] == 10)
+
+        let state1 = try simulation.step(state0)
+        
+        #expect(state1[plan.variableIndex(stock)!] == 210)
+        #expect(state1[plan.variableIndex(inflow)!] == 10)
+    }
+
     
     @Test mutating func timeDependentExpression() throws {
         let t = frame.createNode(ObjectType.Auxiliary, name: "t", attributes: ["formula": "time"])

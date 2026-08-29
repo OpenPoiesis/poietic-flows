@@ -107,8 +107,8 @@ public struct SimulationSettings: Component {
 /// - SeeAlso: ``SimulationSettings``.
 ///
 public struct ScenarioParameters: Component {
-    public let initialValues: [ObjectID:Variant]
-    public init(initialValues: [ObjectID:Variant] = [:]) {
-        self.initialValues = initialValues
+    public let values: [ObjectID:Variant]
+    public init(values: [ObjectID:Variant] = [:]) {
+        self.values = values
     }
 }

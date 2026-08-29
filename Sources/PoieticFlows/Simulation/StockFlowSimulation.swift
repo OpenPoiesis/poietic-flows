@@ -45,6 +45,13 @@ public class StockFlowSimulation {
     /// Type of a solver to be used for the simulation.
     public var solver: SolverType
     public var flowScaling: FlowScaling
+    
+    /// Indices of variables that are to remain constant – they are set during initialisation from
+    /// a simulation parameter and then are not re-evaluated during simulation run.
+    ///
+    /// - SeeAlso: ``initialize(object:withParameter:in:)``
+    ///
+    private var constantIndices: Set<SimulationState.Index>
 
     /// Create a new Stock Flow simulation for a specific model.
     ///
@@ -52,6 +59,7 @@ public class StockFlowSimulation {
         self.plan = plan
         self.solver = solver
         self.flowScaling = flowScaling
+        self.constantIndices = Set()
     }
    
     // MARK: - Initialization
@@ -60,14 +68,22 @@ public class StockFlowSimulation {
     /// - Parameters:
     ///     - time: Initial time.
     ///     - timeDelta: Time delta between simulation steps.
-    ///     - parameters: Dictionary of values to override during initialisation.
+    ///     - parameters: Dictionary of simulation parameters. See note below.
     ///
     /// This function creates and computes the initial state of the computation by
     /// evaluating all the nodes in the order of their dependency by parameter. The order is provided
     /// by the ``SimulationPlan/simulationObjects``.
     ///
-    /// When the parameters dictionary is provided, then initial values for specified object IDs will
-    /// be taken from the dictionary instead of being computed.
+    /// ## Discussion
+    ///
+    /// If a parameter for an object **is not provided**: object value is evaluated as specified
+    /// in its computational representation.
+    ///
+    /// If a parameter for an object **is provided**: the object is initialised to given parameter
+    /// value. For accumulator objects (stock, delay, smooth) the parameter is used only to set
+    /// the initial value, later during the computation the value is disregarded. For objects that
+    /// are not accumulators (flow rates, auxiliaries, graphical function, ...) the parameter value
+    /// is preserved as their constant through the whole simulation run.
     ///
     /// - Returns: Newly initialised simulation state.
     ///
@@ -76,23 +92,99 @@ public class StockFlowSimulation {
                            parameters: [ObjectID:Variant]=[:])
     throws (SimulationError) -> SimulationState
     {
+        self.constantIndices = Set()
+        
         var state = SimulationState(count: plan.stateVariables.count,
                                     step: 0,
                                     time: time,
                                     timeDelta: timeDelta)
-
+        
         setBuiltins(in: &state)
-
-        for (index, simObject) in plan.simulationObjects.enumerated() {
-            if let value = parameters[simObject.objectID] {
-                state[simObject.variableIndex] = value
+        
+        for object in plan.simulationObjects {
+            try initialize(object: object, withParameter: parameters[object.objectID], in: &state)
+        }
+        
+        return state
+    }
+    
+    /// Initialise a simulation object value in the simulation state.
+    ///
+    /// - Parameters:
+    ///     - object: Simulation object to be initialised in the state.
+    ///     - parameter: Parameter to be used for initialisation. See note below.
+    ///     - state: Simulation state to be initialised
+    ///
+    /// If the parameter **is not provided** (is `nil`): object value is evaluated as specified
+    /// in its computational representation.
+    ///
+    /// If the parameter **is provided**: the object is initialised to given parameter value.
+    /// For accumulator objects (stock, delay, smooth) the parameter is used only for
+    /// initialisation, later during computation it is disregarded. For objects that are not
+    /// accumulators (flow rates, auxiliaries, graphical function, ...) the parameter value is
+    /// preserved as their constant through the simulation.
+    ///
+    public func initialize(object: SimulationObject,
+                           withParameter parameter: Variant?,
+                           in state: inout SimulationState)
+    throws (SimulationError)
+    {
+        if let parameter {
+            if object.isAccumulator {
+                try initialize(accumulator: object, initialValue: parameter, in: &state)
             }
             else {
-                try initialize(objectAt: index, in: &state)
+                state[object.variableIndex] = parameter
+                constantIndices.insert(object.variableIndex)
             }
         }
-
-        return state
+        else {
+            try initialize(object: object, in: &state)
+        }
+    }
+    
+    /// Initialise an object without a parameter.
+    public func initialize(object: SimulationObject, in state: inout SimulationState)
+    throws (SimulationError)
+    {
+        let result: Variant
+        do {
+            switch object.computation {
+            case let .formula(expression):
+                result = try Evaluator.evaluate(expression: expression, lookup: state)
+            case let .graphicalFunction(function):
+                result = try evaluate(graphicalFunction: function, with: state)
+            case let .delay(delay):
+                result = try initialize(delay: delay, initialValue: nil, in: &state)
+            case let .smooth(smooth):
+                result = initialize(smooth: smooth, initialValue: nil, in: &state)
+            }
+        }
+        catch {
+            throw SimulationError(objectID: object.objectID, error: error)
+        }
+        state[object.variableIndex] = result
+    }
+    
+    /// Initialise an accumulator with a value.
+    func initialize(accumulator: SimulationObject,
+                    initialValue: Variant,
+                    in state: inout SimulationState)
+    throws (SimulationError)
+    {
+        state[accumulator.variableIndex] = initialValue
+        
+        do {
+            // Treatment for special kinds of accumulators (not explicit Stock)
+            switch accumulator.computation {
+            case let .delay(delay): try initialize(delay: delay, initialValue: initialValue, in: &state)
+            case let .smooth(smooth): initialize(smooth: smooth, initialValue: initialValue, in: &state)
+            case .formula, .graphicalFunction: break
+            }
+        }
+        catch {
+            throw SimulationError(objectID: accumulator.objectID, error: error)
+        }
     }
     
     /// Set values of built-in variables such as time or time delta.
@@ -105,34 +197,6 @@ public class StockFlowSimulation {
         state[plan.builtins.step] = Variant(state.step)
     }
 
-    /// Initialise an object in a given state.
-    ///
-    /// - Parameters:
-    ///     - index: Index of the object to be evaluated.
-    ///     - state: simulation state within which the expression is evaluated
-    ///
-    public func initialize(objectAt index: Int, in state: inout SimulationState) throws (SimulationError) {
-        let object = plan.simulationObjects[index]
-        let result: Variant
-       
-        do {
-            switch object.computation {
-            case let .formula(expression):
-                result = try Evaluator.evaluate(expression: expression, lookup: state)
-            case let .graphicalFunction(function):
-                result = try evaluate(graphicalFunction: function, with: state)
-            case let .delay(delay):
-                result = try initialize(delay: delay, in: &state)
-            case let .smooth(smooth):
-                result = initialize(smooth: smooth, in: &state)
-            }
-        }
-        catch {
-            throw SimulationError(objectID: object.objectID, error: error)
-        }
-        state[object.variableIndex] = result
-    }
-
     /// Initialise a simulated delay.
     ///
     /// The function prepares internal state variable holding a delay queue and returns
@@ -143,10 +207,14 @@ public class StockFlowSimulation {
     ///     - state: Simulation state in which the delay is initialised.
     /// - Returns: Value of the delay node.
     ///
-    public func initialize(delay: BoundDelay, in state: inout SimulationState) throws (EvaluationError) -> Variant {
+    @discardableResult
+    public func initialize(delay: BoundDelay, initialValue: Variant?, in state: inout SimulationState) throws (EvaluationError) -> Variant {
         let outputValue: Variant
-        if let intialValue = delay.initialValue {
-            outputValue = intialValue
+        if let initialValue {
+            outputValue = initialValue
+        }
+        else if let value = delay.initialValue {
+            outputValue = value
         }
         else {
             outputValue = state[delay.inputValueIndex]
@@ -165,11 +233,12 @@ public class StockFlowSimulation {
             }
         }
         state[delay.queueIndex] = .array(queue)
+        state[delay.initialValueIndex] = outputValue
         
         return outputValue
     }
     
-    /// Initialise a simulated delay.
+    /// Initialise a simulated smooth.
     ///
     /// The function prepares internal variable holding the smooth state and returns an
     /// initial value of the smooth node.
@@ -179,11 +248,12 @@ public class StockFlowSimulation {
     ///     - state: Simulation state in which the smooth is initialised.
     /// - Returns: Value of the smooth node.
     ///
-    public func initialize(smooth: BoundSmooth, in state: inout SimulationState) -> Variant {
-        let initialValue: Variant = state[smooth.inputValueIndex]
-        state[smooth.smoothValueIndex] = initialValue
+    @discardableResult
+    public func initialize(smooth: BoundSmooth, initialValue: Variant?, in state: inout SimulationState) -> Variant {
+        let value: Variant = initialValue ?? state[smooth.inputValueIndex]
+        state[smooth.smoothValueIndex] = value
         
-        return initialValue
+        return value
     }
 
     // MARK: - Computation
@@ -233,17 +303,23 @@ public class StockFlowSimulation {
     
     /// Computes and updates a new state of an object.
     ///
-    /// If the object computation uses an internal state, it will be updated as
-    /// well.
+    /// If the object computation uses an internal state, all associated internal states will be
+    /// updated as well.
+    ///
+    /// If the object is set to be a constant through a simulation parameter, the evaluation is
+    /// skipped (the constant value is preserved).
     ///
     /// - Parameters:
     ///     - object: Object to be evaluated.
     ///     - state: simulation state within which the expression is evaluated
     ///
     /// - Throws: ``SimulationError``
-    /// - SeeAlso: ``SimulationPlan/stateVariables``
+    /// - SeeAlso: ``SimulationPlan/stateVariables``, ``initialize(smooth:initialValue:in:)``
     ///
     public func evaluate(object: SimulationObject, in state: inout SimulationState) throws (SimulationError) {
+        // Keeping the constants from ``ScenarioParameters``
+        guard !constantIndices.contains(object.variableIndex) else { return }
+        
         let result: Variant
         // FIXME: Delays and smooths should be evaluated before integration, or not?
         do {
