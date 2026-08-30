@@ -118,7 +118,12 @@ extension SimulationPlanner {
     {
         guard let component: ParsedExpressionComponent = entity.component()
         else {
-            throw .missingComponent(object.objectID, "ParsedExpressionComponent")
+            if entity.hasIssues {
+                throw .userIssue
+            }
+            else {
+                throw .missingComponent(object.objectID, "ParsedExpressionComponent")
+            }
         }
         let expression = component.expression
         let boundExpression: BoundExpression
