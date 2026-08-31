@@ -55,9 +55,10 @@ extension PlanningError {
 ///
 public struct SimulationPlanningSystem: System {
     public static let dependencies: [SystemDependency] = [
-        .after(ExpressionParserSystem.self), // Gets us UnboundExpression for each node
-        .after(ComputationOrderSystem.self), // Gets us SimulationOrder
-        .after(NameValidationSystem.self), // We need name lookup and object names.
+        .after(ExpressionParserSystem.self),    // Gets us UnboundExpression for each node
+        .after(ComputationOrderSystem.self),    // Gets us SimulationOrder
+        .after(NameValidationSystem.self),      // We need name lookup and object names.
+        .after(ParameterResolutionSystem.self), // For unnamed parameter inputs in Delay/Smooth/GraphicFunction
         .after(StockFlowTopologySystem.self),
     ]
     

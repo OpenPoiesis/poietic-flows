@@ -1,5 +1,5 @@
 //
-//  NameCollectorSystemTests.swift
+//  NameValidationSystemTests.swift
 //  poietic-flows
 //
 //  Created by Stefan Urbanek on 05/11/2025.
@@ -9,7 +9,7 @@ import Testing
 @testable import PoieticFlows
 @testable import PoieticCore
 
-@Suite struct NameResolutionSystemTests {
+@Suite struct NameValidationSystemTests {
     let design: Design
     let frame: TransientPlane
     

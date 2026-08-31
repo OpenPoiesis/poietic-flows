@@ -22,7 +22,13 @@ import Testing
         let accepted = try design.accept(plane)
         return World(plane: accepted)
     }
-
+    
+    func update(_ world: World) throws {
+        try NameNormalizationSystem.update(world)
+        try ExpressionParserSystem.update(world)
+        try ParameterResolutionSystem.update(world)
+    }
+    
     // MARK: - Basic Sanity Tests
 
     @Test func noComponentForNonFormulaNode() throws {
@@ -30,9 +36,7 @@ import Testing
         let info = plane.create(.DesignInfo, topology: .unstructured)
 
         let world = try accept(plane)
-
-        try ExpressionParserSystem.update(world)
-        try ParameterResolutionSystem.update(world)
+        try update(world)
 
         let entity = try #require(world.entity(info.objectID))
         let component: ResolvedParameters? = entity.component()
@@ -47,9 +51,7 @@ import Testing
                                    name: "aux", attributes: ["formula": "1 + 1"])
 
         let world = try accept(plane)
-
-        try ExpressionParserSystem.update(world)
-        try ParameterResolutionSystem.update(world)
+        try update(world)
 
         let entity = try #require(world.entity(aux.objectID))
         let component: ResolvedParameters? = entity.component()
@@ -65,14 +67,31 @@ import Testing
         plane.createEdge(.Parameter, origin: x, target: aux)
 
         let world = try accept(plane)
-
-        try ExpressionParserSystem.update(world)
-        try ParameterResolutionSystem.update(world)
+        try update(world)
 
         let entity = try #require(world.entity(aux.objectID))
         let component: ResolvedParameters = try #require(entity.component())
         #expect(component.connected.count == 1)
         #expect(component.connected["x"] == x.objectID)
+        #expect(component.missing.isEmpty == true)
+        #expect(component.unused.isEmpty == true)
+        #expect(!entity.hasIssues)
+    }
+    
+    @Test func formulaWithCorrectNormalizedParameter() throws {
+        // Formula "x" with parameter x connected
+        let pg = plane.createNode(ObjectType.Auxiliary, name: "population \n growth", attributes: ["formula": "10"])
+        let x = plane.createNode(ObjectType.Auxiliary, name: "x", attributes: ["formula": "population_growth"])
+
+        plane.createEdge(.Parameter, origin: pg, target: x)
+
+        let world = try accept(plane)
+        try update(world)
+
+        let entity = try #require(world.entity(x.objectID))
+        let component: ResolvedParameters = try #require(entity.component())
+        #expect(component.connected.count == 1)
+        #expect(component.connected["population_growth"] == pg.objectID)
         #expect(component.missing.isEmpty == true)
         #expect(component.unused.isEmpty == true)
         #expect(!entity.hasIssues)
@@ -83,9 +102,7 @@ import Testing
         let aux = plane.createNode(ObjectType.Auxiliary, name: "consumer", attributes: ["formula": "x"])
 
         let world = try accept(plane)
-
-        try ExpressionParserSystem.update(world)
-        try ParameterResolutionSystem.update(world)
+        try update(world)
 
         let entity = try #require(world.entity(aux.objectID))
         let component: ResolvedParameters = try #require(entity.component())
@@ -106,9 +123,7 @@ import Testing
         plane.createEdge(.Parameter, origin: y, target: aux)
 
         let world = try accept(plane)
-
-        try ExpressionParserSystem.update(world)
-        try ParameterResolutionSystem.update(world)
+        try update(world)
 
         let entity = try #require(world.entity(aux.objectID))
         let component: ResolvedParameters = try #require(entity.component())
@@ -133,9 +148,7 @@ import Testing
         // Note: b is created but not connected
 
         let world = try accept(plane)
-
-        try ExpressionParserSystem.update(world)
-        try ParameterResolutionSystem.update(world)
+        try update(world)
 
         let entity = try #require(world.entity(aux.objectID))
         let component: ResolvedParameters = try #require(entity.component())
@@ -154,9 +167,7 @@ import Testing
         let aux = plane.createNode(.Auxiliary, name: "timer", attributes: ["formula": "time * 2"])
 
         let world = try accept(plane)
-
-        try ExpressionParserSystem.update(world)
-        try ParameterResolutionSystem.update(world)
+        try update(world)
 
         let entity = try #require(world.entity(aux.objectID))
         let component: ResolvedParameters? = entity.component()
@@ -176,9 +187,7 @@ import Testing
         plane.createEdge(.Parameter, origin: z, target: aux)
 
         let world = try accept(plane)
-
-        try ExpressionParserSystem.update(world)
-        try ParameterResolutionSystem.update(world)
+        try update(world)
 
         let entity = try #require(world.entity(aux.objectID))
         let component: ResolvedParameters = try #require(entity.component())
@@ -198,9 +207,7 @@ import Testing
         let delay = plane.createNode(.Delay, name: "delayed", attributes: ["delay_duration": 5])
 
         let world = try accept(plane)
-
-        try ExpressionParserSystem.update(world)
-        try ParameterResolutionSystem.update(world)
+        try update(world)
 
         let entity = try #require(world.entity(delay.objectID))
         let component: ResolvedParameters = try #require(entity.component())
@@ -216,9 +223,7 @@ import Testing
         plane.createEdge(.Parameter, origin: source, target: delay)
 
         let world = try accept(plane)
-
-        try ExpressionParserSystem.update(world)
-        try ParameterResolutionSystem.update(world)
+        try update(world)
 
         let entity = try #require(world.entity(delay.objectID))
         let component: ResolvedParameters = try #require(entity.component())
@@ -236,9 +241,7 @@ import Testing
         plane.createEdge(.Parameter, origin: source2, target: delay)
 
         let world = try accept(plane)
-
-        try ExpressionParserSystem.update(world)
-        try ParameterResolutionSystem.update(world)
+        try update(world)
 
         let entity = try #require(world.entity(delay.objectID))
         let component: ResolvedParameters = try #require(entity.component())
@@ -259,9 +262,7 @@ import Testing
         plane.createEdge(.Parameter, origin: source, target: smooth)
 
         let world = try accept(plane)
-
-        try ExpressionParserSystem.update(world)
-        try ParameterResolutionSystem.update(world)
+        try update(world)
 
         let gfEnt = try #require(world.entity(gf.objectID))
         let gfComp: ResolvedParameters = try #require(gfEnt.component())

@@ -19,12 +19,12 @@ import PoieticCore
 ///     - ``ParameterConnectionProposalSystem`` for proposing parameter connections or connection
 ///       removals.
 public struct ResolvedParameters: Component {
-    internal init(incoming: [String : ObjectID] = [:],
+    internal init(connected: [String : ObjectID] = [:],
                   connectedUnnamed: [ObjectID] = [],
                   missing: [String] = [],
                   missingUnnamed: Int = 0,
                   unused: [ObjectID] = []) {
-        self.connected = incoming
+        self.connected = connected
         self.connectedUnnamed = connectedUnnamed
         self.missing = missing
         self.missingUnnamed = missingUnnamed
@@ -33,12 +33,12 @@ public struct ResolvedParameters: Component {
     
     /// Connected named parameters.
     ///
-    /// The keys are parameter names, the values are object IDs of the parameter nodes.
+    /// The keys are normalised name keys, the values are object IDs of the parameter nodes.
     public let connected: [String:ObjectID]
     /// List of connected parameters where the name is not used, such as parameters
     /// for graphical function, smooth or delay.
     public let connectedUnnamed: [ObjectID]
-    /// List of parameter names that are not connected.
+    /// List of normalised name keys of parameters are not connected.
     public let missing: [String]
     /// Number of missing unnamed parameters
     public let missingUnnamed: Int
@@ -72,8 +72,8 @@ public struct ParameterResolutionSystem: System {
     public static let IssueSourceName = "ParameterResolutionSystem"
 
     public static let dependencies: [SystemDependency] = [
-        .after(NameValidationSystem.self), // We need variable names
-        .after(ExpressionParserSystem.self), // We need variable names
+        .after(NameNormalizationSystem.self), // Gets us normalised object names
+        .after(ExpressionParserSystem.self),  // Gets us required variable names
     ]
 
     public static func update(_ world: World) throws (InternalSystemError) {
@@ -85,28 +85,39 @@ public struct ParameterResolutionSystem: System {
     }
 
     public static func resolveFormulas(_ world: World, plane: DesignPlane) throws (InternalSystemError) {
-        let builtinNames = BuiltinVariable.allNames
+        let builtinKeys = BuiltinVariable.normalizedKeys
 
-        for (entity, exprComponent) in world.query(ParsedExpressionComponent.self) {
+        for (entity, expression) in world.query(ParsedExpressionComponent.self) {
             guard let objectID = entity.objectID else { continue }
-            let requiredParams = exprComponent.variables.subtracting(builtinNames)
+            
+            // Map: key -> name used in formula
+            var requiredParams: [String:String] = [:]
+            
+            for variable in expression.usedVariables {
+                let key = NormalizedName.normalize(variable)
+                guard !builtinKeys.contains(key) else { continue }
+                requiredParams[key] = variable
+            }
+            
             let incomingParams = plane.incoming(objectID).filter {
                 $0.object.type === ObjectType.Parameter
             }
 
             var connected: [String:ObjectID] = [:]
-            var missing: Set<String> = Set(requiredParams)
-            var unused: [DesignObjectEdge] = []
+            var missing: Set<String> = Set(requiredParams.keys)
+            var unused: [(origin: ObjectID, displayName: String)] = []
             
             for edge in incomingParams {
-                let parameter = edge.originObject
-                guard let name = parameter.name else { continue }
-                if missing.contains(name) {
-                    missing.remove(name)
-                    connected[name] = edge.origin
+                guard let parameterEntity = world.entity(edge.origin),
+                      let parameterObjectName: NormalizedName = parameterEntity.component()
+                else { continue }
+                
+                if missing.contains(parameterObjectName.key) {
+                    missing.remove(parameterObjectName.key)
+                    connected[parameterObjectName.key] = edge.origin
                 }
                 else {
-                    unused.append(edge)
+                    unused.append((origin: edge.origin, displayName: parameterObjectName.displayName))
                 }
             }
             // If no parameters are required or unnecessarily connected, just continue
@@ -115,39 +126,39 @@ public struct ParameterResolutionSystem: System {
             }
 
             // Collect issues
-            for name in missing {
+            for key in missing {
+                guard let displayName = requiredParams[key] else { continue }
                 let issue = Issue(
                     identifier: IssueIdentifier.unknownParameter,
                     severity: .error,
                     source: Self.IssueSourceName,
-                    message: "Parameter '\(name)' is unknown or not connected",
+                    message: "Variable '\(displayName)' is unknown or not connected",
                     hints: [
-                        "Connect the parameter node '\(name)'",
+                        "Connect the parameter node '\(displayName)'",
                         "Check the formula for typos",
                         "Remove the parameter from the formula."
                     ],
-                    details: ["parameter": Variant(name)]
+                    details: ["parameter": Variant(displayName)]
                     )
                 entity.appendIssue(issue)
             }
 
-            for edge in unused {
-                guard let name = edge.originObject.name else { continue }
+            for item in unused {
                 let issue = Issue(
                     identifier: IssueIdentifier.unusedInput,
                     severity: .error,
                     source: Self.IssueSourceName,
-                    message: "Parameter '\(name)' is connected but not used",
-                    hints: ["Use the connected parameter or disconnect the node '\(name)'"],
-                    details: ["parameter": Variant(name)],
+                    message: "Parameter '\(item.displayName)' is connected but not used",
+                    hints: ["Use the connected parameter or disconnect the node '\(item.displayName)'"],
+                    details: ["parameter": Variant(item.displayName)],
                     )
                 entity.appendIssue(issue)
             }
 
             let paramComponent = ResolvedParameters(
-                incoming: connected,
+                connected: connected,
                 missing: Array(missing),
-                unused: unused.map { $0.id }
+                unused: unused.map { $0.origin }
             )
             entity.setComponent(paramComponent)
         }

@@ -458,7 +458,7 @@ import Testing
         frame.createEdge(ObjectType.Parameter, origin: p2, target: g2)
         
         let plan = try accept()
-
+        
         let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
         
@@ -506,7 +506,7 @@ import Testing
         frame.createEdge(ObjectType.Parameter, origin: input, target: delay3)
 
         let plan = try accept()
-
+        
         let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
         
