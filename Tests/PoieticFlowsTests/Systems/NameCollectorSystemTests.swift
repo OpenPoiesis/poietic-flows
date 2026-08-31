@@ -22,6 +22,7 @@ import Testing
         let accepted = try design.accept(frame)
         let world = World(plane: accepted)
         
+        try NameNormalizationSystem.update(world)
         try NameResolutionSystem.update(world)
         return world
     }
@@ -40,28 +41,6 @@ import Testing
         #expect(component == nil)
     }
     
-    @Test func emptyNames() throws {
-        let empty = frame.createNode(.Auxiliary, name: "")
-        let whitespace = frame.createNode(.Auxiliary, name: " \t\n\r")
-        
-        let world = try accept(frame)
-        try ComputationOrderSystem.update(world)
-        try NameResolutionSystem.update(world)
-        
-        let lookup: SimulationNameLookup = try #require(world.singleton())
-        #expect(lookup.namedObjects.isEmpty)
-        
-        let emptyEnt = try #require(world.entity(empty.objectID))
-        #expect(emptyEnt.hasIssue(identifier: IssueIdentifier.emptyName))
-        let wsEnt = try #require(world.entity(whitespace.objectID))
-        #expect(wsEnt.hasIssue(identifier: IssueIdentifier.emptyName))
-        
-        let component1: SimulationName? = world.entity(empty.objectID)?.component()
-        #expect(component1 == nil)
-        let component2: SimulationName? = world.entity(whitespace.objectID)?.component()
-        #expect(component2 == nil)
-    }
-    
     @Test func trimmedName() throws {
         let object = frame.createNode(.Auxiliary, name: "  object \n")
 
@@ -77,7 +56,7 @@ import Testing
     }
     @Test func duplicateName() throws {
         let object = frame.createNode(.Auxiliary, name: "object")
-        let dupe = frame.createNode(.Auxiliary, name: "object")
+        let dupe = frame.createNode(.Auxiliary, name: " object")
 
         let world = try accept(frame)
         try ComputationOrderSystem.update(world)

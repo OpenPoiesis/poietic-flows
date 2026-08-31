@@ -15,8 +15,6 @@ public enum IssueIdentifier {
     public static let missingRequiredParameter = "missing_required_parameter"
     public static let tooManyParameters = "too_many_parameters"
     public static let duplicateName = "duplicate_name"
-    public static let emptyName = "empty_name"
-    public static let nameRequired = "name_required"
     public static let reservedName = "reserved_name"
     public static let computationCycle = "computation_cycle"
     public static let invalidParameterType = "invalid_parameter_type"

@@ -11,6 +11,7 @@ import PoieticCore
 /// Register it in a schedule and run after a plane change.
 ///
 public let SimulationPlanningSystems: [System.Type] = [
+    NameNormalizationSystem.self,
     ExpressionParserSystem.self,
     ParameterResolutionSystem.self,
     ComputationOrderSystem.self,

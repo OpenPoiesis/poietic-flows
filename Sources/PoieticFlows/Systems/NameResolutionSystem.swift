@@ -24,6 +24,85 @@ public struct NameResolutionSystem: System {
     // Note: In the future this system might be doing fully qualified name resolution, once we get
     //       nested simulation blocks.
     public static let dependencies: [SystemDependency] = [
+        .after(NameNormalizationSystem.self),
+        .after(ComputationOrderSystem.self),
+    ]
+
+    public static func update(_ world: World) throws (InternalSystemError) {
+        guard let order: SimulationOrder = world.singleton() else {
+            return
+        }
+        
+        var namedObjects: [String: [ObjectID]] = [:]
+        var nameLookup: [String:ObjectID] = [:]
+
+        for object in order.objects {
+            guard let entity = world.entity(object.objectID) else { continue }
+            guard let normalizedName: NormalizedName = entity.component() else {
+                throw InternalSystemError(self,
+                                          message: "Missing normalized name component",
+                                          context: .component(object.objectID, "NormalizedName"))
+            }
+
+            guard !normalizedName.isVisuallyEmpty else {
+                // Someone must have set the component manually
+                throw InternalSystemError(self,
+                                          message: "Normalized name is empty",
+                                          context: .component(object.objectID, "NormalizedName"))
+            }
+            
+            // TODO: Add test
+            guard !BuiltinVariable.allNames.contains(normalizedName.key) else {
+                let issue = Issue(
+                    identifier: IssueIdentifier.reservedName,
+                    severity: .error,
+                    source: Self.IssueSourceName,
+                    message: "Object uses a reserved name",
+                    hints: [ "Set a node name that one of reserved/built-in variable names" ],
+                )
+                entity.appendIssue(issue)
+                continue
+            }
+            
+            namedObjects[normalizedName.key, default: []].append(object.objectID)
+        }
+       
+        // 2. Find duplicates
+        for (name, ids) in namedObjects {
+            if ids.count == 1 {
+                let onlyID = ids[0]
+                nameLookup[name] = onlyID
+                guard let entity = world.entity(onlyID) else { continue }
+                let comp = SimulationName(name: name)
+                entity.setComponent(comp)
+            }
+            else if ids.count > 1 {
+                // FIXME: We should use the display name in the error, not the normalised key
+                let issue = Issue(
+                    identifier: IssueIdentifier.duplicateName,
+                    severity: .error,
+                    source: Self.IssueSourceName,
+                    message: "Duplicate node name: '\(name)'",
+                    hints: [ "Rename the node" ],
+                )
+                // TODO: Add related nodes
+                for entity in world.query(ids) {
+                    entity.appendIssue(issue)
+                }
+            }
+        }
+        let component = SimulationNameLookup(namedObjects: nameLookup)
+        world.setSingleton(component)
+    }
+}
+
+public struct _OLD_NameResolutionSystem: System {
+    public static let IssueSourceName = "NameResolutionSystem"
+
+    // Note: In the future this system might be doing fully qualified name resolution, once we get
+    //       nested simulation blocks.
+    public static let dependencies: [SystemDependency] = [
+        .after(NameNormalizationSystem.self),
         .after(ComputationOrderSystem.self),
     ]
 
@@ -41,7 +120,7 @@ public struct NameResolutionSystem: System {
             guard let name = object.name else {
                 if object.type.hasTrait(.Name) {
                     let issue = Issue(
-                        identifier: IssueIdentifier.nameRequired,
+                        identifier: PoieticCore.IssueIdentifier.nameRequired,
                         severity: .error,
                         source: Self.IssueSourceName,
                         message: "'name' attribute is required",
@@ -59,7 +138,7 @@ public struct NameResolutionSystem: System {
             let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
             guard !trimmedName.isEmpty else {
                 let issue = Issue(
-                    identifier: IssueIdentifier.emptyName,
+                    identifier: PoieticCore.IssueIdentifier.emptyName,
                     severity: .error,
                     source: Self.IssueSourceName,
                     message: "Object name is empty",
