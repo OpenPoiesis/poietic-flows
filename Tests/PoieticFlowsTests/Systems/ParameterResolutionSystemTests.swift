@@ -97,6 +97,36 @@ import Testing
         #expect(!entity.hasIssues)
     }
 
+    @Test func formulaWithQuotedParameters() throws {
+        // Formula "x" with parameter x connected
+        let pg = plane.createNode(ObjectType.Auxiliary, name: "population  growth", attributes: ["formula": "10"])
+        let x = plane.createNode(ObjectType.Auxiliary, name: "x", attributes: ["formula": "population_growth"])
+        let y = plane.createNode(ObjectType.Auxiliary, name: "y", attributes: ["formula": "{Population Growth}"])
+        let z = plane.createNode(ObjectType.Auxiliary, name: "z", attributes: ["formula": "{ Population growth }"])
+
+        plane.createEdge(.Parameter, origin: pg, target: x)
+        plane.createEdge(.Parameter, origin: pg, target: y)
+        plane.createEdge(.Parameter, origin: pg, target: z)
+
+        let world = try accept(plane)
+        try update(world)
+
+        let xEnt = try #require(world.entity(x.objectID))
+        let xComp: ResolvedParameters = try #require(xEnt.component())
+        #expect(xComp.connected["population_growth"] == pg.objectID)
+        #expect(!xEnt.hasIssues)
+
+        let yEnt = try #require(world.entity(y.objectID))
+        let yComp: ResolvedParameters = try #require(yEnt.component())
+        #expect(yComp.connected["population_growth"] == pg.objectID)
+        #expect(!yEnt.hasIssues)
+
+        let zEnt = try #require(world.entity(z.objectID))
+        let zComp: ResolvedParameters = try #require(zEnt.component())
+        #expect(zComp.connected["population_growth"] == pg.objectID)
+        #expect(!zEnt.hasIssues)
+    }
+
     @Test func formulaWithMissingParameter() throws {
         // Formula "x" without parameter connection
         let aux = plane.createNode(ObjectType.Auxiliary, name: "consumer", attributes: ["formula": "x"])

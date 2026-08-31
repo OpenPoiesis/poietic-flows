@@ -24,7 +24,7 @@ public enum VariableNameFormat: CaseIterable {
 ///
 /// let view = SimulationResultView(result: result, plan: plan, variables: plan.defaultVariables)
 ///
-/// print(view.columnNames.joined(separator: "\t"))
+/// print(view.columnKeys.joined(separator: "\t"))
 /// for row in view {
 ///     print(row.stringValues().joined(separator: "\t"))
 /// }
