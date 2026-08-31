@@ -112,7 +112,7 @@ public struct StateVariable: CustomStringConvertible {
     /// - Note: Internal variable names do not have to be unique within the plan, only variables
     ///   representing objects.
     ///
-    public let name: String
+    public let nameKey: String
     
     /// ID of a simulation node that the variable represents, if the variable
     /// represents a node.
@@ -132,21 +132,21 @@ public struct StateVariable: CustomStringConvertible {
     }
     
     public var description: String {
-        "\(name)@\(index):\(kind):\(valueType)"
+        "\(nameKey)@\(index):\(kind):\(valueType)"
     }
     
-    internal init(index: Int, content: StateVariable.Content, valueType: ValueType, name: String) {
+    internal init(index: Int, content: StateVariable.Content, valueType: ValueType, nameKey: String) {
         self.index = index
         self.content = content
         self.valueType = valueType
-        self.name = name
+        self.nameKey = nameKey
     }
     
     internal init(index: Int, builtin: BuiltinVariable) {
         self.index = index
         self.content = .builtin(builtin)
         self.valueType = builtin.valueType
-        self.name = builtin.name
+        self.nameKey = builtin.name
     }
 
 }

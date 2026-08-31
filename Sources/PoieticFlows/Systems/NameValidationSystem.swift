@@ -7,17 +7,33 @@
 
 import PoieticCore
 
+
+/// Set by NameValidationSystem to tag objects with duplicate or reserved names.
+///
+/// Those objects should not be further processed by the planner.
+///
+public struct InvalidName: TagComponent {
+    public typealias Storage = TagComponentStorage<Self>
+    public init() {}
+}
+
 /// System that validates object names and creates a name lookup.
 ///
 /// - **Input:**
 ///     - Ordered simulation objects in plane component ``SimulationOrder`` and
 ///       with the ``NormalizedName`` component.
-/// - **Output:** ``SimulationNameLookup`` for the plane if all names are successfully validated.
+/// - **Output:**
+///     -  ``SimulationNameLookup`` for the plane if all names are successfully validated.
+///     - Sets ``InvalidName`` component from entities with duplicate or reserved names.
 /// - **Forgiveness:** Objects without name attribute set - assumed they can't be referred to by
 ///   name, but can by other means, such as an edge.
 /// - **Issues collected:**
 ///     - `empty_name`: Name is empty (no characters) or visually empty – contains only whitespaces.
 ///     - `duplicate_name`: The node has the same name as some other node.
+///     - `reserved_name`: The node has same name as a built-in variable.
+///
+/// - Note: Visually empty names are handled in ``NameNormalizationSystem`` – those entities
+///         do not have the normalised name component set.
 ///
 public struct NameValidationSystem: System {
     public static let IssueSourceName = "NameValidationSystem"
@@ -62,6 +78,7 @@ public struct NameValidationSystem: System {
                     hints: [ "Set a node name that one of reserved/built-in variable names" ],
                 )
                 entity.appendIssue(issue)
+                entity.setComponent(InvalidName())
                 continue
             }
             
@@ -86,6 +103,7 @@ public struct NameValidationSystem: System {
                 // TODO: Add related nodes
                 for entity in world.query(ids) {
                     entity.appendIssue(issue)
+                    entity.setComponent(InvalidName())
                 }
             }
         }

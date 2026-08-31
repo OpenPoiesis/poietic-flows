@@ -126,7 +126,7 @@ public struct SimulationPlan: Component {
     }
     
     /// List of all normalised object names.
-    public var objectNames: [String] { simulationObjects.map {$0.name} }
+    public var objectNameKeys: [String] { simulationObjects.map {$0.nameKey} }
     
     /// Get a simulation object with given ID, if exists.
     ///
@@ -145,7 +145,7 @@ public struct SimulationPlan: Component {
     public func containsObject(_ id: ObjectID) -> Bool {
         return simulationObjects.contains { $0.objectID == id }
     }
-
+    
     /// Get a simulation object with given normalised name, if exists.
     ///
     /// - Note: This function is not used during computation, it is provided for
@@ -154,10 +154,10 @@ public struct SimulationPlan: Component {
     /// - Complexity: O(n)
     /// - SeeAlso: ``simulationObjects``, ``variableIndex(_:)``
     ///
-    public func simulationObject(named name: String) -> SimulationObject? {
-        return simulationObjects.first { $0.name == name }
+    public func simulationObject(withKey nameKey: String) -> SimulationObject? {
+        return simulationObjects.first { $0.nameKey == nameKey }
     }
-
+    
     /// Get a state variable by its normalised name.
     ///
     /// This function is mostly for user-facing tools that would like to
@@ -174,8 +174,8 @@ public struct SimulationPlan: Component {
     ///
     /// - Complexity: O(n)
     ///
-    public func variable(named name: String) -> StateVariable? {
-        guard let variable = stateVariables.first(where: { $0.name == name}) else {
+    public func variable(withKey nameKey: String) -> StateVariable? {
+        guard let variable = stateVariables.first(where: { $0.nameKey == nameKey}) else {
             return nil
         }
         
@@ -183,6 +183,58 @@ public struct SimulationPlan: Component {
     }
     
     /// List of all normalised state variable names, including internal ones.
-    public var variableNames: [String] { stateVariables.map {$0.name} }
+    public var variableNameKeys: [String] { stateVariables.map {$0.nameKey} }
+    
+    /// Return a set of default variables - simulation time and all object variables.
+    public var defaultVariables: [StateVariable] {
+        var result: [StateVariable] = []
+        
+        // TODO: Use adjusted/actual instead of direct object variable (requires: object.actualVariableIndex)
+        result.append(stateVariables[self.builtins.time])
+        for object in self.simulationObjects {
+            result.append(stateVariables[object.variableIndex])
+        }
+        return result
+    }
+    
+    /// Return list of variables with given name, if found.
+    ///
+    /// - Parameters:
+    ///     - names: List of variable names. Each name will be normalised first before matching with
+    ///       actual variable.
+    ///     - includeTime: Include built-in time variable, even if it is not included in the
+    ///       list of names.
+    ///
+    /// If variable with given name was not found, `nil` is included in the output, so that the
+    /// caller can later either report it as unknown or ignore it.
+    ///
+    /// - Note: The `includeTime` is disregarded, if time variable is specified in the list.
+    ///
+    public func variables(named names: [String], includeTime: Bool = true) -> (known: [StateVariable], unknown: [String]) {
+        // TODO: Is this signature better or rather list of optionals? -> [StateVariable?]
+        
+        let keys = names.map { NormalizedName.normalize($0) }
+        let timeKey = BuiltinVariable.time.normalizedKey
+        
+        var result: [StateVariable] = []
+        var unknown: [String] = []
+        
+        // TODO: Use adjusted/actual instead of direct object variable (requires: object.actualVariableIndex)
+
+        if includeTime && !keys.contains(timeKey) {
+            result.append(stateVariables[self.builtins.time])
+        }
+        
+        for (key, name) in zip(keys, names) {
+            if let variable = self.variable(withKey: key) {
+                result.append(variable)
+            }
+            else {
+                unknown.append(name)
+            }
+        }
+        return (known: result, unknown: unknown)
+    }
+
 }
 

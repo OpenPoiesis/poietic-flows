@@ -31,7 +31,7 @@ public enum SimulationRole: Component, Codable {
 }
 
 
-/// Component with a map from resolved, cleaned and validated names to object IDs.
+/// Component with a map from resolved, normalised name keys to object IDs.
 ///
 /// - **Created by:** ``NameResolutionSystem``.
 /// - **Used by:** ``ParameterConnectionProposalSystem``.

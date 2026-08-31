@@ -63,12 +63,31 @@ extension TransientPlane {
         
         try acceptAndUpdate()
         let plan: SimulationPlan = try #require(world.singleton())
-        let names = plan.simulationObjects.map { $0.name } .sorted()
+        let names = plan.simulationObjects.map { $0.nameKey } .sorted()
         
         #expect(names == ["a", "b", "c"])
         #expect(plan.stateVariables.count == 3 + BuiltinVariable.allCases.count)
     }
     
+    @Test func duplicateName() throws {
+        // Testing whether the planner picks-up the InvalidName tag (regression after name normalisation)
+        frame.createNode(ObjectType.Auxiliary, name: "x", attributes: ["formula": "10"])
+        frame.createNode(ObjectType.Auxiliary, name: "x", attributes: ["formula": "20"])
+        
+        try acceptAndUpdate()
+        let plan: SimulationPlan? = world.singleton()
+        #expect(plan == nil)
+    }
+
+    @Test func reservedName() throws {
+        // Testing whether the planner picks-up the InvalidName tag (regression after name normalisation)
+        frame.createNode(ObjectType.Auxiliary, name: "time", attributes: ["formula": "10"])
+        
+        try acceptAndUpdate()
+        let plan: SimulationPlan? = world.singleton()
+        #expect(plan == nil)
+    }
+
     @Test func badFunctionName() throws {
         let aux = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "nonexistent(10)"])
         
@@ -86,7 +105,7 @@ extension TransientPlane {
         
         try acceptAndUpdate()
         let plan: SimulationPlan = try #require(world.singleton())
-        let names = plan.simulationObjects.map { $0.name }.sorted()
+        let names = plan.simulationObjects.map { $0.nameKey }.sorted()
         
         #expect(names == ["a"])
     }

@@ -19,11 +19,12 @@ extension SimulationPlanner {
             guard let entity = world.entity(object.objectID) else {
                 throw .invalidObject(object.objectID, "No world entity")
             }
-            guard let nameComp: NormalizedName = entity.component() else {
-                // Name issues were recorded in NameValidationSystem
+            guard !entity.contains(InvalidName.self) else {
                 hasError = true
                 continue
-                // throw .missingComponent(object.objectID, "SimulationName")
+            }
+            guard let nameComp: NormalizedName = entity.component() else {
+                 throw .missingComponent(object.objectID, "SimulationName")
             }
             guard let role: SimulationRole = entity.component() else {
                 throw .missingComponent(object.objectID, "SimulationRole")
@@ -48,7 +49,7 @@ extension SimulationPlanner {
                                        variableIndex: index,
                                        role: role,
                                        valueType: rep.valueType,
-                                       name: nameComp.key)
+                                       nameKey: nameComp.key)
        
             result.append(sim)
 

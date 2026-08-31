@@ -39,7 +39,10 @@ class StateVariableTable {
     func allocate(content: StateVariable.Content, valueType: ValueType, name: String) -> Int
     {
         let index = variables.count
-        let variable = StateVariable(index: index, content: content, valueType: valueType, name: name)
+        let variable = StateVariable(index: index,
+                                     content: content,
+                                     valueType: valueType,
+                                     nameKey: name)
         variables.append(variable)
        
         switch content {

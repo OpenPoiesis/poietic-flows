@@ -25,7 +25,7 @@ public enum BuiltinVariable: Equatable, CaseIterable, CustomStringConvertible {
     }
     
     public static var normalizedKeys: [String] {
-        self.allCases.map { NormalizedName.normalize($0.name) }
+        self.allCases.map { $0.normalizedKey }
     }
 
     public var name: String {
@@ -34,6 +34,9 @@ public enum BuiltinVariable: Equatable, CaseIterable, CustomStringConvertible {
         case .timeDelta: "time_delta"
         case .step: "simulation_step"
         }
+    }
+    public var normalizedKey: String {
+        NormalizedName.normalize(name)
     }
     
     public var valueType: ValueType {

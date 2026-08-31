@@ -30,7 +30,6 @@ public enum PlanningError: Error, Equatable {
     case unprocessedObjects
 }
 
-
 /// Object that plans a computation.
 ///
 /// The planner takes design objects, components produced by related systems and creates

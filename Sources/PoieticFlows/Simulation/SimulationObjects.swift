@@ -96,7 +96,9 @@ public struct SimulationObject: CustomStringConvertible {
     /// - SeeAlso: ``SimulationPlan/stateVariables``
     ///
     public let variableIndex: SimulationState.Index
-    
+    // TODO: Add this for objects that have adjusted actual variables, such as flow rates
+    // public let actualVariableIndex: SimulationState.Index?
+
     public let role: SimulationRole
     
     public var isAccumulator: Bool {
@@ -111,12 +113,12 @@ public struct SimulationObject: CustomStringConvertible {
     ///
     public let valueType: ValueType
     
-    /// Normalised name of the object.
+    /// Normalised name key of the object.
     ///
-    public let name: String
+    public let nameKey: String
     
     public var description: String {
-        "simob(\(name), id:\(objectID), idx:\(variableIndex), role: \(role))"
+        "simob(\(nameKey), id:\(objectID), idx:\(variableIndex), role: \(role))"
     }
 }
 

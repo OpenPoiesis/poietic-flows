@@ -7,6 +7,11 @@
 
 import PoieticCore
 
+public enum VariableNameFormat: CaseIterable {
+    case normalized
+    case display
+}
+
 /// Convenience view on simulation result.
 ///
 /// You can use simulation result view for simple printing of the simulation results.
@@ -17,8 +22,7 @@ import PoieticCore
 /// let plan: SimulationPlan     // Assume this exists.
 /// let result: SimulationResult // Assume this exists.
 ///
-/// let view = SimulationResultView(result: result, plan: plan,
-///                                 columns: ["time"] + plan.objectNames)
+/// let view = SimulationResultView(result: result, plan: plan, variables: plan.defaultVariables)
 ///
 /// print(view.columnNames.joined(separator: "\t"))
 /// for row in view {
@@ -31,9 +35,38 @@ import PoieticCore
 public struct SimulationResultView {
     public let result: SimulationResult
     public let plan: SimulationPlan
-    public let columnNames: [String]
+    public let columnKeys: [String]
     let variableIndices: [Int]
-    public let nameToColumn: [String:Int]
+    public let keyToColumn: [String:Int]
+    
+    // TODO: Not sure if this is the right place (and name) for this
+    public static func header(variables: [StateVariable],
+                              format: VariableNameFormat,
+                              in world: World) -> [String]
+    {
+        var header: [String] = []
+        for variable in variables {
+            let item: String
+            switch format {
+            case .normalized: item = variable.nameKey
+            case .display:
+                if let objectID = variable.objectID,
+                   let entity = world.entity(objectID),
+                   let normalized: NormalizedName = entity.component()
+                {
+                    item = normalized.displayName
+                }
+                else if case let .builtin(builtin) = variable.content {
+                    item = builtin.name
+                }
+                else {
+                    item = variable.nameKey
+                }
+            }
+            header.append(item)
+        }
+        return header
+    }
     
     /// Create a new view for a result and a plan.
     ///
@@ -51,20 +84,47 @@ public struct SimulationResultView {
         self.result = result
         self.plan = plan
         
-        let columns = columns ?? plan.variableNames
+        var variables: [StateVariable] = []
+        if let columns {
+            for name in columns {
+                let key = NormalizedName.normalize(name)
+                guard let variable = plan.variable(withKey: key) else { continue }
+                variables.append(variable)
+            }
+        }
+        else {
+            variables = plan.stateVariables
+        }
         
-        let variables = columns.compactMap { plan.variable(named: $0) }
-        self.columnNames = variables.map { $0.name }
+        self.columnKeys = variables.map { $0.nameKey }
         self.variableIndices = variables.map { $0.index }
         var map: [String:Int] = [:]
-        for (i, name) in columnNames.enumerated() {
+        for (i, name) in columnKeys.enumerated() {
             map[name] = i
         }
-        self.nameToColumn = map
+        self.keyToColumn = map
     }
     
+    public init(result: SimulationResult, plan: SimulationPlan, variables: [StateVariable]) {
+        self.result = result
+        self.plan = plan
+        
+        self.columnKeys = variables.map { $0.nameKey }
+        self.variableIndices = variables.map { $0.index }
+        var map: [String:Int] = [:]
+        for (i, name) in columnKeys.enumerated() {
+            map[name] = i
+        }
+        self.keyToColumn = map
+    }
+
     /// Get number of result states.
     public var count: Int { result.states.count }
+
+    public func header(format: VariableNameFormat, in world: World) -> [String] {
+        let variables = self.variableIndices.map { self.plan.stateVariables[$0] }
+        return Self.header(variables: variables, format: format, in: world)
+    }
 
     /// Get values at state at given index.
     ///
@@ -104,8 +164,8 @@ extension SimulationResultView: Sequence {
             view.values(at: index)!
         }
         
-        public subscript(column: String) -> Variant? {
-            guard let index = view.nameToColumn[column] else { return nil }
+        public subscript(columnKey: String) -> Variant? {
+            guard let index = view.keyToColumn[columnKey] else { return nil }
             return values[index]
         }
         

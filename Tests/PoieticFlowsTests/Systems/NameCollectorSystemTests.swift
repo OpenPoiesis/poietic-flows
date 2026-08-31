@@ -48,6 +48,7 @@ import Testing
         let lookup: SimulationNameLookup = try #require(world.singleton())
         #expect(lookup.namedObjects["object"] == object.objectID)
     }
+    
     @Test func duplicateName() throws {
         let object = frame.createNode(.Auxiliary, name: "object")
         let dupe = frame.createNode(.Auxiliary, name: " object")
@@ -58,11 +59,26 @@ import Testing
         
         let objEnt = try #require(world.entity(object.objectID))
         #expect(objEnt.hasIssue(identifier: IssueIdentifier.duplicateName))
+        #expect(objEnt.contains(InvalidName.self))
                 
 
         let dupeEnt = try #require(world.entity(dupe.objectID))
         #expect(dupeEnt.hasIssue(identifier: IssueIdentifier.duplicateName))
+        #expect(dupeEnt.contains(InvalidName.self))
     }
+    
+    @Test func reservedName() throws {
+        let object = frame.createNode(.Auxiliary, name: "time")
+
+        let world = try accept(frame)
+        try ComputationOrderSystem.update(world)
+        try NameValidationSystem.update(world)
+        
+        let objEnt = try #require(world.entity(object.objectID))
+        #expect(objEnt.hasIssue(identifier: IssueIdentifier.reservedName))
+        #expect(objEnt.contains(InvalidName.self))
+    }
+
     @Test func validAndDuplicateMix() throws {
         let object = frame.createNode(.Auxiliary, name: "object")
         let dupe = frame.createNode(.Auxiliary, name: "object")
