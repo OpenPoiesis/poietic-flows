@@ -19,8 +19,8 @@ extension SimulationPlanner {
             guard let entity = world.entity(object.objectID) else {
                 throw .invalidObject(object.objectID, "No world entity")
             }
-            guard let nameComp: SimulationName = entity.component() else {
-                // Name issues were recorded in NameResolutionSystem
+            guard let nameComp: NormalizedName = entity.component() else {
+                // Name issues were recorded in NameValidationSystem
                 hasError = true
                 continue
                 // throw .missingComponent(object.objectID, "SimulationName")
@@ -41,14 +41,14 @@ extension SimulationPlanner {
 
             let index = variables.allocate(content: .object(object.objectID),
                                            valueType: rep.valueType,
-                                           name: nameComp.name)
+                                           name: nameComp.key)
             
             let sim = SimulationObject(objectID: object.objectID,
                                        computation: rep,
                                        variableIndex: index,
                                        role: role,
                                        valueType: rep.valueType,
-                                       name: nameComp.name)
+                                       name: nameComp.key)
        
             result.append(sim)
 

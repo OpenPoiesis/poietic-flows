@@ -57,7 +57,7 @@ public struct SimulationPlanningSystem: System {
     public static let dependencies: [SystemDependency] = [
         .after(ExpressionParserSystem.self), // Gets us UnboundExpression for each node
         .after(ComputationOrderSystem.self), // Gets us SimulationOrder
-        .after(NameResolutionSystem.self), // We need name lookup and object names.
+        .after(NameValidationSystem.self), // We need name lookup and object names.
         .after(StockFlowTopologySystem.self),
     ]
     

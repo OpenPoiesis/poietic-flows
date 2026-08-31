@@ -24,7 +24,7 @@ public struct ResolvedParameters: Component {
                   missing: [String] = [],
                   missingUnnamed: Int = 0,
                   unused: [ObjectID] = []) {
-        self.incoming = incoming
+        self.connected = incoming
         self.connectedUnnamed = connectedUnnamed
         self.missing = missing
         self.missingUnnamed = missingUnnamed
@@ -34,7 +34,7 @@ public struct ResolvedParameters: Component {
     /// Connected named parameters.
     ///
     /// The keys are parameter names, the values are object IDs of the parameter nodes.
-    public let incoming: [String:ObjectID]
+    public let connected: [String:ObjectID]
     /// List of connected parameters where the name is not used, such as parameters
     /// for graphical function, smooth or delay.
     public let connectedUnnamed: [ObjectID]
@@ -72,6 +72,7 @@ public struct ParameterResolutionSystem: System {
     public static let IssueSourceName = "ParameterResolutionSystem"
 
     public static let dependencies: [SystemDependency] = [
+        .after(NameValidationSystem.self), // We need variable names
         .after(ExpressionParserSystem.self), // We need variable names
     ]
 
@@ -102,7 +103,7 @@ public struct ParameterResolutionSystem: System {
                 guard let name = parameter.name else { continue }
                 if missing.contains(name) {
                     missing.remove(name)
-                    connected[name] = edge.target
+                    connected[name] = edge.origin
                 }
                 else {
                     unused.append(edge)
@@ -154,7 +155,7 @@ public struct ParameterResolutionSystem: System {
     /// Resolve connections of single-parameter auxiliaries such as graphical function,
     /// delay or smooth.
     ///
-    /// - Requirement: The auxiliary should have one incoming parameter.
+    /// - Requirement: The auxiliary should have one connected parameter.
     ///
     public static func resolveAuxiliaries(_ world: World, plane: DesignPlane, type: ObjectType)
     throws (InternalSystemError) {

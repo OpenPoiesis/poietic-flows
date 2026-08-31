@@ -71,8 +71,8 @@ import Testing
 
         let entity = try #require(world.entity(aux.objectID))
         let component: ResolvedParameters = try #require(entity.component())
-        #expect(component.incoming.count == 1)
-        #expect(component.incoming["x"] == aux.objectID)
+        #expect(component.connected.count == 1)
+        #expect(component.connected["x"] == x.objectID)
         #expect(component.missing.isEmpty == true)
         #expect(component.unused.isEmpty == true)
         #expect(!entity.hasIssues)
@@ -89,7 +89,7 @@ import Testing
 
         let entity = try #require(world.entity(aux.objectID))
         let component: ResolvedParameters = try #require(entity.component())
-        #expect(component.incoming.isEmpty == true)
+        #expect(component.connected.isEmpty == true)
         #expect(component.missing == ["x"])
         #expect(component.unused.isEmpty == true)
         #expect(entity.hasIssue(identifier: IssueIdentifier.unknownParameter,
@@ -112,8 +112,9 @@ import Testing
 
         let entity = try #require(world.entity(aux.objectID))
         let component: ResolvedParameters = try #require(entity.component())
-        #expect(component.incoming.count == 1)
-        #expect(component.incoming["x"] == aux.objectID)
+        #expect(component.connected.count == 1)
+        #expect(component.connected["x"] == x.objectID)
+        #expect(component.connected["y"] == nil)
         #expect(component.missing.isEmpty == true)
         #expect(component.unused.count == 1)
         #expect(entity.hasIssue(identifier: IssueIdentifier.unusedInput,
@@ -138,8 +139,8 @@ import Testing
 
         let entity = try #require(world.entity(aux.objectID))
         let component: ResolvedParameters = try #require(entity.component())
-        #expect(component.incoming.count == 1)
-        #expect(component.incoming["a"] == aux.objectID)
+        #expect(component.connected.count == 1)
+        #expect(component.connected["a"] == a.objectID)
         #expect(component.missing == ["b"])
         #expect(component.unused.count == 1)
         #expect(entity.hasIssue(identifier: IssueIdentifier.unknownParameter,
@@ -181,10 +182,10 @@ import Testing
 
         let entity = try #require(world.entity(aux.objectID))
         let component: ResolvedParameters = try #require(entity.component())
-        #expect(component.incoming.count == 3)
-        #expect(component.incoming["x"] == aux.objectID)
-        #expect(component.incoming["y"] == aux.objectID)
-        #expect(component.incoming["z"] == aux.objectID)
+        #expect(component.connected.count == 3)
+        #expect(component.connected["x"] == x.objectID)
+        #expect(component.connected["y"] == y.objectID)
+        #expect(component.connected["z"] == z.objectID)
         #expect(component.missing.isEmpty == true)
         #expect(component.unused.isEmpty == true)
         #expect(!entity.hasIssues)

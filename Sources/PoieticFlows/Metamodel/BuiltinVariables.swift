@@ -23,6 +23,10 @@ public enum BuiltinVariable: Equatable, CaseIterable, CustomStringConvertible {
     public static var allNames: [String] {
         self.allCases.map { $0.name }
     }
+    
+    public static var normalizedKeys: [String] {
+        self.allCases.map { NormalizedName.normalize($0.name) }
+    }
 
     public var name: String {
         switch self {

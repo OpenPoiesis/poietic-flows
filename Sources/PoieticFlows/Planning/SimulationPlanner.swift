@@ -72,7 +72,7 @@ public class SimulationPlanner {
     /// ### Expected Components
     ///
     /// | Component | Produced By | Required On | Use |
-    /// | ``SimulationName`` | ``NameResolutionSystem`` | all | Allocate variable name and set simulation object name |
+    /// | ``SimulationName`` | ``NameValidationSystem`` | all | Allocate variable name and set simulation object name |
     /// | ``SimulationRole`` | ``ComputationOrderSystem`` | all | Set role of the simulation object |
     /// | ``FlowRate`` | ``StockFlowTopologySystem`` | FlowRate type | Bind flow rates to simulation state variables |
     /// | ``Stock`` | ``StockFlowTopologySystem`` | on Stock type | Bind stocks to simulation state variables and to their inflows/outflows. |

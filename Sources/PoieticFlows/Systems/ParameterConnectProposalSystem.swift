@@ -66,7 +66,7 @@ public struct ParameterProposal: Component {
 
 public struct ParameterConnectionProposalSystem: System {
     public static let dependencies: [SystemDependency] = [
-        .after(NameResolutionSystem.self),
+        .after(NameValidationSystem.self),
         .after(ParameterResolutionSystem.self), // We need variable names
     ]
 

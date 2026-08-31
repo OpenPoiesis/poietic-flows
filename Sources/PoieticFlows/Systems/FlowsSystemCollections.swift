@@ -15,7 +15,7 @@ public let SimulationPlanningSystems: [System.Type] = [
     ExpressionParserSystem.self,
     ParameterResolutionSystem.self,
     ComputationOrderSystem.self,
-    NameResolutionSystem.self,
+    NameValidationSystem.self,
     StockFlowTopologySystem.self,
     SimulationPlanningSystem.self,
     SimulationSettingsSystem.self,

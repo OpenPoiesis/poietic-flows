@@ -40,20 +40,6 @@ public struct SimulationNameLookup: Component {
     public let namedObjects: [String:ObjectID]
 }
 
-/// Simulation-facing name of the entity.
-///
-/// Presence of this component states that the simulation name is valid, unique and non-empty.
-/// Source for the simulation object name is usually `name` property of a design object.
-///
-/// - **Created By**: ``NameResolutionSystem``
-///
-public struct SimulationName: Component {
-    // TODO: Move to Core (start building simulation core)
-    // Note: This is a place to keep fully qualified names in the future, for example when we allow model module nesting.
-    public let name: String
-}
-
-
 /// Component describing dependencies between stocks and flow rates.
 ///
 /// - **Created By:** ``StockFlowTopologySystem``
