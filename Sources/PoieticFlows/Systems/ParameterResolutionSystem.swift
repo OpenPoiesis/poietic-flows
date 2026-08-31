@@ -90,44 +90,18 @@ public struct ParameterResolutionSystem: System {
         for (entity, expression) in world.query(ParsedExpressionComponent.self) {
             guard let objectID = entity.objectID else { continue }
             
-            // Map: key -> name used in formula
-            var requiredParams: [String:String] = [:]
-            
-            for variable in expression.usedVariables {
-                let key = NormalizedName.normalize(variable)
-                guard !builtinKeys.contains(key) else { continue }
-                requiredParams[key] = variable
-            }
-            
-            let incomingParams = plane.incoming(objectID).filter {
-                $0.object.type === ObjectType.Parameter
-            }
+            let required = Self.requiredParameters(in: expression, excludeKeys: builtinKeys)
+            let incoming = plane.incoming(objectID)
+                            .filter { $0.object.type === ObjectType.Parameter }
+                            .map { $0.origin }
 
-            var connected: [String:ObjectID] = [:]
-            var missing: Set<String> = Set(requiredParams.keys)
-            var unused: [(origin: ObjectID, displayName: String)] = []
+            let connections = Self.resolveConnections(incoming, required: required, in: world)
             
-            for edge in incomingParams {
-                guard let parameterEntity = world.entity(edge.origin),
-                      let parameterObjectName: NormalizedName = parameterEntity.component()
-                else { continue }
-                
-                if missing.contains(parameterObjectName.key) {
-                    missing.remove(parameterObjectName.key)
-                    connected[parameterObjectName.key] = edge.origin
-                }
-                else {
-                    unused.append((origin: edge.origin, displayName: parameterObjectName.displayName))
-                }
-            }
-            // If no parameters are required or unnecessarily connected, just continue
-            guard !(connected.isEmpty && missing.isEmpty && unused.isEmpty) else {
-                continue
-            }
+            guard !connections.isEmpty else { continue }
 
             // Collect issues
-            for key in missing {
-                guard let displayName = requiredParams[key] else { continue }
+            for key in connections.missing {
+                guard let displayName = required[key] else { continue }
                 let issue = Issue(
                     identifier: IssueIdentifier.unknownParameter,
                     severity: .error,
@@ -143,7 +117,7 @@ public struct ParameterResolutionSystem: System {
                 entity.appendIssue(issue)
             }
 
-            for item in unused {
+            for item in connections.unused {
                 let issue = Issue(
                     identifier: IssueIdentifier.unusedInput,
                     severity: .error,
@@ -156,13 +130,76 @@ public struct ParameterResolutionSystem: System {
             }
 
             let paramComponent = ResolvedParameters(
-                connected: connected,
-                missing: Array(missing),
-                unused: unused.map { $0.origin }
+                connected: connections.connected,
+                missing: Array(connections.missing),
+                unused: connections.unused.map { $0.origin }
             )
             entity.setComponent(paramComponent)
         }
     }
+   
+    /// Get required variables from an expression.
+    ///
+    /// - Returns: A dictionary where keys are normalised name keys and values are names used in
+    ///   the formula.
+    static func requiredParameters(in expression: ParsedExpressionComponent,
+                                   excludeKeys: [String]) -> [String: String]
+    {
+        // Map: key -> name used in formula
+        var requiredParams: [String:String] = [:]
+        
+        for variable in expression.usedVariables {
+            let key = NormalizedName.normalize(variable)
+            guard !excludeKeys.contains(key) else { continue }
+            requiredParams[key] = variable
+        }
+        return requiredParams
+    }
+    
+    struct ParameterConnections {
+        var connected: [String: ObjectID] = [:]
+        var missing: Set<String> = []
+        var unused: [(origin: ObjectID, displayName: String)] = []
+        var isEmpty: Bool { connected.isEmpty && missing.isEmpty && unused.isEmpty }
+    }
+    
+    /// Resolve parameter connections.
+    ///
+    /// - Parameters:
+    ///     - incoming: List of object IDs that are origins on `Parameter` edges towards object
+    ///       being resolved.
+    ///     - required: Map of required parameters. Keys are normalised name keys, values
+    ///       are display names (as used in their original location).
+    ///     - world: World where to resolve parameters in.
+    ///
+    /// Each object in the `incoming` list is expected to have `NormalizedName` component on it.
+    /// Those without it are skipped – treated as missing.
+    ///
+    static func resolveConnections(_ incoming: [ObjectID],
+                                   required: [String: String],
+                                   in world: World) -> ParameterConnections
+    {
+        var connected: [String:ObjectID] = [:]
+        var missing: Set<String> = Set(required.keys)
+        var unused: [(origin: ObjectID, displayName: String)] = []
+        
+        for origin in incoming {
+            guard let parameterEntity = world.entity(origin),
+                  let parameterObjectName: NormalizedName = parameterEntity.component()
+            else { continue }
+            
+            if missing.contains(parameterObjectName.key) {
+                missing.remove(parameterObjectName.key)
+                connected[parameterObjectName.key] = origin
+            }
+            else {
+                unused.append((origin: origin, displayName: parameterObjectName.displayName))
+            }
+        }
+        
+        return ParameterConnections(connected: connected, missing: missing, unused: unused)
+    }
+    
     /// Resolve connections of single-parameter auxiliaries such as graphical function,
     /// delay or smooth.
     ///
@@ -190,9 +227,7 @@ public struct ParameterResolutionSystem: System {
                 )
                 entity.appendIssue(issue)
 
-                component = ResolvedParameters(
-                    missingUnnamed: 1
-                )
+                component = ResolvedParameters(missingUnnamed: 1)
             }
             else if incomingParams.count > 1 {
                 let issue = Issue(
@@ -206,14 +241,11 @@ public struct ParameterResolutionSystem: System {
                 )
                 entity.appendIssue(issue)
 
-                component = ResolvedParameters(
-                    unused: incomingParams.map { $0.origin }
-                )
+                let unused = incomingParams.map { $0.origin }
+                component = ResolvedParameters(unused: unused)
             }
             else { // if incomingParams.count == 1
-                component = ResolvedParameters(
-                    connectedUnnamed: [incomingParams[0].origin]
-                )
+                component = ResolvedParameters(connectedUnnamed: [incomingParams[0].origin])
             }
 
             entity.setComponent(component)
