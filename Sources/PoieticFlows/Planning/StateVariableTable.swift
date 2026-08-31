@@ -14,7 +14,7 @@ class StateVariableTable {
 
     /// Object ID to variable index
     var objectIndex: [ObjectID:Int] = [:]
-    /// Object name to variable index
+    /// Normalised object name key to variable index
     var nameIndex: [String:Int] = [:]
     
     func allocate(builtin: BuiltinVariable) -> Int
@@ -70,7 +70,8 @@ class StateVariableTable {
 extension StateVariableTable: VariableNameLookup {
     typealias Variable = BoundVariable
     func variable(named name: String) -> Variable? {
-        guard let index = nameIndex[name]
+        let normalizedKey = NormalizedName.normalize(name)
+        guard let index = nameIndex[normalizedKey]
         else { return nil }
         let variable = variables[index]
         return BoundVariable(index: index, valueType: variable.valueType)

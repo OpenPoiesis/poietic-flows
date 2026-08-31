@@ -103,6 +103,15 @@ public struct StateVariable: CustomStringConvertible {
     ///
     public let valueType: ValueType
     
+    /// Internal name of the variable.
+    ///
+    /// - Variables representing objects: normalised name key, for example: `population_growth`.
+    /// - Internal variables have format: _node type_ + _variable type_ + _object ID_,
+    ///   for example: `smooth_value_10` or `flow_adjusted_24`.
+    ///
+    /// - Note: Internal variable names do not have to be unique within the plan, only variables
+    ///   representing objects.
+    ///
     public let name: String
     
     /// ID of a simulation node that the variable represents, if the variable

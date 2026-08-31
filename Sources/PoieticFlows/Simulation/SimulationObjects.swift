@@ -111,7 +111,7 @@ public struct SimulationObject: CustomStringConvertible {
     ///
     public let valueType: ValueType
     
-    /// Name of the object.
+    /// Normalised name of the object.
     ///
     public let name: String
     

@@ -125,7 +125,7 @@ public struct SimulationPlan: Component {
         return first.variableIndex
     }
     
-    /// List of all simulation object names.
+    /// List of all normalised object names.
     public var objectNames: [String] { simulationObjects.map {$0.name} }
     
     /// Get a simulation object with given ID, if exists.
@@ -146,7 +146,7 @@ public struct SimulationPlan: Component {
         return simulationObjects.contains { $0.objectID == id }
     }
 
-    /// Get a simulation object with given name, if exists.
+    /// Get a simulation object with given normalised name, if exists.
     ///
     /// - Note: This function is not used during computation, it is provided for
     ///   consumers of the simulation state or simulation result.
@@ -158,7 +158,7 @@ public struct SimulationPlan: Component {
         return simulationObjects.first { $0.name == name }
     }
 
-    /// Get a state variable by its name.
+    /// Get a state variable by its normalised name.
     ///
     /// This function is mostly for user-facing tools that would like to
     /// interfere with the simulation state. Example use-cases are:
@@ -182,7 +182,7 @@ public struct SimulationPlan: Component {
         return variable
     }
     
-    /// List of all state variable names, including internal ones.
+    /// List of all normalised state variable names, including internal ones.
     public var variableNames: [String] { stateVariables.map {$0.name} }
 }
 
