@@ -27,7 +27,7 @@ extension SimulationPlanner {
                  throw .missingComponent(object.objectID, "NormalizedName")
             }
             guard let role: SimulationRole = entity.component() else {
-                throw .missingComponent(object.objectID, "NormalizedName")
+                throw .missingComponent(object.objectID, "SimulationRole")
             }
             
             let rep: ComputationalRepresentation
