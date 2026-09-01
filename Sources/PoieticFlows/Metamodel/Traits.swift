@@ -166,8 +166,7 @@ extension Trait {
     ///    0.0 as most commonly used value
     /// - `time_delta` (double) – time delta, default is 1.0 as most commonly
     ///   used value
-    /// - `steps` (int) – default number of simulation steps, default is 10
-    ///    (arbitrary, low number just enough to demonstrate something)
+    /// - `end_time` (double) – Final simulation time.
     ///
     public static let Simulation = Trait(
         name: "Simulation",
@@ -186,10 +185,6 @@ extension Trait {
                       default: Variant(10.0),
                       optional: true,
                       abstract: "Final simulation time"
-                     ),
-            Attribute("steps", type: .int,
-                      optional: true,
-                      abstract: "Number of steps the simulation is run by default [deprecated]"
                      ),
             Attribute("solver_type", type: .string,
                       optional: true,

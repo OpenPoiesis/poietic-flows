@@ -44,6 +44,7 @@ import PoieticCore
 /// - SeeAlso: ``StockFlowSimulationSystem``, ``SimulationPlanningSystems``.
 ///
 public struct SimulationPlan: Component {
+    // TODO: Make this class - "by reference"
     internal init(simulationObjects: [SimulationObject] = [],
                   stateVariables: [StateVariable] = [],
                   builtins: BoundBuiltins = BoundBuiltins(),

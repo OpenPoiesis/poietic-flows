@@ -18,54 +18,58 @@ public struct SimulationSettings: Component {
     /// Advancement of time for each simulation step.
     public var timeDelta: Double
 
-    /// Number of steps to run.
-    ///
-    public var steps: UInt
-    
     /// Final simulation time.
     ///
     /// Simulation is run while the simulation is less than ``endTime``.
-    public var endTime: Double { initialTime + timeDelta * Double(steps) }
-    
+    public var endTime: Double
+
+    /// Number of steps to run.
+    ///
+    public var steps: Int {
+        if timeDelta > 0 {
+            let value = ((endTime - initialTime) / timeDelta )
+            return Int((value + 1e-9).rounded(.down))
+        }
+        else {
+            return 0
+        }
+        
+    }
+        
+    // TODO: Move somewhere else, separate component. Keep this computation-free (unless generic enough)
     /// Solver type name.
     ///
     public var solverType: String
     
+
     /// Create new simulation settings.
     ///
     /// - Parameters:
     ///     - initialTime: Time of the initialisation state of the simulation.
     ///     - timeDelta: Advancement of time for each simulation step.
-    ///     - steps: Number of steps to run.
+    ///     - endTime: Final simulation time.
     ///     - solverType: Name of a solver to be used.
     ///
     public init(initialTime: Double = 0.0,
                 timeDelta: Double = 1.0,
-                steps: UInt = 10,
+                endTime: Double = 10.0,
                 solverType: String = "euler")
     {
         self.initialTime = initialTime
         self.timeDelta = timeDelta
-        self.steps = steps
+        self.endTime = max(self.initialTime, endTime)
         self.solverType = solverType
     }
 
+    @available(*, deprecated, message: "Use end time")
     public init(initialTime: Double = 0.0,
                 timeDelta: Double = 1.0,
-                endTime: Double,
+                steps: Int,
                 solverType: String = "euler")
     {
         self.initialTime = initialTime
         self.timeDelta = timeDelta
-        if endTime <= initialTime {
-            self.steps = 0
-        }
-        else if let floor = UInt(exactly: ((endTime - initialTime) / timeDelta).rounded(.down)) {
-            self.steps = floor
-        }
-        else {
-            self.steps = 0
-        }
+        self.endTime = initialTime + Double(steps) * timeDelta
         self.solverType = solverType
     }
 
@@ -74,21 +78,23 @@ public struct SimulationSettings: Component {
     /// The object is expected to have the `Simulation` trait, although any object with
     /// expected attributes can be used.
     ///
+    /// If the object has both `end_time` and `steps`, then `end_time` takes priority.
+    ///
     public init(fromObject object: ObjectSnapshot) {
         let initialTime = object["initial_time", default: 0.0]
-        let timeDelta = object["time_delta", default: 0.0]
+        let timeDelta = object["time_delta", default: 1.0]
         let solverType = object["solver_type", default: "euler"]
 
-        if let steps: Int = object["steps"], steps >= 0 {
-            self.init(initialTime: initialTime,
-                      timeDelta: timeDelta,
-                      steps: UInt(steps),
-                      solverType: solverType)
-        }
-        else if let endTime: Double = object["end_time"] {
+        if let endTime: Double = object["end_time"] {
             self.init(initialTime: initialTime,
                       timeDelta: timeDelta,
                       endTime: endTime,
+                      solverType: solverType)
+        }
+        else if let steps: Int = object["steps"], steps >= 0 {
+            self.init(initialTime: initialTime,
+                      timeDelta: timeDelta,
+                      steps: steps,
                       solverType: solverType)
         }
         else {

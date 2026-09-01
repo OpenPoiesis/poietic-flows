@@ -43,7 +43,14 @@ public struct StockFlowSimulationSystem: System {
         guard let plan: SimulationPlan = world.singleton() else { return }
         let settings: SimulationSettings = world.singleton() ?? SimulationSettings()
         let parameters: ScenarioParameters = world.singleton() ?? ScenarioParameters()
-        
+
+        guard settings.timeDelta > 0 else {
+            throw InternalSystemError("StockFlowSimulationSystem", message: "Time delta must be > 0")
+        }
+        guard settings.endTime >= settings.initialTime else {
+            throw InternalSystemError("StockFlowSimulationSystem", message: "End time must be greater or equal to start time")
+        }
+
         guard let solverType = StockFlowSimulation.SolverType(rawValue: settings.solverType) else {
             throw InternalSystemError(self, message: "Unknown solver type: \(settings.solverType)")
         }
@@ -57,8 +64,8 @@ public struct StockFlowSimulationSystem: System {
         var currentState: SimulationState
         do {
             currentState = try simulation.initialize(time: settings.initialTime,
-                                              timeDelta: settings.timeDelta,
-                                              parameters: parameters.values)
+                                                     timeDelta: settings.timeDelta,
+                                                     parameters: parameters.values)
         }
         catch {
             // TODO: Consider object issue component, if relevant.
@@ -66,14 +73,13 @@ public struct StockFlowSimulationSystem: System {
         }
 
         result.append(currentState)
-        var currentTime = settings.initialTime
-        var step: UInt = 1
-
-        while step <= settings.steps {
+        let steps = settings.steps
+        var step = 0
+                        
+        while step < steps {
             let newState = try self.step(simulation: simulation, state: currentState)
             result.append(newState)
             currentState = newState
-            currentTime += settings.timeDelta
             step += 1
         }
 
@@ -94,5 +100,4 @@ public struct StockFlowSimulationSystem: System {
 
         return newState
     }
-
 }

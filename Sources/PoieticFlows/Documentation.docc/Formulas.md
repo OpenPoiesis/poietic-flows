@@ -76,7 +76,16 @@ Logical functions:
 
 ## Variables and Nodes
 
-Each variable that represents another node must have a corresponding `Parameter`
-edge. The `Parameter` edge originates in the node containing the value
-and ends in the node having the formula using the value.
+Formulas can reference values in other nodes by using their name. The node that the formula
+node refers to, must be connected with a `Parameter` connection. For example,
+if a node has a formula `price * 0.1`, then it must be connected from the `price` node.
 
+If the node names contain spaces or other characters, their name must be quoted using
+curly brackets: `{birth rate} * 0.5` or `{population growth} / 10`. Names are case insensitive,
+spaces are trimmed and collapsed. Underscore `_` is equivalent to a space. The following
+names are considered equal:
+
+- `Birth Rate`
+- `birth rate`
+- `birth_rate`
+- ` BIRTH  RATE `
