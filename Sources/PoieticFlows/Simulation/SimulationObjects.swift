@@ -32,23 +32,6 @@ public enum ComputationalRepresentation: CustomStringConvertible {
     ///
     case smooth(BoundSmooth)
     
-    public var valueType: ValueType {
-        switch self {
-//        case .stock(_):
-//            return .double
-//        case .flow(_):
-//            return .double
-        case let .formula(formula):
-            return formula.valueType
-        case .graphicalFunction(_):
-            return ValueType.double
-        case let .delay(delay):
-            return .atom(delay.valueType)
-        case .smooth(_):
-            return .atom(.double)
-        }
-    }
-    
     // case dataInput(???)
 
     public var description: String {
@@ -95,8 +78,9 @@ public struct SimulationObject: CustomStringConvertible {
     ///
     /// - SeeAlso: ``SimulationPlan/stateVariables``
     ///
-    public let variableIndex: SimulationState.Index
+    public let variable: SimulationState.Reference
     // TODO: Add this for objects that have adjusted actual variables, such as flow rates
+    // public let actualValueReference: SimulationState.Reference
     // public let actualVariableIndex: SimulationState.Index?
 
     public let role: SimulationRole
@@ -118,26 +102,7 @@ public struct SimulationObject: CustomStringConvertible {
     public let nameKey: String
     
     public var description: String {
-        "simob(\(nameKey), id:\(objectID), idx:\(variableIndex), role: \(role))"
-    }
-}
-
-/// Indices of built-in variables bound to a simulation plan.
-///
-/// - SeeAlso: ``BuiltinVariable``, ``SimulationPlan``
-///
-public struct BoundBuiltins {
-    // NOTE: Synchronise with ``StockFlowSimulation/setBuiltins``
-    public let step: SimulationState.Index
-    public let time: SimulationState.Index
-    public let timeDelta: SimulationState.Index
-
-    internal init(step: SimulationState.Index = 0,
-                  time: SimulationState.Index = 1,
-                  timeDelta: SimulationState.Index = 2) {
-        self.step = step
-        self.time = time
-        self.timeDelta = timeDelta
+        "SimObject(\(nameKey), id:\(objectID), ref:\(variable), role: \(role))"
     }
 }
 
@@ -158,7 +123,7 @@ public struct BoundStock {
     ///
     /// - SeeAlso: ``SimulationPlan/stateVariables``
     ///
-    public let variableIndex: SimulationState.Index
+    public let variableIndex: Int
     
     /// Flag whether the value of the node can be negative.
     ///
@@ -200,15 +165,19 @@ public struct BoundFlow {
     /// ID of object that represents this flow rate.
     public let objectID: ObjectID
 
-    /// Index of a variable in the state holding value of the flow rate that is expected –
-    /// as computed by the flow's formula.
-    public let estimatedValueIndex: SimulationState.Index
-
-    /// Index of a variable in the state holding value of the flow rate that was used in the
-    /// computation – rate actually applied after non-negative-stock scaling.
+    /// Index of a flow variable in the flows vector of simulation state.
     ///
-    /// This value might be different from expected value if a non-negative stocks are used.
-    public let adjustedValueIndex: SimulationState.Index
+    /// - SeeAlso: ``SimulationState/flows``, ``estimatedValueIndex``
+    ///
+    public let actualValueIndex: Int
+    
+    /// Index of a numeric variable in the state holding estimated value – the value as computed
+    /// by the formula, before stock constraints were applied.
+    ///
+    /// - SeeAlso: ``actualValueIndex``,  ``SimulationState/numerics``
+    ///
+    public let estimatedValueIndex: Int
+
     
     /// ID of a stock in bound stocks that the flow drains.
     public let drains: ObjectID?
@@ -226,7 +195,7 @@ public struct BoundGraphicalFunction {
     public let function: GraphicalFunction
     
     /// Index of a variable that is a parameter for the function.
-    public let parameterIndex: SimulationState.Index
+    public let parameter: SimulationState.Reference
 }
 
 /// Compiled delay node.
@@ -252,9 +221,15 @@ public struct BoundDelay {
     ///
     /// - SeeAlso: ``StockFlowSimulation/initialize(delay:in:)``
     ///
-    public let initialValueIndex: SimulationState.Index
-    public let queueIndex: SimulationState.Index
-    public let inputValueIndex: SimulationState.Index
+    public let initialValueRef: SimulationState.Reference
+    /// Index to the variants array.
+    ///
+    /// - Note: We are assuming that we can use only variant atom types for delay.
+    ///
+    /// - SeeAlso: ``SimulationState/variants``
+    ///
+    public let queueIndex: Int
+    public let inputValueRef: SimulationState.Reference
 }
 
 /// Compiled smooth node.
@@ -265,11 +240,11 @@ public struct BoundSmooth {
     /// Time window over which the smooth is computed.
     public let windowTime: Double
 
-    /// Index where the current smoothing value is stored.
+    /// Index to the numeric values of simulation state where the current smoothing value is stored.
     ///
-    public let smoothValueIndex: SimulationState.Index
+    public let smoothValueIndex: Int
     
-    /// Index of the value where the smooth node input is stored.
-    public let inputValueIndex: SimulationState.Index
+    /// Index to the numeric values of simulation state where the smooth node input is stored.
+    public let inputValueIndex: Int
 }
 

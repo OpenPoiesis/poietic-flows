@@ -12,6 +12,8 @@ import PoieticCore
 /// - SeeAlso: ``ScenarioParameters``.
 ///
 public struct SimulationSettings: Component {
+    // TODO: Rename to SimulationTime and move to Core
+    // TODO: Split solver and add
     /// Time of the initialisation state of the simulation.
     public var initialTime: Double
     

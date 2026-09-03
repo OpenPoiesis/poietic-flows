@@ -7,10 +7,11 @@
 
 import PoieticCore
 
-public struct BoundVariable: TypedVariable, CustomStringConvertible {
-    public let index: SimulationState.Index
+public struct BoundVariable: TypedVariable {
+    public let reference: SimulationState.Reference
     public let valueType: ValueType
     
-    public var description: String { "BoundVariable(\(index),\(valueType))" }
+    public var description: String { "BoundVariable(\(reference), \(valueType))" }
 }
+
 public typealias BoundExpression = ArithmeticExpression<BoundVariable, BuiltinFunction>

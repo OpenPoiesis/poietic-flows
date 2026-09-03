@@ -35,6 +35,7 @@ public enum BuiltinVariable: Equatable, CaseIterable, CustomStringConvertible {
         case .step: "simulation_step"
         }
     }
+    // TODO: [REFACTORING] consider renaming just to nameKey
     public var normalizedKey: String {
         NormalizedName.normalize(name)
     }

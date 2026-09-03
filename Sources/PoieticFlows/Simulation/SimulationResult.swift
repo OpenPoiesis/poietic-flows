@@ -7,6 +7,18 @@
 
 import PoieticCore
 
+
+public struct NEWSimulationResult {
+    public enum Column {
+        case double([Double])
+        case variant([Variant])
+    }
+
+    public let plan: SimulationPlan
+    public let time: [Double]
+    public let columns: [Column]
+ }
+
 // TODO: Rethink this structure, it is impractical for analysis (which is the whole point if the toolkit)
 /// Makeshift simulation result container.
 ///

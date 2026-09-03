@@ -81,21 +81,15 @@ extension StockFlowSimulation {
     /// Estimated flows need to be adjusted for the constraints before applying.
     @inlinable
     public func flows(_ state: SimulationState) -> NumericVector {
-        var flows = NumericVector(zeroCount: plan.flows.count)
-        for (i, flow) in plan.flows.enumerated() {
-            flows[i] = state[flow.estimatedValueIndex]
-        }
-        return flows
+        // FIXME: [REFACTORING] This method is no longer necessary
+        return state.flows
     }
     
     /// Get a vector with stock values in the simulation state.
     @inlinable
     public func stocks(_ state: SimulationState) -> NumericVector {
-        var stocks = NumericVector(zeroCount: plan.stocks.count)
-        for (i, stock) in plan.stocks.enumerated() {
-            stocks[i] = state[stock.variableIndex]
-        }
-        return stocks
+        // FIXME: [REFACTORING] This method is no longer necessary
+        return state.stocks
     }
     
     /// Update the stocks with given derivative (delta).
@@ -104,13 +98,15 @@ extension StockFlowSimulation {
     /// they underflow.
     @inlinable
     func updateStocks(delta: NumericVector, in state: inout SimulationState) {
-        for (i, stock) in plan.stocks.enumerated() {
-            let newStock = state[stock.variableIndex] + delta[i]
-            if stock.allowsNegative {
-                state[stock.variableIndex] = newStock
+        precondition(delta.count == state.stocks.count)
+        for (i, diff) in delta.enumerated() {
+            let value = state.stocks[i] + diff
+
+            if plan.stocks[i].allowsNegative {
+                state.stocks[i] = value
             }
             else {
-                state[stock.variableIndex] = max(0, newStock)
+                state.stocks[i] = max(0, value)
             }
         }
     }
@@ -128,7 +124,7 @@ extension StockFlowSimulation {
         updateStocks(delta: netFlow, in: &result)
         try updateAuxiliariesAndFlows(in: &result)
         for (i, flow) in plan.flows.enumerated() {
-            result[flow.adjustedValueIndex] = adjustedFlows[i]
+            result.flows[flow.actualValueIndex] = adjustedFlows[i]
         }
         return result
     }
@@ -177,7 +173,7 @@ extension StockFlowSimulation {
 
         let finalAdjustedFlows = (adjustedFlows1 + 2*adjustedFlows2 + 2*adjustedFlows3 + adjustedFlows4) / 6
         for (i, flow) in plan.flows.enumerated() {
-            result[flow.adjustedValueIndex] = finalAdjustedFlows[i]
+            result.flows[flow.actualValueIndex] = finalAdjustedFlows[i]
         }
         
         // TODO: Post-clamping of non-negative stocks

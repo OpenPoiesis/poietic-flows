@@ -19,16 +19,32 @@ import PoieticCore
 /// a node in the model, typically a node with a formula.
 ///
 public struct StateVariable: CustomStringConvertible {
-    /// Index of the variable's value in a simulation state.
+    /// Reference to the variable in the simulation index.
     ///
-    public let index: Int
+    /// - SeeAlso: ``SimulationState``
+    ///
+    public let reference: SimulationState.Reference
+
+    /// Index of a column holding variable values in the simulation result.
+    ///
+    /// - SeeAlso: ``SimulationResult``
+    public let resultColumn: Int
+
+    /// Internal name of the variable.
+    ///
+    /// - Variables representing objects: normalised name key, for example: `population_growth`.
+    /// - Internal variables have format: _node type_ + _variable type_ + _object ID_,
+    ///   for example: `smooth_value_10` or `flow_adjusted_24`.
+    ///
+    /// - Note: Internal variable names do not have to be unique within the plan, only variables
+    ///   representing objects.
+    ///
+    public let nameKey: String
     
-    /// Reference to a variable.
+    /// Reference to the variable content – computational source of the variable.
     ///
     /// The variable reference is used in arithmetic expressions and might represent
     /// a built-in variable provided by the application or a value of an object.
-    ///
-    /// One object can represent only one variable.
     ///
     public enum Content: Hashable, CustomStringConvertible {
         /// The variable is represented by an object with given object ID.
@@ -44,27 +60,22 @@ public struct StateVariable: CustomStringConvertible {
         /// An object might have additional internal states. The case parameter
         /// is ID of an object that owns the state.
         ///
+        /// Example: initial value of a delay or smooth.
+        ///
         case internalState(ObjectID)
         
-        /// Actual or adjusted value of the object after computation
-        case adjustedResult(ObjectID)
-        
-        public static func ==(lhs: Content, rhs: Content) -> Bool {
-            switch (lhs, rhs) {
-            case let (.object(left), .object(right)): return left == right
-            case let (.builtin(left), .builtin(right)): return left == right
-            case let (.internalState(left), .internalState(right)): return left == right
-            case let (.adjustedResult(left), .adjustedResult(right)): return left == right
-            default: return false
-            }
-        }
+        /// Variable holds an estimated value – value before adjustment. For example value of a
+        /// flow rate to/from a non-negative stock, as is computed from the formula, before
+        /// the flow availability is computed.
+        ///
+        case estimated(ObjectID)
         
         public var description: String {
             switch self {
             case .object(let id): "object(\(id))"
             case .builtin(let variable): "builtin(\(variable))"
-            case .internalState(let id): "internalState(\(id))"
-            case .adjustedResult(let id): "adjustedResult(\(id))"
+            case .internalState(let id): "internal(\(id))"
+            case .estimated(let id): "estimated(\(id))"
             }
         }
     }
@@ -73,47 +84,7 @@ public struct StateVariable: CustomStringConvertible {
     ///
     public let content: Content
     
-    /// Type of the simulation variable.
-    ///
-    /// - SeeAlso: ``StateVariable``
-    ///
-    public enum Kind: String {
-        /// The simulation variable represents a computation defined
-        /// by a node.
-        case object
-        /// The simulation variable represents a built-in variable.
-        ///
-        case builtin
-        case internalState
-        case adjusted
-    }
-    
-    /// Type of the simulation variable.
-    ///
-    public var kind: Kind {
-        switch content {
-        case .builtin: .builtin
-        case .object: .object
-        case .internalState: .internalState
-        case .adjustedResult: .adjusted
-        }
-    }
-    
-    /// Variable value type
-    ///
-    public let valueType: ValueType
-    
-    /// Internal name of the variable.
-    ///
-    /// - Variables representing objects: normalised name key, for example: `population_growth`.
-    /// - Internal variables have format: _node type_ + _variable type_ + _object ID_,
-    ///   for example: `smooth_value_10` or `flow_adjusted_24`.
-    ///
-    /// - Note: Internal variable names do not have to be unique within the plan, only variables
-    ///   representing objects.
-    ///
-    public let nameKey: String
-    
+    // TODO: [REFACTORING] This is used only in simulation result view and it is somewhat under-specified and unclear. Reconsider.
     /// ID of a simulation node that the variable represents, if the variable
     /// represents a node.
     ///
@@ -127,27 +98,31 @@ public struct StateVariable: CustomStringConvertible {
         case .builtin(_): nil
         case .object(let id): id
         case .internalState(_): nil
-        case .adjustedResult(let id): id
+        case .estimated(let id): id
         }
     }
     
     public var description: String {
-        "\(nameKey)@\(index):\(kind):\(valueType)"
+        "\(reference)[\(nameKey),\(content),\(resultColumn)]"
     }
     
-    internal init(index: Int, content: StateVariable.Content, valueType: ValueType, nameKey: String) {
-        self.index = index
-        self.content = content
-        self.valueType = valueType
+    internal init(reference: SimulationState.Reference,
+                  resultColumn: Int,
+                  nameKey: String,
+                  content: Content) {
+        self.reference = reference
+        self.resultColumn = resultColumn
         self.nameKey = nameKey
+        self.content = content
     }
     
-    internal init(index: Int, builtin: BuiltinVariable) {
-        self.index = index
+    internal init(reference: SimulationState.Reference,
+                  resultColumn: Int,
+                  builtin: BuiltinVariable) {
+        self.reference = reference
+        self.resultColumn = resultColumn
+        self.nameKey = builtin.normalizedKey
         self.content = .builtin(builtin)
-        self.valueType = builtin.valueType
-        self.nameKey = builtin.name
     }
-
 }
 

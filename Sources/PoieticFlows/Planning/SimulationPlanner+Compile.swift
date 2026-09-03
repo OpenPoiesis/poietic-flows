@@ -180,11 +180,11 @@ extension SimulationPlanner {
               let parameterID = paramComp.connectedUnnamed.first
         else { throw .userIssue }
 
-        guard let paramIndex = variables.index(parameterID) else {
+        guard let paramRef = variables.reference(parameterID) else {
             throw .corruptedVariableTable
         }
         
-        let boundFunc = BoundGraphicalFunction(function: function, parameterIndex: paramIndex)
+        let boundFunc = BoundGraphicalFunction(function: function, parameter: paramRef)
         return .graphicalFunction(boundFunc)
     }
    

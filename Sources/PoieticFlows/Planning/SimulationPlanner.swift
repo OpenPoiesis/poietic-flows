@@ -149,21 +149,24 @@ public class SimulationPlanner {
             else {
                 throw .missingComponent(flow.objectID, "FlowRate")
             }
-            guard let estimatedValueIndex = variables.objectIndex[flow.objectID] else {
+            guard let actualValueRef = variables.reference(flow.objectID),
+                  case let .flow(actualValueIndex) = actualValueRef
+            else {
                 throw .corruptedVariableTable
             }
-            let adjustedValueIndex = variables.allocate(
-                content: .adjustedResult(flow.objectID),
-                valueType: flow.valueType,
-                name:  "flow_adjusted_\(flow.objectID)"
+            
+            let estimatedValueRef = variables.allocate(
+                numeric: .estimated(flow.objectID),
+                name:  "flow_adjusted_\(flow.objectID)",
+                isInternal: true
             )
 
             // Adjusted: rate actually applied after non-negative-stock scaling
             // Estimated: rate as computed by the flow's formula
             
             let boundFlow = BoundFlow(objectID: flow.objectID,
-                                      estimatedValueIndex: estimatedValueIndex,
-                                      adjustedValueIndex: adjustedValueIndex,
+                                      actualValueIndex: actualValueIndex,
+                                      estimatedValueIndex: estimatedValueRef,
                                       drains: component.drainsStock,
                                       fills: component.fillsStock)
 
