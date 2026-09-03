@@ -10,22 +10,18 @@
 
 import PoieticCore
 
-// for evaluation
-extension SimulationState: VariableValueLookup {
-    public typealias Variable = BoundVariable
-    public func value(for variable: Variable) -> Variant {
-        return self[variable.index]
-    }
-}
-
 public enum SimulationError: Error, CustomStringConvertible {
-    case evaluationError(ObjectID, EvaluationError)
     case unknownObject(ObjectID)
-    
+    case evaluation(ObjectID, EvaluationError)
+    case stateValue(ObjectID, SimulationState.Reference, ValueError)
+    case atomExpected(ObjectID)
+
     public var description: String {
         switch self {
-        case let .evaluationError(id , error): "Evaluation of \(id) failed: \(error)"
+        case let .evaluation(id , error): "Evaluation of \(id) failed: \(error)"
         case let .unknownObject(id): "Unknown object \(id)"
+        case let .stateValue(id, ref, error): "State value error for \(id), ref: \(ref): \(error)"
+        case .atomExpected: "Value is expected to be an atom"
         }
     }
 }
@@ -58,7 +54,6 @@ public class StockFlowSimulation {
         self.plan = plan
         self.solver = solver
         self.flowScaling = flowScaling
-        self.constantIndices = Set()
     }
    
     // MARK: - Initialization
@@ -78,6 +73,21 @@ public class StockFlowSimulation {
         }
         
         return result
+    }
+    
+    public func write(_ value: Variant,
+                      to reference: SimulationState.Reference,
+                      of objectID: ObjectID,
+                      in state: inout SimulationState)
+    throws (SimulationError)
+    {
+        do {
+            try state.setValue(value, for: reference)
+        }
+        catch {
+            throw .stateValue(objectID, reference, error)
+        }
+        
     }
 
     /// Creates a copy of a state and advances the time.

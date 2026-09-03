@@ -13,7 +13,8 @@ extension StockFlowSimulation {
     /// - Parameters:
     ///     - time: Initial time.
     ///     - timeDelta: Time delta between simulation steps.
-    ///     - parameters: Dictionary of simulation parameters. See note below.
+    ///     - parameters: Dictionary of simulation parameters; parameters are overrides applied
+    ///       before evaluation.
     ///
     /// This function creates and computes the initial state of the computation by
     /// evaluating all the nodes in the order of their dependency by parameter. The order is provided
@@ -37,118 +38,89 @@ extension StockFlowSimulation {
                            parameters: [ObjectID:Variant]=[:])
     throws (SimulationError) -> SimulationState
     {
-        for requiredID in parameters.keys {
-            guard plan.containsObject(requiredID) else { throw .unknownObject(requiredID) }
+        var state = SimulationState(plan: plan, step: 0, time: time, timeDelta: timeDelta)
+        
+        // 1. Apply scenario parameters override
+        //
+        for (objectID, value) in parameters {
+            guard let object = plan.simulationObject(objectID)
+            else { throw .unknownObject(objectID) }
+            
+            if object.isAccumulator {
+                try initialize(accumulator: object, initialValue: value, in: &state)
+            }
+            else {
+                try write(value, to: object.variable, of: objectID, in: &state)
+                state.markAsConstant(object.variable)
+            }
         }
-
-        var state = SimulationState(plan: plan,
-                                    step: 0,
-                                    time: time,
-                                    timeDelta: timeDelta)
         
-        setBuiltins(in: &state)
-        
-        for object in plan.simulationObjects {
-            try initialize(object: object, withParameter: parameters[object.objectID], in: &state)
+        // 2. Evaluate the rest
+        //
+        for object in plan.simulationObjects where parameters[object.objectID] == nil {
+            try initialize(object: object, in: &state)
         }
         
         return state
     }
     
-    /// Initialise a simulation object value in the simulation state.
-    ///
-    /// - Parameters:
-    ///     - object: Simulation object to be initialised in the state.
-    ///     - parameter: Parameter to be used for initialisation. See note below.
-    ///     - state: Simulation state to be initialised
-    ///
-    /// If the parameter **is not provided** (is `nil`): object value is evaluated as specified
-    /// in its computational representation.
-    ///
-    /// If the parameter **is provided**: the object is initialised to given parameter value.
-    /// For accumulator objects (stock, delay, smooth) the parameter is used only for
-    /// initialisation, later during computation it is disregarded. For objects that are not
-    /// accumulators (flow rates, auxiliaries, graphical function, ...) the parameter value is
-    /// preserved as their constant through the simulation.
-    ///
-    public func initialize(object: SimulationObject,
-                           withParameter parameter: Variant?,
-                           in state: inout SimulationState)
-    throws (SimulationError)
-    {
-        if let parameter {
-            if object.isAccumulator {
-                try initialize(accumulator: object, initialValue: parameter, in: &state)
-            }
-            else {
-                do {
-                    try state.setValue(parameter, for: object.variable)
-                }
-                catch {
-                    throw .evaluationError(object.objectID, .valueError(error))
-                }
-                state.markAsConstant(object.variable)
-            }
-        }
-        else {
-            try initialize(object: object, in: &state)
-        }
-    }
     
-    /// Initialise an object without a parameter.
+    /// Initialise an object by evaluating its content.
+    ///
+    /// - SeeAlso: ``SimulationObject/computation``
+    ///
     public func initialize(object: SimulationObject, in state: inout SimulationState)
     throws (SimulationError)
     {
         let result: Variant
-        do {
-            switch object.computation {
-            case let .formula(expression):
+        switch object.computation {
+        case let .formula(expression):
+            do {
                 result = try Evaluator.evaluate(expression: expression, lookup: state)
-            case let .graphicalFunction(function):
-                result = try evaluate(graphicalFunction: function, with: state)
-            case let .delay(delay):
-                result = try initialize(delay: delay, initialValue: nil, in: &state)
-            case let .smooth(smooth):
-                result = initialize(smooth: smooth, initialValue: nil, in: &state)
             }
+            catch {
+                throw .evaluation(object.objectID, error)
+            }
+        case let .graphicalFunction(function):
+            do {
+                result = try evaluate(graphicalFunction: function, with: state)
+            }
+            catch {
+                throw .evaluation(object.objectID, error)
+            }
+        case let .delay(delay):
+            result = try initialize(delay: delay, initialValue: nil, objectID: object.objectID, in: &state)
+        case let .smooth(smooth):
+            result = try initialize(smooth: smooth, initialValue: nil, objectID: object.objectID, in: &state)
         }
-        catch {
-            throw .evaluationError(object.objectID, error)
-        }
-        state[object.variable] = result
+
+
+        try write(result, to: object.variable, of: object.objectID, in: &state)
     }
     
-    /// Initialise an accumulator with a value.
+    /// Initialise an accumulator with an explicit initial value.
+    ///
+    /// This function is called by ``initialize(time:timeDelta:parameters:)`` when a parameter of
+    /// an accumulator is set.
+    ///
+    /// - SeeAlso: ``SimulationObject/isAccumulator``
+    ///
     func initialize(accumulator: SimulationObject,
                     initialValue: Variant,
                     in state: inout SimulationState)
     throws (SimulationError)
     {
-        state[accumulator.variableIndex] = initialValue
+        try write(initialValue, to: accumulator.variable, of: accumulator.objectID, in: &state)
         
-        do {
-            // Treatment for special kinds of accumulators (not explicit Stock)
-            switch accumulator.computation {
-            case let .delay(delay): try initialize(delay: delay, initialValue: initialValue, in: &state)
-            case let .smooth(smooth): initialize(smooth: smooth, initialValue: initialValue, in: &state)
-            case .formula, .graphicalFunction: break
-            }
-        }
-        catch {
-            throw .evaluationError(accumulator.objectID, error)
+        switch accumulator.computation {
+        case let .delay(delay):
+            try initialize(delay: delay, initialValue: initialValue, objectID: accumulator.objectID, in: &state)
+        case let .smooth(smooth):
+            try initialize(smooth: smooth, initialValue: initialValue, objectID: accumulator.objectID, in: &state)
+        case .formula, .graphicalFunction: break
         }
     }
     
-    /// Set values of built-in variables such as time or time delta.
-    ///
-    /// - SeeAlso: ``SimulationPlan/builtins``, ``BoundBuiltins``
-    ///
-    public func setBuiltins(in state: inout SimulationState) {
-        state[plan.builtins.time] = Variant(state.time)
-        state[plan.builtins.timeDelta] = Variant(state.timeDelta)
-        state[plan.builtins.step] = Variant(state.step)
-    }
-
     /// Initialise a simulated delay.
     ///
     /// The function prepares internal state variable holding a delay queue and returns
@@ -159,35 +131,31 @@ extension StockFlowSimulation {
     ///     - state: Simulation state in which the delay is initialised.
     /// - Returns: Value of the delay node.
     ///
-    @discardableResult
-    public func initialize(delay: BoundDelay, initialValue: Variant?, in state: inout SimulationState) throws (EvaluationError) -> Variant {
-        let outputValue: Variant
-        if let initialValue {
-            outputValue = initialValue
-        }
-        else if let value = delay.initialValue {
-            outputValue = value
-        }
-        else {
-            outputValue = state[delay.inputValueIndex]
-        }
-        guard case let .atom(atom) = outputValue else {
-            throw .valueError(.atomExpected)
-        }
+//    @discardableResult
+    public func initialize(delay: BoundDelay,
+                           initialValue: Variant?,
+                           objectID: ObjectID,
+                           in state: inout SimulationState)
+    throws (SimulationError) -> Variant
+    {
+        let result: Variant
 
-        var queue: VariantArray = VariantArray(type: delay.valueType)
-        if delay.steps > 0 {
-            do {
-                try queue.append(atom)
-            }
-            catch {
-                throw .valueError(error)
-            }
-        }
-        state[delay.queueIndex] = .array(queue)
-        state[delay.initialValueIndex] = outputValue
-        
-        return outputValue
+        if let initialValue                    { result = initialValue }
+        else if let value = delay.initialValue { result = value }
+        else                                   { result = state[delay.inputValueRef] }
+
+        guard case let .atom(atom) = result else { throw .atomExpected(objectID) }
+
+        var queue: VariantArray
+
+        // Variant array type mismatches are handled in evaluate(delay:...)
+        if delay.steps > 0 { queue = VariantArray(ofOne: atom) }
+        else               { queue = VariantArray(type: delay.valueType) }
+
+        state.variants[delay.queueIndex] = .array(queue)
+        try write(result, to: delay.initialValueRef, of: objectID, in: &state)
+
+        return result
     }
     
     /// Initialise a simulated smooth.
@@ -200,11 +168,17 @@ extension StockFlowSimulation {
     ///     - state: Simulation state in which the smooth is initialised.
     /// - Returns: Value of the smooth node.
     ///
-    @discardableResult
-    public func initialize(smooth: BoundSmooth, initialValue: Variant?, in state: inout SimulationState) -> Variant {
-        let value: Variant = initialValue ?? state[smooth.inputValueIndex]
-        state.numerics[smooth.smoothValueIndex] = value
+//    @discardableResult
+    public func initialize(smooth: BoundSmooth,
+                           initialValue: Variant?,
+                           objectID: ObjectID,
+                           in state: inout SimulationState)
+    throws (SimulationError) -> Variant
+    {
+        let value: Variant = initialValue ?? Variant(state.numerics[smooth.inputValueIndex])
         
+        try write(value, to: .numeric(smooth.smoothValueIndex), of: objectID, in: &state)
+
         return value
     }
 }

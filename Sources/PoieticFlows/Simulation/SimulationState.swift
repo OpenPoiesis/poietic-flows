@@ -7,6 +7,11 @@
 
 import PoieticCore
 
+public enum SimulationStateError: Error {
+    case valueError(SimulationState.Reference, ValueError)
+    case settingBuiltin(SimulationState.Reference)
+}
+
 public struct SimulationState {
     // Replaces BoundVariable
     // Alt names: just Reference or just Variable
@@ -99,20 +104,28 @@ public struct SimulationState {
         }
     }
 
-    mutating func setValue(_ variant: Variant, for reference: Reference) throws (ValueError) {
+    mutating func setValue(_ variant: Variant, for reference: Reference) throws (SimulationStateError) {
         switch reference {
         case .builtin(_):
-            // TODO: [REFACTORING] This is a programming error, not an user error. This should not happen. But what else to do here?
-            fatalError("Trying to set builtin")
+            throw .settingBuiltin(reference)
         case let .stock(index):
-            let numeric = try variant.doubleValue()
-            stocks[index] = numeric
+            do {
+                let numeric = try variant.doubleValue()
+                stocks[index] = numeric
+            }
+            catch { throw .valueError(reference, error)}
         case let .flow(index):
-            let numeric = try variant.doubleValue()
-            flows[index] = numeric
+            do {
+                let numeric = try variant.doubleValue()
+                flows[index] = numeric
+            }
+            catch { throw .valueError(reference, error)}
         case let .numeric(index):
-            let numeric = try variant.doubleValue()
-            numerics[index] = numeric
+            do {
+                let numeric = try variant.doubleValue()
+                numerics[index] = numeric
+            }
+            catch { throw .valueError(reference, error)}
         case let .variant(index):
             variants[index] = variant
         }
@@ -138,6 +151,7 @@ public struct SimulationState {
     /// vector.
     ///
     public func adding(stocks: [Double], step: Int, time: Double, timeDelta: Double) -> SimulationState {
+        // TODO: [REFACTORING] We are not clamping non-negative stocks here, the caller is responsible for that. We need to verify and make sure we honour this contract.
         precondition(stocks.count == self.stocks.count)
         var newState = self
         for (index, value) in stocks.enumerated() {
@@ -150,6 +164,17 @@ public struct SimulationState {
         return newState
     }
 }
+
+
+// for evaluation
+extension SimulationState: VariableValueLookup {
+    public typealias Variable = BoundVariable
+    public func value(for variable: Variable) -> Variant {
+        self[variable.reference]
+    }
+}
+
+#if false
 
 /// A collection of simulation state variables.
 ///
@@ -286,3 +311,4 @@ public struct _OLD_SimulationState: CustomStringConvertible {
 
 
 
+#endif
