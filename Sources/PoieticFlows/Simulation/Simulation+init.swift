@@ -31,6 +31,9 @@ extension StockFlowSimulation {
     /// are not accumulators (flow rates, auxiliaries, graphical function, ...) the parameter value
     /// is preserved as their constant through the whole simulation run.
     ///
+    /// The ``SimulationState/flows`` and their corresponding estimated flows are the same after
+    /// initialisation.
+    ///
     /// - Returns: Newly initialised simulation state.
     ///
     public func initialize(time: Double=0,
@@ -59,6 +62,11 @@ extension StockFlowSimulation {
         //
         for object in plan.simulationObjects where parameters[object.objectID] == nil {
             try initialize(object: object, in: &state)
+        }
+        
+        // 3. Copy flows – before adjustment the estimates are the same
+        for (index, flow) in plan.flows.enumerated() {
+            state.numerics[flow.estimatedNumericIndex] = state.flows[index]
         }
         
         return state
@@ -175,10 +183,17 @@ extension StockFlowSimulation {
                            in state: inout SimulationState)
     throws (SimulationError) -> Variant
     {
-        let value: Variant = initialValue ?? Variant(state.numerics[smooth.inputValueIndex])
+        let result: Variant
+        if let initialValue {
+            result = initialValue
+            try write(initialValue, to: .numeric(smooth.smoothValueIndex), of: objectID, in: &state)
+        }
+        else {
+            let value = state.numerics[smooth.inputValueIndex]
+            state.numerics[smooth.smoothValueIndex] = value
+            result = Variant(value)
+        }
         
-        try write(value, to: .numeric(smooth.smoothValueIndex), of: objectID, in: &state)
-
-        return value
+        return result
     }
 }

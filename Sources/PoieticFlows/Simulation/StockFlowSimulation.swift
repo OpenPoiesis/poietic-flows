@@ -75,7 +75,7 @@ public class StockFlowSimulation {
         return result
     }
     
-    public func write(_ value: Variant,
+    internal func write(_ value: Variant,
                       to reference: SimulationState.Reference,
                       of objectID: ObjectID,
                       in state: inout SimulationState)
@@ -89,22 +89,4 @@ public class StockFlowSimulation {
         }
         
     }
-
-    /// Creates a copy of a state and advances the time.
-    ///
-    /// The returned state has time-dependent built-in variables updated.
-    ///
-    /// This is a designated method to get a new state before performing computation of the next
-    /// step.
-    ///
-    public func advance(_ state: SimulationState, time: Double? = nil, timeDelta: Double? = nil) -> SimulationState {
-        var nextState = state
-        let dt = timeDelta ?? state.timeDelta
-        nextState.time = time ?? (state.time + dt)
-        nextState.timeDelta = dt
-        nextState.step += 1
-        return nextState
-    }
-    
-    
 }

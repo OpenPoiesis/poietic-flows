@@ -58,7 +58,10 @@ public struct SimulationState {
 
     /// Stocks
     public var stocks: NumericVector
-    /// Adjusted flows
+    /// Values of flow rates.
+    ///
+    /// During computation it holds flow estimates – as computed by the formulas. In the result state
+    /// it holds adjusted flows.
     public var flows: NumericVector
 
     // NOTE: No need for a NumericVector in `numerics`, because we are not doing vector based
@@ -148,12 +151,10 @@ public struct SimulationState {
         }
     }
 
-    // TODO: [QUESTION][REFACTORING] Should we move this to StockFlowSimulation? Feels a bit out-of-place
     /// Create a new simulation state by adding provided stock vector to the receiver's stock
     /// vector.
     ///
     public func adding(stocks: NumericVector, step: Int, time: Double, timeDelta: Double) -> SimulationState {
-        // TODO: [REFACTORING] We are not clamping non-negative stocks here, the caller is responsible for that. We need to verify and make sure we honour this contract.
         precondition(stocks.count == self.stocks.count)
         var newState = self
         for (index, value) in stocks.enumerated() {

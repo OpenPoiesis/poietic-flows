@@ -91,6 +91,9 @@ public struct SimulationObject: CustomStringConvertible {
     /// Variable containing estimated value of the object, if the object's value is adjusted
     /// during computation, such as flows.
     ///
+    /// - Note: This reference is used only for reading, during reporting.
+    ///   it is not used during computation.
+    ///
     public let estimatedValueVariable: SimulationState.Reference?
 
     public let role: SimulationRole
