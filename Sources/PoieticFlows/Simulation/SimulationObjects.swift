@@ -86,7 +86,7 @@ public struct SimulationObject: CustomStringConvertible {
     ///
     /// - SeeAlso: ``SimulationPlan/stateVariables``
     ///
-    public let variable: SimulationState.Reference
+    public let variableReference: SimulationState.Reference
 
     /// Variable containing estimated value of the object, if the object's value is adjusted
     /// during computation, such as flows.
@@ -94,7 +94,6 @@ public struct SimulationObject: CustomStringConvertible {
     /// - Note: This reference is used only for reading, during reporting.
     ///   it is not used during computation.
     ///
-    public let estimatedValueVariable: SimulationState.Reference?
 
     public let role: SimulationRole
     
@@ -115,7 +114,7 @@ public struct SimulationObject: CustomStringConvertible {
     public let nameKey: String
     
     public var description: String {
-        "SimObject(\(nameKey), id:\(objectID), ref:\(variable), role: \(role))"
+        "SimObject(\(nameKey), id:\(objectID), ref:\(variableReference), role: \(role))"
     }
 }
 
@@ -244,6 +243,7 @@ public struct BoundSmooth {
     public let smoothValueIndex: Int
     
     /// Index to the numeric values of simulation state where the smooth node input is stored.
-    public let inputValueIndex: Int
+    public let inputValueRef: SimulationState.Reference
+    
 }
 

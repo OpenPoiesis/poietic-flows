@@ -87,7 +87,7 @@ public class SimulationPlanner {
         var flows: [SimulationObject] = []
         var stocks: [SimulationObject] = []
 
-        let builtins = prepareBuiltins()
+        prepareBuiltins()
 
         let simulationObjects = try compileObjects(objects: simulationOrder.objects, in: world)
         // If we have errors, finish early without creating the final plan.
@@ -118,22 +118,19 @@ public class SimulationPlanner {
         let plan = SimulationPlan(
             simulationObjects: simulationObjects,
             stateVariables: variables.variables,
-            builtins: builtins,
             stocks: boundStocks,
-            flows: boundFlows
+            flows: boundFlows,
+            numericVariableCount: variables.numericVariableCount,
+            variantVariableCount: variables.variantVariableCount
         )
         
         return plan
     }
 
-    func prepareBuiltins() -> BoundBuiltins {
-        let builtins = BoundBuiltins(
-            step: variables.allocate(builtin: .step),
-            time: variables.allocate(builtin: .time),
-            timeDelta: variables.allocate(builtin: .timeDelta)
-        )
-        
-        return builtins
+    func prepareBuiltins() {
+        variables.allocate(builtin: .step)
+        variables.allocate(builtin: .time)
+        variables.allocate(builtin: .timeDelta)
     }
     
 
@@ -149,24 +146,14 @@ public class SimulationPlanner {
             else {
                 throw .missingComponent(flow.objectID, "FlowRate")
             }
-            guard let actualValueRef = variables.reference(flow.objectID),
-                  case let .flow(actualValueIndex) = actualValueRef
-            else {
-                throw .corruptedVariableTable
-            }
             
-            let estimatedValueRef = variables.allocate(
-                numeric: .estimated(flow.objectID),
-                name:  "flow_adjusted_\(flow.objectID)",
-                isInternal: true
-            )
+            let estimatedName = "flow_estimated_\(flow.objectID)"
+            let estimatedIndex = variables.allocateEstimatedNumeric(estimatedName, for: flow.objectID)
 
-            // Adjusted: rate actually applied after non-negative-stock scaling
+            // Adjusted: rate actually applied after non-negative-stock scaling (index is implied)
             // Estimated: rate as computed by the flow's formula
-            
             let boundFlow = BoundFlow(objectID: flow.objectID,
-                                      actualValueIndex: actualValueIndex,
-                                      estimatedValueIndex: estimatedValueRef,
+                                      estimatedNumericIndex: estimatedIndex,
                                       drains: component.drainsStock,
                                       fills: component.fillsStock)
 
@@ -203,7 +190,6 @@ public class SimulationPlanner {
             
             let boundStock = BoundStock(
                 objectID: stock.objectID,
-                variableIndex: stock.variableIndex,
                 allowsNegative: component.allowsNegative,
                 inflows: inflowIndices,
                 outflows: outflowIndices

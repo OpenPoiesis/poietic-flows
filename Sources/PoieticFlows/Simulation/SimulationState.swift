@@ -12,6 +12,14 @@ public enum SimulationStateError: Error {
     case settingBuiltin(SimulationState.Reference)
 }
 
+public enum StateVariableType: Equatable {
+    case builtin
+    case stock
+    case flow
+    case numeric
+    case variant
+}
+
 public struct SimulationState {
     // Replaces BoundVariable
     // Alt names: just Reference or just Variable
@@ -32,7 +40,7 @@ public struct SimulationState {
             }
         }
         
-        public var type: ReferenceType {
+        public var type: StateVariableType {
             switch self {
             case .builtin: .builtin
             case .stock:   .stock
@@ -41,14 +49,6 @@ public struct SimulationState {
             case .variant: .variant
             }
         }
-    }
-    
-    public enum ReferenceType: Equatable {
-        case builtin
-        case stock
-        case flow
-        case numeric
-        case variant
     }
     
     public internal(set) var step: Int
@@ -108,36 +108,8 @@ public struct SimulationState {
         }
     }
 
-    mutating func setValue(_ variant: Variant, for reference: Reference) throws (SimulationStateError) {
-        switch reference {
-        case .builtin(_):
-            throw .settingBuiltin(reference)
-        case let .stock(index):
-            do {
-                let numeric = try variant.doubleValue()
-                stocks[index] = numeric
-            }
-            catch { throw .valueError(reference, error)}
-        case let .flow(index):
-            do {
-                let numeric = try variant.doubleValue()
-                flows[index] = numeric
-            }
-            catch { throw .valueError(reference, error)}
-        case let .numeric(index):
-            do {
-                let numeric = try variant.doubleValue()
-                numerics[index] = numeric
-            }
-            catch { throw .valueError(reference, error)}
-        case let .variant(index):
-            variants[index] = variant
-        }
-    }
-    
-    subscript(ref: Reference) -> Double? {
+    func doubleValue(at ref: Reference) throws (ValueError) -> Double {
         switch ref {
-            
         case let .builtin(builtin):
             switch builtin {
             case .step: return Double(step)
@@ -147,10 +119,28 @@ public struct SimulationState {
         case let .stock(index): return stocks[index]
         case let .flow(index): return flows[index]
         case let .numeric(index): return numerics[index]
-        case let .variant(index): return try? variants[index].doubleValue()
+        case let .variant(index): return try variants[index].doubleValue()
         }
     }
 
+    mutating func setValue(_ variant: Variant, for reference: Reference) throws (ValueError) {
+        switch reference {
+        case .builtin(_):
+            preconditionFailure("Trying to set builtin in simulation state")
+        case let .stock(index):
+            let numeric = try variant.doubleValue()
+            stocks[index] = numeric
+        case let .flow(index):
+            let numeric = try variant.doubleValue()
+            flows[index] = numeric
+        case let .numeric(index):
+            let numeric = try variant.doubleValue()
+            numerics[index] = numeric
+        case let .variant(index):
+            variants[index] = variant
+        }
+    }
+    
     /// Create a new simulation state by adding provided stock vector to the receiver's stock
     /// vector.
     ///

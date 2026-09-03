@@ -32,7 +32,7 @@ extension StockFlowSimulation {
     ///
     public func evaluate(object: SimulationObject, in state: inout SimulationState) throws (SimulationError) {
         // Keeping the constants from ``ScenarioParameters``
-        guard !state.isConstant(object.variable) else { return }
+        guard !state.isConstant(object.variableReference) else { return }
         
         let result: Variant
         // FIXME: [REFACTORING] Delays and smooths should be evaluated before integration, or not?
@@ -56,7 +56,7 @@ extension StockFlowSimulation {
             throw .evaluation(object.objectID, error)
         }
 
-        try write(result, to: object.variable, of: object.objectID, in: &state)
+        try write(result, to: object.variableReference, of: object.objectID, in: &state)
     }
 
     /// Computes and updates a delay value within a simulation state.
@@ -120,7 +120,14 @@ extension StockFlowSimulation {
     ///
     public func evaluate(smooth: BoundSmooth, in state: inout SimulationState) throws (EvaluationError) -> Variant {
         
-        let inputValue = state.numerics[smooth.inputValueIndex]
+        let inputValue: Double
+        do {
+            inputValue = try state.doubleValue(at: smooth.inputValueRef)
+        }
+        catch {
+            throw .valueError(error)
+        }
+        
         let oldSmooth = state.numerics[smooth.smoothValueIndex]
         
         // TODO: Division by zero - what to do?

@@ -7,15 +7,28 @@
 
 import PoieticCore
 
+struct AllocationSequence {
+    var nextValue: Int = 0
+    
+    mutating func next() -> Int {
+        let value = nextValue
+        nextValue += 1
+        return value
+    }
+}
+
 /// Allocation table for state variables.
 ///
 class StateVariableTable {
+    // TODO: Rename to StatePlanningTable/StatePlanningContext?
+    
     public private(set) var variables: [StateVariable] = []
 
-    private var nextStock = 0
-    private var nextFlow = 0
-    private var nextNumeric = 0
-    private var nextVariant = 0
+    private var resultColumnSequence = AllocationSequence()
+    private var stockSequence = AllocationSequence()
+    private var flowSequence = AllocationSequence()
+    private var numericSequence = AllocationSequence()
+    private var variantSequence = AllocationSequence()
     
     /// Name to variable map used for arithmetic expression binding.
     ///
@@ -26,107 +39,100 @@ class StateVariableTable {
     private var nameIndex: [String: BoundVariable] = [:]
     
     /// Index to primary represented value of an object.
-    private var objectIndex: [ObjectID: SimulationState.Reference] = [:]
+    private var objectIndex: [ObjectID: BoundVariable] = [:]
+
+    var numericVariableCount: Int { numericSequence.nextValue }
+    var variantVariableCount: Int { variantSequence.nextValue }
 
     
-    func reference(_ objectID: ObjectID) -> SimulationState.Reference? {
+    func boundVariable(_ objectID: ObjectID) -> BoundVariable? {
         return objectIndex[objectID]
     }
-    
+
+    func reference(_ objectID: ObjectID) -> SimulationState.Reference? {
+        return objectIndex[objectID]?.reference
+    }
+    func valueType(of objectID: ObjectID) -> ValueType? {
+        return objectIndex[objectID]?.valueType
+    }
+
     // Builtins consume no vector space — just a registered reference.
     func allocate(builtin: BuiltinVariable) {
-        let variable = BoundVariable(reference: .builtin(builtin),
-                                     valueType: builtin.valueType)
-        register(name: builtin.name, variable: variable)
+        let name = builtin.normalizedKey
+
+        precondition(nameIndex[name] == nil)
+
+        let ref: SimulationState.Reference = .builtin(builtin)
+        
+        nameIndex[name] = BoundVariable(reference: ref, valueType: builtin.valueType)
+        register(name, reference: ref, content: .builtin(builtin))
     }
     
-    func allocate(object: ObjectID,
-                  role: SimulationRole,
+    func allocate(objectID: ObjectID,
                   name: String,
-                  valueType: ValueType)
+                  role: SimulationRole,
+                  valueType: ValueType) -> StateVariable
     {
+        precondition(nameIndex[name] == nil)
+        precondition(objectIndex[objectID] == nil)
+
         let ref: SimulationState.Reference
         
         switch role {
         case .stock:
-            let index = allocate(stock: name)
-            ref = .stock(index)
-        case .flow: break
-            let index = allocate(flow: name)
-            ref = .stock(index)
-        case .auxiliary: break
+            ref = .stock(stockSequence.next())
+        case .flow:
+            ref = .flow(flowSequence.next())
+        case .auxiliary:
             switch valueType {
             case .atom(.double), .atom(.int):
-                let index = allocate(numeric: name)
+                ref = .numeric(numericSequence.next())
+            default:
+                ref = .variant(variantSequence.next())
             }
         }
-    }
 
-    func allocate(stock name: String) -> Int {
-        let ref = register(.stock(nextStock), name: name)
-        nextStock += 1
-        return ref
-    }
-
-    func allocate(flow name: String) -> Int {
-        let ref = register(.flow(nextFlow), name: name)
-        nextFlow += 1
-        return ref
-    }
-
-    func allocate(numeric content: StateVariable.Content, name: String, isInternal: Bool) -> SimulationState.Reference {
-        let ref = register(.numeric(nextNumeric), name: name)
-        nextNumeric += 1
-        return ref
-    }
-
-    func allocate(variant name: String) -> SimulationState.Reference {
-        let ref = register(.variant(nextVariant), name: name)
-        nextVariant += 1
-        return ref
-    }
-
-    private func register(_ ref: SimulationState.Reference, name: String) -> SimulationState.Reference {
-        // append NEWStateVariable, fill nameIndex/objectIndex, return ref
-    }
-
-    /// Allocate a state variable with given specification and return its index in the
-    /// simulation state vector.
-    ///
-    /// Internal state variables are not registered in the table, they can be referenced only
-    /// by index. Their internal name is in form `prefix + '_' + object ID`, for example
-    /// `flow_adjusted_12` or `delay_init_3`.
-    ///
-    /// - Precondition: If the variable type is object or builtin, then the name must not already
-    ///   exist in the table. In addition to that, there can be only one object variable with given
-    ///   ID.
-#if false
-    @discardableResult
-    func OLD_allocate(content: StateVariable.Content, valueType: ValueType, name: String) -> Int
-    {
-        let index = variables.count
-        let variable = StateVariable(index: index,
-                                     content: content,
-                                     valueType: valueType,
-                                     nameKey: name)
-        variables.append(variable)
-       
-        switch content {
-        case .object(let id):
-            precondition(objectIndex[id] == nil)
-            precondition(nameIndex[name] == nil)
-            objectIndex[id] = index
-            nameIndex[name] = index
-        case .builtin(_):
-            precondition(nameIndex[name] == nil)
-            nameIndex[name] = index
-        case .adjustedResult(_): break
-        case .internalState(_): break
-        }
+        let bound = BoundVariable(reference: ref, valueType: valueType)
+        nameIndex[name] = bound
+        objectIndex[objectID] =  bound
         
+        return register(name, reference: ref, content: .object(objectID))
+    }
+
+
+    func allocateInternalNumeric(name: String, for objectID: ObjectID) -> Int
+    {
+        let index = numericSequence.next()
+        register(name, reference: .numeric(index), content: .internalState(objectID))
         return index
     }
-#endif
+    
+    func allocateInternalVariant(name: String, for objectID: ObjectID) -> Int
+    {
+        let index = variantSequence.next()
+        register(name, reference: .variant(index), content: .internalState(objectID))
+        return index
+    }
+
+    func allocateEstimatedNumeric(_ name: String, for objectID: ObjectID) -> Int
+    {
+        let index = numericSequence.next()
+        register(name, reference: .numeric(index), content: .estimated(objectID))
+        return index
+    }
+
+    @discardableResult
+    func register(_ name: String, reference: SimulationState.Reference, content: StateVariable.Content) -> StateVariable {
+        let variable = StateVariable(
+            reference: reference,
+            resultColumn: resultColumnSequence.next(),
+            name: name,
+            content: content
+        )
+        self.variables.append(variable)
+        
+        return variable
+    }
 }
 
 extension StateVariableTable: VariableNameLookup {

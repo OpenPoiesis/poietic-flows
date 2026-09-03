@@ -40,13 +40,14 @@ extension SimulationPlanner {
                 continue
             }
 
-            let index = variables.allocate(content: .object(object.objectID),
-                                           valueType: rep.valueType,
-                                           name: nameComp.key)
+            let variable = variables.allocate(objectID: object.objectID,
+                                              name: nameComp.key,
+                                              role: role,
+                                              valueType: rep.valueType)
             
             let sim = SimulationObject(objectID: object.objectID,
                                        computation: rep,
-                                       variableIndex: index,
+                                       variableReference: variable.reference,
                                        role: role,
                                        valueType: rep.valueType,
                                        nameKey: nameComp.key)
@@ -192,32 +193,23 @@ extension SimulationPlanner {
     throws (PlanningError) -> ComputationalRepresentation
     {
         // TODO: What to do if the input is not numeric or not an atom?
-        let queueIndex = variables.allocate(
-            content: .internalState(object.objectID),
-            valueType: .doubles,
-            name: "delay_queue_\(object.objectID)"
-        )
+        let queueIndex = variables.allocateInternalVariant(name: "delay_queue_\(object.objectID)",
+                                                           for: object.objectID)
         
-        let initialValueIndex = variables.allocate(
-            content: .internalState(object.objectID),
-            valueType: .double,
-            name: "delay_init_\(object.objectID)"
-        )
+        let initialValueIndex = variables.allocateInternalVariant(name: "delay_init_\(object.objectID)",
+                                                                  for: object.objectID)
 
         guard let paramComp: ResolvedParameters = entity.component(),
               paramComp.connectedUnnamed.count == 1,
               let parameterID = paramComp.connectedUnnamed.first
         else { throw .userIssue }
 
-        guard let parameterIndex = variables.index(parameterID) else {
-            throw .corruptedVariableTable
-        }
         // FIXME: Store defaults somewhere. We should have values here anyways.
         let duration: UInt = object["delay_duration", default: 1]
         let initialValue: Variant? = object["initial_value"]
         
-        guard let type = variables.valueType(at: parameterIndex),
-              case let .atom(atomType) = type
+        guard let parameter = variables.boundVariable(parameterID),
+              case let .atom(atomType) = parameter.valueType
         else {
             let issue = Issue(
                 identifier: IssueIdentifier.invalidParameterType,
@@ -235,33 +227,27 @@ extension SimulationPlanner {
             steps: duration,
             initialValue: initialValue,
             valueType: atomType,
-            initialValueIndex: initialValueIndex,
+            initialValueRef: .variant(initialValueIndex),
             queueIndex: queueIndex,
-            inputValueIndex: parameterIndex
+            inputValueRef: parameter.reference
         )
         
         return .delay(compiled)
     }
+
     func compileSmoothNode(_ object: ObjectSnapshot, entity: RuntimeEntity)
     throws (PlanningError) -> ComputationalRepresentation
     {
-        let smoothValueIndex = variables.allocate(
-            content: .internalState(object.objectID),
-            valueType: .doubles,
-            name: "smooth_value_\(object.objectID)"
-        )
+        let smoothValueIndex = variables.allocateInternalNumeric(name: "smooth_value_\(object.objectID)",
+                                                                 for: object.objectID)
         
         guard let paramComp: ResolvedParameters = entity.component(),
               paramComp.connectedUnnamed.count == 1,
               let parameterID = paramComp.connectedUnnamed.first
         else { throw .userIssue }
 
-        guard let parameterIndex = variables.index(parameterID) else {
-            throw .corruptedVariableTable
-        }
-        
-        guard let type = variables.valueType(at: parameterIndex),
-              case .atom(_) = type
+        guard let parameter = variables.boundVariable(parameterID),
+              case .atom(_) = parameter.valueType
         else {
             let issue = Issue(
                 identifier: IssueIdentifier.invalidParameterType,
@@ -281,7 +267,7 @@ extension SimulationPlanner {
         let compiled = BoundSmooth(
             windowTime: windowTime,
             smoothValueIndex: smoothValueIndex,
-            inputValueIndex: parameterIndex
+            inputValueRef: parameter.reference
         )
         
         return .smooth(compiled)

@@ -39,7 +39,7 @@ public struct StateVariable: CustomStringConvertible {
     /// - Note: Internal variable names do not have to be unique within the plan, only variables
     ///   representing objects.
     ///
-    public let nameKey: String
+    public let name: String
     
     /// Reference to the variable content – computational source of the variable.
     ///
@@ -103,16 +103,16 @@ public struct StateVariable: CustomStringConvertible {
     }
     
     public var description: String {
-        "\(reference)[\(nameKey),\(content),\(resultColumn)]"
+        "\(reference)[\(name),\(content),\(resultColumn)]"
     }
     
     internal init(reference: SimulationState.Reference,
                   resultColumn: Int,
-                  nameKey: String,
+                  name: String,
                   content: Content) {
         self.reference = reference
         self.resultColumn = resultColumn
-        self.nameKey = nameKey
+        self.name = name
         self.content = content
     }
     
@@ -121,7 +121,7 @@ public struct StateVariable: CustomStringConvertible {
                   builtin: BuiltinVariable) {
         self.reference = reference
         self.resultColumn = resultColumn
-        self.nameKey = builtin.normalizedKey
+        self.name = builtin.normalizedKey
         self.content = .builtin(builtin)
     }
 }

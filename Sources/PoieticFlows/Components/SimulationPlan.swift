@@ -51,12 +51,16 @@ public final class SimulationPlan: Component {
     internal init(simulationObjects: [SimulationObject] = [],
                   stateVariables: [StateVariable] = [],
                   stocks: [BoundStock] = [],
-                  flows: [BoundFlow] = [])
+                  flows: [BoundFlow] = [],
+                  numericVariableCount: Int,
+                  variantVariableCount: Int)
     {
         self.simulationObjects = simulationObjects
         self.stateVariables = stateVariables
         self.stocks = stocks
         self.flows = flows
+        self.numericVariableCount = numericVariableCount
+        self.variantVariableCount = variantVariableCount
     }
     
     /// List of objects that are considered in the computation computed, ordered by computational
@@ -89,6 +93,7 @@ public final class SimulationPlan: Component {
     /// - SeeAlso: ``StateVariable``, ``SimulationPlanningSystem``.
     ///
     public let stateVariables: [StateVariable]
+    
     
     /// Stocks with resolved inflows and outflows, ordered by the computation dependency.
     ///
@@ -124,7 +129,7 @@ public final class SimulationPlan: Component {
         guard let first = simulationObjects.first(where: {$0.objectID == id}) else {
             return nil
         }
-        return first.variable
+        return first.variableReference
     }
     
     /// List of all normalised object names.
@@ -177,25 +182,36 @@ public final class SimulationPlan: Component {
     /// - Complexity: O(n)
     ///
     public func variable(withKey nameKey: String) -> StateVariable? {
-        guard let variable = stateVariables.first(where: { $0.nameKey == nameKey}) else {
-            return nil
-        }
-        
-        return variable
+        return stateVariables.first(where: { $0.name == nameKey})
     }
     
+    public func variable(for reference: SimulationState.Reference) -> StateVariable? {
+        stateVariables.first { $0.reference == reference }
+    }
+
+    public func variable(forObject objectID: ObjectID) -> StateVariable? {
+        stateVariables.first { $0.content == .object(objectID) }
+    }
+
+    public func variable(forBuiltin builtin: BuiltinVariable) -> StateVariable? {
+        stateVariables.first { $0.content == .builtin(builtin) }
+    }
+
     /// List of all normalised state variable names, including internal ones.
-    public var variableNameKeys: [String] { stateVariables.map {$0.nameKey} }
+    public var variableNameKeys: [String] { stateVariables.map {$0.name} }
     
     /// Return a set of default variables - simulation time and all object variables.
     public var defaultVariables: [StateVariable] {
         var result: [StateVariable] = []
         
-        // TODO: Use adjusted/actual instead of direct object variable (requires: object.actualVariableIndex)
+        if let time = variable(forBuiltin: .time) {
+            result.append(time)
+        }
 
-        result.append(stateVariables[self.builtins.time])
         for object in self.simulationObjects {
-            result.append(stateVariables[object.variableIndex])
+            guard let variable = self.variable(forObject: object.objectID)
+            else { continue }
+            result.append(variable)
         }
         return result
     }
@@ -214,18 +230,16 @@ public final class SimulationPlan: Component {
     /// - Note: The `includeTime` is disregarded, if time variable is specified in the list.
     ///
     public func variables(named names: [String], includeTime: Bool = true) -> (known: [StateVariable], unknown: [String]) {
-        // TODO: Is this signature better or rather list of optionals? -> [StateVariable?]
-        
         let keys = names.map { NormalizedName.normalize($0) }
         let timeKey = BuiltinVariable.time.normalizedKey
         
         var result: [StateVariable] = []
         var unknown: [String] = []
         
-        // TODO: Use adjusted/actual instead of direct object variable (requires: object.actualVariableIndex)
-
-        if includeTime && !keys.contains(timeKey) {
-            result.append(stateVariables[self.builtins.time])
+        if includeTime && !keys.contains(timeKey),
+           let time = variable(forBuiltin: .time)
+        {
+            result.append(time)
         }
         
         for (key, name) in zip(keys, names) {

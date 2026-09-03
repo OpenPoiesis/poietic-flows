@@ -53,8 +53,8 @@ extension StockFlowSimulation {
                 try initialize(accumulator: object, initialValue: value, in: &state)
             }
             else {
-                try write(value, to: object.variable, of: objectID, in: &state)
-                state.markAsConstant(object.variable)
+                try write(value, to: object.variableReference, of: objectID, in: &state)
+                state.markAsConstant(object.variableReference)
             }
         }
         
@@ -103,7 +103,7 @@ extension StockFlowSimulation {
         }
 
 
-        try write(result, to: object.variable, of: object.objectID, in: &state)
+        try write(result, to: object.variableReference, of: object.objectID, in: &state)
     }
     
     /// Initialise an accumulator with an explicit initial value.
@@ -118,7 +118,7 @@ extension StockFlowSimulation {
                     in state: inout SimulationState)
     throws (SimulationError)
     {
-        try write(initialValue, to: accumulator.variable, of: accumulator.objectID, in: &state)
+        try write(initialValue, to: accumulator.variableReference, of: accumulator.objectID, in: &state)
         
         switch accumulator.computation {
         case let .delay(delay):
@@ -139,7 +139,7 @@ extension StockFlowSimulation {
     ///     - state: Simulation state in which the delay is initialised.
     /// - Returns: Value of the delay node.
     ///
-//    @discardableResult
+    @discardableResult
     public func initialize(delay: BoundDelay,
                            initialValue: Variant?,
                            objectID: ObjectID,
@@ -176,7 +176,7 @@ extension StockFlowSimulation {
     ///     - state: Simulation state in which the smooth is initialised.
     /// - Returns: Value of the smooth node.
     ///
-//    @discardableResult
+    @discardableResult
     public func initialize(smooth: BoundSmooth,
                            initialValue: Variant?,
                            objectID: ObjectID,
@@ -189,7 +189,13 @@ extension StockFlowSimulation {
             try write(initialValue, to: .numeric(smooth.smoothValueIndex), of: objectID, in: &state)
         }
         else {
-            let value = state.numerics[smooth.inputValueIndex]
+            let value: Double
+            do {
+                value = try state.doubleValue(at: smooth.inputValueRef)
+            }
+            catch {
+                throw .stateValue(objectID, smooth.inputValueRef, error)
+            }
             state.numerics[smooth.smoothValueIndex] = value
             result = Variant(value)
         }
