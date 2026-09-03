@@ -98,24 +98,13 @@ public class StockFlowSimulation {
     /// step.
     ///
     public func advance(_ state: SimulationState, time: Double? = nil, timeDelta: Double? = nil) -> SimulationState {
-        var newState = state.advanced(time: time, timeDelta: timeDelta)
-        setBuiltins(in: &newState)
-        return newState
+        var nextState = state
+        let dt = timeDelta ?? state.timeDelta
+        nextState.time = time ?? (state.time + dt)
+        nextState.timeDelta = dt
+        nextState.step += 1
+        return nextState
     }
     
-    func evaluateFlows(_ state: SimulationState) -> NumericVector {
-        var result = NumericVector(zeroCount: plan.flows.count)
-        for (i, flow) in plan.flows.enumerated() {
-            result[i] = state[flow.estimatedValueIndex]
-        }
-        return result
-    }
-    
-    public func updateAuxiliariesAndFlows(in state: inout SimulationState) throws (SimulationError) {
-        for object in plan.simulationObjects {
-            guard object.role == .auxiliary || object.role == .flow else { continue }
-            try evaluate(object: object, in: &state)
-        }
-    }
     
 }

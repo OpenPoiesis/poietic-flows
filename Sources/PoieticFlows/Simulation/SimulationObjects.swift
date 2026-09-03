@@ -34,23 +34,31 @@ public enum ComputationalRepresentation: CustomStringConvertible {
     
     // case dataInput(???)
 
+    public var valueType: ValueType {
+        switch self {
+        case let .formula(formula):
+            return formula.valueType
+        case .graphicalFunction(_):
+            return ValueType.double
+        case let .delay(delay):
+            return .atom(delay.valueType)
+        case .smooth(_):
+            return .atom(.double)
+        }
+    }
+
     public var description: String {
         switch self {
-//        case let .stock(stock):
-//            return "\(stock)"
-//        case let .flow(flow):
-//            return "\(flow)"
         case let .formula(formula):
             return "\(formula)"
         case let .graphicalFunction(fun):
-            return "graphical(param:\(fun.parameterIndex))"
+            return "graphical(param:\(fun.parameter))"
         case let .delay(delay):
             let initialValue = delay.initialValue.map { $0.description } ?? "nil"
-            return "delay(input:\(delay.inputValueIndex),steps:\(delay.steps),init:\(initialValue)"
+            return "delay(input:\(delay.inputValueRef),steps:\(delay.steps),init:\(initialValue)"
         case let .smooth(smooth):
             return "smooth(window:\(smooth.windowTime))"
         }
-        
     }
 }
 
@@ -79,9 +87,11 @@ public struct SimulationObject: CustomStringConvertible {
     /// - SeeAlso: ``SimulationPlan/stateVariables``
     ///
     public let variable: SimulationState.Reference
-    // TODO: Add this for objects that have adjusted actual variables, such as flow rates
-    // public let actualValueReference: SimulationState.Reference
-    // public let actualVariableIndex: SimulationState.Index?
+
+    /// Variable containing estimated value of the object, if the object's value is adjusted
+    /// during computation, such as flows.
+    ///
+    public let estimatedValueVariable: SimulationState.Reference?
 
     public let role: SimulationRole
     
@@ -116,14 +126,6 @@ public struct BoundStock {
     /// This is used mostly for inspection and debugging purposes.
     ///
     public let objectID: ObjectID
-    
-    /// Index in of the simulation state variable that represents the stock.
-    ///
-    /// This is the main information used during the computation.
-    ///
-    /// - SeeAlso: ``SimulationPlan/stateVariables``
-    ///
-    public let variableIndex: Int
     
     /// Flag whether the value of the node can be negative.
     ///
@@ -165,18 +167,12 @@ public struct BoundFlow {
     /// ID of object that represents this flow rate.
     public let objectID: ObjectID
 
-    /// Index of a flow variable in the flows vector of simulation state.
-    ///
-    /// - SeeAlso: ``SimulationState/flows``, ``estimatedValueIndex``
-    ///
-    public let actualValueIndex: Int
-    
     /// Index of a numeric variable in the state holding estimated value – the value as computed
     /// by the formula, before stock constraints were applied.
     ///
     /// - SeeAlso: ``actualValueIndex``,  ``SimulationState/numerics``
     ///
-    public let estimatedValueIndex: Int
+    public let estimatedNumericIndex: Int
 
     
     /// ID of a stock in bound stocks that the flow drains.

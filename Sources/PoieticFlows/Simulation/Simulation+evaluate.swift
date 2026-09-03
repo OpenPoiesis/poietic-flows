@@ -8,6 +8,13 @@
 import PoieticCore
 
 extension StockFlowSimulation {
+    public func updateAuxiliariesAndFlows(in state: inout SimulationState) throws (SimulationError) {
+        for object in plan.simulationObjects {
+            guard object.role == .auxiliary || object.role == .flow else { continue }
+            try evaluate(object: object, in: &state)
+        }
+    }
+
     /// Computes and updates a new state of an object.
     ///
     /// If the object computation uses an internal state, all associated internal states will be
@@ -28,7 +35,7 @@ extension StockFlowSimulation {
         guard !state.isConstant(object.variable) else { return }
         
         let result: Variant
-        // FIXME: Delays and smooths should be evaluated before integration, or not?
+        // FIXME: [REFACTORING] Delays and smooths should be evaluated before integration, or not?
         do {
             switch object.computation {
                 
@@ -46,15 +53,10 @@ extension StockFlowSimulation {
             }
         }
         catch {
-            throw .evaluationError(object.objectID, error)
+            throw .evaluation(object.objectID, error)
         }
-        // TODO: [REFACTORING] Handle known numerics
-        do {
-            try state.setValue(result, for: object.variable)
-        }
-        catch {
-            throw .evaluationError(object.objectID, .valueError(error))
-        }
+
+        try write(result, to: object.variable, of: object.objectID, in: &state)
     }
 
     /// Computes and updates a delay value within a simulation state.
@@ -64,12 +66,13 @@ extension StockFlowSimulation {
     /// - SeeAlso: ``BoundDelay``
     ///
     public func evaluate(delay: BoundDelay, in state: inout SimulationState) throws (EvaluationError) -> Variant {
-        guard case let .atom(inputValue) = state.variants[delay.inputValueIndex] else {
+        guard case let .atom(inputValue) = state[delay.inputValueRef] else {
             throw .valueError(.atomExpected)
         }
+
         guard case var .array(queue) = state.variants[delay.queueIndex] else {
-            // Unreachable
-            fatalError("Expected array for delay queue, got atom (planning is corrupted)")
+            // This is unreachable. See initialize(delay:...)
+            throw .valueError(.arrayExpected)
         }
 
         let outputValue: VariantAtom
@@ -80,7 +83,7 @@ extension StockFlowSimulation {
         }
         
         if queue.count < delay.steps {
-            guard case let .atom(initialValue) = state[delay.initialValueIndex] else {
+            guard case let .atom(initialValue) = state[delay.initialValueRef] else {
                 throw .valueError(.atomExpected)
             }
 
@@ -93,11 +96,15 @@ extension StockFlowSimulation {
             nextValue = inputValue
         }
         
-        queue.append(nextValue)
+        do {
+            try queue.append(nextValue)
+        }
+        catch {
+            throw EvaluationError.valueError(error)
+        }
 
         state.variants[delay.queueIndex] = .array(queue)
 
-        // TODO: Can we store it directly here?
         return .atom(outputValue)
     }
 
@@ -122,7 +129,6 @@ extension StockFlowSimulation {
         
         state.numerics[smooth.smoothValueIndex] = newValue
 
-        // TODO: Can we store it directly here instead of variant wrap-unwrap?
         return Variant(newValue)
     }
 
@@ -132,9 +138,15 @@ extension StockFlowSimulation {
     ///   a numeric type.
     ///
     public func evaluate(graphicalFunction function: BoundGraphicalFunction, with state: SimulationState) throws (EvaluationError) -> Variant {
-        let parameter = state.numerics[function.parameterIndex]
-        let result = function.function.apply(x: parameter)
-        // TODO: Can we store it directly here instead of variant wrap-unwrap?
+        let parameter: Variant = state[function.parameter]
+        let value: Double
+        do {
+            value = try parameter.doubleValue()
+        }
+        catch {
+            throw .valueError(error)
+        }
+        let result = function.function.apply(x: value)
         return Variant(result)
     }
 

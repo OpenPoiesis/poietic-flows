@@ -50,13 +50,11 @@ public final class SimulationPlan: Component {
     
     internal init(simulationObjects: [SimulationObject] = [],
                   stateVariables: [StateVariable] = [],
-                  builtins: BoundBuiltins = BoundBuiltins(),
                   stocks: [BoundStock] = [],
                   flows: [BoundFlow] = [])
     {
         self.simulationObjects = simulationObjects
         self.stateVariables = stateVariables
-        self.builtins = builtins
         self.stocks = stocks
         self.flows = flows
     }
@@ -92,14 +90,6 @@ public final class SimulationPlan: Component {
     ///
     public let stateVariables: [StateVariable]
     
-    /// List of compiled builtin variables.
-    ///
-    /// The compiled builtin variable references a state variable that holds
-    /// the value for the builtin variable and a kind of the builtin variable.
-    ///
-    public let builtins: BoundBuiltins
-    
-    
     /// Stocks with resolved inflows and outflows, ordered by the computation dependency.
     ///
     /// - SeeAlso: ``BoundStock``, ``StockFlowSimulationSystem``.
@@ -112,6 +102,14 @@ public final class SimulationPlan: Component {
     ///
     public let flows: [BoundFlow]
     
+    // State allocation information
+    // TODO: Can't we compute that from stateVariables?
+    /// Number of numeric variables needed to be allocated.
+    public let numericVariableCount: Int
+
+    /// Number of variant variables needed to be allocated.
+    public let variantVariableCount: Int
+    
     /// Get index into a list of computed variables for an object with given ID.
     ///
     /// This function is just for inspection and debugging purposes, it is not
@@ -120,13 +118,13 @@ public final class SimulationPlan: Component {
     /// - Complexity: O(n)
     /// - SeeAlso:  ``stateVariables``, ``simulationObject(_:)``
     ///
-    public func variableIndex(_ id: ObjectID) -> SimulationState.Index? {
+    public func variableReference(_ id: ObjectID) -> SimulationState.Reference? {
         // Since this is just for debug purposes, O(n) should be fine, no need
         // for added complexity of the code.
         guard let first = simulationObjects.first(where: {$0.objectID == id}) else {
             return nil
         }
-        return first.variableIndex
+        return first.variable
     }
     
     /// List of all normalised object names.
@@ -194,6 +192,7 @@ public final class SimulationPlan: Component {
         var result: [StateVariable] = []
         
         // TODO: Use adjusted/actual instead of direct object variable (requires: object.actualVariableIndex)
+
         result.append(stateVariables[self.builtins.time])
         for object in self.simulationObjects {
             result.append(stateVariables[object.variableIndex])
