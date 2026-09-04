@@ -185,14 +185,19 @@ public final class SimulationPlan: Component {
         return stateVariables.first(where: { $0.name == nameKey})
     }
     
+    /// State variable with the given state reference.
     public func variable(for reference: SimulationState.Reference) -> StateVariable? {
         stateVariables.first { $0.reference == reference }
     }
 
+    /// Primary state variable of an object.
+    ///
+    /// For flow this is the applied flow.
     public func variable(forObject objectID: ObjectID) -> StateVariable? {
         stateVariables.first { $0.content == .object(objectID) }
     }
 
+    /// State variable of a builtin.
     public func variable(forBuiltin builtin: BuiltinVariable) -> StateVariable? {
         stateVariables.first { $0.content == .builtin(builtin) }
     }

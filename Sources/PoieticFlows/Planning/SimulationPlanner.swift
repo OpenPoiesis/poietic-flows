@@ -128,9 +128,9 @@ public class SimulationPlanner {
     }
 
     func prepareBuiltins() {
-        variables.allocate(builtin: .step)
         variables.allocate(builtin: .time)
         variables.allocate(builtin: .timeDelta)
+        variables.allocate(builtin: .step)
     }
     
 
