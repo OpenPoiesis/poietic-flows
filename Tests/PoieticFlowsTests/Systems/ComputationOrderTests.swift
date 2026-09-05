@@ -38,8 +38,8 @@ import Testing
         let b = frame.createNode(ObjectType.Auxiliary, name: "b", attributes: ["formula": "a"])
         let a = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "0"])
         
-        frame.createEdge(ObjectType.Parameter, origin: a, target: b)
-        frame.createEdge(ObjectType.Parameter, origin: b, target: c)
+        frame.createEdge(ObjectType.Parameter, origin: a.objectID, target: b.objectID)
+        frame.createEdge(ObjectType.Parameter, origin: b.objectID, target: c.objectID)
         
         let world = try accept(frame)
         try ComputationOrderSystem.update(world)
@@ -54,8 +54,8 @@ import Testing
         // a <-> b
         let a = frame.createNode(ObjectType.Auxiliary, name:"a", attributes: ["formula": "b"])
         let b = frame.createNode(ObjectType.Auxiliary, name:"b", attributes: ["formula": "a"])
-        frame.createEdge(ObjectType.Parameter, origin: a, target: b)
-        frame.createEdge(ObjectType.Parameter, origin: b, target: a)
+        frame.createEdge(ObjectType.Parameter, origin: a.objectID, target: b.objectID)
+        frame.createEdge(ObjectType.Parameter, origin: b.objectID, target: a.objectID)
 
         let world = try accept(frame)
         try ComputationOrderSystem.update(world)
@@ -73,8 +73,8 @@ import Testing
         let gf = frame.createNode(ObjectType.GraphicalFunction, name: "gf")
         let aux = frame.createNode(ObjectType.Auxiliary, name:"aux", attributes: ["formula": "gf"])
 
-        frame.createEdge(ObjectType.Parameter, origin: param, target: gf)
-        frame.createEdge(ObjectType.Parameter, origin: gf, target: aux)
+        frame.createEdge(ObjectType.Parameter, origin: param.objectID, target: gf.objectID)
+        frame.createEdge(ObjectType.Parameter, origin: gf.objectID, target: aux.objectID)
 
         let world = try accept(frame)
         try ComputationOrderSystem.update(world)

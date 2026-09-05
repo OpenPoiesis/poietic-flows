@@ -64,7 +64,7 @@ import Testing
         let x = plane.createNode(ObjectType.Auxiliary, name: "x", attributes: ["formula": "10"])
         let aux = plane.createNode(ObjectType.Auxiliary, name: "consumer", attributes: ["formula": "x"])
 
-        plane.createEdge(.Parameter, origin: x, target: aux)
+        plane.createEdge(.Parameter, origin: x.objectID, target: aux.objectID)
 
         let world = try accept(plane)
         try update(world)
@@ -83,7 +83,7 @@ import Testing
         let pg = plane.createNode(ObjectType.Auxiliary, name: "population \n growth", attributes: ["formula": "10"])
         let x = plane.createNode(ObjectType.Auxiliary, name: "x", attributes: ["formula": "population_growth"])
 
-        plane.createEdge(.Parameter, origin: pg, target: x)
+        plane.createEdge(.Parameter, origin: pg.objectID, target: x.objectID)
 
         let world = try accept(plane)
         try update(world)
@@ -104,9 +104,9 @@ import Testing
         let y = plane.createNode(ObjectType.Auxiliary, name: "y", attributes: ["formula": "{Population Growth}"])
         let z = plane.createNode(ObjectType.Auxiliary, name: "z", attributes: ["formula": "{ Population growth }"])
 
-        plane.createEdge(.Parameter, origin: pg, target: x)
-        plane.createEdge(.Parameter, origin: pg, target: y)
-        plane.createEdge(.Parameter, origin: pg, target: z)
+        plane.createEdge(.Parameter, origin: pg.objectID, target: x.objectID)
+        plane.createEdge(.Parameter, origin: pg.objectID, target: y.objectID)
+        plane.createEdge(.Parameter, origin: pg.objectID, target: z.objectID)
 
         let world = try accept(plane)
         try update(world)
@@ -149,8 +149,8 @@ import Testing
         let y = plane.createNode(.Auxiliary, name: "y", attributes: ["formula": "20"])
         let aux = plane.createNode(.Auxiliary, name: "consumer", attributes: ["formula": "x"])
 
-        plane.createEdge(.Parameter, origin: x, target: aux)
-        plane.createEdge(.Parameter, origin: y, target: aux)
+        plane.createEdge(.Parameter, origin: x.objectID, target: aux.objectID)
+        plane.createEdge(.Parameter, origin: y.objectID, target: aux.objectID)
 
         let world = try accept(plane)
         try update(world)
@@ -173,8 +173,8 @@ import Testing
         let c = plane.createNode(.Auxiliary, name: "c", attributes: ["formula": "30"])
         let aux = plane.createNode(.Auxiliary, name: "consumer", attributes: ["formula": "a + b"])
 
-        plane.createEdge(.Parameter, origin: a, target: aux)
-        plane.createEdge(.Parameter, origin: c, target: aux)
+        plane.createEdge(.Parameter, origin: a.objectID, target: aux.objectID)
+        plane.createEdge(.Parameter, origin: c.objectID, target: aux.objectID)
         // Note: b is created but not connected
 
         let world = try accept(plane)
@@ -212,9 +212,9 @@ import Testing
         let z = plane.createNode(.Auxiliary, name: "z", attributes: ["formula": "3"])
         let aux = plane.createNode(.Auxiliary, name: "sum", attributes: ["formula": "x + y + z"])
 
-        plane.createEdge(.Parameter, origin: x, target: aux)
-        plane.createEdge(.Parameter, origin: y, target: aux)
-        plane.createEdge(.Parameter, origin: z, target: aux)
+        plane.createEdge(.Parameter, origin: x.objectID, target: aux.objectID)
+        plane.createEdge(.Parameter, origin: y.objectID, target: aux.objectID)
+        plane.createEdge(.Parameter, origin: z.objectID, target: aux.objectID)
 
         let world = try accept(plane)
         try update(world)
@@ -250,7 +250,7 @@ import Testing
         // Delay node with one parameter - correct
         let source = plane.createNode(.Auxiliary, name: "source", attributes: ["formula": "100"])
         let delay = plane.createNode(.Delay, name: "delayed", attributes: ["delay_duration": 5])
-        plane.createEdge(.Parameter, origin: source, target: delay)
+        plane.createEdge(.Parameter, origin: source.objectID, target: delay.objectID)
 
         let world = try accept(plane)
         try update(world)
@@ -267,8 +267,8 @@ import Testing
         let source1 = plane.createNode(.Auxiliary, name: "source1", attributes: ["formula": "100"])
         let source2 = plane.createNode(.Auxiliary, name: "source2", attributes: ["formula": "100"])
         let delay = plane.createNode(.Delay, name: "delayed", attributes: ["delay_duration": 5])
-        plane.createEdge(.Parameter, origin: source1, target: delay)
-        plane.createEdge(.Parameter, origin: source2, target: delay)
+        plane.createEdge(.Parameter, origin: source1.objectID, target: delay.objectID)
+        plane.createEdge(.Parameter, origin: source2.objectID, target: delay.objectID)
 
         let world = try accept(plane)
         try update(world)
@@ -287,9 +287,9 @@ import Testing
         let delay = plane.createNode(.Delay, name: "delayed", attributes: ["delay_duration": 5])
         let smooth = plane.createNode(.Smooth, name: "smoothed", attributes: ["window_time": 5])
 
-        plane.createEdge(.Parameter, origin: source, target: gf)
-        plane.createEdge(.Parameter, origin: source, target: delay)
-        plane.createEdge(.Parameter, origin: source, target: smooth)
+        plane.createEdge(.Parameter, origin: source.objectID, target: gf.objectID)
+        plane.createEdge(.Parameter, origin: source.objectID, target: delay.objectID)
+        plane.createEdge(.Parameter, origin: source.objectID, target: smooth.objectID)
 
         let world = try accept(plane)
         try update(world)

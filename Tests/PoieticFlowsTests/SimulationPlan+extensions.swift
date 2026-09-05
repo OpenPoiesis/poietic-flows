@@ -29,13 +29,8 @@ extension SimulationPlan {
         return index
     }
     
-    func variableIndex(_ object: some ObjectProtocol) -> SimulationState.Index? {
-        // Since this is just for debug purposes, O(n) should be fine, no need
-        // for added complexity of the code.
-        guard let first = simulationObjects.first(where: {$0.objectID == object.objectID}) else {
-            return nil
-        }
-        return first.variableIndex
+    func variableReference(_ object: some ObjectProtocol) -> SimulationState.Reference? {
+        return variableReference(object.objectID)
     }
 
 }

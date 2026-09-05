@@ -53,15 +53,11 @@ import Testing
         var state = try simulation.initialize(time: settings.initialTime,
                                               timeDelta: settings.timeDelta,
                                               parameters: parameters.values)
-        var result = SimulationResult(initialTime: settings.initialTime,
-                                      timeDelta: settings.timeDelta)
-        result.append(state)
+
         var step: UInt = 1
 
         while step <= settings.steps {
-            print("STEP \(step)")
             let newState = try simulation.step(state)
-            result.append(newState)
             state = newState
             step += 1
         }
@@ -78,8 +74,8 @@ import Testing
         let simulation = StockFlowSimulation(plan)
         let state = try simulation.initialize()
 
-        #expect(state[plan.variableIndex(c.objectID)!] == 100)
-        #expect(state[plan.variableIndex(a.objectID)!] == 1)
+        #expect(state[plan.variableReference(c.objectID)!] == 100)
+        #expect(state[plan.variableReference(a.objectID)!] == 1)
     }
     
     @Test mutating func testEverythingInitialized() throws {
@@ -91,9 +87,9 @@ import Testing
         let simulation = StockFlowSimulation(plan)
         let state = try simulation.initialize()
 
-        #expect(state[plan.variableIndex(aux)!] == 10)
-        #expect(state[plan.variableIndex(stock)!] == 20)
-        #expect(state[plan.variableIndex(flow)!] == 30)
+        #expect(state[plan.variableReference(aux)!] == 10)
+        #expect(state[plan.variableReference(stock)!] == 20)
+        #expect(state[plan.variableReference(flow)!] == 30)
     }
     
     @Test mutating func initializeWithParams() throws {
@@ -110,9 +106,9 @@ import Testing
         let simulation = StockFlowSimulation(plan)
         let state = try simulation.initialize(parameters: params.values)
 
-        #expect(state[plan.variableIndex(a)!] == 999)
-        #expect(state[plan.variableIndex(b)!] == 20)
-        #expect(state[plan.variableIndex(c)!] == 998)
+        #expect(state[plan.variableReference(a)!] == 999)
+        #expect(state[plan.variableReference(b)!] == 20)
+        #expect(state[plan.variableReference(c)!] == 998)
     }
 
     @Test mutating func parameterStaysConstant() throws {
@@ -128,13 +124,13 @@ import Testing
         let simulation = StockFlowSimulation(plan)
         let state0 = try simulation.initialize(parameters: params.values)
         
-        #expect(state0[plan.variableIndex(a)!] == 0)
-        #expect(state0[plan.variableIndex(b)!] == 999)
+        #expect(state0[plan.variableReference(a)!] == 0)
+        #expect(state0[plan.variableReference(b)!] == 999)
 
         let state1 = try simulation.step(state0)
         
-        #expect(state1[plan.variableIndex(a)!] == 1)
-        #expect(state1[plan.variableIndex(b)!] == 999.0)
+        #expect(state1[plan.variableReference(a)!] == 1)
+        #expect(state1[plan.variableReference(b)!] == 999.0)
     }
 
     @Test mutating func stockParameterIsNotConstant() throws {
@@ -150,13 +146,13 @@ import Testing
         let simulation = StockFlowSimulation(plan)
         let state0 = try simulation.initialize(parameters: params.values)
 
-        #expect(state0[plan.variableIndex(stock)!] == 200)
-        #expect(state0[plan.variableIndex(inflow)!] == 10)
+        #expect(state0[plan.variableReference(stock)!] == 200)
+        #expect(state0[plan.variableReference(inflow)!] == 10)
 
         let state1 = try simulation.step(state0)
         
-        #expect(state1[plan.variableIndex(stock)!] == 210)
-        #expect(state1[plan.variableIndex(inflow)!] == 10)
+        #expect(state1[plan.variableReference(stock)!] == 210)
+        #expect(state1[plan.variableReference(inflow)!] == 10)
     }
 
     
@@ -166,13 +162,14 @@ import Testing
         let plan = try self.accept()
         let state = try self.run(plan, settings: SimulationSettings(initialTime: 1.0, steps: 0))
 
-        #expect(state[plan.variableIndex(t)!] == 1.0)
+        #expect(state[plan.variableReference(t)!] == 1.0)
         
         let state2 = try self.run(plan, settings: SimulationSettings(initialTime: 1.0, timeDelta: 10.0, steps: 2))
 
-        #expect(state2[plan.variableIndex(t)!] == 21.0)
+        #expect(state2[plan.variableReference(t)!] == 21.0)
     }
-    
+#if false
+    // FIXME: Remove tests in this block in favour of proper tests in the Simulation/ folder. Kept for reference for now
     @Test mutating func estimatedFlows() throws {
         let stock = frame.createNode(.Stock, name: "stock",
                                      attributes: ["formula": "0", "allows_negative": true])
@@ -293,6 +290,8 @@ import Testing
         #expect(delta[plan.stockIndex(stock.objectID)] == 0.5 * (100.0 - 5.0 - 10.0))
     }
 
+#endif // See comment around #if false above
+    
     @Test mutating func allowNegativeStockIntegrated() throws {
         let stock = frame.createNode(.Stock, name: "stock",
                                      attributes: ["formula": "5",
@@ -307,7 +306,7 @@ import Testing
         let state = try sim.initialize()
         let result = try sim.step(state)
         
-        #expect(result[plan.variableIndex(stock)!] == -5)
+        #expect(result[plan.variableReference(stock)!] == -5)
     }
     
     @Test mutating func nonNegativeStock() throws {
@@ -324,7 +323,7 @@ import Testing
         let state = try sim.initialize()
         let result = try sim.step(state)
         
-        #expect(result[plan.variableIndex(stock)!] == 0)
+        #expect(result[plan.variableReference(stock)!] == 0)
     }
     @Test mutating func cloudOutflow() throws {
         let stock = frame.createNode(.Stock, name: "stock",
@@ -342,7 +341,7 @@ import Testing
         let state = try sim.initialize()
         let result = try sim.step(state)
         
-        #expect(result[plan.variableIndex(stock)!] == 0)
+        #expect(result[plan.variableReference(stock)!] == 0)
     }
     @Test mutating func cloudInflow() throws {
         let stock = frame.createNode(.Stock, name: "stock",
@@ -360,7 +359,7 @@ import Testing
         let state = try sim.initialize()
         let result = try sim.step(state)
         
-        #expect(result[plan.variableIndex(stock)!] == 100)
+        #expect(result[plan.variableReference(stock)!] == 100)
     }
 
 
@@ -418,8 +417,8 @@ import Testing
         let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
         let state2 = try sim.step(state)
-        #expect(state2[plan.variableIndex(a)!] == 4.0)
-        #expect(state2[plan.variableIndex(b)!] == 8.0)
+        #expect(state2[plan.variableReference(a)!] == 4.0)
+        #expect(state2[plan.variableReference(b)!] == 8.0)
 
     }
     @Test mutating func compute() throws {
@@ -436,12 +435,12 @@ import Testing
         let state = try sim.initialize()
         
         let state2 = try sim.step(state)
-        #expect(state2[plan.variableIndex(kettle)!] == 900.0 )
-        #expect(state2[plan.variableIndex(cup)!] == 100.0)
+        #expect(state2[plan.variableReference(kettle)!] == 900.0 )
+        #expect(state2[plan.variableReference(cup)!] == 100.0)
         
         let state3 = try sim.step(state2)
-        #expect(state3[plan.variableIndex(kettle)!] == 800.0 )
-        #expect(state3[plan.variableIndex(cup)!] == 200.0)
+        #expect(state3[plan.variableReference(kettle)!] == 800.0 )
+        #expect(state3[plan.variableReference(cup)!] == 200.0)
     }
     
     @Test mutating func graphicalFunction() throws {
@@ -462,9 +461,9 @@ import Testing
         let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
         
-        #expect(state[plan.variableIndex(g1)!] == 0.0)
-        #expect(state[plan.variableIndex(g2)!] == 10.0)
-        #expect(state[plan.variableIndex(aux)!] == 10.0)
+        #expect(state[plan.variableReference(g1)!] == 0.0)
+        #expect(state[plan.variableReference(g2)!] == 10.0)
+        #expect(state[plan.variableReference(aux)!] == 10.0)
     }
     
     // Other tests - that should rather be at lower level
@@ -480,16 +479,16 @@ import Testing
         let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
         
-        #expect(state[plan.variableIndex(aux)!] == 0.0)
+        #expect(state[plan.variableReference(aux)!] == 0.0)
         
         let state1 = try sim.step(state)
-        #expect(state1[plan.variableIndex(aux)!] == 0.0)
+        #expect(state1[plan.variableReference(aux)!] == 0.0)
         
         let state2 = try sim.step(state1)
-        #expect(state2[plan.variableIndex(aux)!] == 1.0)
+        #expect(state2[plan.variableReference(aux)!] == 1.0)
         
         let state3 = try sim.step(state2)
-        #expect(state3[plan.variableIndex(aux)!] == 1.0)
+        #expect(state3[plan.variableReference(aux)!] == 1.0)
     }
     
     @Test mutating func delay() throws {
@@ -511,33 +510,33 @@ import Testing
         let state = try sim.initialize()
         
         // Init 0
-        #expect(state.double(at: plan.variableIndex(delay0)!) == 0.0)
-        #expect(state.double(at: plan.variableIndex(delay1)!) == 0.0)
-        #expect(state.double(at: plan.variableIndex(delay3)!) == 0.0)
+        #expect(try state.doubleValue(at: plan.variableReference(delay0)!) == 0.0)
+        #expect(try state.doubleValue(at: plan.variableReference(delay1)!) == 0.0)
+        #expect(try state.doubleValue(at: plan.variableReference(delay3)!) == 0.0)
 
         // Step 1
         let state1 = try sim.step(state)
-        #expect(state1[plan.variableIndex(delay0)!] == 10.0)
-        #expect(state1[plan.variableIndex(delay1)!] == 0.0)
-        #expect(state1[plan.variableIndex(delay3)!] == 0.0)
+        #expect(state1[plan.variableReference(delay0)!] == 10.0)
+        #expect(state1[plan.variableReference(delay1)!] == 0.0)
+        #expect(state1[plan.variableReference(delay3)!] == 0.0)
 
         // Step 2
         let state2 = try sim.step(state1)
-        #expect(state2[plan.variableIndex(delay0)!] == 10.0)
-        #expect(state2[plan.variableIndex(delay1)!] == 10.0)
-        #expect(state2[plan.variableIndex(delay3)!] == 0.0)
+        #expect(state2[plan.variableReference(delay0)!] == 10.0)
+        #expect(state2[plan.variableReference(delay1)!] == 10.0)
+        #expect(state2[plan.variableReference(delay3)!] == 0.0)
 
         // Step 3
         let state3 = try sim.step(state2)
-        #expect(state3[plan.variableIndex(delay0)!] == 10.0)
-        #expect(state3[plan.variableIndex(delay1)!] == 10.0)
-        #expect(state3[plan.variableIndex(delay3)!] == 0.0)
+        #expect(state3[plan.variableReference(delay0)!] == 10.0)
+        #expect(state3[plan.variableReference(delay1)!] == 10.0)
+        #expect(state3[plan.variableReference(delay3)!] == 0.0)
 
         // Step 4
         let state4 = try sim.step(state3)
-        #expect(state4[plan.variableIndex(delay0)!] == 10.0)
-        #expect(state4[plan.variableIndex(delay1)!] == 10.0)
-        #expect(state4[plan.variableIndex(delay3)!] == 10.0)
+        #expect(state4[plan.variableReference(delay0)!] == 10.0)
+        #expect(state4[plan.variableReference(delay1)!] == 10.0)
+        #expect(state4[plan.variableReference(delay3)!] == 10.0)
     }
     
     @Test mutating func divByZeroFlow() throws {
@@ -550,8 +549,10 @@ import Testing
         let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
         let state1 = try sim.step(state)
-        #expect(state1[plan.variableIndex(stock)!].isInfinite)
+        let value: Double = try state1[plan.variableReference(stock)!].doubleValue()
+        #expect(value.isInfinite)
     }
+    
     
     @Test mutating func stockCycle() throws {
         let a = frame.createNode(ObjectType.Stock, name: "a", attributes: ["formula": "10"])
@@ -566,12 +567,12 @@ import Testing
         let sim = StockFlowSimulation(plan)
         let state = try sim.initialize()
         let state1 = try sim.step(state)
-        #expect(state1[plan.variableIndex(a)!] == 8.0)
-        #expect(state1[plan.variableIndex(b)!] == 2.0)
+        #expect(state1[plan.variableReference(a)!] == 8.0)
+        #expect(state1[plan.variableReference(b)!] == 2.0)
 
         let state2 = try sim.step(state1)
-        #expect(state2[plan.variableIndex(a)!] == 7.0)
-        #expect(state2[plan.variableIndex(b)!] == 3.0)
+        #expect(state2[plan.variableReference(a)!] == 7.0)
+        #expect(state2[plan.variableReference(b)!] == 3.0)
 
     }
 }
