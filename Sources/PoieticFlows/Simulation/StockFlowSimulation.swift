@@ -33,15 +33,45 @@ public class StockFlowSimulation {
     ///
     public let plan: SimulationPlan
     
-    public enum FlowScaling: String, RawRepresentable, CaseIterable {
+    public enum FlowScaling: CaseIterable, CustomStringConvertible {
         case inflowFirst
         case outflowFirst
         // case balanced
+        
+        init?(_ string: String) {
+            switch string.lowercased() {
+            case "inflow_first": self = .inflowFirst
+            case "outflow_first": self = .outflowFirst
+            default: return nil
+            }
+        }
+        
+        public var description: String {
+            switch self {
+            case .inflowFirst: "inflow_first"
+            case .outflowFirst: "outflow_first"
+            }
+        }
+        
     }
     
-    public enum SolverType: String, RawRepresentable, CaseIterable {
+    public enum SolverType: CaseIterable, CustomStringConvertible {
         case euler
         case rk4
+
+        init?(_ string: String) {
+            switch string.lowercased() {
+            case "euler": self = .euler
+            case "rk4": self = .rk4
+            default: return nil
+            }
+        }
+        public var description: String {
+            switch self {
+            case .euler: "euler"
+            case .rk4: "rk4"
+            }
+        }
     }
     
     /// Type of a solver to be used for the simulation.

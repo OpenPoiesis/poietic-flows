@@ -7,6 +7,28 @@
 
 import PoieticCore
 
+// TODO: StockFlowSimulationSettings + SimulationTimeSettings (now in core) will replace SimulationSettings
+public struct StockFlowSimulationSettings: Component {
+    public var solver: StockFlowSimulation.SolverType
+    public var flowScaling: StockFlowSimulation.FlowScaling
+    
+    /// Create new simulation settings from an object.
+    ///
+    /// Expected keys:
+    /// - `solver_type`, default value `euler`
+    /// - `flow_scaling`, default value `inflow_first`
+    ///
+    /// - SeeAlso: ``StockFlowSimulation/SolverType``, ``StockFlowSimulation/FlowScaling``
+    ///
+    public init(fromObject object: ObjectSnapshot) {
+        let solverType: String = object["solver_type"] ?? "euler"
+        let flowScaling: String = object["flow_scaling"] ?? "inflow_first"
+
+        self.solver = .init(solverType) ?? .euler
+        self.flowScaling = .init(flowScaling) ?? .inflowFirst
+    }
+}
+
 /// Settings of the simulation – time and solver.
 ///
 /// - SeeAlso: ``ScenarioParameters``.
@@ -14,6 +36,7 @@ import PoieticCore
 public struct SimulationSettings: Component {
     // TODO: Rename to SimulationTime and move to Core
     // TODO: Split solver and add
+    // TODO: Rename "end time" to "stop time" or "final time" (preferred)
     /// Time of the initialisation state of the simulation.
     public var initialTime: Double
     
