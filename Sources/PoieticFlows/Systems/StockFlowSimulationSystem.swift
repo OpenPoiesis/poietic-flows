@@ -55,8 +55,12 @@ public struct StockFlowSimulationSystem: System {
             throw InternalSystemError(self, message: "Unknown solver type: \(settings.solverType)")
         }
 
+        guard let flowScaling = StockFlowSimulation.FlowScaling(settings.flowScaling) else {
+            throw InternalSystemError(self, message: "Unknown flow scaling: \(settings.flowScaling)")
+        }
+        
         // TODO: Add flow scaling parameter
-        let simulation = StockFlowSimulation(plan, solver: solverType)
+        let simulation = StockFlowSimulation(plan, solver: solverType, flowScaling: flowScaling)
 
         // TODO: This will be removed once we move to SimulationTimeSettings everywhere else
         let timeSettings = SimulationTimeSettings(
@@ -67,7 +71,9 @@ public struct StockFlowSimulationSystem: System {
         
         var refParams: [VariableReference:Variant] = [:]
         for (objectID, value) in parameters.values {
-            guard let ref = plan.variableReference(objectID) else { continue }
+            guard let ref = plan.variableReference(objectID) else {
+                throw InternalSystemError(self, message: "Parameters not sanitised (offending object ID:\(objectID))")
+            }
             refParams[ref] = value
         }
         
@@ -98,7 +104,7 @@ public struct StockFlowSimulationSystem: System {
             step += 1
         }
 
-        let result = builder.result()
+        let result = builder.build()
         
         world.setSingleton(result)
     }

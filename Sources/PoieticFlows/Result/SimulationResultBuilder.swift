@@ -87,13 +87,13 @@ public struct SimulationResultBuilder {
         sampleCount += 1
     }
     
-    func result() -> SimulationResult {
+    func build() -> SimulationResult {
         var columns: [SimulationResult.Series] = []
 
         for (index, variable) in plan.stateVariables.enumerated() {
             let (seriesType, collectionIndex) = variableToSeries[index]!
 
-            let data: SimulationResult.SeriesData
+            let data: SimulationResult.SeriesValues
             switch seriesType {
             case .double: data = .double(doubleSeries[collectionIndex])
             case .variant: data = .variant(variantSeries[collectionIndex])

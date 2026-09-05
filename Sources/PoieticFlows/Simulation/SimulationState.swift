@@ -7,11 +7,6 @@
 
 import PoieticCore
 
-public enum SimulationStateError: Error {
-    case valueError(SimulationState.Reference, ValueError)
-    case settingBuiltin(SimulationState.Reference)
-}
-
 public enum StateVariableType: Equatable {
     case builtin
     case stock

@@ -22,7 +22,7 @@ public struct StockFlowSimulationSettings: Component {
     ///
     public init(fromObject object: ObjectSnapshot) {
         let solverType: String = object["solver_type"] ?? "euler"
-        let flowScaling: String = object["flow_scaling"] ?? "inflow_first"
+        let flowScaling: String = object["flow_scaling"] ?? "outflow_first"
 
         self.solver = .init(solverType) ?? .euler
         self.flowScaling = .init(flowScaling) ?? .inflowFirst
@@ -65,7 +65,8 @@ public struct SimulationSettings: Component {
     /// Solver type name.
     ///
     public var solverType: String
-    
+    public var flowScaling: String
+
 
     /// Create new simulation settings.
     ///
@@ -78,24 +79,28 @@ public struct SimulationSettings: Component {
     public init(initialTime: Double = 0.0,
                 timeDelta: Double = 1.0,
                 endTime: Double = 10.0,
-                solverType: String = "euler")
+                solverType: String = "euler",
+                flowScaling: String = "outflow_first")
     {
         self.initialTime = initialTime
         self.timeDelta = timeDelta
         self.endTime = max(self.initialTime, endTime)
         self.solverType = solverType
+        self.flowScaling = flowScaling
     }
 
     @available(*, deprecated, message: "Use end time")
     public init(initialTime: Double = 0.0,
                 timeDelta: Double = 1.0,
                 steps: Int,
-                solverType: String = "euler")
+                solverType: String = "euler",
+                flowScaling: String = "outflow_first")
     {
         self.initialTime = initialTime
         self.timeDelta = timeDelta
         self.endTime = initialTime + Double(steps) * timeDelta
         self.solverType = solverType
+        self.flowScaling = flowScaling
     }
 
     /// Create new simulation settings from an object.
@@ -109,24 +114,28 @@ public struct SimulationSettings: Component {
         let initialTime = object["initial_time", default: 0.0]
         let timeDelta = object["time_delta", default: 1.0]
         let solverType = object["solver_type", default: "euler"]
+        let flowScaling = object["flow_scaling", default: "outflow_first"]
 
         if let endTime: Double = object["end_time"] {
             self.init(initialTime: initialTime,
                       timeDelta: timeDelta,
                       endTime: endTime,
-                      solverType: solverType)
+                      solverType: solverType,
+                      flowScaling: flowScaling)
         }
         else if let steps: Int = object["steps"], steps >= 0 {
             self.init(initialTime: initialTime,
                       timeDelta: timeDelta,
                       steps: steps,
-                      solverType: solverType)
+                      solverType: solverType,
+                      flowScaling: flowScaling)
         }
         else {
             self.init(initialTime: initialTime,
                       timeDelta: timeDelta,
                       steps: 0,
-                      solverType: solverType)
+                      solverType: solverType,
+                      flowScaling: flowScaling)
         }
         
 

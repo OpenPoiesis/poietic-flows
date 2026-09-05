@@ -11,11 +11,11 @@ public typealias VariableReference = SimulationState.Reference
 
 public struct SimulationResult: Component {
     public struct Series {
-        let reference: VariableReference
-        let data: SeriesData
+        public let reference: VariableReference
+        public let data: SeriesValues
     }
 
-    public enum SeriesData {
+    public enum SeriesValues {
         // TODO: Rename to ColumnContent or ColumnValues
         case double([Double])
         case variant([Variant])
@@ -27,6 +27,19 @@ public struct SimulationResult: Component {
             }
         }
     }
+    
+    public struct Sample {
+        public let sampleIndex: Int
+        let result: SimulationResult
+        public func value(for reference: VariableReference) -> Variant? {
+            guard let seriesIndex = result.referenceIndex[reference] else { return nil }
+            return result.value(at: sampleIndex, forSeriesAt: seriesIndex)
+        }
+        public func value(atSeries seriesIndex: Int) -> Variant {
+            return result.value(at: sampleIndex, forSeriesAt: seriesIndex)
+        }
+    }
+
     
     /// Simulation plan according to which the simulation produced this result.
     ///
@@ -43,6 +56,7 @@ public struct SimulationResult: Component {
     /// Simulation parameters used in simulation that produced this result; included for provenance.
     ///
     public let parameters: [VariableReference:Variant]?
+    // TODO: Include other simulation config for provenance. Use [String:Variant] so we can later move result to core, be domain-free
 
     /// Number of samples in the result.
     ///
@@ -78,6 +92,10 @@ public struct SimulationResult: Component {
         self.parameters = parameters
     }
     
+    public func sample(at index: Int) -> Sample {
+        return Sample(sampleIndex: index, result: self)
+    }
+    
     public func seriesIndex(_ reference: VariableReference) -> Int? {
         return referenceIndex[reference]
     }
@@ -109,14 +127,14 @@ public struct SimulationResult: Component {
         return values
     }
     
-    public func series(at index: Int) -> SeriesData {
+    public func seriesValues(at index: Int) -> SeriesValues {
         return series[index].data
     }
     
     public func value(at sampleIndex: Int, forSeriesAt seriesIndex: Int) -> Variant {
         let result: Variant
         
-        let data = series(at: seriesIndex)
+        let data = seriesValues(at: seriesIndex)
         switch data {
         case .double(let values): result = Variant(values[sampleIndex])
         case .variant(let values): result = values[sampleIndex]

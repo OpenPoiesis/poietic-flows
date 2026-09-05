@@ -17,7 +17,8 @@ import PoieticCore
 /// let plan: SimulationPlan     // Assume this exists.
 /// let result: SimulationResult // Assume this exists.
 ///
-/// let view = SimulationResultView(result: result, plan: plan, variables: plan.defaultVariables)
+/// let references = plan.defaultVariables.map { $0.reference }
+/// let view = SimulationResultView(result: result, selection: references)
 ///
 /// print(view.columnKeys.joined(separator: "\t"))
 /// for row in view {
@@ -100,18 +101,18 @@ extension SimulationResultView: Sequence {
         
         public mutating func next() -> Sample? {
             guard index < view.sampleCount else { return nil }
-            let sample = Sample(index: index, view: view)
+            let sample = Sample(sampleIndex: index, view: view)
             index += 1
             return sample
         }
     }
     
     public struct Sample {
-        public let index: Int
+        public let sampleIndex: Int
         let view: SimulationResultView
         public var values: [Variant] {
             // We can force unwrap because we checked the index in the iterator
-            view.values(at: index)!
+            view.values(at: sampleIndex)!
         }
         
         /// Get the row as text by converting each value to a string.
