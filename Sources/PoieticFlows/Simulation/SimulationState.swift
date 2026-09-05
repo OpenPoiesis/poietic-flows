@@ -95,31 +95,29 @@ public struct SimulationState {
     subscript(ref: Reference) -> Variant {
         switch ref {
             
-        case let .builtin(builtin):
-            switch builtin {
-            case .step: return Variant(step)
-            case .time: return Variant(time)
-            case .timeDelta: return Variant(timeDelta)
-            }
-        case let .stock(index): return Variant(stocks[index])
-        case let .flow(index): return Variant(flows[index])
-        case let .numeric(index): return Variant(numerics[index])
-        case let .variant(index): return variants[index]
+        case let .builtin(builtin): return Variant(doubleValue(forBuiltin: builtin))
+        case let .stock(index):     return Variant(stocks[index])
+        case let .flow(index):      return Variant(flows[index])
+        case let .numeric(index):   return Variant(numerics[index])
+        case let .variant(index):   return variants[index]
         }
     }
 
     func doubleValue(at ref: Reference) throws (ValueError) -> Double {
         switch ref {
-        case let .builtin(builtin):
-            switch builtin {
-            case .step: return Double(step)
-            case .time: return time
-            case .timeDelta: return timeDelta
-            }
-        case let .stock(index): return stocks[index]
-        case let .flow(index): return flows[index]
-        case let .numeric(index): return numerics[index]
-        case let .variant(index): return try variants[index].doubleValue()
+        case let .builtin(builtin): return doubleValue(forBuiltin: builtin)
+        case let .stock(index):     return stocks[index]
+        case let .flow(index):      return flows[index]
+        case let .numeric(index):   return numerics[index]
+        case let .variant(index):   return try variants[index].doubleValue()
+        }
+    }
+    
+    func doubleValue(forBuiltin builtin: BuiltinVariable) -> Double {
+        switch builtin {
+        case .step:      return Double(step)
+        case .time:      return time
+        case .timeDelta: return timeDelta
         }
     }
 

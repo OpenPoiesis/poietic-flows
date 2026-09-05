@@ -7,6 +7,8 @@
 
 import PoieticCore
 
+// TODO: Rename SimulationState.Reference to SimulationVariableReference
+
 
 /// Structure representing a variable in a simulation state.
 ///
