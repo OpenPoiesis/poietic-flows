@@ -34,7 +34,7 @@ struct AllocationSequence {
 class StateVariableTable {
     public private(set) var variables: [StateVariable] = []
 
-    private var resultColumnSequence = AllocationSequence()
+    private var Sequence = AllocationSequence()
     private var stockSequence = AllocationSequence()
     private var flowSequence = AllocationSequence()
     private var numericSequence = AllocationSequence()
@@ -158,7 +158,6 @@ class StateVariableTable {
     func register(_ name: String, reference: SimulationState.Reference, content: StateVariable.Content) -> StateVariable {
         let variable = StateVariable(
             reference: reference,
-            resultColumn: resultColumnSequence.next(),
             name: name,
             content: content
         )

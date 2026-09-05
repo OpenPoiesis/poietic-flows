@@ -8,7 +8,7 @@
 import PoieticCore
 
 // TODO: Rename SimulationState.Reference to SimulationVariableReference
-
+// TODO: Add flag "isObservable" -> true for non-internals
 
 /// Structure representing a variable in a simulation state.
 ///
@@ -26,11 +26,6 @@ public struct StateVariable: CustomStringConvertible {
     /// - SeeAlso: ``SimulationState``
     ///
     public let reference: SimulationState.Reference
-
-    /// Index of a column holding variable values in the simulation result.
-    ///
-    /// - SeeAlso: ``SimulationResult``
-    public let resultColumn: Int
 
     /// Internal name of the variable.
     ///
@@ -105,24 +100,17 @@ public struct StateVariable: CustomStringConvertible {
     }
     
     public var description: String {
-        "\(reference)[\(name),\(content),\(resultColumn)]"
+        "\(reference)[\(name),\(content)]"
     }
     
-    internal init(reference: SimulationState.Reference,
-                  resultColumn: Int,
-                  name: String,
-                  content: Content) {
+    internal init(reference: SimulationState.Reference, name: String, content: Content) {
         self.reference = reference
-        self.resultColumn = resultColumn
         self.name = name
         self.content = content
     }
     
-    internal init(reference: SimulationState.Reference,
-                  resultColumn: Int,
-                  builtin: BuiltinVariable) {
+    internal init(reference: SimulationState.Reference, builtin: BuiltinVariable) {
         self.reference = reference
-        self.resultColumn = resultColumn
         self.name = builtin.normalizedKey
         self.content = .builtin(builtin)
     }

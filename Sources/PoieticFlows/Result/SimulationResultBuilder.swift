@@ -7,12 +7,14 @@
 
 import PoieticCore
 
+// TODO: Make time the first column
+
 public struct SimulationResultBuilder {
     let plan: SimulationPlan
     var doubleSeries: [[Double]]
     var variantSeries: [[Variant]]
     
-    var sampleCount: Int = 0
+    public private(set) var sampleCount: Int = 0
     var variableToSeries: [Int:(type: SeriesType, index: Int)]
     
     enum SeriesType {
@@ -29,7 +31,6 @@ public struct SimulationResultBuilder {
     {
         var doubleCount = 0
         var variantCount = 0
-        var variableToType: [Int:SeriesType] = [:]
         var timeIndex: Int? = nil
         
         self.plan = plan
@@ -42,11 +43,9 @@ public struct SimulationResultBuilder {
             case .builtin, .stock, .flow, .numeric:
                 variableToSeries[index] = (.double, doubleCount)
                 doubleCount += 1
-                variableToType[index] = .double
             case .variant:
                 variableToSeries[index] = (.variant, variantCount)
                 variantCount += 1
-                variableToType[index] = .variant
             }
             
             if variable.reference == .builtin(.time) {
