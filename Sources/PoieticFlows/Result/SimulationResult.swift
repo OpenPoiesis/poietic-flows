@@ -33,17 +33,14 @@ public struct SimulationResult: Component {
     public let plan: SimulationPlan
     
     /// Series of simulation variables.
-    /// 
+    ///
     public let series: [Series]
     
     /// Time settings used for simulation
     ///
     public let timeSettings: SimulationTimeSettings
     
-    public var startTime: Double { timeSettings.startTime }
-    public var timeStep: Double { timeSettings.timeStep }
-
-    /// Simulation parameters used in simulation that produced this result.
+    /// Simulation parameters used in simulation that produced this result; included for provenance.
     ///
     public let parameters: [VariableReference:Variant]?
 
@@ -78,8 +75,12 @@ public struct SimulationResult: Component {
             map[item.reference] = index
         }
         self.referenceIndex = map
+        self.parameters = parameters
     }
     
+    public func seriesIndex(_ reference: VariableReference) -> Int? {
+        return referenceIndex[reference]
+    }
     /// Get series indices for given variable references.
     ///
     /// - Precondition: Result must contain all variables from the list.

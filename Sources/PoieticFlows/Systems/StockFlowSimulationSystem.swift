@@ -51,15 +51,29 @@ public struct StockFlowSimulationSystem: System {
             throw InternalSystemError("StockFlowSimulationSystem", message: "End time must be greater or equal to start time")
         }
 
-        guard let solverType = StockFlowSimulation.SolverType(rawValue: settings.solverType) else {
+        guard let solverType = StockFlowSimulation.SolverType(settings.solverType) else {
             throw InternalSystemError(self, message: "Unknown solver type: \(settings.solverType)")
         }
 
         // TODO: Add flow scaling parameter
         let simulation = StockFlowSimulation(plan, solver: solverType)
 
-        var result = SimulationResult(initialTime: settings.initialTime,
-                                      timeDelta: settings.timeDelta)
+        // TODO: This will be removed once we move to SimulationTimeSettings everywhere else
+        let timeSettings = SimulationTimeSettings(
+            startTime: settings.initialTime,
+            timeStep: settings.timeDelta,
+            finalTime: settings.endTime
+        )
+        
+        var refParams: [VariableReference:Variant] = [:]
+        for (objectID, value) in parameters.values {
+            guard let ref = plan.variableReference(objectID) else { continue }
+            refParams[ref] = value
+        }
+        
+        var builder = SimulationResultBuilder(plan: plan,
+                                              timeSettings: timeSettings,
+                                              parameters: refParams)
 
         var currentState: SimulationState
         do {
@@ -72,17 +86,20 @@ public struct StockFlowSimulationSystem: System {
             throw InternalSystemError(self, message: "Simulation failed: \(error)")
         }
 
-        result.append(currentState)
+        builder.append(state: currentState)
+
         let steps = settings.steps
         var step = 0
                         
         while step < steps {
             let newState = try self.step(simulation: simulation, state: currentState)
-            result.append(newState)
+            builder.append(state: newState)
             currentState = newState
             step += 1
         }
 
+        let result = builder.result()
+        
         world.setSingleton(result)
     }
     
