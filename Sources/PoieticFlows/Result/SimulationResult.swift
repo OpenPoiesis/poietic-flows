@@ -29,6 +29,22 @@ public struct SimulationResult: Component {
     public struct Sample {
         public let sampleIndex: Int
         let result: SimulationResult
+        
+        /// Simulation time of the sample
+        public var time: Double { result.time(at: sampleIndex) }
+        
+        /// Return double value for variable at given reference.
+        ///
+        /// Only numeric values are considered. Variants, even if convertible to double, are not
+        /// considered.
+        ///
+        public func doubleValue(for reference: VariableReference) -> Double? {
+            guard let seriesIndex = result.referenceIndex[reference],
+                    let values = result.doubleSeries(at: seriesIndex)
+            else { return nil }
+            return values[sampleIndex]
+        }
+        
         public func value(for reference: VariableReference) -> Variant? {
             guard let seriesIndex = result.referenceIndex[reference] else { return nil }
             return result.value(at: sampleIndex, forSeriesAt: seriesIndex)
@@ -90,7 +106,12 @@ public struct SimulationResult: Component {
         self.parameters = parameters
     }
     
-    public func sample(at index: Int) -> Sample {
+    public func time(at sampleIndex: Int) -> Double {
+        return timeSettings.startTime + timeSettings.timeStep * Double(sampleIndex)
+    }
+    
+    public func sample(at index: Int) -> Sample? {
+        guard index >= 0 && index < sampleCount else { return nil }
         return Sample(sampleIndex: index, result: self)
     }
     
@@ -140,7 +161,19 @@ public struct SimulationResult: Component {
         
         return result
     }
-    
+    /// Get a numeric value at given sample index for series at given index.
+    ///
+    /// The series must be numeric - double series. Variants, even if convertible to double, are not
+    /// considered.
+    ///
+    public func doubleValue(at sampleIndex: Int, forSeriesAt seriesIndex: Int) -> Double? {
+        let data = seriesValues(at: seriesIndex)
+        switch data {
+        case .double(let values): return values[sampleIndex]
+        case .variant(_):         return nil
+        }
+    }
+
     public func regularTimeSeries(at index: Int) -> RegularTimeSeries? {
         guard let doubles = doubleSeries(at: index)
         else { return nil }
@@ -149,4 +182,15 @@ public struct SimulationResult: Component {
                                  startTime: timeSettings.startTime,
                                  timeDelta: timeSettings.timeStep)
     }
+    
+    public func regularTimeSeries(_ reference: VariableReference) -> RegularTimeSeries? {
+        guard let index = seriesIndex(reference),
+              let doubles = doubleSeries(at: index)
+        else { return nil }
+        
+        return RegularTimeSeries(data: doubles,
+                                 startTime: timeSettings.startTime,
+                                 timeDelta: timeSettings.timeStep)
+    }
+
 }
