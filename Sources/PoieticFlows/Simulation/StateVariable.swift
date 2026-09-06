@@ -25,7 +25,7 @@ public struct StateVariable: CustomStringConvertible {
     ///
     /// - SeeAlso: ``SimulationState``
     ///
-    public let reference: SimulationState.Reference
+    public let reference: VariableReference
 
     /// Internal name of the variable.
     ///
@@ -103,13 +103,13 @@ public struct StateVariable: CustomStringConvertible {
         "\(reference)[\(name),\(content)]"
     }
     
-    internal init(reference: SimulationState.Reference, name: String, content: Content) {
+    internal init(reference: VariableReference, name: String, content: Content) {
         self.reference = reference
         self.name = name
         self.content = content
     }
     
-    internal init(reference: SimulationState.Reference, builtin: BuiltinVariable) {
+    internal init(reference: VariableReference, builtin: BuiltinVariable) {
         self.reference = reference
         self.name = builtin.normalizedKey
         self.content = .builtin(builtin)

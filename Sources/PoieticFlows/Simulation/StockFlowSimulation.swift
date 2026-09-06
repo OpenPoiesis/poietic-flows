@@ -13,7 +13,7 @@ import PoieticCore
 public enum SimulationError: Error, CustomStringConvertible {
     case unknownObject(ObjectID)
     case evaluation(ObjectID, EvaluationError)
-    case stateValue(ObjectID, SimulationState.Reference, ValueError)
+    case stateValue(ObjectID, VariableReference, ValueError)
     case atomExpected(ObjectID)
 
     public var description: String {
@@ -106,7 +106,7 @@ public class StockFlowSimulation {
     }
     
     internal func write(_ value: Variant,
-                      to reference: SimulationState.Reference,
+                      to reference: VariableReference,
                       of objectID: ObjectID,
                       in state: inout SimulationState)
     throws (SimulationError)

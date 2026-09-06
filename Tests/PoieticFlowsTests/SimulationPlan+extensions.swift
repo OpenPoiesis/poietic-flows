@@ -8,6 +8,7 @@
 import PoieticCore
 import PoieticFlows
 
+// FIXME: Remove once the new tests are validated
 extension SimulationPlan {
     /// Index of a stock in a list of stocks or in a stock difference vector.
     ///
@@ -29,7 +30,7 @@ extension SimulationPlan {
         return index
     }
     
-    func variableReference(_ object: some ObjectProtocol) -> SimulationState.Reference? {
+    func variableReference(_ object: some ObjectProtocol) -> VariableReference? {
         return variableReference(object.objectID)
     }
 

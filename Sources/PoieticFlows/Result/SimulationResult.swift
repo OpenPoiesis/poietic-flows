@@ -7,8 +7,6 @@
 
 import PoieticCore
 
-public typealias VariableReference = SimulationState.Reference
-
 public struct SimulationResult: Component {
     public struct Series {
         public let reference: VariableReference

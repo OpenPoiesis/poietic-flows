@@ -28,8 +28,9 @@ extension StockFlowSimulation {
             let outflow: Double = estimated[stock.outflows].sum()
             
             let current: Double = stocks[s]
+            // TODO: Validate both of these guards for both of flow scalings (there were issues with `stockCycle` test case)
             guard outflow > 0 else { continue }
-            guard current > 0 else { continue }
+            guard current >= 0 else { continue }
                     
             switch flowScaling {
             case .outflowFirst:

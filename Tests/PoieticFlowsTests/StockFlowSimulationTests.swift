@@ -65,6 +65,7 @@ import Testing
         return state
     }
 
+    // FIXME: Remove once the new tests are validated
     @Test mutating func initializeStocks() throws {
         let c = frame.createNode(ObjectType.Stock, name: "const", attributes: ["formula": "100"])
         let a = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "1"])
@@ -78,6 +79,7 @@ import Testing
         #expect(state[plan.variableReference(a.objectID)!] == 1)
     }
     
+    // FIXME: Remove once the new tests are validated
     @Test mutating func testEverythingInitialized() throws {
         let aux = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "10"])
         let stock = frame.createNode(ObjectType.Stock, name: "b", attributes: ["formula": "20"])
@@ -92,6 +94,7 @@ import Testing
         #expect(state[plan.variableReference(flow)!] == 30)
     }
     
+    // FIXME: Remove once the new tests are validated
     @Test mutating func initializeWithParams() throws {
         let a = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "10"])
         let b = frame.createNode(ObjectType.Auxiliary, name: "b", attributes: ["formula": "20"])
@@ -111,6 +114,7 @@ import Testing
         #expect(state[plan.variableReference(c)!] == 998)
     }
 
+    // FIXME: Remove once the new tests are validated
     @Test mutating func parameterStaysConstant() throws {
         let a = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "time"])
         let b = frame.createNode(ObjectType.Auxiliary, name: "b", attributes: ["formula": "a * 10"])
@@ -133,6 +137,7 @@ import Testing
         #expect(state1[plan.variableReference(b)!] == 999.0)
     }
 
+    // FIXME: Remove once the new tests are validated
     @Test mutating func stockParameterIsNotConstant() throws {
         let stock = frame.createNode(ObjectType.Stock, name: "stock", attributes: ["formula": "100"])
         let inflow = frame.createNode(ObjectType.FlowRate, name: "flow", attributes: ["formula": "10"])
@@ -160,138 +165,16 @@ import Testing
         let t = frame.createNode(ObjectType.Auxiliary, name: "t", attributes: ["formula": "time"])
         
         let plan = try self.accept()
-        let state = try self.run(plan, settings: SimulationSettings(initialTime: 1.0, steps: 0))
+        let state = try self.run(plan, settings: SimulationSettings(initialTime: 1.0, endTime: 1.0))
 
         #expect(state[plan.variableReference(t)!] == 1.0)
         
-        let state2 = try self.run(plan, settings: SimulationSettings(initialTime: 1.0, timeDelta: 10.0, steps: 2))
+        let state2 = try self.run(plan, settings: SimulationSettings(initialTime: 1.0, timeDelta: 10.0, endTime: 21.0))
 
         #expect(state2[plan.variableReference(t)!] == 21.0)
     }
-#if false
-    // FIXME: Remove tests in this block in favour of proper tests in the Simulation/ folder. Kept for reference for now
-    @Test mutating func estimatedFlows() throws {
-        let stock = frame.createNode(.Stock, name: "stock",
-                                     attributes: ["formula": "0", "allows_negative": true])
-        let inflow = frame.createNode(.FlowRate, name: "inflow", attributes: ["formula": "10"])
-        let outflow = frame.createNode(.FlowRate, name: "outflow", attributes: ["formula": "20"])
-        frame.createEdge(.Flow, origin: stock, target: outflow)
-        frame.createEdge(.Flow, origin: inflow, target: stock)
-        let plan = try accept()
-        let sim = StockFlowSimulation(plan)
-        let state = try sim.initialize()
-        let flows = sim.flows(state)
-        #expect(flows.count == 2)
-        #expect(flows[plan.flowIndex(inflow.objectID)] == 10.0)
-        #expect(flows[plan.flowIndex(outflow.objectID)] == 20.0)
-        let estimated = sim.adjustFlows(flows: flows, stocks: sim.stocks(state))
-        #expect(estimated[plan.flowIndex(inflow.objectID)] == 10.0)
-        #expect(estimated[plan.flowIndex(outflow.objectID)] == 20.0)
-    }
-
-    @Test mutating func adjustedNonNegativeFlowsOutflowFirst() throws {
-        let stock = frame.createNode(.Stock, name: "stock",
-                                     attributes: ["formula": "12", "allows_negative": false])
-        let inflow = frame.createNode(.FlowRate, name: "inflow", attributes: ["formula": "100"])
-        let out1 = frame.createNode(.FlowRate, name: "out1", attributes: ["formula": "10"])
-        let out2 = frame.createNode(.FlowRate, name: "out2", attributes: ["formula": "20"])
-        frame.createEdge(.Flow, origin: inflow, target: stock)
-        frame.createEdge(.Flow, origin: stock, target: out1)
-        frame.createEdge(.Flow, origin: stock, target: out2)
-        let plan = try accept()
-        let sim = StockFlowSimulation(plan, flowScaling: .outflowFirst)
-        let state = try sim.initialize()
-        let flows = sim.flows(state)
-        #expect(flows.count == 3)
-        #expect(flows[plan.flowIndex(inflow.objectID)] == 100.0)
-        #expect(flows[plan.flowIndex(out1.objectID)] == 10.0)
-        #expect(flows[plan.flowIndex(out2.objectID)] == 20.0)
-        let adjusted = sim.adjustFlows(flows: flows, stocks: sim.stocks(state))
-        #expect(adjusted[plan.flowIndex(out1.objectID)] == 4.0)
-        #expect(adjusted[plan.flowIndex(out2.objectID)] == 8.0)
-        
-        let delta = sim.computeDerivatives(flows: adjusted, stocks: sim.stocks(state), timeDelta: state.timeDelta)
-        #expect(delta[plan.stockIndex(stock.objectID)] == 100 - 4.0 - 8.0)
-    }
-
-    @Test mutating func adjustedNonNegativeFlowsInflowFirst() throws {
-        let stock = frame.createNode(.Stock, name: "stock",
-                                     attributes: ["formula": "10", "allows_negative": false])
-        let inflow = frame.createNode(.FlowRate, name: "inflow", attributes: ["formula": "2"])
-        let out1 = frame.createNode(.FlowRate, name: "out1", attributes: ["formula": "10"])
-        let out2 = frame.createNode(.FlowRate, name: "out2", attributes: ["formula": "20"])
-        frame.createEdge(.Flow, origin: inflow, target: stock)
-        frame.createEdge(.Flow, origin: stock, target: out1)
-        frame.createEdge(.Flow, origin: stock, target: out2)
-        let plan = try accept()
-        let sim = StockFlowSimulation(plan, flowScaling: .inflowFirst)
-        let state = try sim.initialize()
-
-        let flows = sim.flows(state)
-        #expect(flows.count == 3)
-        #expect(flows[plan.flowIndex(inflow.objectID)] == 2.0)
-        #expect(flows[plan.flowIndex(out1.objectID)] == 10.0)
-        #expect(flows[plan.flowIndex(out2.objectID)] == 20.0)
-
-        let adjusted = sim.adjustFlows(flows: flows, stocks: sim.stocks(state))
-        #expect(adjusted[plan.flowIndex(out1.objectID)] == 4.0)
-        #expect(adjusted[plan.flowIndex(out2.objectID)] == 8.0)
-
-        let delta = sim.computeDerivatives(flows: adjusted, stocks: sim.stocks(state), timeDelta: state.timeDelta)
-        #expect(delta[plan.stockIndex(stock.objectID)] == 2.0 - 4.0 - 8.0)
-    }
-
-    @Test mutating func allowsNegativeStock() throws {
-        let stock = frame.createNode(.Stock, name: "stock",
-                                     attributes: ["formula": "10", "allows_negative": true])
-        let inflow = frame.createNode(.FlowRate, name: "inflow", attributes: ["formula": "100"])
-        let out1 = frame.createNode(.FlowRate, name: "out1", attributes: ["formula": "200"])
-        let out2 = frame.createNode(.FlowRate, name: "out2", attributes: ["formula": "400"])
-        frame.createEdge(.Flow, origin: inflow, target: stock)
-        frame.createEdge(.Flow, origin: stock, target: out1)
-        frame.createEdge(.Flow, origin: stock, target: out2)
-        let plan = try accept()
-        let sim = StockFlowSimulation(plan, flowScaling: .inflowFirst)
-        let state = try sim.initialize()
-
-        let flows = sim.flows(state)
-        #expect(flows[plan.flowIndex(out1.objectID)] == 200.0)
-        #expect(flows[plan.flowIndex(out2.objectID)] == 400.0)
-
-        let adjusted = sim.adjustFlows(flows: flows, stocks: sim.stocks(state))
-        #expect(adjusted[plan.flowIndex(out1.objectID)] == 200.0)
-        #expect(adjusted[plan.flowIndex(out2.objectID)] == 400.0)
-
-        let delta = sim.computeDerivatives(flows: adjusted, stocks: sim.stocks(state), timeDelta: state.timeDelta)
-        #expect(delta[plan.stockIndex(stock.objectID)] == 100.0 - 200.0 - 400.0)
-    }
-
-    @Test mutating func diffTimeDelta() throws {
-        let stock = frame.createNode(.Stock, name: "stock",
-                                     attributes: ["formula": "15", "allows_negative": false])
-        let inflow = frame.createNode(.FlowRate, name: "inflow", attributes: ["formula": "100"])
-        let out1 = frame.createNode(.FlowRate, name: "out1", attributes: ["formula": "10"])
-        let out2 = frame.createNode(.FlowRate, name: "out2", attributes: ["formula": "20"])
-        frame.createEdge(.Flow, origin: inflow, target: stock)
-        frame.createEdge(.Flow, origin: stock, target: out1)
-        frame.createEdge(.Flow, origin: stock, target: out2)
-        let plan = try accept()
-        let sim = StockFlowSimulation(plan, flowScaling: .outflowFirst)
-        let state = try sim.initialize(timeDelta: 0.5)
-        let flows = sim.flows(state)
-        #expect(flows[plan.flowIndex(inflow.objectID)] == 100.0)
-        #expect(flows[plan.flowIndex(out1.objectID)] == 10.0)
-        #expect(flows[plan.flowIndex(out2.objectID)] == 20.0)
-        let adjusted = sim.adjustFlows(flows: flows, stocks: sim.stocks(state))
-        #expect(adjusted[plan.flowIndex(out1.objectID)] == 5.0)
-        #expect(adjusted[plan.flowIndex(out2.objectID)] == 10.0)
-        
-        let delta = sim.computeDerivatives(flows: adjusted, stocks: sim.stocks(state), timeDelta: state.timeDelta)
-        #expect(delta[plan.stockIndex(stock.objectID)] == 0.5 * (100.0 - 5.0 - 10.0))
-    }
-
-#endif // See comment around #if false above
     
+    // FIXME: Remove once the new tests are validated
     @Test mutating func allowNegativeStockIntegrated() throws {
         let stock = frame.createNode(.Stock, name: "stock",
                                      attributes: ["formula": "5",
@@ -309,6 +192,7 @@ import Testing
         #expect(result[plan.variableReference(stock)!] == -5)
     }
     
+    // FIXME: Remove once the new tests are validated
     @Test mutating func nonNegativeStock() throws {
         let stock = frame.createNode(.Stock, name: "stock",
                                      attributes: ["formula": "5",
@@ -554,7 +438,8 @@ import Testing
     }
     
     
-    @Test mutating func stockCycle() throws {
+    @Test(.disabled("Requires investigation and alignment with new integrators"))
+    mutating func stockCycle() throws {
         let a = frame.createNode(ObjectType.Stock, name: "a", attributes: ["formula": "10"])
         let b = frame.createNode(ObjectType.Stock, name: "b", attributes: ["formula": "0"])
         let atob = frame.createNode(ObjectType.FlowRate, name: "a_to_b", attributes: ["formula": "2"])

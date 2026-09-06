@@ -15,41 +15,42 @@ public enum StateVariableType: Equatable {
     case variant
 }
 
+public enum VariableReference: Hashable, CustomStringConvertible, Sendable {
+    case builtin(BuiltinVariable)
+    case stock(Int)
+    case flow(Int)
+    case numeric(Int)
+    case variant(Int)
+
+    public var description: String {
+        switch self {
+        case .builtin(let variable): "builtin(\(variable))"
+        case .stock(let index):   "stock(\(index))"
+        case .flow(let index):    "flow(\(index))"
+        case .numeric(let index): "numeric(\(index))"
+        case .variant(let index): "variant(\(index))"
+        }
+    }
+    
+    public var type: StateVariableType {
+        switch self {
+        case .builtin: .builtin
+        case .stock:   .stock
+        case .flow:    .flow
+        case .numeric: .numeric
+        case .variant: .variant
+        }
+    }
+}
+
 public struct SimulationState {
     // Replaces BoundVariable
     // Alt names: just Reference or just Variable
-    public enum Reference: Hashable, CustomStringConvertible, Sendable {
-        case builtin(BuiltinVariable)
-        case stock(Int)
-        case flow(Int)
-        case numeric(Int)
-        case variant(Int)
-
-        public var description: String {
-            switch self {
-            case .builtin(let variable): "builtin(\(variable))"
-            case .stock(let index):   "stock(\(index))"
-            case .flow(let index):    "flow(\(index))"
-            case .numeric(let index): "numeric(\(index))"
-            case .variant(let index): "variant(\(index))"
-            }
-        }
-        
-        public var type: StateVariableType {
-            switch self {
-            case .builtin: .builtin
-            case .stock:   .stock
-            case .flow:    .flow
-            case .numeric: .numeric
-            case .variant: .variant
-            }
-        }
-    }
     
     public internal(set) var step: Int
     public internal(set) var time: Double
     public internal(set) var timeDelta: Double
-    private var constants: Set<Reference>
+    private var constants: Set<VariableReference>
 
     /// Stocks
     public var stocks: NumericVector
@@ -79,15 +80,15 @@ public struct SimulationState {
         self.variants = Array(repeating: Variant(0), count: plan.variantVariableCount)
     }
 
-    public func isConstant(_ ref: Reference) -> Bool {
+    public func isConstant(_ ref: VariableReference) -> Bool {
         return constants.contains(ref)
     }
     /// Mark reference as constant
-    public mutating func markAsConstant(_ ref: Reference) {
+    public mutating func markAsConstant(_ ref: VariableReference) {
         constants.insert(ref)
     }
 
-    subscript(ref: Reference) -> Variant {
+    subscript(ref: VariableReference) -> Variant {
         switch ref {
             
         case let .builtin(builtin): return Variant(doubleValue(forBuiltin: builtin))
@@ -98,7 +99,7 @@ public struct SimulationState {
         }
     }
 
-    func doubleValue(at ref: Reference) throws (ValueError) -> Double {
+    func doubleValue(at ref: VariableReference) throws (ValueError) -> Double {
         switch ref {
         case let .builtin(builtin): return doubleValue(forBuiltin: builtin)
         case let .stock(index):     return stocks[index]
@@ -116,7 +117,7 @@ public struct SimulationState {
         }
     }
 
-    mutating func setValue(_ variant: Variant, for reference: Reference) throws (ValueError) {
+    mutating func setValue(_ variant: Variant, for reference: VariableReference) throws (ValueError) {
         switch reference {
         case .builtin(_):
             preconditionFailure("Trying to set builtin in simulation state")

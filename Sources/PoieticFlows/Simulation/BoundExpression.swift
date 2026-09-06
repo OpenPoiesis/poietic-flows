@@ -8,7 +8,7 @@
 import PoieticCore
 
 public struct BoundVariable: TypedVariable {
-    public let reference: SimulationState.Reference
+    public let reference: VariableReference
     public let valueType: ValueType
     
     public var description: String { "BoundVariable(\(reference), \(valueType))" }

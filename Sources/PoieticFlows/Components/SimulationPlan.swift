@@ -123,7 +123,7 @@ public final class SimulationPlan: Component {
     /// - Complexity: O(n)
     /// - SeeAlso:  ``stateVariables``, ``simulationObject(_:)``
     ///
-    public func variableReference(_ id: ObjectID) -> SimulationState.Reference? {
+    public func variableReference(_ id: ObjectID) -> VariableReference? {
         // Since this is just for debug purposes, O(n) should be fine, no need
         // for added complexity of the code.
         guard let first = simulationObjects.first(where: {$0.objectID == id}) else {
@@ -186,7 +186,7 @@ public final class SimulationPlan: Component {
     }
     
     /// State variable with the given state reference.
-    public func variable(for reference: SimulationState.Reference) -> StateVariable? {
+    public func variable(for reference: VariableReference) -> StateVariable? {
         stateVariables.first { $0.reference == reference }
     }
 

@@ -62,7 +62,7 @@ class StateVariableTable {
         return objectIndex[objectID]
     }
 
-    func reference(_ objectID: ObjectID) -> SimulationState.Reference? {
+    func reference(_ objectID: ObjectID) -> VariableReference? {
         return objectIndex[objectID]?.reference
     }
 
@@ -77,7 +77,7 @@ class StateVariableTable {
 
         precondition(nameIndex[name] == nil)
 
-        let ref: SimulationState.Reference = .builtin(builtin)
+        let ref: VariableReference = .builtin(builtin)
         
         nameIndex[name] = BoundVariable(reference: ref, valueType: builtin.valueType)
         register(name, reference: ref, content: .builtin(builtin))
@@ -96,7 +96,7 @@ class StateVariableTable {
         precondition(nameIndex[name] == nil)
         precondition(objectIndex[objectID] == nil)
 
-        let ref: SimulationState.Reference
+        let ref: VariableReference
         
         switch role {
         case .stock:
@@ -155,7 +155,7 @@ class StateVariableTable {
     /// Creates a state variable, assigns it a result column and appends it to the list of state
     /// variables.
     @discardableResult
-    func register(_ name: String, reference: SimulationState.Reference, content: StateVariable.Content) -> StateVariable {
+    func register(_ name: String, reference: VariableReference, content: StateVariable.Content) -> StateVariable {
         let variable = StateVariable(
             reference: reference,
             name: name,

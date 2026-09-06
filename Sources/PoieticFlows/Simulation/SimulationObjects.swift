@@ -86,7 +86,7 @@ public struct SimulationObject: CustomStringConvertible {
     ///
     /// - SeeAlso: ``SimulationPlan/stateVariables``
     ///
-    public let variableReference: SimulationState.Reference
+    public let variableReference: VariableReference
 
     /// Variable containing estimated value of the object, if the object's value is adjusted
     /// during computation, such as flows.
@@ -193,7 +193,7 @@ public struct BoundGraphicalFunction {
     public let function: GraphicalFunction
     
     /// Index of a variable that is a parameter for the function.
-    public let parameter: SimulationState.Reference
+    public let parameter: VariableReference
 }
 
 /// Compiled delay node.
@@ -219,7 +219,7 @@ public struct BoundDelay {
     ///
     /// - SeeAlso: ``StockFlowSimulation/initialize(delay:in:)``
     ///
-    public let initialValueRef: SimulationState.Reference
+    public let initialValueRef: VariableReference
     /// Index to the variants array.
     ///
     /// - Note: We are assuming that we can use only variant atom types for delay.
@@ -227,7 +227,7 @@ public struct BoundDelay {
     /// - SeeAlso: ``SimulationState/variants``
     ///
     public let queueIndex: Int
-    public let inputValueRef: SimulationState.Reference
+    public let inputValueRef: VariableReference
 }
 
 /// Compiled smooth node.
@@ -243,7 +243,7 @@ public struct BoundSmooth {
     public let smoothValueIndex: Int
     
     /// Index to the numeric values of simulation state where the smooth node input is stored.
-    public let inputValueRef: SimulationState.Reference
+    public let inputValueRef: VariableReference
     
 }
 
