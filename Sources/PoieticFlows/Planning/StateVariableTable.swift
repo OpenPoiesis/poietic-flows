@@ -52,10 +52,6 @@ class StateVariableTable {
     /// Used to resolve parameters of delay/smooth/graphical function nodes.
     private var objectIndex: [ObjectID: BoundVariable] = [:]
 
-    // State allocation counts
-    var numericVariableCount: Int { numericSequence.nextValue }
-    var variantVariableCount: Int { variantSequence.nextValue }
-
     // MARK: - Lookup
     
     func boundVariable(_ objectID: ObjectID) -> BoundVariable? {

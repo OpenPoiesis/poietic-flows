@@ -51,17 +51,33 @@ public final class SimulationPlan: Component {
     internal init(simulationObjects: [SimulationObject] = [],
                   stateVariables: [StateVariable] = [],
                   stocks: [BoundStock] = [],
-                  flows: [BoundFlow] = [],
-                  numericVariableCount: Int,
-                  variantVariableCount: Int)
+                  flows: [BoundFlow] = [])
     {
+        // Create layout and order variables
+        var referenceMap: [VariableReference: Int] = [:]
+        var references: [VariableReference] = []
+        for (index, variable) in stateVariables.enumerated() {
+            referenceMap[variable.reference] = index
+            references.append(variable.reference)
+        }
+        self.layout = SimulationStateLayout(references: references)
+        precondition(stocks.count == self.layout.stocks.count)
+        precondition(flows.count == self.layout.flows.count)
+
+        var orderedVariables: [StateVariable] = []
+        for ref in self.layout.orderedReferences {
+            // We can unwrap – we made the map above and layout holds all the references
+            let index = referenceMap[ref]!
+            orderedVariables.append(stateVariables[index])
+        }
+        
         self.simulationObjects = simulationObjects
-        self.stateVariables = stateVariables
+        self.stateVariables = orderedVariables
         self.stocks = stocks
         self.flows = flows
-        self.numericVariableCount = numericVariableCount
-        self.variantVariableCount = variantVariableCount
     }
+    
+    public let layout: SimulationStateLayout
     
     /// List of objects that are considered in the computation computed, ordered by computational
     /// dependency.
@@ -81,14 +97,8 @@ public final class SimulationPlan: Component {
     ///
     public let simulationObjects: [SimulationObject]
     
-    /// List of simulation state variables.
-    ///
-    /// The list of state variables defines the state vector layout and content.
-    ///
-    /// Simulation object's state might be contained in multiple state variables. For example, delay
-    /// uses two state variables: list of double values for the queue and an initial value.
-    ///
-    /// The internal state is typically not to be presented to the user.
+    /// List of simulation state variables in canonical order: builtins, stocks, flows, numerics
+    /// and variants.
     ///
     /// - SeeAlso: ``StateVariable``, ``SimulationPlanningSystem``.
     ///
@@ -106,15 +116,7 @@ public final class SimulationPlan: Component {
     /// - SeeAlso: ``BoundFlow``, ``StockFlowSimulationSystem``.
     ///
     public let flows: [BoundFlow]
-    
-    // State allocation information
-    // TODO: Can't we compute that from stateVariables?
-    /// Number of numeric variables needed to be allocated.
-    public let numericVariableCount: Int
-
-    /// Number of variant variables needed to be allocated.
-    public let variantVariableCount: Int
-    
+        
     /// Get index into a list of computed variables for an object with given ID.
     ///
     /// This function is just for inspection and debugging purposes, it is not

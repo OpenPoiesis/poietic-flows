@@ -76,8 +76,8 @@ public struct SimulationState {
         self.timeDelta = timeDelta
         self.stocks = NumericVector(zeroCount: plan.stocks.count)
         self.flows = NumericVector(zeroCount: plan.flows.count)
-        self.numerics = Array(repeating: 0.0, count: plan.numericVariableCount)
-        self.variants = Array(repeating: Variant(0), count: plan.variantVariableCount)
+        self.numerics = Array(repeating: 0.0, count: plan.layout.numerics.count)
+        self.variants = Array(repeating: Variant(0), count: plan.layout.variants.count)
     }
 
     public func isConstant(_ ref: VariableReference) -> Bool {

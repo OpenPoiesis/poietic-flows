@@ -10,11 +10,11 @@ extension StockFlowSimulation {
     /// Adjust the flow rates based on flow scaling method.
     ///
     /// - Parameters:
-    ///     - flows: Estimated flow rates – rates as computed by the user-provided computation
+    ///     - estimated: Estimated flow rates – rates as computed by the user-provided computation
     ///              the model.
     ///     - stocks: Vector of stock values.
     ///
-    /// The items of `flows` correspond to the items in the simulation plan's `flows` and the items
+    /// The items of `estimated` correspond to the items in the simulation plan's `flows` and the items
     /// in `stocks` correspond to the items in the simulation plan's `stocks`.
     ///
     @inlinable
@@ -24,13 +24,17 @@ extension StockFlowSimulation {
         for (s, stock) in plan.stocks.enumerated() {
             guard !stock.allowsNegative else { continue }
             
-            let inflow: Double = estimated[stock.inflows].sum()
+            // The outflow sum is taken from the estimates: this stock is the
+            // source of all its outflows, so no other stock scales them.
             let outflow: Double = estimated[stock.outflows].sum()
+            // The inflow sum is taken from the adjusted values: an inflow is an
+            // outflow of another stock and may have been scaled already.
+            // NOTE: This relies on the source stock being processed before the
+            // filling stock in `plan.stocks` order.
+            let inflow: Double = adjusted[stock.inflows].sum()
             
-            let current: Double = stocks[s]
-            // TODO: Validate both of these guards for both of flow scalings (there were issues with `stockCycle` test case)
+            let current = max(0, stocks[s])
             guard outflow > 0 else { continue }
-            guard current >= 0 else { continue }
                     
             switch flowScaling {
             case .outflowFirst:
@@ -120,7 +124,7 @@ extension StockFlowSimulation {
     
     /// Computes stock rates
     ///
-    /// 1. Evaluates auxiliaries and flow estimates with the previous stock rates.
+    /// 1. Evaluates auxiliaries and flow estimates with the previous stock values.
     /// 2. Computes adjusted flow rates.
     /// 3. Computes net stock rates.
     ///

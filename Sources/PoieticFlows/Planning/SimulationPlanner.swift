@@ -119,9 +119,7 @@ public class SimulationPlanner {
             simulationObjects: simulationObjects,
             stateVariables: variables.variables,
             stocks: boundStocks,
-            flows: boundFlows,
-            numericVariableCount: variables.numericVariableCount,
-            variantVariableCount: variables.variantVariableCount
+            flows: boundFlows
         )
         
         return plan
