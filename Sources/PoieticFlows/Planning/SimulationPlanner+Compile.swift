@@ -49,7 +49,6 @@ extension SimulationPlanner {
                                        computation: rep,
                                        variableReference: variable.reference,
                                        role: role,
-                                       valueType: rep.valueType,
                                        nameKey: nameComp.key)
        
             result.append(sim)

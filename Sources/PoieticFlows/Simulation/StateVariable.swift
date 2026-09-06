@@ -82,6 +82,7 @@ public struct StateVariable: CustomStringConvertible {
     public let content: Content
     
     // TODO: [REFACTORING] This is used only in simulation result view and it is somewhat under-specified and unclear. Reconsider.
+    // TODO: Rename to ownerID
     /// ID of a simulation node that the variable represents, if the variable
     /// represents a node.
     ///

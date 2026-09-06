@@ -105,10 +105,6 @@ public struct SimulationObject: CustomStringConvertible {
         }
     }
 
-    /// Type of the variable value.
-    ///
-    public let valueType: ValueType
-    
     /// Normalised name key of the object.
     ///
     public let nameKey: String
