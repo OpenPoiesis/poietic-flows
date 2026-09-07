@@ -23,7 +23,7 @@ import PoieticCore
 ///
 /// - **Input:**
 ///     - ``SimulationPlan`` singleton, required.
-///     - ``SimulationSettings`` singleton, optional. If not provided then default settings are used.
+///     - ``SimulationTimeSettings`` singleton, optional. If not provided then default settings are used.
 ///     - ``ScenarioParameters`` singleton, optional.
 /// - **Output:** ``SimulationResult`` singleton is set when simulation was finished successfully,
 ///   otherwise the simulation result will be removed or not set.
@@ -41,30 +41,45 @@ public struct StockFlowSimulationSystem: System {
         world.removeSingleton(SimulationResult.self)
 
         guard let plan: SimulationPlan = world.singleton() else { return }
-        let settings: SimulationSettings = world.singleton() ?? SimulationSettings()
+        let timeSettings: SimulationTimeSettings = world.singleton() ?? SimulationTimeSettings()
+        // FIXME: Replace with StockFlow simulation settings
+        let simSettings: SimulationSettings = world.singleton() ?? SimulationSettings()
         let parameters: ScenarioParameters = world.singleton() ?? ScenarioParameters()
 
-        guard settings.timeDelta > 0 else {
-            throw InternalSystemError("StockFlowSimulationSystem", message: "Time delta must be > 0")
+        guard timeSettings.timeStep > 0 else {
+            throw InternalSystemError("StockFlowSimulationSystem", message: "Time step must be > 0")
         }
-        guard settings.endTime >= settings.initialTime else {
+        guard timeSettings.finalTime >= timeSettings.startTime else {
             throw InternalSystemError("StockFlowSimulationSystem", message: "End time must be greater or equal to start time")
         }
 
-        guard let solverType = StockFlowSimulation.SolverType(rawValue: settings.solverType) else {
-            throw InternalSystemError(self, message: "Unknown solver type: \(settings.solverType)")
+        guard let solverType = StockFlowSimulation.SolverType(simSettings.solverType) else {
+            throw InternalSystemError(self, message: "Unknown solver type: \(simSettings.solverType)")
         }
 
+        guard let flowScaling = StockFlowSimulation.FlowScaling(simSettings.flowScaling) else {
+            throw InternalSystemError(self, message: "Unknown flow scaling: \(simSettings.flowScaling)")
+        }
+        
         // TODO: Add flow scaling parameter
-        let simulation = StockFlowSimulation(plan, solver: solverType)
+        let simulation = StockFlowSimulation(plan, solver: solverType, flowScaling: flowScaling)
 
-        var result = SimulationResult(initialTime: settings.initialTime,
-                                      timeDelta: settings.timeDelta)
+        var refParams: [VariableReference:Variant] = [:]
+        for (objectID, value) in parameters.values {
+            guard let ref = plan.variableReference(objectID) else {
+                throw InternalSystemError(self, message: "Parameters not sanitised (offending object ID:\(objectID))")
+            }
+            refParams[ref] = value
+        }
+        
+        var builder = SimulationResultBuilder(plan: plan,
+                                              timeSettings: timeSettings,
+                                              parameters: refParams)
 
         var currentState: SimulationState
         do {
-            currentState = try simulation.initialize(time: settings.initialTime,
-                                                     timeDelta: settings.timeDelta,
+            currentState = try simulation.initialize(time: timeSettings.startTime,
+                                                     timeDelta: timeSettings.timeStep,
                                                      parameters: parameters.values)
         }
         catch {
@@ -72,17 +87,20 @@ public struct StockFlowSimulationSystem: System {
             throw InternalSystemError(self, message: "Simulation failed: \(error)")
         }
 
-        result.append(currentState)
-        let steps = settings.steps
+        builder.append(state: currentState)
+
+        let steps = timeSettings.steps
         var step = 0
-                        
+                       
         while step < steps {
             let newState = try self.step(simulation: simulation, state: currentState)
-            result.append(newState)
+            builder.append(state: newState)
             currentState = newState
             step += 1
         }
 
+        let result = builder.build()
+        
         world.setSingleton(result)
     }
     

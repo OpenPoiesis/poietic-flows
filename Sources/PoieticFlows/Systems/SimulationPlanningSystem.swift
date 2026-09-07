@@ -91,7 +91,7 @@ public struct SimulationPlanningSystem: System {
 /// - **Dependency:** None.
 /// - **Input:**
 ///     - Object with a trait `Simulation`.
-/// - **Output:** ``SimulationSettings`` singleton if the corresponding object exists
+/// - **Output:** ``SimulationTimeSettings`` singleton if the corresponding object exists
 ///   in the plane.
 /// - **Forgiveness:** Nothing to be forgiven.
 ///
@@ -100,15 +100,18 @@ public struct SimulationPlanningSystem: System {
 /// is removed.
 ///
 public struct SimulationSettingsSystem: System {
+    // TODO: Use trait "Scenario", we will be moving away from singletons here
     public static func update(_ world: World) throws (InternalSystemError) {
         guard let plane = world.plane,
-              let object = plane.first(trait: Trait.Simulation)
+              let object = plane.first(trait: Trait.SimulationTime)
         else {
             world.removeSingleton(SimulationSettings.self)
+            world.removeSingleton(SimulationTimeSettings.self)
             return
         }
 
-        let settings = SimulationSettings(fromObject: object)
-        world.setSingleton(settings)
+        // FIXME: Replace SimulationSettings with new StockFlow sim. settings
+        world.setSingleton(SimulationSettings(fromObject: object))
+        world.setSingleton(SimulationTimeSettings(fromObject: object))
     }
 }

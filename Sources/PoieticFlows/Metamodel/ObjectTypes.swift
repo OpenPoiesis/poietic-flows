@@ -265,6 +265,7 @@ extension ObjectType {
         name: "Scenario",
         topologyType: .node,
         traits: [
+            Trait.Scenario,
             Trait.Name,
             Trait.Documentation,
             Trait.Orderable,
@@ -277,7 +278,9 @@ extension ObjectType {
         name: "Simulation",
         topologyType: .unstructured,
         traits: [
-            Trait.Simulation,
+//            Trait.Scenario,
+            Trait.SimulationTime,
+            Trait.StockFlowSimulationSettings,
         ]
     )
 }

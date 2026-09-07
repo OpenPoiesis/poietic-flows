@@ -7,122 +7,156 @@
 
 import PoieticCore
 
-// TODO: Separate numeric values (doubles) from Variant values, too many conversions/unwrapping
+public enum StateVariableType: Equatable {
+    case builtin
+    case stock
+    case flow
+    case numeric
+    case variant
+}
 
-/// A collection of simulation state variables.
-///
-public struct SimulationState: CustomStringConvertible {
-    public typealias Index = Int
-    
-    public let step: Int
-    public let time: Double
-    public let timeDelta: Double
-    
-    /// Values representing the simulation state.
-    ///
-    public var values: [Variant]
-    
-    /// Create a simulation state with all variables set to zero.
-    ///
-    /// - Parameters:
-    ///     - count: Number of state variables.
-    ///     - step: Simulation step.
-    ///     - time: Simulation time.
-    ///     - timeDelta: Simulation time delta.
-    ///
-    public init(count: Int, step: Int=0, time: Double=0, timeDelta: Double=1.0) {
-        self.step = step
-        self.time = time
-        self.timeDelta = timeDelta
-        self.values = Array(repeating: Variant(0), count: count)
-    }
-    
-    public init(values: [Variant], step: Int=0, time: Double=0, timeDelta: Double=1.0) {
-        self.step = step
-        self.time = time
-        self.timeDelta = timeDelta
-        self.values = values
-    }
-
-    /// Create a copy of a simulation state by advancing time.
-    ///
-    /// By default, the step is increased by 1, time is increased by `timeDelta`.
-    ///
-    /// Callers might override any of the values.
-    ///
-    public func advanced(step: Int?=nil, time: Double?=nil, timeDelta: Double?=nil) -> SimulationState {
-        SimulationState(values: values,
-                        step: step ?? self.step + 1,
-                        time: time ?? self.time + (timeDelta ?? self.timeDelta),
-                        timeDelta: timeDelta ?? self.timeDelta)
-    }
-    
-    /// Get or set a simulation variable by reference.
-    ///
-    @inlinable
-    public subscript(_ index: Index) -> Variant {
-        get {
-            return values[index]
-        }
-        set(value) {
-            values[index] = value
-        }
-    }
-    
-    @inlinable
-    public subscript(_ index: Index) -> Double {
-        get {
-            try! values[index].doubleValue()
-        }
-        set(value) {
-            values[index] = Variant(value)
-        }
-    }
-
-    
-    /// Get or set a simulation variable as double by reference.
-    ///
-    /// This subscript should be used when it is guaranteed that the value
-    /// is convertible to _double_, such as values for stocks or flows.
-    ///
-    public func double(at index: Index) -> Double {
-        // FIXME: Rename to unsafeDouble(at:)
-        do {
-            return try values[index].doubleValue()
-        }
-        catch {
-            fatalError("Unexpected non-double state value at \(index)")
-        }
-    }
-
-    /// - Precondition: Values at given indices must be convertible to a floating point number.
-    @inlinable
-    func numericVector(at indices: [Index]) -> NumericVector {
-        var vector = NumericVector(zeroCount: indices.count)
-        for (index, variableIndex) in indices.enumerated() {
-            vector[index] = try! values[variableIndex].doubleValue()
-        }
-        return vector
-    }
-
-    @inlinable
-    public subscript(indices: [Index]) -> NumericVector {
-        get {
-            return numericVector(at: indices)
-        }
-    }
+public enum VariableReference: Hashable, CustomStringConvertible, Sendable {
+    case builtin(BuiltinVariable)
+    case stock(Int)
+    case flow(Int)
+    case numeric(Int)
+    case variant(Int)
 
     public var description: String {
-        var items: [String] = []
-        // for (variable, value) in zip(model.stateVariables, values) {
-        for (index, value) in values.enumerated() {
-            let item = "\(index): \(value)"
-            items.append(item)
+        switch self {
+        case .builtin(let variable): "builtin(\(variable))"
+        case .stock(let index):   "stock(\(index))"
+        case .flow(let index):    "flow(\(index))"
+        case .numeric(let index): "numeric(\(index))"
+        case .variant(let index): "variant(\(index))"
         }
-        let text = items.joined(separator: ", ")
-        return "[\(text)]"
+    }
+    
+    public var type: StateVariableType {
+        switch self {
+        case .builtin: .builtin
+        case .stock:   .stock
+        case .flow:    .flow
+        case .numeric: .numeric
+        case .variant: .variant
+        }
+    }
+}
+
+public struct SimulationState {
+    // Replaces BoundVariable
+    // Alt names: just Reference or just Variable
+    
+    public internal(set) var step: Int
+    public internal(set) var time: Double
+    public internal(set) var timeDelta: Double
+    private var constants: Set<VariableReference>
+
+    /// Stocks
+    public var stocks: NumericVector
+    /// Values of flow rates.
+    ///
+    /// During computation it holds flow estimates – as computed by the formulas. In the result state
+    /// it holds adjusted flows.
+    public var flows: NumericVector
+
+    // NOTE: No need for a NumericVector in `numerics`, because we are not doing vector based
+    //       operations on it. It is just assortment of numeric values.
+    
+    /// Auxiliaries and internal numeric variables (such as estimated flows or smooth)
+    public var numerics: [Double]
+    public var variants: [Variant]
+    // What about smooth/delay queues?
+    // public var numericQueues: [NumericVector]
+
+    public init(plan: SimulationPlan, step: Int, time: Double, timeDelta: Double) {
+        self.constants = Set()
+        self.step = step
+        self.time = time
+        self.timeDelta = timeDelta
+        self.stocks = NumericVector(zeroCount: plan.stocks.count)
+        self.flows = NumericVector(zeroCount: plan.flows.count)
+        self.numerics = Array(repeating: 0.0, count: plan.layout.numerics.count)
+        self.variants = Array(repeating: Variant(0), count: plan.layout.variants.count)
+    }
+
+    public func isConstant(_ ref: VariableReference) -> Bool {
+        return constants.contains(ref)
+    }
+    /// Mark reference as constant
+    public mutating func markAsConstant(_ ref: VariableReference) {
+        constants.insert(ref)
+    }
+
+    subscript(ref: VariableReference) -> Variant {
+        switch ref {
+            
+        case let .builtin(builtin): return Variant(doubleValue(forBuiltin: builtin))
+        case let .stock(index):     return Variant(stocks[index])
+        case let .flow(index):      return Variant(flows[index])
+        case let .numeric(index):   return Variant(numerics[index])
+        case let .variant(index):   return variants[index]
+        }
+    }
+
+    func doubleValue(at ref: VariableReference) throws (ValueError) -> Double {
+        switch ref {
+        case let .builtin(builtin): return doubleValue(forBuiltin: builtin)
+        case let .stock(index):     return stocks[index]
+        case let .flow(index):      return flows[index]
+        case let .numeric(index):   return numerics[index]
+        case let .variant(index):   return try variants[index].doubleValue()
+        }
+    }
+    
+    func doubleValue(forBuiltin builtin: BuiltinVariable) -> Double {
+        switch builtin {
+        case .step:      return Double(step)
+        case .time:      return time
+        case .timeDelta: return timeDelta
+        }
+    }
+
+    mutating func setValue(_ variant: Variant, for reference: VariableReference) throws (ValueError) {
+        switch reference {
+        case .builtin(_):
+            preconditionFailure("Trying to set builtin in simulation state")
+        case let .stock(index):
+            let numeric = try variant.doubleValue()
+            stocks[index] = numeric
+        case let .flow(index):
+            let numeric = try variant.doubleValue()
+            flows[index] = numeric
+        case let .numeric(index):
+            let numeric = try variant.doubleValue()
+            numerics[index] = numeric
+        case let .variant(index):
+            variants[index] = variant
+        }
+    }
+    
+    /// Create a new simulation state by adding provided stock vector to the receiver's stock
+    /// vector.
+    ///
+    public func adding(stocks: NumericVector, step: Int, time: Double, timeDelta: Double) -> SimulationState {
+        precondition(stocks.count == self.stocks.count)
+        var newState = self
+        for (index, value) in stocks.enumerated() {
+            newState.stocks[index] += value
+        }
+        newState.step = step
+        newState.time = time
+        newState.timeDelta = timeDelta
+        
+        return newState
     }
 }
 
 
-
+// for evaluation
+extension SimulationState: VariableValueLookup {
+    public typealias Variable = BoundVariable
+    public func value(for variable: Variable) -> Variant {
+        self[variable.reference]
+    }
+}

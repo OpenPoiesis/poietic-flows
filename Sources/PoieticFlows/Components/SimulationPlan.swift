@@ -43,20 +43,41 @@ import PoieticCore
 ///
 /// - SeeAlso: ``StockFlowSimulationSystem``, ``SimulationPlanningSystems``.
 ///
-public struct SimulationPlan: Component {
-    // TODO: Make this class - "by reference"
+public final class SimulationPlan: Component {
+    // Keep the SimulationPlan by reference.
+    // TODO: Add simulation settings
+    // TODO: Add time settings
+    
     internal init(simulationObjects: [SimulationObject] = [],
                   stateVariables: [StateVariable] = [],
-                  builtins: BoundBuiltins = BoundBuiltins(),
                   stocks: [BoundStock] = [],
                   flows: [BoundFlow] = [])
     {
+        // Create layout and order variables
+        var referenceMap: [VariableReference: Int] = [:]
+        var references: [VariableReference] = []
+        for (index, variable) in stateVariables.enumerated() {
+            referenceMap[variable.reference] = index
+            references.append(variable.reference)
+        }
+        self.layout = SimulationStateLayout(references: references)
+        precondition(stocks.count == self.layout.stocks.count)
+        precondition(flows.count == self.layout.flows.count)
+
+        var orderedVariables: [StateVariable] = []
+        for ref in self.layout.orderedReferences {
+            // We can unwrap – we made the map above and layout holds all the references
+            let index = referenceMap[ref]!
+            orderedVariables.append(stateVariables[index])
+        }
+        
         self.simulationObjects = simulationObjects
-        self.stateVariables = stateVariables
-        self.builtins = builtins
+        self.stateVariables = orderedVariables
         self.stocks = stocks
         self.flows = flows
     }
+    
+    public let layout: SimulationStateLayout
     
     /// List of objects that are considered in the computation computed, ordered by computational
     /// dependency.
@@ -76,25 +97,12 @@ public struct SimulationPlan: Component {
     ///
     public let simulationObjects: [SimulationObject]
     
-    /// List of simulation state variables.
-    ///
-    /// The list of state variables defines the state vector layout and content.
-    ///
-    /// Simulation object's state might be contained in multiple state variables. For example, delay
-    /// uses two state variables: list of double values for the queue and an initial value.
-    ///
-    /// The internal state is typically not to be presented to the user.
+    /// List of simulation state variables in canonical order: builtins, stocks, flows, numerics
+    /// and variants.
     ///
     /// - SeeAlso: ``StateVariable``, ``SimulationPlanningSystem``.
     ///
     public let stateVariables: [StateVariable]
-    
-    /// List of compiled builtin variables.
-    ///
-    /// The compiled builtin variable references a state variable that holds
-    /// the value for the builtin variable and a kind of the builtin variable.
-    ///
-    public let builtins: BoundBuiltins
     
     
     /// Stocks with resolved inflows and outflows, ordered by the computation dependency.
@@ -108,7 +116,7 @@ public struct SimulationPlan: Component {
     /// - SeeAlso: ``BoundFlow``, ``StockFlowSimulationSystem``.
     ///
     public let flows: [BoundFlow]
-    
+        
     /// Get index into a list of computed variables for an object with given ID.
     ///
     /// This function is just for inspection and debugging purposes, it is not
@@ -117,13 +125,13 @@ public struct SimulationPlan: Component {
     /// - Complexity: O(n)
     /// - SeeAlso:  ``stateVariables``, ``simulationObject(_:)``
     ///
-    public func variableIndex(_ id: ObjectID) -> SimulationState.Index? {
+    public func variableReference(_ id: ObjectID) -> VariableReference? {
         // Since this is just for debug purposes, O(n) should be fine, no need
         // for added complexity of the code.
         guard let first = simulationObjects.first(where: {$0.objectID == id}) else {
             return nil
         }
-        return first.variableIndex
+        return first.variableReference
     }
     
     /// List of all normalised object names.
@@ -176,24 +184,41 @@ public struct SimulationPlan: Component {
     /// - Complexity: O(n)
     ///
     public func variable(withKey nameKey: String) -> StateVariable? {
-        guard let variable = stateVariables.first(where: { $0.nameKey == nameKey}) else {
-            return nil
-        }
-        
-        return variable
+        return stateVariables.first(where: { $0.name == nameKey})
     }
     
+    /// State variable with the given state reference.
+    public func variable(for reference: VariableReference) -> StateVariable? {
+        stateVariables.first { $0.reference == reference }
+    }
+
+    /// Primary state variable of an object.
+    ///
+    /// For flow this is the applied flow.
+    public func variable(forObject objectID: ObjectID) -> StateVariable? {
+        stateVariables.first { $0.content == .object(objectID) }
+    }
+
+    /// State variable of a builtin.
+    public func variable(forBuiltin builtin: BuiltinVariable) -> StateVariable? {
+        stateVariables.first { $0.content == .builtin(builtin) }
+    }
+
     /// List of all normalised state variable names, including internal ones.
-    public var variableNameKeys: [String] { stateVariables.map {$0.nameKey} }
+    public var variableNameKeys: [String] { stateVariables.map {$0.name} }
     
     /// Return a set of default variables - simulation time and all object variables.
     public var defaultVariables: [StateVariable] {
         var result: [StateVariable] = []
         
-        // TODO: Use adjusted/actual instead of direct object variable (requires: object.actualVariableIndex)
-        result.append(stateVariables[self.builtins.time])
+        if let time = variable(forBuiltin: .time) {
+            result.append(time)
+        }
+
         for object in self.simulationObjects {
-            result.append(stateVariables[object.variableIndex])
+            guard let variable = self.variable(forObject: object.objectID)
+            else { continue }
+            result.append(variable)
         }
         return result
     }
@@ -212,18 +237,16 @@ public struct SimulationPlan: Component {
     /// - Note: The `includeTime` is disregarded, if time variable is specified in the list.
     ///
     public func variables(named names: [String], includeTime: Bool = true) -> (known: [StateVariable], unknown: [String]) {
-        // TODO: Is this signature better or rather list of optionals? -> [StateVariable?]
-        
         let keys = names.map { NormalizedName.normalize($0) }
         let timeKey = BuiltinVariable.time.normalizedKey
         
         var result: [StateVariable] = []
         var unknown: [String] = []
         
-        // TODO: Use adjusted/actual instead of direct object variable (requires: object.actualVariableIndex)
-
-        if includeTime && !keys.contains(timeKey) {
-            result.append(stateVariables[self.builtins.time])
+        if includeTime && !keys.contains(timeKey),
+           let time = variable(forBuiltin: .time)
+        {
+            result.append(time)
         }
         
         for (key, name) in zip(keys, names) {

@@ -7,11 +7,37 @@
 
 import PoieticCore
 
+// TODO: StockFlowSimulationSettings + SimulationTimeSettings (now in core) will replace SimulationSettings
+public struct StockFlowSimulationSettings: Component {
+    public var solver: StockFlowSimulation.SolverType
+    public var flowScaling: StockFlowSimulation.FlowScaling
+    
+    /// Create new simulation settings from an object.
+    ///
+    /// Expected keys:
+    /// - `solver_type`, default value `euler`
+    /// - `flow_scaling`, default value `inflow_first`
+    ///
+    /// - SeeAlso: ``StockFlowSimulation/SolverType``, ``StockFlowSimulation/FlowScaling``
+    ///
+    public init(fromObject object: ObjectSnapshot) {
+        let solverType: String = object["solver_type"] ?? "euler"
+        let flowScaling: String = object["flow_scaling"] ?? "outflow_first"
+
+        self.solver = .init(solverType) ?? .euler
+        self.flowScaling = .init(flowScaling) ?? .inflowFirst
+    }
+}
+
 /// Settings of the simulation – time and solver.
 ///
 /// - SeeAlso: ``ScenarioParameters``.
 ///
+@available(*, deprecated, renamed: "SimulationTimeSettings", message: "Use SimulationTimeSettings and StockFlowSimulationSettings")
 public struct SimulationSettings: Component {
+    // TODO: Rename to SimulationTime and move to Core
+    // TODO: Split solver and add
+    // TODO: Rename "end time" to "stop time" or "final time" (preferred)
     /// Time of the initialisation state of the simulation.
     public var initialTime: Double
     
@@ -40,7 +66,8 @@ public struct SimulationSettings: Component {
     /// Solver type name.
     ///
     public var solverType: String
-    
+    public var flowScaling: String
+
 
     /// Create new simulation settings.
     ///
@@ -50,27 +77,32 @@ public struct SimulationSettings: Component {
     ///     - endTime: Final simulation time.
     ///     - solverType: Name of a solver to be used.
     ///
+    @available(*, deprecated, message: "Use SimulationTimeSettings and StockFlowSimulationSettings")
     public init(initialTime: Double = 0.0,
                 timeDelta: Double = 1.0,
                 endTime: Double = 10.0,
-                solverType: String = "euler")
+                solverType: String = "euler",
+                flowScaling: String = "outflow_first")
     {
         self.initialTime = initialTime
         self.timeDelta = timeDelta
         self.endTime = max(self.initialTime, endTime)
         self.solverType = solverType
+        self.flowScaling = flowScaling
     }
 
     @available(*, deprecated, message: "Use end time")
     public init(initialTime: Double = 0.0,
                 timeDelta: Double = 1.0,
                 steps: Int,
-                solverType: String = "euler")
+                solverType: String = "euler",
+                flowScaling: String = "outflow_first")
     {
         self.initialTime = initialTime
         self.timeDelta = timeDelta
         self.endTime = initialTime + Double(steps) * timeDelta
         self.solverType = solverType
+        self.flowScaling = flowScaling
     }
 
     /// Create new simulation settings from an object.
@@ -84,24 +116,28 @@ public struct SimulationSettings: Component {
         let initialTime = object["initial_time", default: 0.0]
         let timeDelta = object["time_delta", default: 1.0]
         let solverType = object["solver_type", default: "euler"]
+        let flowScaling = object["flow_scaling", default: "outflow_first"]
 
         if let endTime: Double = object["end_time"] {
             self.init(initialTime: initialTime,
                       timeDelta: timeDelta,
                       endTime: endTime,
-                      solverType: solverType)
+                      solverType: solverType,
+                      flowScaling: flowScaling)
         }
         else if let steps: Int = object["steps"], steps >= 0 {
             self.init(initialTime: initialTime,
                       timeDelta: timeDelta,
                       steps: steps,
-                      solverType: solverType)
+                      solverType: solverType,
+                      flowScaling: flowScaling)
         }
         else {
             self.init(initialTime: initialTime,
                       timeDelta: timeDelta,
                       steps: 0,
-                      solverType: solverType)
+                      solverType: solverType,
+                      flowScaling: flowScaling)
         }
         
 

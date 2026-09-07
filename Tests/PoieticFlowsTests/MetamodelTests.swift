@@ -41,7 +41,7 @@ import Testing
         let metamodel = StockFlowMetamodel
         for type in metamodel.types {
             for trait in type.traits {
-                #expect(metamodel.trait(name: trait.name) != nil, "Missing trait \(trait.name)")
+                #expect(metamodel.trait(name: trait.name) != nil, "Type \(type.name) requires missing trait \(trait.name)")
             }
         }
     }

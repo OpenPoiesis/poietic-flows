@@ -127,10 +127,12 @@ extension TransientPlane {
         #expect(plan.stocks.count == 2)
         #expect(plan.stocks[aIndex].objectID == a.objectID)
         #expect(plan.stocks[aIndex].inflows == [])
-        #expect(plan.stocks[aIndex].outflows == [plan.flowIndex(flow.objectID)])
+        
+        let index = try #require(plan.flows.firstIndex { $0.objectID == flow.objectID })
+        #expect(plan.stocks[aIndex].outflows == [index])
 
         #expect(plan.stocks[bIndex].objectID == b.objectID)
-        #expect(plan.stocks[bIndex].inflows == [plan.flowIndex(flow.objectID)])
+        #expect(plan.stocks[bIndex].inflows == [index])
         #expect(plan.stocks[bIndex].outflows == [])
     }
     

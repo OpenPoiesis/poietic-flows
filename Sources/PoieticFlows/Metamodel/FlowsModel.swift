@@ -27,7 +27,8 @@ extension Metamodel {
         ///
         traits: [
             Trait.Name,
-
+            Trait.StockFlowSimulationSettings,
+            Trait.Scenario,
             // Tags
             Trait.ComputedValue,
             Trait.NumericValue,
@@ -51,7 +52,7 @@ extension Metamodel {
             Trait.Chart,
             Trait.ChartSeries,
             Trait.Control,
-            Trait.Simulation,
+            Trait.SimulationTime,
             Trait.BibliographicalReference,
             Trait.Orderable,
         ],

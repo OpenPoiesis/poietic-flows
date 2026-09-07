@@ -162,35 +162,15 @@ extension Trait {
     ///
     /// Attributes:
     ///
-    /// - `initial_time` (double) – initial time of the simulation, default is
-    ///    0.0 as most commonly used value
-    /// - `time_delta` (double) – time delta, default is 1.0 as most commonly
-    ///   used value
-    /// - `end_time` (double) – Final simulation time.
+    /// - `solver_type` (string) – solver used for integration: `euler` or `rk4`
+    /// - `flow_scaling` (string) – `inflow_first`, `outflow_first`
     ///
-    public static let Simulation = Trait(
-        name: "Simulation",
+    public static let StockFlowSimulationSettings = Trait(
+        // TODO: Split to SimulationTime and SimulationConfiguration
+        name: "StockFlowSimulationSettings",
         attributes: [
-            Attribute("initial_time", type: .double,
-                      default: Variant(0.0),
-                      optional: true,
-                      abstract: "Initial simulation time"
-                     ),
-            Attribute("time_delta", type: .double,
-                      default: Variant(1.0),
-                      optional: true,
-                      abstract: "Advancement of time for each simulation step"
-                     ),
-            Attribute("end_time", type: .double,
-                      default: Variant(10.0),
-                      optional: true,
-                      abstract: "Final simulation time"
-                     ),
-            Attribute("solver_type", type: .string,
-                      optional: true,
-                      abstract: "Solver type name"
-                     ),
-            // TODO: Support date/time
+            Attribute("solver_type", type: .string, optional: true, abstract: "Solver type name"),
+            Attribute("flow_scaling", type: .string, optional: true, abstract: "Flow scaling method"),
         ]
     )
 }
