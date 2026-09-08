@@ -35,14 +35,14 @@ public struct ResolvedParameters: Component {
     ///
     /// The keys are normalised name keys, the values are object IDs of the parameter nodes.
     public let connected: [String:ObjectID]
-    /// List of connected parameters where the name is not used, such as parameters
-    /// for graphical function, smooth or delay.
+    /// Object IDs of parameter nodes connected to single-input nodes such as graphical function,
+    /// smooth or delay.
     public let connectedUnnamed: [ObjectID]
-    /// List of normalised name keys of parameters are not connected.
+    /// List of normalised name keys of parameters that are not connected.
     public let missing: [String]
     /// Number of missing unnamed parameters
     public let missingUnnamed: Int
-    /// List of `Parameter`object type edges that are connected but not used.
+    /// Object IDs of `Parameter` edges that are connected but not used.
     public let unused: [ObjectID]
 }
 
@@ -54,7 +54,8 @@ public struct ResolvedParameters: Component {
 ///
 /// - **Input:** Nodes with compiled expression in `ParsedExpressionComponent` and objects
 /// of auxiliary types: graphical function, smooth or delay.
-/// - **Output:** ``ResolvedParameters`` set of each input component
+/// - **Output:** ``ResolvedParameters`` component set on each node with a formula or a
+///   single-input auxiliary.
 /// - **Forgiveness:** Nothing needed.
 /// - **Issues Appended:**
 ///     - `unknown_parameter`: Parameter in a formula is not connected from a node.
@@ -70,6 +71,21 @@ public struct ResolvedParameters: Component {
 ///
 public struct ParameterResolutionSystem: System {
     public static let IssueSourceName = "ParameterResolutionSystem"
+
+    /// Intermediate resolution result.
+    ///
+    /// - SeeAlso: ``ParameterResolutionSystem/resolveConnections()``
+    ///
+    struct ResolvedConnections {
+        /// Map of parameter key to parameter object ID.
+        var connected: [String: ObjectID] = [:]
+        /// List of missing parameter keys
+        var missing: Set<String> = []
+        /// Tuples of unused edges where the displayName is the name of edge's origin.
+        var unused: [(edgeID: ObjectID, displayName: String)] = []
+        
+        var isEmpty: Bool { connected.isEmpty && missing.isEmpty && unused.isEmpty }
+    }
 
     public static let dependencies: [SystemDependency] = [
         .after(NameNormalizationSystem.self), // Gets us normalised object names
@@ -91,11 +107,18 @@ public struct ParameterResolutionSystem: System {
             guard let objectID = entity.objectID else { continue }
             
             let required = Self.requiredParameters(in: expression, excludeKeys: builtinKeys)
-            let incoming = plane.incoming(objectID)
-                .filter { $0.object.type.matches(StockFlowDomain.Types.Parameter) }
-                            .map { $0.origin }
+            var existing: [(parameterID: ObjectID, edgeID: ObjectID)] = []
+            
+            for edge in plane.incoming(objectID) {
+                guard edge.object.type.matches(StockFlowDomain.Types.Parameter) else { continue }
+                existing.append((parameterID: edge.origin, edgeID: edge.id))
+            }
 
-            let connections = Self.resolveConnections(incoming, required: required, in: world)
+            let connections = Self.resolveConnections(
+                parameters: existing,
+                requiredKeys: Set(required.keys),
+                in: world
+            )
             
             guard !connections.isEmpty else { continue }
 
@@ -132,12 +155,12 @@ public struct ParameterResolutionSystem: System {
             let paramComponent = ResolvedParameters(
                 connected: connections.connected,
                 missing: Array(connections.missing),
-                unused: connections.unused.map { $0.origin }
+                unused: connections.unused.map { $0.edgeID }
             )
             entity.setComponent(paramComponent)
         }
     }
-   
+    
     /// Get required variables from an expression.
     ///
     /// - Returns: A dictionary where keys are normalised name keys and values are names used in
@@ -156,48 +179,41 @@ public struct ParameterResolutionSystem: System {
         return requiredParams
     }
     
-    struct ParameterConnections {
-        var connected: [String: ObjectID] = [:]
-        var missing: Set<String> = []
-        var unused: [(origin: ObjectID, displayName: String)] = []
-        var isEmpty: Bool { connected.isEmpty && missing.isEmpty && unused.isEmpty }
-    }
-    
     /// Resolve parameter connections.
     ///
     /// - Parameters:
-    ///     - incoming: List of object IDs that are origins on `Parameter` edges towards object
-    ///       being resolved.
-    ///     - required: Map of required parameters. Keys are normalised name keys, values
-    ///       are display names (as used in their original location).
+    ///     - parameters: List of tuples describing incoming `Parameter` edges pointing towards the
+    ///       object being resolved.
+    ///     - requiredKeys: Set of normalised name keys of required parameters.
     ///     - world: World where to resolve parameters in.
     ///
-    /// Each object in the `incoming` list is expected to have `NormalizedName` component on it.
-    /// Those without it are skipped – treated as missing.
+    /// Each parameter object in the `parameters` list is expected to have `NormalizedName`
+    /// component on it. Those without it are skipped and the required variable remains missing.
     ///
-    static func resolveConnections(_ incoming: [ObjectID],
-                                   required: [String: String],
-                                   in world: World) -> ParameterConnections
+    static func resolveConnections(parameters: [(parameterID: ObjectID, edgeID: ObjectID)],
+                                   requiredKeys: Set<String>,
+                                   in world: World) -> ResolvedConnections
     {
+        var missing: Set<String> = requiredKeys
+
         var connected: [String:ObjectID] = [:]
-        var missing: Set<String> = Set(required.keys)
-        var unused: [(origin: ObjectID, displayName: String)] = []
+        var unused: [(edgeID: ObjectID, displayName: String)] = []
         
-        for origin in incoming {
-            guard let parameterEntity = world.entity(origin),
-                  let parameterObjectName: NormalizedName = parameterEntity.component()
+        for (parameterID, edgeID) in parameters {
+            guard let parameterEntity = world.entity(parameterID),
+                  let parameterName: NormalizedName = parameterEntity.component()
             else { continue }
             
-            if missing.contains(parameterObjectName.key) {
-                missing.remove(parameterObjectName.key)
-                connected[parameterObjectName.key] = origin
+            if missing.contains(parameterName.key) {
+                missing.remove(parameterName.key)
+                connected[parameterName.key] = parameterID
             }
             else {
-                unused.append((origin: origin, displayName: parameterObjectName.displayName))
+                unused.append((edgeID: edgeID, displayName: parameterName.displayName))
             }
         }
         
-        return ParameterConnections(connected: connected, missing: missing, unused: unused)
+        return ResolvedConnections(connected: connected, missing: missing, unused: unused)
     }
     
     /// Resolve connections of single-parameter auxiliaries such as graphical function,
@@ -206,7 +222,8 @@ public struct ParameterResolutionSystem: System {
     /// - Requirement: The auxiliary should have one connected parameter.
     ///
     public static func resolveAuxiliaries(_ world: World, plane: DesignPlane, type: ObjectType)
-    throws (InternalSystemError) {
+    throws (InternalSystemError)
+    {
         for object in plane.filter(type: type) {
             guard let entity = world.entity(object.objectID) else { continue }
             
@@ -241,7 +258,7 @@ public struct ParameterResolutionSystem: System {
                 )
                 entity.appendIssue(issue)
 
-                let unused = incomingParams.map { $0.origin }
+                let unused = incomingParams.map { $0.id }
                 component = ResolvedParameters(unused: unused)
             }
             else { // if incomingParams.count == 1

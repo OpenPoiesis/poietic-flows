@@ -158,7 +158,7 @@ import Testing
         let aux = plane.createNode(StockFlowDomain.Types.Auxiliary, name: "consumer", attributes: ["formula": "x"])
 
         plane.createEdge(StockFlowDomain.Types.Parameter, origin: x.objectID, target: aux.objectID)
-        plane.createEdge(StockFlowDomain.Types.Parameter, origin: y.objectID, target: aux.objectID)
+        let unusedEdge = plane.createEdge(StockFlowDomain.Types.Parameter, origin: y.objectID, target: aux.objectID)
 
         let world = try accept(plane)
         try update(world)
@@ -169,7 +169,7 @@ import Testing
         #expect(component.connected["x"] == x.objectID)
         #expect(component.connected["y"] == nil)
         #expect(component.missing.isEmpty == true)
-        #expect(component.unused.count == 1)
+        #expect(component.unused == [unusedEdge.objectID])
         #expect(entity.hasIssue(identifier: IssueIdentifier.unusedInput,
                                 details: ["parameter": "y"]))
     }
@@ -182,7 +182,7 @@ import Testing
         let aux = plane.createNode(StockFlowDomain.Types.Auxiliary, name: "consumer", attributes: ["formula": "a + b"])
 
         plane.createEdge(StockFlowDomain.Types.Parameter, origin: a.objectID, target: aux.objectID)
-        plane.createEdge(StockFlowDomain.Types.Parameter, origin: c.objectID, target: aux.objectID)
+        let edgeC = plane.createEdge(StockFlowDomain.Types.Parameter, origin: c.objectID, target: aux.objectID)
         // Note: b is created but not connected
 
         let world = try accept(plane)
@@ -193,7 +193,7 @@ import Testing
         #expect(component.connected.count == 1)
         #expect(component.connected["a"] == a.objectID)
         #expect(component.missing == ["b"])
-        #expect(component.unused.count == 1)
+        #expect(component.unused == [edgeC.objectID])
         #expect(entity.hasIssue(identifier: IssueIdentifier.unknownParameter,
                                 details: ["parameter": "b"]))
         #expect(entity.hasIssue(identifier: IssueIdentifier.unusedInput,
@@ -275,15 +275,15 @@ import Testing
         let source1 = plane.createNode(StockFlowDomain.Types.Auxiliary, name: "source1", attributes: ["formula": "100"])
         let source2 = plane.createNode(StockFlowDomain.Types.Auxiliary, name: "source2", attributes: ["formula": "100"])
         let delay = plane.createNode(StockFlowDomain.Types.Delay, name: "delayed", attributes: ["delay_duration": 5])
-        plane.createEdge(StockFlowDomain.Types.Parameter, origin: source1.objectID, target: delay.objectID)
-        plane.createEdge(StockFlowDomain.Types.Parameter, origin: source2.objectID, target: delay.objectID)
+        let edge1 = plane.createEdge(StockFlowDomain.Types.Parameter, origin: source1.objectID, target: delay.objectID)
+        let edge2 = plane.createEdge(StockFlowDomain.Types.Parameter, origin: source2.objectID, target: delay.objectID)
 
         let world = try accept(plane)
         try update(world)
 
         let entity = try #require(world.entity(delay.objectID))
         let component: ResolvedParameters = try #require(entity.component())
-        #expect(component.unused.count == 2)
+        #expect(component.unused == [edge1.objectID, edge2.objectID])
         #expect(entity.hasIssue(identifier: IssueIdentifier.tooManyParameters))
     }
 
