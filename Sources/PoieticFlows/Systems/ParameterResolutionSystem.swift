@@ -79,9 +79,9 @@ public struct ParameterResolutionSystem: System {
     public static func update(_ world: World) throws (InternalSystemError) {
         guard let plane = world.plane else { return }
         try resolveFormulas(world, plane: plane)
-        try resolveAuxiliaries(world, plane: plane, type: .GraphicalFunction)
-        try resolveAuxiliaries(world, plane: plane, type: .Delay)
-        try resolveAuxiliaries(world, plane: plane, type: .Smooth)
+        try resolveAuxiliaries(world, plane: plane, type: StockFlowDomain.Types.GraphicalFunction)
+        try resolveAuxiliaries(world, plane: plane, type: StockFlowDomain.Types.Delay)
+        try resolveAuxiliaries(world, plane: plane, type: StockFlowDomain.Types.Smooth)
     }
 
     public static func resolveFormulas(_ world: World, plane: DesignPlane) throws (InternalSystemError) {
@@ -92,7 +92,7 @@ public struct ParameterResolutionSystem: System {
             
             let required = Self.requiredParameters(in: expression, excludeKeys: builtinKeys)
             let incoming = plane.incoming(objectID)
-                            .filter { $0.object.type === ObjectType.Parameter }
+                .filter { $0.object.type.matches(StockFlowDomain.Types.Parameter) }
                             .map { $0.origin }
 
             let connections = Self.resolveConnections(incoming, required: required, in: world)
@@ -211,7 +211,7 @@ public struct ParameterResolutionSystem: System {
             guard let entity = world.entity(object.objectID) else { continue }
             
             let incomingParams = plane.incoming(object.objectID).filter {
-                $0.object.type === ObjectType.Parameter
+                $0.object.type.matches(StockFlowDomain.Types.Parameter)
             }
             let component: ResolvedParameters
             

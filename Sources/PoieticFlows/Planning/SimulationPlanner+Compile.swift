@@ -70,16 +70,16 @@ extension SimulationPlanner {
     {
         // FIXME: Precompute representation type (and add rep.type type) in sim ordering
         let rep: ComputationalRepresentation
-        if object.type.hasTrait(Trait.Formula) {
+        if object.type.hasTrait(SimulationDomain.Traits.Formula) {
             rep = try compileFormulaObject(object, entity: entity)
         }
-        else if object.type.hasTrait(Trait.GraphicalFunction) {
+        else if object.type.hasTrait(StockFlowDomain.Traits.GraphicalFunction) {
             rep = try compileGraphicalFunctionNode(object, entity: entity)
         }
-        else if object.type.hasTrait(Trait.Delay) {
+        else if object.type.hasTrait(StockFlowDomain.Traits.Delay) {
             rep = try compileDelayNode(object, entity: entity)
         }
-        else if object.type.hasTrait(Trait.Smooth) {
+        else if object.type.hasTrait(StockFlowDomain.Traits.Smooth) {
             rep = try compileSmoothNode(object, entity: entity)
         }
         else {

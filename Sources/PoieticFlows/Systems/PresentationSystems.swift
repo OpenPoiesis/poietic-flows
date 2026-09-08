@@ -32,7 +32,7 @@ public struct ChartResolutionSystem: System {
     }
 
     static func processCharts(_ world: World, plane: DesignPlane) {
-        for chartObject in plane.filter(type: .Chart) {
+        for chartObject in plane.filter(type: StockFlowDomain.Types.Chart) {
             guard let chartEntity = world.entity(chartObject.objectID)
             else { continue }
             let chartComponent = Chart(from: chartObject)
@@ -42,7 +42,7 @@ public struct ChartResolutionSystem: System {
     
     static func processSeries(_ world: World, plane: DesignPlane) {
 
-        for seriesEdge in plane.filter(type: .ChartSeries) {
+        for seriesEdge in plane.filter(type: StockFlowDomain.Types.ChartSeries) {
             guard let seriesEntity = world.entity(seriesEdge.objectID),
                   case .edge(let originID, let targetID) = seriesEdge.topology,
                   let targetObject = plane[targetID],

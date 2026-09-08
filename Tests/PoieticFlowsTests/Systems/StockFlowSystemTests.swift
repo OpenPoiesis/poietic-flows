@@ -14,7 +14,7 @@ import Testing
     let frame: TransientPlane
 
     init() throws {
-        self.design = Design(metamodel: StockFlowMetamodel)
+        self.design = Design(metamodel: StockFlowDomain.StockFlowMetamodel)
         self.frame = design.createPlane()
     }
 
@@ -26,7 +26,7 @@ import Testing
     // MARK: - Basic Sanity Tests
 
     @Test func isolatedFlowRate() throws {
-        let flowRate = frame.createNode(.FlowRate, name: "isolated")
+        let flowRate = frame.createNode(StockFlowDomain.Types.FlowRate, name: "isolated")
 
         let world = try accept(frame)
         try StockFlowTopologySystem.update(world)
@@ -39,9 +39,9 @@ import Testing
     // MARK: - Single Connection Scenarios
 
     @Test func flowRateDrainingStock() throws {
-        let stock = frame.createNode(.Stock, name: "stock")
-        let flowRate = frame.createNode(.FlowRate, name: "drain")
-        frame.createEdge(.Flow, origin: stock, target: flowRate)
+        let stock = frame.createNode(StockFlowDomain.Types.Stock,name: "stock")
+        let flowRate = frame.createNode(StockFlowDomain.Types.FlowRate, name: "drain")
+        frame.createEdge(StockFlowDomain.Types.Flow, origin: stock, target: flowRate)
 
         let world = try accept(frame)
         try StockFlowTopologySystem.update(world)
@@ -52,9 +52,9 @@ import Testing
     }
 
     @Test func flowRateFillingStock() throws {
-        let flowRate = frame.createNode(.FlowRate, name: "fill")
-        let stock = frame.createNode(.Stock, name: "stock")
-        frame.createEdge(.Flow, origin: flowRate, target: stock)
+        let flowRate = frame.createNode(StockFlowDomain.Types.FlowRate, name: "fill")
+        let stock = frame.createNode(StockFlowDomain.Types.Stock, name: "stock")
+        frame.createEdge(StockFlowDomain.Types.Flow, origin: flowRate, target: stock)
 
         let world = try accept(frame)
         try StockFlowTopologySystem.update(world)
@@ -65,12 +65,12 @@ import Testing
     }
 
     @Test func flowRateBetweenStocks() throws {
-        let source = frame.createNode(.Stock, name: "source")
-        let flowRate = frame.createNode(.FlowRate, name: "transfer")
-        let target = frame.createNode(.Stock, name: "target")
+        let source = frame.createNode(StockFlowDomain.Types.Stock, name: "source")
+        let flowRate = frame.createNode(StockFlowDomain.Types.FlowRate, name: "transfer")
+        let target = frame.createNode(StockFlowDomain.Types.Stock, name: "target")
 
-        frame.createEdge(.Flow, origin: source, target: flowRate)
-        frame.createEdge(.Flow, origin: flowRate, target: target)
+        frame.createEdge(StockFlowDomain.Types.Flow, origin: source, target: flowRate)
+        frame.createEdge(StockFlowDomain.Types.Flow, origin: flowRate, target: target)
 
         let world = try accept(frame)
         try StockFlowTopologySystem.update(world)
@@ -81,12 +81,12 @@ import Testing
     }
 
     @Test func flowRateBetweenClouds() throws {
-        let source = frame.createNode(.Cloud, name: "source")
-        let flowRate = frame.createNode(.FlowRate, name: "transfer")
-        let target = frame.createNode(.Cloud, name: "target")
+        let source = frame.createNode(StockFlowDomain.Types.Cloud, name: "source")
+        let flowRate = frame.createNode(StockFlowDomain.Types.FlowRate, name: "transfer")
+        let target = frame.createNode(StockFlowDomain.Types.Cloud, name: "target")
 
-        frame.createEdge(.Flow, origin: source, target: flowRate)
-        frame.createEdge(.Flow, origin: flowRate, target: target)
+        frame.createEdge(StockFlowDomain.Types.Flow, origin: source, target: flowRate)
+        frame.createEdge(StockFlowDomain.Types.Flow, origin: flowRate, target: target)
 
         let world = try accept(frame)
         try StockFlowTopologySystem.update(world)
@@ -99,7 +99,7 @@ import Testing
     // MARK: - Priority Handling
 
     @Test func flowRateWithExplicitPriority() throws {
-        let flowRate = frame.createNode(.FlowRate, name: "priority_flow", attributes: ["priority": 5])
+        let flowRate = frame.createNode(StockFlowDomain.Types.FlowRate, name: "priority_flow", attributes: ["priority": 5])
 
         let world = try accept(frame)
         try StockFlowTopologySystem.update(world)
@@ -113,7 +113,7 @@ import Testing
     let frame: TransientPlane
     
     init() throws {
-        self.design = Design(metamodel: StockFlowMetamodel)
+        self.design = Design(metamodel: StockFlowDomain.StockFlowMetamodel)
         self.frame = design.createPlane()
     }
     
@@ -127,7 +127,7 @@ import Testing
     // MARK: - Basic Sanity Tests
     
     @Test func isolatedStock() throws {
-        let stock = frame.createNode(.Stock, name: "isolated")
+        let stock = frame.createNode(StockFlowDomain.Types.Stock, name: "isolated")
         
         let world = try accept(frame)
         
@@ -144,9 +144,9 @@ import Testing
     // MARK: - Single Flow Scenarios
     
     @Test func stockWithOneInflow() throws {
-        let flowRate = frame.createNode(.FlowRate, name: "inflow")
-        let stock = frame.createNode(.Stock, name: "stock")
-        frame.createEdge(.Flow, origin: flowRate, target: stock)
+        let flowRate = frame.createNode(StockFlowDomain.Types.FlowRate, name: "inflow")
+        let stock = frame.createNode(StockFlowDomain.Types.Stock, name: "stock")
+        frame.createEdge(StockFlowDomain.Types.Flow, origin: flowRate, target: stock)
         
         let world = try accept(frame)
         
@@ -160,9 +160,9 @@ import Testing
     }
     
     @Test func stockWithOneOutflow() throws {
-        let stock = frame.createNode(.Stock, name: "stock")
-        let flowRate = frame.createNode(.FlowRate, name: "outflow")
-        frame.createEdge(.Flow, origin: stock, target: flowRate)
+        let stock = frame.createNode(StockFlowDomain.Types.Stock, name: "stock")
+        let flowRate = frame.createNode(StockFlowDomain.Types.FlowRate, name: "outflow")
+        frame.createEdge(StockFlowDomain.Types.Flow, origin: stock, target: flowRate)
         
         let world = try accept(frame)
         
@@ -176,12 +176,12 @@ import Testing
     }
     
     @Test func stockWithInflowAndOutflow() throws {
-        let inflow = frame.createNode(.FlowRate, name: "inflow")
-        let stock = frame.createNode(.Stock, name: "stock")
-        let outflow = frame.createNode(.FlowRate, name: "outflow")
+        let inflow = frame.createNode(StockFlowDomain.Types.FlowRate, name: "inflow")
+        let stock = frame.createNode(StockFlowDomain.Types.Stock, name: "stock")
+        let outflow = frame.createNode(StockFlowDomain.Types.FlowRate, name: "outflow")
         
-        frame.createEdge(.Flow, origin: inflow, target: stock)
-        frame.createEdge(.Flow, origin: stock, target: outflow)
+        frame.createEdge(StockFlowDomain.Types.Flow, origin: inflow, target: stock)
+        frame.createEdge(StockFlowDomain.Types.Flow, origin: stock, target: outflow)
         
         let world = try accept(frame)
         
@@ -197,16 +197,16 @@ import Testing
     // MARK: - Multiple Flow Scenarios
     
     @Test func stockWithMultipleInflowsAndOutflows() throws {
-        let inflow1 = frame.createNode(.FlowRate, name: "inflow1")
-        let inflow2 = frame.createNode(.FlowRate, name: "inflow2")
-        let stock = frame.createNode(.Stock, name: "stock")
-        let outflow1 = frame.createNode(.FlowRate, name: "outflow1")
-        let outflow2 = frame.createNode(.FlowRate, name: "outflow2")
+        let inflow1 = frame.createNode(StockFlowDomain.Types.FlowRate, name: "inflow1")
+        let inflow2 = frame.createNode(StockFlowDomain.Types.FlowRate, name: "inflow2")
+        let stock = frame.createNode(StockFlowDomain.Types.Stock, name: "stock")
+        let outflow1 = frame.createNode(StockFlowDomain.Types.FlowRate, name: "outflow1")
+        let outflow2 = frame.createNode(StockFlowDomain.Types.FlowRate, name: "outflow2")
         
-        frame.createEdge(.Flow, origin: inflow1, target: stock)
-        frame.createEdge(.Flow, origin: inflow2, target: stock)
-        frame.createEdge(.Flow, origin: stock, target: outflow1)
-        frame.createEdge(.Flow, origin: stock, target: outflow2)
+        frame.createEdge(StockFlowDomain.Types.Flow, origin: inflow1, target: stock)
+        frame.createEdge(StockFlowDomain.Types.Flow, origin: inflow2, target: stock)
+        frame.createEdge(StockFlowDomain.Types.Flow, origin: stock, target: outflow1)
+        frame.createEdge(StockFlowDomain.Types.Flow, origin: stock, target: outflow2)
         
         let world = try accept(frame)
         
@@ -224,12 +224,12 @@ import Testing
     // MARK: - Transitive Stock Relationships
     
     @Test func twoStocksConnectedByFlow() throws {
-        let stockA = frame.createNode(.Stock, name: "A")
-        let flowRate = frame.createNode(.FlowRate, name: "transfer")
-        let stockB = frame.createNode(.Stock, name: "B")
+        let stockA = frame.createNode(StockFlowDomain.Types.Stock, name: "A")
+        let flowRate = frame.createNode(StockFlowDomain.Types.FlowRate, name: "transfer")
+        let stockB = frame.createNode(StockFlowDomain.Types.Stock, name: "B")
         
-        frame.createEdge(.Flow, origin: stockA, target: flowRate)
-        frame.createEdge(.Flow, origin: flowRate, target: stockB)
+        frame.createEdge(StockFlowDomain.Types.Flow, origin: stockA, target: flowRate)
+        frame.createEdge(StockFlowDomain.Types.Flow, origin: flowRate, target: stockB)
         
         let world = try accept(frame)
         
@@ -248,16 +248,16 @@ import Testing
     
     @Test func chainOfThreeStocks() throws {
         // A → flowAB → B → flowBC → C
-        let stockA = frame.createNode(.Stock, name: "A")
-        let flowAB = frame.createNode(.FlowRate, name: "AB")
-        let stockB = frame.createNode(.Stock, name: "B")
-        let flowBC = frame.createNode(.FlowRate, name: "BC")
-        let stockC = frame.createNode(.Stock, name: "C")
+        let stockA = frame.createNode(StockFlowDomain.Types.Stock, name: "A")
+        let flowAB = frame.createNode(StockFlowDomain.Types.FlowRate, name: "AB")
+        let stockB = frame.createNode(StockFlowDomain.Types.Stock, name: "B")
+        let flowBC = frame.createNode(StockFlowDomain.Types.FlowRate, name: "BC")
+        let stockC = frame.createNode(StockFlowDomain.Types.Stock, name: "C")
         
-        frame.createEdge(.Flow, origin: stockA, target: flowAB)
-        frame.createEdge(.Flow, origin: flowAB, target: stockB)
-        frame.createEdge(.Flow, origin: stockB, target: flowBC)
-        frame.createEdge(.Flow, origin: flowBC, target: stockC)
+        frame.createEdge(StockFlowDomain.Types.Flow, origin: stockA, target: flowAB)
+        frame.createEdge(StockFlowDomain.Types.Flow, origin: flowAB, target: stockB)
+        frame.createEdge(StockFlowDomain.Types.Flow, origin: stockB, target: flowBC)
+        frame.createEdge(StockFlowDomain.Types.Flow, origin: flowBC, target: stockC)
         
         let world = try accept(frame)
         
@@ -277,15 +277,15 @@ import Testing
     }
     
     @Test func stockCycle() throws {
-        let stockA = frame.createNode(.Stock, name: "A")
-        let rateAB = frame.createNode(.FlowRate, name: "AB")
-        let stockB = frame.createNode(.Stock, name: "B")
-        let rateBA = frame.createNode(.FlowRate, name: "BA")
+        let stockA = frame.createNode(StockFlowDomain.Types.Stock, name: "A")
+        let rateAB = frame.createNode(StockFlowDomain.Types.FlowRate, name: "AB")
+        let stockB = frame.createNode(StockFlowDomain.Types.Stock, name: "B")
+        let rateBA = frame.createNode(StockFlowDomain.Types.FlowRate, name: "BA")
         
-        frame.createEdge(.Flow, origin: stockA, target: rateAB)
-        frame.createEdge(.Flow, origin: rateAB, target: stockB)
-        frame.createEdge(.Flow, origin: stockB, target: rateBA)
-        frame.createEdge(.Flow, origin: rateBA, target: stockA)
+        frame.createEdge(StockFlowDomain.Types.Flow, origin: stockA, target: rateAB)
+        frame.createEdge(StockFlowDomain.Types.Flow, origin: rateAB, target: stockB)
+        frame.createEdge(StockFlowDomain.Types.Flow, origin: stockB, target: rateBA)
+        frame.createEdge(StockFlowDomain.Types.Flow, origin: rateBA, target: stockA)
         
         let world = try accept(frame)
         
@@ -307,8 +307,8 @@ import Testing
     // MARK: - Attribute Handling
     
     @Test func stockWithAllowsNegativeTrue() throws {
-        let stockNeg = frame.createNode(.Stock, name: "stock1", attributes: ["allows_negative": true])
-        let stockNotNeg = frame.createNode(.Stock, name: "stock2", attributes: ["allows_negative": false])
+        let stockNeg = frame.createNode(StockFlowDomain.Types.Stock, name: "stock1", attributes: ["allows_negative": true])
+        let stockNotNeg = frame.createNode(StockFlowDomain.Types.Stock, name: "stock2", attributes: ["allows_negative": false])
         
         let world = try accept(frame)
         

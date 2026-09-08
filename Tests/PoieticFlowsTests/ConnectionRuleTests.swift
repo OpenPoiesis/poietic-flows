@@ -7,6 +7,7 @@
 
 import Testing
 @testable import PoieticCore
+@testable import PoieticFlows
 
 @Suite struct ConnectionRuleTest {
     let metamodel: Metamodel
@@ -14,49 +15,49 @@ import Testing
     let checker: ConstraintChecker
     
     init() throws {
-        self.metamodel = Metamodel.StockFlowBase
+        self.metamodel = StockFlowDomain.StockFlowBaseMetamodel
         self.design = Design(metamodel: self.metamodel)
         self.checker = ConstraintChecker(metamodel)
     }
     
     @Test func validParameterEdges() async throws {
         let frame = design.createPlane()
-        let stock = frame.createNode(.Stock)
-        let aux = frame.createNode(.Auxiliary)
-        let flow = frame.createNode(.FlowRate)
+        let stock = frame.createNode(StockFlowDomain.Types.Stock)
+        let aux = frame.createNode(StockFlowDomain.Types.Auxiliary)
+        let flow = frame.createNode(StockFlowDomain.Types.FlowRate)
         
-        let aux_aux = frame.createEdge(.Parameter, origin: aux.objectID, target: aux.objectID)
+        let aux_aux = frame.createEdge(StockFlowDomain.Types.Parameter, origin: aux.objectID, target: aux.objectID)
         try checker.validate(edge: frame.edge(aux_aux.objectID)!, in: frame)
         
-        let stock_aux = frame.createEdge(.Parameter, origin: stock.objectID, target: aux.objectID)
+        let stock_aux = frame.createEdge(StockFlowDomain.Types.Parameter, origin: stock.objectID, target: aux.objectID)
         try checker.validate(edge: frame.edge(stock_aux.objectID)!, in: frame)
         
-        let flow_aux = frame.createEdge(.Parameter, origin: flow.objectID, target: aux.objectID)
+        let flow_aux = frame.createEdge(StockFlowDomain.Types.Parameter, origin: flow.objectID, target: aux.objectID)
         try checker.validate(edge: frame.edge(flow_aux.objectID)!, in: frame)
         
-        let aux_flow = frame.createEdge(.Parameter, origin: aux.objectID, target: flow.objectID)
+        let aux_flow = frame.createEdge(StockFlowDomain.Types.Parameter, origin: aux.objectID, target: flow.objectID)
         try checker.validate(edge: frame.edge(aux_flow.objectID)!, in: frame)
         
-        let stock_flow = frame.createEdge(.Parameter, origin: stock.objectID, target: flow.objectID)
+        let stock_flow = frame.createEdge(StockFlowDomain.Types.Parameter, origin: stock.objectID, target: flow.objectID)
         try checker.validate(edge: frame.edge(stock_flow.objectID)!, in: frame)
         
-        let flow_flow = frame.createEdge(.Parameter, origin: flow.objectID, target: flow.objectID)
+        let flow_flow = frame.createEdge(StockFlowDomain.Types.Parameter, origin: flow.objectID, target: flow.objectID)
         try checker.validate(edge: frame.edge(flow_flow.objectID)!, in: frame)
     }
     
     @Test func validateFlowEdges() async throws {
         let frame = design.createPlane()
-        let stock = frame.createNode(.Stock)
-        let inflow = frame.createNode(.FlowRate)
-        let outflow = frame.createNode(.FlowRate)
+        let stock = frame.createNode(StockFlowDomain.Types.Stock)
+        let inflow = frame.createNode(StockFlowDomain.Types.FlowRate)
+        let outflow = frame.createNode(StockFlowDomain.Types.FlowRate)
 
-        let stock_outflow = frame.createEdge(.Flow, origin: stock.objectID, target: outflow.objectID)
+        let stock_outflow = frame.createEdge(StockFlowDomain.Types.Flow, origin: stock.objectID, target: outflow.objectID)
         try checker.validate(edge: frame.edge(stock_outflow.objectID)!, in: frame)
 
-        let inflow_stock = frame.createEdge(.Flow, origin: inflow.objectID, target: stock.objectID)
+        let inflow_stock = frame.createEdge(StockFlowDomain.Types.Flow, origin: inflow.objectID, target: stock.objectID)
         try checker.validate(edge: frame.edge(inflow_stock.objectID)!, in: frame)
 
-        let inflow_outflow = frame.createEdge(.Flow, origin: inflow.objectID, target: outflow.objectID)
+        let inflow_outflow = frame.createEdge(StockFlowDomain.Types.Flow, origin: inflow.objectID, target: outflow.objectID)
         #expect {
             try checker.validate(edge: frame.edge(inflow_outflow.objectID)!, in: frame)
         }
@@ -70,7 +71,7 @@ import Testing
             }
         }
 
-        let stock_stock = frame.createEdge(.Flow, origin: stock.objectID, target: stock.objectID)
+        let stock_stock = frame.createEdge(StockFlowDomain.Types.Flow, origin: stock.objectID, target: stock.objectID)
         #expect {
             try checker.validate(edge: frame.edge(stock_stock.objectID)!, in: frame)
         }
@@ -87,27 +88,27 @@ import Testing
     }
     @Test func cloud() async throws {
         let frame = design.createPlane()
-        let cloud1 = frame.createNode(.Cloud)
-        let cloud2 = frame.createNode(.Cloud)
-        let inflow = frame.createNode(.FlowRate)
-        let outflow = frame.createNode(.FlowRate)
+        let cloud1 = frame.createNode(StockFlowDomain.Types.Cloud)
+        let cloud2 = frame.createNode(StockFlowDomain.Types.Cloud)
+        let inflow = frame.createNode(StockFlowDomain.Types.FlowRate)
+        let outflow = frame.createNode(StockFlowDomain.Types.FlowRate)
 
-        let inflow_cloud = frame.createEdge(.Flow, origin: inflow.objectID, target: cloud1.objectID)
+        let inflow_cloud = frame.createEdge(StockFlowDomain.Types.Flow, origin: inflow.objectID, target: cloud1.objectID)
         try checker.validate(edge: frame.edge(inflow_cloud.objectID)!, in: frame)
 
-        let cloud_outflow = frame.createEdge(.Flow, origin: cloud2.objectID, target: outflow.objectID)
+        let cloud_outflow = frame.createEdge(StockFlowDomain.Types.Flow, origin: cloud2.objectID, target: outflow.objectID)
         try checker.validate(edge: frame.edge(cloud_outflow.objectID)!, in: frame)
     }
 
 //    @Test
     func inOutCloud() async throws {
         let frame = design.createPlane()
-        let cloud = frame.createNode(.Cloud)
-        let inflow = frame.createNode(.FlowRate)
-        let outflow = frame.createNode(.FlowRate)
+        let cloud = frame.createNode(StockFlowDomain.Types.Cloud)
+        let inflow = frame.createNode(StockFlowDomain.Types.FlowRate)
+        let outflow = frame.createNode(StockFlowDomain.Types.FlowRate)
 
-        let _ = frame.createEdge(.Flow, origin: inflow.objectID, target: cloud.objectID)
-        let cloud_outflow = frame.createEdge(.Flow, origin: cloud.objectID, target: outflow.objectID)
+        let _ = frame.createEdge(StockFlowDomain.Types.Flow, origin: inflow.objectID, target: cloud.objectID)
+        let cloud_outflow = frame.createEdge(StockFlowDomain.Types.Flow, origin: cloud.objectID, target: outflow.objectID)
         #expect {
             try checker.validate(edge: frame.edge(cloud_outflow.objectID)!, in: frame)
         }
@@ -148,13 +149,13 @@ import Testing
     
     @Test func graphicalFunctionOneParameter() async throws {
         let frame = design.createPlane()
-        let gf = frame.createNode(.GraphicalFunction)
-        let aux = frame.createNode(.Auxiliary)
+        let gf = frame.createNode(StockFlowDomain.Types.GraphicalFunction)
+        let aux = frame.createNode(StockFlowDomain.Types.Auxiliary)
 
-        let param1 = frame.createEdge(.Parameter, origin: aux, target: gf)
+        let param1 = frame.createEdge(StockFlowDomain.Types.Parameter, origin: aux, target: gf)
         try checker.validate(edge: frame.edge(param1.objectID)!, in: frame)
 
-        let param2 = frame.createEdge(.Parameter, origin: aux, target: gf)
+        let param2 = frame.createEdge(StockFlowDomain.Types.Parameter, origin: aux, target: gf)
         #expect {
             try checker.validate(edge: frame.edge(param2.objectID)!, in: frame)
         }
@@ -165,7 +166,7 @@ import Testing
             guard case let .cardinalityViolation(rule, dir) = error else {
                 return false
             }
-            return rule.type === ObjectType.Parameter && dir == .incoming
+            return rule.type.matches(StockFlowDomain.Types.Parameter) && dir == .incoming
         }
     }
 }

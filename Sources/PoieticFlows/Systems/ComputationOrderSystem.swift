@@ -57,13 +57,13 @@ public struct ComputationOrderSystem: System {
             let role: SimulationRole
 
             // TODO: Should we use Trait.Stock?
-            if object.type === ObjectType.Stock {
+            if object.type.matches(StockFlowDomain.Types.Stock) {
                 role = .stock
             }
-            else if object.type === ObjectType.FlowRate {
+            else if object.type.matches(StockFlowDomain.Types.FlowRate) {
                 role = .flow
             }
-            else if object.type.hasTrait(Trait.Auxiliary) {
+            else if object.type.hasTrait(StockFlowDomain.Traits.Auxiliary) {
                 role = .auxiliary
             }
             else { // Not a simulation object
@@ -80,7 +80,7 @@ public struct ComputationOrderSystem: System {
         let unordered = filterSimulationObjects(plane: plane)
 
         let parameterEdges:[DesignObjectEdge] = plane.edges.filter {
-            $0.object.type === ObjectType.Parameter
+            $0.object.type.matches(StockFlowDomain.Types.Parameter)
         }
 
         let parameterDependency = Graph(nodes: Array(unordered.keys),

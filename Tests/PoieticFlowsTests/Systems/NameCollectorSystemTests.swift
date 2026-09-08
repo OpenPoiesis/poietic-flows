@@ -14,7 +14,7 @@ import Testing
     let frame: TransientPlane
     
     init() throws {
-        self.design = Design(metamodel: StockFlowMetamodel)
+        self.design = Design(metamodel: StockFlowDomain.StockFlowMetamodel)
         self.frame = design.createPlane()
     }
     
@@ -28,7 +28,7 @@ import Testing
     }
     
     @Test func empty() throws {
-        let object = frame.createNode(.Note, name: "note")
+        let object = frame.createNode(StockFlowDomain.Types.Note, name: "note")
         
         let world = try accept(frame)
         try ComputationOrderSystem.update(world)
@@ -39,7 +39,7 @@ import Testing
     }
     
     @Test func trimmedName() throws {
-        let object = frame.createNode(.Auxiliary, name: "  object \n")
+        let object = frame.createNode(StockFlowDomain.Types.Auxiliary, name: "  object \n")
 
         let world = try accept(frame)
         try ComputationOrderSystem.update(world)
@@ -50,8 +50,8 @@ import Testing
     }
     
     @Test func duplicateName() throws {
-        let object = frame.createNode(.Auxiliary, name: "object")
-        let dupe = frame.createNode(.Auxiliary, name: " object")
+        let object = frame.createNode(StockFlowDomain.Types.Auxiliary, name: "object")
+        let dupe = frame.createNode(StockFlowDomain.Types.Auxiliary, name: " object")
 
         let world = try accept(frame)
         try ComputationOrderSystem.update(world)
@@ -68,7 +68,7 @@ import Testing
     }
     
     @Test func reservedName() throws {
-        let object = frame.createNode(.Auxiliary, name: "time")
+        let object = frame.createNode(StockFlowDomain.Types.Auxiliary, name: "time")
 
         let world = try accept(frame)
         try ComputationOrderSystem.update(world)
@@ -80,9 +80,9 @@ import Testing
     }
 
     @Test func validAndDuplicateMix() throws {
-        let object = frame.createNode(.Auxiliary, name: "object")
-        let dupe = frame.createNode(.Auxiliary, name: "object")
-        let single = frame.createNode(.Auxiliary, name: "single")
+        let object = frame.createNode(StockFlowDomain.Types.Auxiliary, name: "object")
+        let dupe = frame.createNode(StockFlowDomain.Types.Auxiliary, name: "object")
+        let single = frame.createNode(StockFlowDomain.Types.Auxiliary, name: "single")
 
         let world = try accept(frame)
         try ComputationOrderSystem.update(world)

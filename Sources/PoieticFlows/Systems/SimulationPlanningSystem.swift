@@ -103,7 +103,7 @@ public struct SimulationSettingsSystem: System {
     // TODO: Use trait "Scenario", we will be moving away from singletons here
     public static func update(_ world: World) throws (InternalSystemError) {
         guard let plane = world.plane,
-              let object = plane.first(trait: Trait.SimulationTime)
+              let object = plane.first(trait: SimulationDomain.Traits.SimulationTime)
         else {
             world.removeSingleton(SimulationSettings.self)
             world.removeSingleton(SimulationTimeSettings.self)

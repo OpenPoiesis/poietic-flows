@@ -14,7 +14,7 @@ import Testing
     let plane: TransientPlane
 
     init() throws {
-        self.design = Design(metamodel: StockFlowMetamodel)
+        self.design = Design(metamodel: StockFlowDomain.StockFlowMetamodel)
         self.plane = design.createPlane()
     }
 
@@ -33,7 +33,7 @@ import Testing
 
     @Test func noComponentForNonFormulaNode() throws {
         // DesignInfo has no formula, so no ResolvedParametersComponent should be created
-        let info = plane.create(.DesignInfo, topology: .unstructured)
+        let info = plane.create(BasicDomain.Types.DesignInfo, topology: .unstructured)
 
         let world = try accept(plane)
         try update(world)
@@ -47,7 +47,7 @@ import Testing
 
     @Test func formulaWithoutParameters() throws {
         // Formula "1 + 1" requires no parameters
-        let aux = plane.createNode(ObjectType.Auxiliary,
+        let aux = plane.createNode(StockFlowDomain.Types.Auxiliary,
                                    name: "aux", attributes: ["formula": "1 + 1"])
 
         let world = try accept(plane)
@@ -61,10 +61,14 @@ import Testing
 
     @Test func formulaWithCorrectParameter() throws {
         // Formula "x" with parameter x connected
-        let x = plane.createNode(ObjectType.Auxiliary, name: "x", attributes: ["formula": "10"])
-        let aux = plane.createNode(ObjectType.Auxiliary, name: "consumer", attributes: ["formula": "x"])
+        let x = plane.createNode(StockFlowDomain.Types.Auxiliary,
+                                 name: "x",
+                                 attributes: ["formula": "10"])
+        let aux = plane.createNode(StockFlowDomain.Types.Auxiliary,
+                                   name: "consumer",
+                                   attributes: ["formula": "x"])
 
-        plane.createEdge(.Parameter, origin: x.objectID, target: aux.objectID)
+        plane.createEdge(StockFlowDomain.Types.Parameter, origin: x.objectID, target: aux.objectID)
 
         let world = try accept(plane)
         try update(world)
@@ -80,10 +84,14 @@ import Testing
     
     @Test func formulaWithCorrectNormalizedParameter() throws {
         // Formula "x" with parameter x connected
-        let pg = plane.createNode(ObjectType.Auxiliary, name: "population \n growth", attributes: ["formula": "10"])
-        let x = plane.createNode(ObjectType.Auxiliary, name: "x", attributes: ["formula": "population_growth"])
+        let pg = plane.createNode(StockFlowDomain.Types.Auxiliary,
+                                  name: "population \n growth",
+                                  attributes: ["formula": "10"])
+        let x = plane.createNode(StockFlowDomain.Types.Auxiliary,
+                                 name: "x",
+                                 attributes: ["formula": "population_growth"])
 
-        plane.createEdge(.Parameter, origin: pg.objectID, target: x.objectID)
+        plane.createEdge(StockFlowDomain.Types.Parameter, origin: pg.objectID, target: x.objectID)
 
         let world = try accept(plane)
         try update(world)
@@ -99,14 +107,14 @@ import Testing
 
     @Test func formulaWithQuotedParameters() throws {
         // Formula "x" with parameter x connected
-        let pg = plane.createNode(ObjectType.Auxiliary, name: "population  growth", attributes: ["formula": "10"])
-        let x = plane.createNode(ObjectType.Auxiliary, name: "x", attributes: ["formula": "population_growth"])
-        let y = plane.createNode(ObjectType.Auxiliary, name: "y", attributes: ["formula": "{Population Growth}"])
-        let z = plane.createNode(ObjectType.Auxiliary, name: "z", attributes: ["formula": "{ Population growth }"])
+        let pg = plane.createNode(StockFlowDomain.Types.Auxiliary, name: "population  growth", attributes: ["formula": "10"])
+        let x = plane.createNode(StockFlowDomain.Types.Auxiliary, name: "x", attributes: ["formula": "population_growth"])
+        let y = plane.createNode(StockFlowDomain.Types.Auxiliary, name: "y", attributes: ["formula": "{Population Growth}"])
+        let z = plane.createNode(StockFlowDomain.Types.Auxiliary, name: "z", attributes: ["formula": "{ Population growth }"])
 
-        plane.createEdge(.Parameter, origin: pg.objectID, target: x.objectID)
-        plane.createEdge(.Parameter, origin: pg.objectID, target: y.objectID)
-        plane.createEdge(.Parameter, origin: pg.objectID, target: z.objectID)
+        plane.createEdge(StockFlowDomain.Types.Parameter, origin: pg.objectID, target: x.objectID)
+        plane.createEdge(StockFlowDomain.Types.Parameter, origin: pg.objectID, target: y.objectID)
+        plane.createEdge(StockFlowDomain.Types.Parameter, origin: pg.objectID, target: z.objectID)
 
         let world = try accept(plane)
         try update(world)
@@ -129,7 +137,7 @@ import Testing
 
     @Test func formulaWithMissingParameter() throws {
         // Formula "x" without parameter connection
-        let aux = plane.createNode(ObjectType.Auxiliary, name: "consumer", attributes: ["formula": "x"])
+        let aux = plane.createNode(StockFlowDomain.Types.Auxiliary, name: "consumer", attributes: ["formula": "x"])
 
         let world = try accept(plane)
         try update(world)
@@ -145,12 +153,12 @@ import Testing
 
     @Test func formulaWithUnusedParameter() throws {
         // Formula "x" with unused parameter "y" connected
-        let x = plane.createNode(.Auxiliary, name: "x", attributes: ["formula": "10"])
-        let y = plane.createNode(.Auxiliary, name: "y", attributes: ["formula": "20"])
-        let aux = plane.createNode(.Auxiliary, name: "consumer", attributes: ["formula": "x"])
+        let x = plane.createNode(StockFlowDomain.Types.Auxiliary, name: "x", attributes: ["formula": "10"])
+        let y = plane.createNode(StockFlowDomain.Types.Auxiliary, name: "y", attributes: ["formula": "20"])
+        let aux = plane.createNode(StockFlowDomain.Types.Auxiliary, name: "consumer", attributes: ["formula": "x"])
 
-        plane.createEdge(.Parameter, origin: x.objectID, target: aux.objectID)
-        plane.createEdge(.Parameter, origin: y.objectID, target: aux.objectID)
+        plane.createEdge(StockFlowDomain.Types.Parameter, origin: x.objectID, target: aux.objectID)
+        plane.createEdge(StockFlowDomain.Types.Parameter, origin: y.objectID, target: aux.objectID)
 
         let world = try accept(plane)
         try update(world)
@@ -168,13 +176,13 @@ import Testing
 
     @Test func formulaWithMixedParameters() throws {
         // Formula "a + b" with: a correct, c unused, b missing
-        let a = plane.createNode(.Auxiliary, name: "a", attributes: ["formula": "10"])
-        let _ = plane.createNode(.Auxiliary, name: "b", attributes: ["formula": "20"])
-        let c = plane.createNode(.Auxiliary, name: "c", attributes: ["formula": "30"])
-        let aux = plane.createNode(.Auxiliary, name: "consumer", attributes: ["formula": "a + b"])
+        let a = plane.createNode(StockFlowDomain.Types.Auxiliary, name: "a", attributes: ["formula": "10"])
+        let _ = plane.createNode(StockFlowDomain.Types.Auxiliary, name: "b", attributes: ["formula": "20"])
+        let c = plane.createNode(StockFlowDomain.Types.Auxiliary, name: "c", attributes: ["formula": "30"])
+        let aux = plane.createNode(StockFlowDomain.Types.Auxiliary, name: "consumer", attributes: ["formula": "a + b"])
 
-        plane.createEdge(.Parameter, origin: a.objectID, target: aux.objectID)
-        plane.createEdge(.Parameter, origin: c.objectID, target: aux.objectID)
+        plane.createEdge(StockFlowDomain.Types.Parameter, origin: a.objectID, target: aux.objectID)
+        plane.createEdge(StockFlowDomain.Types.Parameter, origin: c.objectID, target: aux.objectID)
         // Note: b is created but not connected
 
         let world = try accept(plane)
@@ -194,7 +202,7 @@ import Testing
 
     @Test func formulaWithBuiltinVariable() throws {
         // Formula using "time" builtin - should not require connection
-        let aux = plane.createNode(.Auxiliary, name: "timer", attributes: ["formula": "time * 2"])
+        let aux = plane.createNode(StockFlowDomain.Types.Auxiliary, name: "timer", attributes: ["formula": "time * 2"])
 
         let world = try accept(plane)
         try update(world)
@@ -207,14 +215,14 @@ import Testing
 
     @Test func formulaWithMultipleCorrectParameters() throws {
         // Formula "x + y + z" with all parameters connected
-        let x = plane.createNode(.Auxiliary, name: "x", attributes: ["formula": "1"])
-        let y = plane.createNode(.Auxiliary, name: "y", attributes: ["formula": "2"])
-        let z = plane.createNode(.Auxiliary, name: "z", attributes: ["formula": "3"])
-        let aux = plane.createNode(.Auxiliary, name: "sum", attributes: ["formula": "x + y + z"])
+        let x = plane.createNode(StockFlowDomain.Types.Auxiliary, name: "x", attributes: ["formula": "1"])
+        let y = plane.createNode(StockFlowDomain.Types.Auxiliary, name: "y", attributes: ["formula": "2"])
+        let z = plane.createNode(StockFlowDomain.Types.Auxiliary, name: "z", attributes: ["formula": "3"])
+        let aux = plane.createNode(StockFlowDomain.Types.Auxiliary, name: "sum", attributes: ["formula": "x + y + z"])
 
-        plane.createEdge(.Parameter, origin: x.objectID, target: aux.objectID)
-        plane.createEdge(.Parameter, origin: y.objectID, target: aux.objectID)
-        plane.createEdge(.Parameter, origin: z.objectID, target: aux.objectID)
+        plane.createEdge(StockFlowDomain.Types.Parameter, origin: x.objectID, target: aux.objectID)
+        plane.createEdge(StockFlowDomain.Types.Parameter, origin: y.objectID, target: aux.objectID)
+        plane.createEdge(StockFlowDomain.Types.Parameter, origin: z.objectID, target: aux.objectID)
 
         let world = try accept(plane)
         try update(world)
@@ -234,7 +242,7 @@ import Testing
 
     @Test func delayWithoutParameter() throws {
         // Delay node with no parameter - should error
-        let delay = plane.createNode(.Delay, name: "delayed", attributes: ["delay_duration": 5])
+        let delay = plane.createNode(StockFlowDomain.Types.Delay, name: "delayed", attributes: ["delay_duration": 5])
 
         let world = try accept(plane)
         try update(world)
@@ -248,9 +256,9 @@ import Testing
 
     @Test func delayWithOneParameter() throws {
         // Delay node with one parameter - correct
-        let source = plane.createNode(.Auxiliary, name: "source", attributes: ["formula": "100"])
-        let delay = plane.createNode(.Delay, name: "delayed", attributes: ["delay_duration": 5])
-        plane.createEdge(.Parameter, origin: source.objectID, target: delay.objectID)
+        let source = plane.createNode(StockFlowDomain.Types.Auxiliary, name: "source", attributes: ["formula": "100"])
+        let delay = plane.createNode(StockFlowDomain.Types.Delay, name: "delayed", attributes: ["delay_duration": 5])
+        plane.createEdge(StockFlowDomain.Types.Parameter, origin: source.objectID, target: delay.objectID)
 
         let world = try accept(plane)
         try update(world)
@@ -264,11 +272,11 @@ import Testing
     }
 
     @Test func delayWithTwoParameters() throws {
-        let source1 = plane.createNode(.Auxiliary, name: "source1", attributes: ["formula": "100"])
-        let source2 = plane.createNode(.Auxiliary, name: "source2", attributes: ["formula": "100"])
-        let delay = plane.createNode(.Delay, name: "delayed", attributes: ["delay_duration": 5])
-        plane.createEdge(.Parameter, origin: source1.objectID, target: delay.objectID)
-        plane.createEdge(.Parameter, origin: source2.objectID, target: delay.objectID)
+        let source1 = plane.createNode(StockFlowDomain.Types.Auxiliary, name: "source1", attributes: ["formula": "100"])
+        let source2 = plane.createNode(StockFlowDomain.Types.Auxiliary, name: "source2", attributes: ["formula": "100"])
+        let delay = plane.createNode(StockFlowDomain.Types.Delay, name: "delayed", attributes: ["delay_duration": 5])
+        plane.createEdge(StockFlowDomain.Types.Parameter, origin: source1.objectID, target: delay.objectID)
+        plane.createEdge(StockFlowDomain.Types.Parameter, origin: source2.objectID, target: delay.objectID)
 
         let world = try accept(plane)
         try update(world)
@@ -282,14 +290,14 @@ import Testing
     // MARK: - Other auxiliaries
 
     @Test func correctOneParameterAuxiliaries() throws {
-        let source = plane.createNode(.Auxiliary, name: "source", attributes: ["formula": "100"])
-        let gf = plane.createNode(.GraphicalFunction, name: "lookup")
-        let delay = plane.createNode(.Delay, name: "delayed", attributes: ["delay_duration": 5])
-        let smooth = plane.createNode(.Smooth, name: "smoothed", attributes: ["window_time": 5])
+        let source = plane.createNode(StockFlowDomain.Types.Auxiliary, name: "source", attributes: ["formula": "100"])
+        let gf = plane.createNode(StockFlowDomain.Types.GraphicalFunction, name: "lookup")
+        let delay = plane.createNode(StockFlowDomain.Types.Delay, name: "delayed", attributes: ["delay_duration": 5])
+        let smooth = plane.createNode(StockFlowDomain.Types.Smooth, name: "smoothed", attributes: ["window_time": 5])
 
-        plane.createEdge(.Parameter, origin: source.objectID, target: gf.objectID)
-        plane.createEdge(.Parameter, origin: source.objectID, target: delay.objectID)
-        plane.createEdge(.Parameter, origin: source.objectID, target: smooth.objectID)
+        plane.createEdge(StockFlowDomain.Types.Parameter, origin: source.objectID, target: gf.objectID)
+        plane.createEdge(StockFlowDomain.Types.Parameter, origin: source.objectID, target: delay.objectID)
+        plane.createEdge(StockFlowDomain.Types.Parameter, origin: source.objectID, target: smooth.objectID)
 
         let world = try accept(plane)
         try update(world)

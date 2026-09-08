@@ -14,7 +14,7 @@ import Testing
     let frame: TransientPlane
     
     init() throws {
-        self.design = Design(metamodel: StockFlowMetamodel)
+        self.design = Design(metamodel: StockFlowDomain.StockFlowMetamodel)
         self.frame = design.createPlane()
     }
     
@@ -34,12 +34,12 @@ import Testing
     
     @Test func basicOrder() throws {
         // a -> b -> c
-        let c = frame.createNode(ObjectType.Auxiliary, name: "c", attributes: ["formula": "b"])
-        let b = frame.createNode(ObjectType.Auxiliary, name: "b", attributes: ["formula": "a"])
-        let a = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "0"])
+        let c = frame.createNode(StockFlowDomain.Types.Auxiliary, name: "c", attributes: ["formula": "b"])
+        let b = frame.createNode(StockFlowDomain.Types.Auxiliary, name: "b", attributes: ["formula": "a"])
+        let a = frame.createNode(StockFlowDomain.Types.Auxiliary, name: "a", attributes: ["formula": "0"])
         
-        frame.createEdge(ObjectType.Parameter, origin: a.objectID, target: b.objectID)
-        frame.createEdge(ObjectType.Parameter, origin: b.objectID, target: c.objectID)
+        frame.createEdge(StockFlowDomain.Types.Parameter, origin: a.objectID, target: b.objectID)
+        frame.createEdge(StockFlowDomain.Types.Parameter, origin: b.objectID, target: c.objectID)
         
         let world = try accept(frame)
         try ComputationOrderSystem.update(world)
@@ -52,10 +52,10 @@ import Testing
     }
     @Test func cycle() throws {
         // a <-> b
-        let a = frame.createNode(ObjectType.Auxiliary, name:"a", attributes: ["formula": "b"])
-        let b = frame.createNode(ObjectType.Auxiliary, name:"b", attributes: ["formula": "a"])
-        frame.createEdge(ObjectType.Parameter, origin: a.objectID, target: b.objectID)
-        frame.createEdge(ObjectType.Parameter, origin: b.objectID, target: a.objectID)
+        let a = frame.createNode(StockFlowDomain.Types.Auxiliary, name:"a", attributes: ["formula": "b"])
+        let b = frame.createNode(StockFlowDomain.Types.Auxiliary, name:"b", attributes: ["formula": "a"])
+        frame.createEdge(StockFlowDomain.Types.Parameter, origin: a.objectID, target: b.objectID)
+        frame.createEdge(StockFlowDomain.Types.Parameter, origin: b.objectID, target: a.objectID)
 
         let world = try accept(frame)
         try ComputationOrderSystem.update(world)
@@ -69,12 +69,12 @@ import Testing
     }
     @Test func orderWithSpecialAuxiliary() throws {
         // p:Aux -> g:GF -> a:Aux
-        let param = frame.createNode(ObjectType.Auxiliary, name: "param", attributes: ["formula": "1"])
-        let gf = frame.createNode(ObjectType.GraphicalFunction, name: "gf")
-        let aux = frame.createNode(ObjectType.Auxiliary, name:"aux", attributes: ["formula": "gf"])
+        let param = frame.createNode(StockFlowDomain.Types.Auxiliary, name: "param", attributes: ["formula": "1"])
+        let gf = frame.createNode(StockFlowDomain.Types.GraphicalFunction, name: "gf")
+        let aux = frame.createNode(StockFlowDomain.Types.Auxiliary, name:"aux", attributes: ["formula": "gf"])
 
-        frame.createEdge(ObjectType.Parameter, origin: param.objectID, target: gf.objectID)
-        frame.createEdge(ObjectType.Parameter, origin: gf.objectID, target: aux.objectID)
+        frame.createEdge(StockFlowDomain.Types.Parameter, origin: param.objectID, target: gf.objectID)
+        frame.createEdge(StockFlowDomain.Types.Parameter, origin: gf.objectID, target: aux.objectID)
 
         let world = try accept(frame)
         try ComputationOrderSystem.update(world)

@@ -32,7 +32,7 @@ extension TransientPlane {
     let world: World
     
     init() throws {
-        self.design = Design(metamodel: StockFlowMetamodel)
+        self.design = Design(metamodel: StockFlowDomain.StockFlowMetamodel)
         self.frame = design.createPlane()
         self.world = World(design: design)
         self.world.addSchedule(Schedule(
@@ -56,10 +56,10 @@ extension TransientPlane {
     }
     
     @Test func computedVariables() throws {
-        frame.createNode(ObjectType.Stock, name: "a", attributes: ["formula": "0"])
-        frame.createNode(ObjectType.Stock, name: "b", attributes: ["formula": "0"])
-        frame.createNode(ObjectType.Stock, name: "c", attributes: ["formula": "0"])
-        frame.createNode(ObjectType.Note, name: "note")
+        frame.createNode(StockFlowDomain.Types.Stock, name: "a", attributes: ["formula": "0"])
+        frame.createNode(StockFlowDomain.Types.Stock, name: "b", attributes: ["formula": "0"])
+        frame.createNode(StockFlowDomain.Types.Stock, name: "c", attributes: ["formula": "0"])
+        frame.createNode(StockFlowDomain.Types.Note, name: "note")
         
         try acceptAndUpdate()
         let plan: SimulationPlan = try #require(world.singleton())
@@ -71,8 +71,8 @@ extension TransientPlane {
     
     @Test func duplicateName() throws {
         // Testing whether the planner picks-up the InvalidName tag (regression after name normalisation)
-        frame.createNode(ObjectType.Auxiliary, name: "x", attributes: ["formula": "10"])
-        frame.createNode(ObjectType.Auxiliary, name: "x", attributes: ["formula": "20"])
+        frame.createNode(StockFlowDomain.Types.Auxiliary, name: "x", attributes: ["formula": "10"])
+        frame.createNode(StockFlowDomain.Types.Auxiliary, name: "x", attributes: ["formula": "20"])
         
         try acceptAndUpdate()
         let plan: SimulationPlan? = world.singleton()
@@ -81,7 +81,7 @@ extension TransientPlane {
 
     @Test func reservedName() throws {
         // Testing whether the planner picks-up the InvalidName tag (regression after name normalisation)
-        frame.createNode(ObjectType.Auxiliary, name: "time", attributes: ["formula": "10"])
+        frame.createNode(StockFlowDomain.Types.Auxiliary, name: "time", attributes: ["formula": "10"])
         
         try acceptAndUpdate()
         let plan: SimulationPlan? = world.singleton()
@@ -89,7 +89,7 @@ extension TransientPlane {
     }
 
     @Test func badFunctionName() throws {
-        let aux = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "nonexistent(10)"])
+        let aux = frame.createNode(StockFlowDomain.Types.Auxiliary, name: "a", attributes: ["formula": "nonexistent(10)"])
         
         try acceptAndUpdate()
         let plan: SimulationPlan? = world.singleton()
@@ -101,7 +101,7 @@ extension TransientPlane {
     }
 
     @Test func singleComputedVariable() throws {
-        let _ = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "if(time < 2, 0, 1)"])
+        let _ = frame.createNode(StockFlowDomain.Types.Auxiliary, name: "a", attributes: ["formula": "if(time < 2, 0, 1)"])
         
         try acceptAndUpdate()
         let plan: SimulationPlan = try #require(world.singleton())
@@ -111,12 +111,12 @@ extension TransientPlane {
     }
 
     @Test func inflowOutflow() throws {
-        let a = frame.createNode(ObjectType.Stock, name: "a", attributes: ["formula": "0"])
-        let flow = frame.createNode(ObjectType.FlowRate, name: "f", attributes: ["formula": "1"])
-        let b = frame.createNode(ObjectType.Stock, name: "b", attributes: ["formula": "0"])
+        let a = frame.createNode(StockFlowDomain.Types.Stock, name: "a", attributes: ["formula": "0"])
+        let flow = frame.createNode(StockFlowDomain.Types.FlowRate, name: "f", attributes: ["formula": "1"])
+        let b = frame.createNode(StockFlowDomain.Types.Stock, name: "b", attributes: ["formula": "0"])
 
-        frame.createEdge(ObjectType.Flow, origin: a, target: flow)
-        frame.createEdge(ObjectType.Flow, origin: flow, target: b)
+        frame.createEdge(StockFlowDomain.Types.Flow, origin: a, target: flow)
+        frame.createEdge(StockFlowDomain.Types.Flow, origin: flow, target: b)
         
         try acceptAndUpdate()
         let plan: SimulationPlan = try #require(world.singleton())
@@ -137,7 +137,7 @@ extension TransientPlane {
     }
     
     @Test func disconnectedGraphicalFunction() throws {
-        let gf = frame.createNode(ObjectType.GraphicalFunction,
+        let gf = frame.createNode(StockFlowDomain.Types.GraphicalFunction,
                                   name: "g")
 
         try acceptAndUpdate()
@@ -149,14 +149,14 @@ extension TransientPlane {
 
     @Test func graphicalFunctionComputation() throws {
         let points = [Point(x:0, y:0), Point(x: 10, y:10)]
-        let p = frame.createNode(ObjectType.Auxiliary, name:"p", attributes: ["formula": "0"])
-        let gf = frame.createNode(ObjectType.GraphicalFunction,
+        let p = frame.createNode(StockFlowDomain.Types.Auxiliary, name:"p", attributes: ["formula": "0"])
+        let gf = frame.createNode(StockFlowDomain.Types.GraphicalFunction,
                                   name: "g",
                                   attributes: ["graphical_function_points": Variant(points)])
-        let aux = frame.createNode(ObjectType.Auxiliary, name:"a", attributes: ["formula": "g"])
+        let aux = frame.createNode(StockFlowDomain.Types.Auxiliary, name:"a", attributes: ["formula": "g"])
 
-        frame.createEdge(ObjectType.Parameter, origin: p, target: gf)
-        frame.createEdge(ObjectType.Parameter, origin: gf, target: aux)
+        frame.createEdge(StockFlowDomain.Types.Parameter, origin: p, target: gf)
+        frame.createEdge(StockFlowDomain.Types.Parameter, origin: gf, target: aux)
 
         try acceptAndUpdate()
         let plan: SimulationPlan = try #require(world.singleton())

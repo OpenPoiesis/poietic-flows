@@ -19,7 +19,7 @@ import Testing
 
     init() throws {
         self.solverType = .euler
-        self.design = Design(metamodel: StockFlowMetamodel)
+        self.design = Design(metamodel: StockFlowDomain.StockFlowMetamodel)
         self.frame = design.createPlane()
         self.world = World(design: design)
         self.world.addSchedule(Schedule(
@@ -60,7 +60,7 @@ import Testing
     }
 
     @Test mutating func timeDependentExpression() throws {
-        let t = frame.createNode(ObjectType.Auxiliary, name: "t", attributes: ["formula": "time"])
+        let t = frame.createNode(StockFlowDomain.Types.Auxiliary, name: "t", attributes: ["formula": "time"])
 
         let plan = try self.accept()
         let state = try self.run(plan, settings: SimulationSettings(initialTime: 1.0,
@@ -76,14 +76,18 @@ import Testing
     }
 
     @Test mutating func cloudOutflow() throws {
-        let stock = frame.createNode(.Stock, name: "stock",
+        let stock = frame.createNode(StockFlowDomain.Types.Stock,
+                                     name: "stock",
                                      attributes: ["formula": "10",
                                                   "allows_negative": false])
-        let flow = frame.createNode(.FlowRate, name: "flow", attributes: ["formula": "100"])
-        let cloud = frame.createNode(.Cloud, name: "cloud")
+        let flow = frame.createNode(StockFlowDomain.Types.FlowRate,
+                                    name: "flow",
+                                    attributes: ["formula": "100"])
+        let cloud = frame.createNode(StockFlowDomain.Types.Cloud,
+                                     name: "cloud")
 
-        frame.createEdge(ObjectType.Flow, origin: stock, target: flow)
-        frame.createEdge(ObjectType.Flow, origin: flow, target: cloud)
+        frame.createEdge(StockFlowDomain.Types.Flow, origin: stock, target: flow)
+        frame.createEdge(StockFlowDomain.Types.Flow, origin: flow, target: cloud)
 
         let plan = try accept()
 
@@ -95,14 +99,18 @@ import Testing
     }
 
     @Test mutating func cloudInflow() throws {
-        let stock = frame.createNode(.Stock, name: "stock",
+        let stock = frame.createNode(StockFlowDomain.Types.Stock,
+                                     name: "stock",
                                      attributes: ["formula": "0",
                                                   "allows_negative": false])
-        let flow = frame.createNode(.FlowRate, name: "flow", attributes: ["formula": "100"])
-        let cloud = frame.createNode(.Cloud, name: "cloud")
+        let flow = frame.createNode(StockFlowDomain.Types.FlowRate,
+                                    name: "flow",
+                                    attributes: ["formula": "100"])
+        let cloud = frame.createNode(StockFlowDomain.Types.Cloud,
+                                     name: "cloud")
 
-        frame.createEdge(ObjectType.Flow, origin: flow, target: stock)
-        frame.createEdge(ObjectType.Flow, origin: cloud, target: flow)
+        frame.createEdge(StockFlowDomain.Types.Flow, origin: flow, target: stock)
+        frame.createEdge(StockFlowDomain.Types.Flow, origin: cloud, target: flow)
 
         let plan = try accept()
 
@@ -114,19 +122,20 @@ import Testing
     }
 
     @Test mutating func nonNegativeToTwo() throws {
-        let source = frame.createNode(.Stock, name: "stock",
+        let source = frame.createNode(StockFlowDomain.Types.Stock,
+                                      name: "stock",
                                       attributes: ["formula": "12",
                                                    "allows_negative": false])
 
-        let a = frame.createNode(.Stock, name: "a", attributes: ["formula": "0"])
-        let b = frame.createNode(.Stock, name: "b", attributes: ["formula": "0"])
-        let aRate = frame.createNode(.FlowRate, name: "a_rate", attributes: ["formula": "10"])
-        let bRate = frame.createNode(.FlowRate, name: "b_rate", attributes: ["formula": "20"])
+        let a = frame.createNode(StockFlowDomain.Types.Stock, name: "a", attributes: ["formula": "0"])
+        let b = frame.createNode(StockFlowDomain.Types.Stock, name: "b", attributes: ["formula": "0"])
+        let aRate = frame.createNode(StockFlowDomain.Types.FlowRate, name: "a_rate", attributes: ["formula": "10"])
+        let bRate = frame.createNode(StockFlowDomain.Types.FlowRate, name: "b_rate", attributes: ["formula": "20"])
 
-        frame.createEdge(.Flow, origin: source, target: aRate)
-        frame.createEdge(.Flow, origin: aRate, target: a)
-        frame.createEdge(.Flow, origin: source, target: bRate)
-        frame.createEdge(.Flow, origin: bRate, target: b)
+        frame.createEdge(StockFlowDomain.Types.Flow, origin: source, target: aRate)
+        frame.createEdge(StockFlowDomain.Types.Flow, origin: aRate, target: a)
+        frame.createEdge(StockFlowDomain.Types.Flow, origin: source, target: bRate)
+        frame.createEdge(StockFlowDomain.Types.Flow, origin: bRate, target: b)
 
         let plan = try accept()
 
@@ -138,12 +147,12 @@ import Testing
     }
 
     @Test mutating func compute() throws {
-        let kettle = frame.createNode(ObjectType.Stock, name: "kettle", attributes: ["formula": "1000"])
-        let flow = frame.createNode(ObjectType.FlowRate, name: "pour", attributes: ["formula": "100"])
-        let cup = frame.createNode(ObjectType.Stock, name: "cup", attributes: ["formula": "0"])
+        let kettle = frame.createNode(StockFlowDomain.Types.Stock, name: "kettle", attributes: ["formula": "1000"])
+        let flow = frame.createNode(StockFlowDomain.Types.FlowRate, name: "pour", attributes: ["formula": "100"])
+        let cup = frame.createNode(StockFlowDomain.Types.Stock, name: "cup", attributes: ["formula": "0"])
 
-        frame.createEdge(ObjectType.Flow, origin: kettle, target: flow)
-        frame.createEdge(ObjectType.Flow, origin: flow, target: cup)
+        frame.createEdge(StockFlowDomain.Types.Flow, origin: kettle, target: flow)
+        frame.createEdge(StockFlowDomain.Types.Flow, origin: flow, target: cup)
 
         let plan = try accept()
 
@@ -160,18 +169,18 @@ import Testing
     }
 
     @Test mutating func graphicalFunction() throws {
-        let p1 = frame.createNode(ObjectType.Auxiliary, name: "p1", attributes: ["formula": "0"])
-        let g1 = frame.createNode(ObjectType.GraphicalFunction, name: "g1")
-        let p2 = frame.createNode(ObjectType.Auxiliary, name: "p2", attributes: ["formula": "0"])
+        let p1 = frame.createNode(StockFlowDomain.Types.Auxiliary, name: "p1", attributes: ["formula": "0"])
+        let g1 = frame.createNode(StockFlowDomain.Types.GraphicalFunction, name: "g1")
+        let p2 = frame.createNode(StockFlowDomain.Types.Auxiliary, name: "p2", attributes: ["formula": "0"])
         let points = [Point(0.0, 10.0), Point(1.0, 10.0)]
-        let g2 = frame.createNode(ObjectType.GraphicalFunction, name: "g2",
+        let g2 = frame.createNode(StockFlowDomain.Types.GraphicalFunction, name: "g2",
                                   attributes: ["graphical_function_points": Variant(points)])
-        let aux = frame.createNode(ObjectType.Auxiliary, name: "a", attributes: ["formula": "g1 + g2"])
+        let aux = frame.createNode(StockFlowDomain.Types.Auxiliary, name: "a", attributes: ["formula": "g1 + g2"])
 
-        frame.createEdge(ObjectType.Parameter, origin: g1, target: aux)
-        frame.createEdge(ObjectType.Parameter, origin: g2, target: aux)
-        frame.createEdge(ObjectType.Parameter, origin: p1, target: g1)
-        frame.createEdge(ObjectType.Parameter, origin: p2, target: g2)
+        frame.createEdge(StockFlowDomain.Types.Parameter, origin: g1, target: aux)
+        frame.createEdge(StockFlowDomain.Types.Parameter, origin: g2, target: aux)
+        frame.createEdge(StockFlowDomain.Types.Parameter, origin: p1, target: g1)
+        frame.createEdge(StockFlowDomain.Types.Parameter, origin: p2, target: g2)
 
         let plan = try accept()
 
@@ -184,17 +193,22 @@ import Testing
     }
 
     @Test mutating func delay() throws {
-        let input = frame.createNode(ObjectType.Auxiliary, name: "input", attributes: ["formula": "10"])
-        let delay0 = frame.createNode(ObjectType.Delay, name: "delay0",
+        let input = frame.createNode(StockFlowDomain.Types.Auxiliary,
+                                     name: "input",
+                                     attributes: ["formula": "10"])
+        let delay0 = frame.createNode(StockFlowDomain.Types.Delay,
+                                      name: "delay0",
                                       attributes: [ "delay_duration": 0, "initial_value": 0.0, ])
-        let delay1 = frame.createNode(ObjectType.Delay, name: "delay1",
+        let delay1 = frame.createNode(StockFlowDomain.Types.Delay,
+                                      name: "delay1",
                                       attributes: [ "delay_duration": 1, "initial_value": 0.0, ])
-        let delay3 = frame.createNode(ObjectType.Delay, name: "delay3",
+        let delay3 = frame.createNode(StockFlowDomain.Types.Delay,
+                                      name: "delay3",
                                       attributes: [ "delay_duration": 3, "initial_value": 0.0, ])
 
-        frame.createEdge(ObjectType.Parameter, origin: input, target: delay0)
-        frame.createEdge(ObjectType.Parameter, origin: input, target: delay1)
-        frame.createEdge(ObjectType.Parameter, origin: input, target: delay3)
+        frame.createEdge(StockFlowDomain.Types.Parameter, origin: input, target: delay0)
+        frame.createEdge(StockFlowDomain.Types.Parameter, origin: input, target: delay1)
+        frame.createEdge(StockFlowDomain.Types.Parameter, origin: input, target: delay3)
 
         let plan = try accept()
 
@@ -232,9 +246,13 @@ import Testing
     }
 
     @Test mutating func divByZeroFlow() throws {
-        let stock = frame.createNode(ObjectType.Stock, name: "stock", attributes: ["formula": "0"])
-        let flow = frame.createNode(ObjectType.FlowRate, name: "flow", attributes: ["formula": "1 / 0"])
-        frame.createEdge(ObjectType.Flow, origin: flow, target: stock)
+        let stock = frame.createNode(StockFlowDomain.Types.Stock,
+                                     name: "stock",
+                                     attributes: ["formula": "0"])
+        let flow = frame.createNode(StockFlowDomain.Types.FlowRate,
+                                    name: "flow",
+                                    attributes: ["formula": "1 / 0"])
+        frame.createEdge(StockFlowDomain.Types.Flow, origin: flow, target: stock)
 
         let plan = try accept()
 

@@ -30,17 +30,17 @@ public struct StockFlowTopologySystem: System {
     }
     
     static func collectFlowRates(from plane: DesignPlane, in world: World) {
-        for flow in plane.filter(type: .FlowRate) {
+        for flow in plane.filter(type: StockFlowDomain.Types.FlowRate) {
             let entity = world.entity(flow.objectID)!
             
             // We assume the plane edge requirements were satisfied,
             // therefore there is at most one edge of each
             let fills: ObjectID? = plane.outgoing(flow.objectID).first {
-                $0.object.type === ObjectType.Flow
+                $0.object.type.matches(StockFlowDomain.Types.Flow)
             }?.target
             
             let drains: ObjectID? = plane.incoming(flow.objectID).first {
-                $0.object.type === ObjectType.Flow
+                $0.object.type.matches(StockFlowDomain.Types.Flow)
             }?.origin
             
             // Not used now (it was, and it might be, keeping as a note here)
@@ -62,7 +62,7 @@ public struct StockFlowTopologySystem: System {
         // Flows go from "key" to "value"
         var outflowStocks: [ObjectID:[ObjectID]] = [:] // [drained stock:[to filling stock]]
 
-        for flow in plane.filter(type: .FlowRate) {
+        for flow in plane.filter(type: StockFlowDomain.Types.FlowRate) {
             let entity = world.entity(flow.objectID)!
             guard let component: FlowRate = entity.component() else {
                 continue
@@ -81,7 +81,7 @@ public struct StockFlowTopologySystem: System {
             }
         }
         
-        for stock in plane.filter(type: .Stock) {
+        for stock in plane.filter(type: StockFlowDomain.Types.Stock) {
             let entity = world.entity(stock.objectID)!
             let component = Stock(
                 inflowRates: filledByRate[stock.objectID] ?? [],
