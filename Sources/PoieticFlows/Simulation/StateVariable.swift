@@ -8,7 +8,7 @@
 import PoieticCore
 
 // TODO: Rename SimulationState.Reference to SimulationVariableReference
-// TODO: Add flag "isObservable" -> true for non-internals
+// TODO: [IMPORTANT] Add flag "isObservable" -> true for non-internals
 
 /// Structure representing a variable in a simulation state.
 ///
