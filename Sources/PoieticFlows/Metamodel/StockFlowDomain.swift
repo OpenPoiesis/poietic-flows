@@ -93,7 +93,7 @@ public enum StockFlowDomain {
         public static let Smooth = Trait(
             name: "Smooth",
             attributes: [
-                Attribute("window_time", type: .double,
+                Attribute("window_time", type: .double, default: Variant(1.0),
                           abstract: "Averaging window time"),
             ]
         )
