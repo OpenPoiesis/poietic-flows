@@ -530,6 +530,7 @@ public enum StockFlowDomain {
             // Other
             Types.Simulation,
             BasicDomain.Types.BibliographicalReference,
+            Types.Comment,
             Types.Note,
         ],
         
@@ -560,28 +561,28 @@ public enum StockFlowDomain {
         ///
         edgeRules: [
             EdgeRule(type: Types.Flow,
-                     origin: .isType(Types.FlowRate),
+                     origin: .isType(Types.FlowRate.name),
                      outgoing: .one,
-                     target: .hasTrait(Traits.Stock)),
+                     target: .hasTrait(Traits.Stock.name)),
             EdgeRule(type: Types.Flow,
-                     origin: .hasTrait(Traits.Stock),
-                     target: .isType(Types.FlowRate),
+                     origin: .hasTrait(Traits.Stock.name),
+                     target: .isType(Types.FlowRate.name),
                      incoming: .one),
             EdgeRule(type: Types.Parameter,
-                     origin: .hasTrait(Traits.Auxiliary)
-                .or(.isType(Types.Stock))
-                .or(.isType(Types.FlowRate)),
+                     origin: .hasTrait(Traits.Auxiliary.name)
+                .or(.isType(Types.Stock.name))
+                .or(.isType(Types.FlowRate.name)),
                      outgoing: .many,
-                     target: .isType(Types.GraphicalFunction),
+                     target: .isType(Types.GraphicalFunction.name),
                      incoming: .one),
             EdgeRule(type: Types.Parameter,
-                     origin: .hasTrait(Traits.Auxiliary)
-                .or(.isType(Types.Stock))
-                .or(.isType(Types.FlowRate)),
+                     origin: .hasTrait(Traits.Auxiliary.name)
+                .or(.isType(Types.Stock.name))
+                .or(.isType(Types.FlowRate.name)),
                      outgoing: .many,
-                     target: .hasTrait(Traits.Auxiliary)
-                .or(.isType(Types.Stock))
-                .or(.isType(Types.FlowRate)),
+                     target: .hasTrait(Traits.Auxiliary.name)
+                .or(.isType(Types.Stock.name))
+                .or(.isType(Types.FlowRate.name)),
                      incoming: .many),
             EdgeRule(type: Types.Comment,
                      outgoing: .many,
@@ -589,18 +590,27 @@ public enum StockFlowDomain {
             
             // Control
             EdgeRule(type: Types.ValueBinding,
-                     origin: .isType(Types.Control),
-                     target: .hasTrait(SimulationDomain.Traits.Formula)),
+                     origin: .isType(Types.Control.name),
+                     target: .hasTrait(SimulationDomain.Traits.Formula.name)),
             
             // Charts
             EdgeRule(type: Types.ChartSeries,
-                     origin: .isType(Types.Chart),
-                     target: .hasTrait(Traits.ComputedValue)),
+                     origin: .isType(Types.Chart.name),
+                     target: .hasTrait(Traits.ComputedValue.name)),
         ]
     )
  
+    public static let GlyphRules = [
+        ConnectorGlyphRule(type: Types.Flow,
+                           target: .isType(Types.FlowRate.name),
+                           glyphName: "Drain"),
+        ConnectorGlyphRule(type: Types.Flow,
+                           glyphName: "Flow"),
+    ]
+
     public static let StockFlowMetamodel = Metamodel(
         name: "StockFlow",
         merging: BasicDomain.BasicMetamodel, StockFlowBaseMetamodel
     )
 }
+

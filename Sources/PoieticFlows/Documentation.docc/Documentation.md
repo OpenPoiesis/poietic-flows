@@ -84,5 +84,5 @@ in the following diagram:
 - <doc:SimulationRunning>
 - <doc:Formulas>
 
-- ``StockFlowMetamodel``
+- ``StockFlowDomain``
 
